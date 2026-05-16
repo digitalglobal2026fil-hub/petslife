@@ -19,7 +19,15 @@ export const marketplace = new Hono()
   .post("/", requireAuth, async (c) => {
     const user = c.get("user")!;
     const body = await c.req.json();
-    const [listing] = await db.insert(schema.listings).values({ ...body, userId: user.id }).returning();
+    // Sanitize notNull fields to avoid SQLite constraint errors
+    const price = typeof body.price === "number" ? body.price : parseFloat(body.price ?? "0") || 0;
+    const category = body.category ?? "outro";
+    const title = body.title ?? "";
+    if (!title) return c.json({ message: "title is required" }, 400);
+    const [listing] = await db
+      .insert(schema.listings)
+      .values({ ...body, price, category, title, userId: user.id })
+      .returning();
     return c.json({ listing }, 201);
   })
   .put("/:id", requireAuth, async (c) => {

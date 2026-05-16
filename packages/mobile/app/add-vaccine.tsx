@@ -60,13 +60,34 @@ export default function AddVaccineScreen() {
   const selectedPet = pets.find((p: any) => p.id === petId);
 
   const save = useMutation({
-    mutationFn: async () =>
-      (await api.vaccines.$post({ json: { petId, name, date: date || undefined, nextDate: next || undefined, veterinarian: vet || undefined, clinic: clinic || undefined, batch: batch || undefined, notes: notes || undefined, documentUrl: docUrl || undefined } })).json(),
+    mutationFn: async () => {
+      // date is notNull in schema — send today if empty
+      const today = new Date().toISOString().split("T")[0];
+      const res = await api.vaccines.$post({
+        json: {
+          petId,
+          name,
+          date: date.trim() || today,
+          nextDate: next.trim() || undefined,
+          veterinarian: vet.trim() || undefined,
+          clinic: clinic.trim() || undefined,
+          batch: batch.trim() || undefined,
+          notes: notes.trim() || undefined,
+          documentUrl: docUrl || undefined,
+        },
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text.includes("<") ? "Erro no servidor. Tente novamente." : text);
+      }
+      return res.json();
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["vaccines"] });
+      qc.invalidateQueries({ queryKey: ["health"] });
       Alert.alert("✅ Vacina guardada!", "Vacina adicionada com sucesso.", [{ text: "OK", onPress: () => router.back() }]);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Erro", e.message ?? "Não foi possível guardar a vacina."),
   });
 
   const pickFile = async () => {

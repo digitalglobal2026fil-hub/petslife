@@ -226,7 +226,12 @@ export default function PetHealthScreen() {
   }, []);
 
   const addVaccine = useMutation({
-    mutationFn: async () => (await api.vaccines.$post({ json: { petId: id, name: vName, date: vDate || undefined, nextDate: vNext || undefined, veterinarian: vVet || undefined, clinic: vClinic || undefined, batch: vBatch || undefined, notes: vNotes || undefined, documentUrl: vDocUrl || undefined } })).json(),
+    mutationFn: async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const res = await api.vaccines.$post({ json: { petId: id, name: vName, date: vDate || today, nextDate: vNext || undefined, veterinarian: vVet || undefined, clinic: vClinic || undefined, batch: vBatch || undefined, notes: vNotes || undefined, documentUrl: vDocUrl || undefined } });
+      if (!res.ok) { const t = await res.text(); throw new Error(t.includes("<") ? "Erro no servidor" : t); }
+      return res.json();
+    },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["vaccines", id] }); setModal(null); reset(["v"]); },
     onError: (e: any) => Alert.alert("Erro", e.message),
   });

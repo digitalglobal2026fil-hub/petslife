@@ -15,7 +15,10 @@ export const vaccines = new Hono()
   .post("/", requireAuth, async (c) => {
     const user = c.get("user")!;
     const body = await c.req.json();
-    const [vaccine] = await db.insert(schema.vaccines).values({ ...body, userId: user.id }).returning();
+    // date is notNull — fallback to today
+    const today = new Date().toISOString().split("T")[0];
+    const date = body.date || today;
+    const [vaccine] = await db.insert(schema.vaccines).values({ ...body, date, userId: user.id }).returning();
     return c.json({ vaccine }, 201);
   })
   .put("/:id", requireAuth, async (c) => {
