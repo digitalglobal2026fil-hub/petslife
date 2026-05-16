@@ -1,0 +1,26 @@
+import { Route, Switch } from "wouter";
+import Index from "./pages/index";
+import SignIn from "./pages/sign-in";
+import SignUp from "./pages/sign-up";
+import Privacy from "./pages/privacy";
+import DeleteAccount from "./pages/delete-account";
+import { Provider } from "./components/provider";
+import { AgentFeedback, RunableBadge } from "@runablehq/website-runtime";
+
+function App() {
+  return (
+    <Provider>
+      <Switch>
+        <Route path="/" component={Index} />
+        <Route path="/sign-in" component={SignIn} />
+        <Route path="/sign-up" component={SignUp} />
+        <Route path="/privacy" component={Privacy} />
+        <Route path="/delete-account" component={DeleteAccount} />
+      </Switch>
+      {import.meta.env.DEV && <AgentFeedback />}
+      {<RunableBadge />}
+    </Provider>
+  );
+}
+
+export default App;

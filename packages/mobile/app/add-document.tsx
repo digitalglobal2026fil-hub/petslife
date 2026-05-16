@@ -1,0 +1,235 @@
+import {
+  View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
+  Alert, TextInput, Image
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { ChevronLeft, ChevronDown, Upload, Camera, FileText } from "lucide-react-native";
+import * as ImagePicker from "expo-image-picker";
+import { api } from "../lib/api";
+
+async function uploadFile(uri: string, filename: string, mimeType: string): Promise<string> {
+  const presignRes = await (api as any).upload.presign.$post({ json: { filename, contentType: mimeType } });
+  const { presignedUrl, publicUrl } = await presignRes.json();
+  const blob = await (await fetch(uri)).blob();
+  await fetch(presignedUrl, { method: "PUT", body: blob, headers: { "Content-Type": mimeType } });
+  return publicUrl;
+}
+
+function Field({ label, value, onChange, placeholder, multiline }: any) {
+  return (
+    <View style={{ marginBottom: 14 }}>
+      <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
+      <TextInput
+        value={value} onChangeText={onChange} placeholder={placeholder}
+        placeholderTextColor="#9CA3AF"
+        multiline={multiline} numberOfLines={multiline ? 3 : 1}
+        style={{
+          backgroundColor: "#FFF9F5", borderWidth: 1.5, borderColor: "#F0E8E0",
+          borderRadius: 14, padding: 12, fontSize: 14, color: "#1A1A2E",
+          minHeight: multiline ? 80 : undefined, textAlignVertical: multiline ? "top" : undefined
+        }}
+      />
+    </View>
+  );
+}
+
+const DOC_TYPES = [
+  { k: "passaporte", l: "🛂 Passaporte" },
+  { k: "licenca", l: "📜 Licença" },
+  { k: "exame", l: "🔬 Exame" },
+  { k: "seguro", l: "🛡️ Seguro" },
+  { k: "caderneta", l: "📋 Caderneta" },
+  { k: "receita", l: "💊 Receita" },
+  { k: "outro", l: "📄 Outro" },
+];
+
+export default function AddDocumentScreen() {
+  const router = useRouter();
+  const qc = useQueryClient();
+  const { mode } = useLocalSearchParams<{ mode?: string }>();
+  const isPrescription = mode === "prescription";
+
+  const [petId, setPetId] = useState<string | null>(null);
+  const [petPickerOpen, setPetPickerOpen] = useState(false);
+  const [docType, setDocType] = useState(isPrescription ? "receita" : "outro");
+  const [title, setTitle] = useState("");
+  const [notes, setNotes] = useState("");
+  const [url, setUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const { data: petsData, isLoading: loadPets } = useQuery({
+    queryKey: ["pets"],
+    queryFn: async () => (await api.pets.$get()).json(),
+  });
+  const pets = (petsData as any)?.pets ?? [];
+  const selectedPet = pets.find((p: any) => p.id === petId);
+
+  const save = useMutation({
+    mutationFn: async () =>
+      (await api.documents.$post({ json: { petId, type: docType, title, url: url ?? "", notes: notes || undefined } })).json(),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["documents"] });
+      Alert.alert("✅ Documento guardado!", "Documento adicionado com sucesso.", [{ text: "OK", onPress: () => router.back() }]);
+    },
+    onError: (e: any) => Alert.alert("Erro", e.message),
+  });
+
+  const pickFile = async () => {
+    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.All, quality: 0.9 });
+    if (!res.canceled && res.assets[0]) upload(res.assets[0]);
+  };
+  const pickCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") { Alert.alert("Permissão necessária", "Ative o acesso à câmara nas definições."); return; }
+    const res = await ImagePicker.launchCameraAsync({ quality: 0.9 });
+    if (!res.canceled && res.assets[0]) upload(res.assets[0]);
+  };
+  const upload = async (a: any) => {
+    setUploading(true);
+    try {
+      const u = await uploadFile(a.uri, a.fileName ?? `doc_${Date.now()}.jpg`, a.mimeType ?? "image/jpeg");
+      setUrl(u);
+    } catch (e: any) { Alert.alert("Erro no upload", e.message); }
+    finally { setUploading(false); }
+  };
+
+  const handleSave = () => {
+    if (!petId) { Alert.alert("Selecione um animal"); return; }
+    if (!title.trim()) { Alert.alert("Campo obrigatório", "Insira o título do documento."); return; }
+    if (!url) { Alert.alert("Ficheiro necessário", "Por favor adicione uma foto ou ficheiro do documento."); return; }
+    save.mutate();
+  };
+
+  const color = isPrescription ? "#8B5CF6" : "#06D6A0";
+  const bgColor = isPrescription ? "#F3EEFF" : "#E6FAF5";
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 20, paddingBottom: 16 }}>
+        <TouchableOpacity onPress={() => router.back()}
+          style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
+          <ChevronLeft size={20} color="#1A1A2E" />
+        </TouchableOpacity>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>
+            {isPrescription ? "Nova Receita 💊" : "Novo Documento 📄"}
+          </Text>
+          <Text style={{ color: "#6B7280", fontSize: 12 }}>
+            {isPrescription ? "Tire foto ou carregue a receita médica" : "Passaporte, exames, licenças..."}
+          </Text>
+        </View>
+        <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: bgColor, alignItems: "center", justifyContent: "center" }}>
+          <FileText size={22} color={color} />
+        </View>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
+
+        {/* Pet picker */}
+        <View style={{ marginBottom: 20 }}>
+          <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
+          {loadPets ? <ActivityIndicator color="#FF6B35" /> : (
+            <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
+              style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? color : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+              <Text style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
+                {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : "Selecionar animal..."}
+              </Text>
+              <ChevronDown size={18} color="#9CA3AF" />
+            </TouchableOpacity>
+          )}
+          {petPickerOpen && (
+            <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
+              {pets.length === 0 ? (
+                <TouchableOpacity onPress={() => router.replace("/add-pet")} style={{ padding: 14, alignItems: "center" }}>
+                  <Text style={{ color: "#FF6B35", fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
+                </TouchableOpacity>
+              ) : pets.map((p: any) => (
+                <TouchableOpacity key={p.id} onPress={() => { setPetId(p.id); setPetPickerOpen(false); }}
+                  style={{ padding: 14, flexDirection: "row", alignItems: "center", gap: 10, borderBottomWidth: 1, borderBottomColor: "#F9F5F0" }}>
+                  <Text style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
+                  <View>
+                    <Text style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
+                    <Text style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {/* Type selector (only for documents, not prescription) */}
+        {!isPrescription && (
+          <>
+            <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Tipo de documento</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 }}>
+              {DOC_TYPES.filter(t => t.k !== "receita").map((t) => (
+                <TouchableOpacity key={t.k} onPress={() => setDocType(t.k)}
+                  style={{ paddingHorizontal: 14, paddingVertical: 10, borderRadius: 20, backgroundColor: docType === t.k ? color : "#fff", borderWidth: 1.5, borderColor: docType === t.k ? color : "#F0E8E0" }}>
+                  <Text style={{ fontSize: 13, fontWeight: "700", color: docType === t.k ? "#fff" : "#6B7280" }}>{t.l}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </>
+        )}
+
+        <Field label={isPrescription ? "Medicamento / Título *" : "Título / Nome *"} value={title} onChange={setTitle}
+          placeholder={isPrescription ? "Ex: Antibiótico, Anti-inflamatório..." : "Ex: Passaporte Europeu, Licença Municipal..."} />
+        <Field label={isPrescription ? "Posologia / Notas" : "Notas"} value={notes} onChange={setNotes}
+          placeholder={isPrescription ? "Ex: 1 comp. 2x por dia durante 7 dias..." : "Observações..."} multiline />
+
+        {/* Upload zone */}
+        <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>
+          {isPrescription ? "Foto / Scan da receita *" : "Foto / Scan do documento *"}
+        </Text>
+
+        {url ? (
+          <View style={{ marginBottom: 14 }}>
+            <Image source={{ uri: url }} style={{ width: "100%", height: 220, borderRadius: 16, resizeMode: "cover" }} />
+            <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
+              <TouchableOpacity onPress={pickCamera} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: bgColor, borderRadius: 12, padding: 10 }}>
+                <Camera size={16} color={color} />
+                <Text style={{ color, fontWeight: "600", fontSize: 12 }}>Nova foto</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={pickFile} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: bgColor, borderRadius: 12, padding: 10 }}>
+                <Upload size={16} color={color} />
+                <Text style={{ color, fontWeight: "600", fontSize: 12 }}>Outro ficheiro</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : uploading ? (
+          <View style={{ height: 120, alignItems: "center", justifyContent: "center", backgroundColor: bgColor, borderRadius: 16, marginBottom: 14 }}>
+            <ActivityIndicator color={color} />
+            <Text style={{ color: "#6B7280", fontSize: 12, marginTop: 8 }}>A fazer upload...</Text>
+          </View>
+        ) : (
+          <View style={{ marginBottom: 14 }}>
+            {/* Camera — prominent */}
+            <TouchableOpacity onPress={pickCamera}
+              style={{ backgroundColor: color, borderRadius: 16, padding: 18, alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <Camera size={28} color="#fff" />
+              <Text style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>📸 Tirar foto agora</Text>
+              <Text style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>Use a câmara para fotografar o documento</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={pickFile}
+              style={{ borderWidth: 1.5, borderColor: color, borderRadius: 16, borderStyle: "dashed", padding: 14, alignItems: "center", gap: 6, backgroundColor: bgColor }}>
+              <Upload size={20} color={color} />
+              <Text style={{ color, fontWeight: "700", fontSize: 13 }}>Escolher da galeria / ficheiros</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <TouchableOpacity onPress={handleSave} disabled={save.isPending}
+          style={{ backgroundColor: color, borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: color, shadowOpacity: 0.3, shadowRadius: 12, elevation: 4 }}>
+          {save.isPending ? <ActivityIndicator color="#fff" /> : (
+            <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>
+              💾 {isPrescription ? "Guardar Receita" : "Guardar Documento"}
+            </Text>
+          )}
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
