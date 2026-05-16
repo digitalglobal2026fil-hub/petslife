@@ -162,6 +162,41 @@ export const listings = sqliteTable("listings", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// Business Profiles (clínicas, petshops, serviços)
+export const businesses = sqliteTable("businesses", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull(),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // clinica, petshop, tosquiador, hotel, treino, outro
+  description: text("description"),
+  logoUrl: text("logo_url"),
+  phone: text("phone"),
+  website: text("website"),
+  address: text("address"),
+  city: text("city"),
+  latitude: real("latitude"),
+  longitude: real("longitude"),
+  schedule: text("schedule"), // JSON: { seg: "9-18", ter: "9-18", ... }
+  services: text("services"), // JSON array: [{ name, price, duration }]
+  bookingUrl: text("booking_url"),
+  bookingPhone: text("booking_phone"),
+  averageRating: real("average_rating").default(0),
+  reviewsCount: integer("reviews_count").default(0),
+  status: text("status").default("active"), // active, inactive
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// Business Reviews
+export const businessReviews = sqliteTable("business_reviews", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  businessId: text("business_id").notNull(),
+  userId: text("user_id").notNull(),
+  rating: integer("rating").notNull(), // 1-5
+  comment: text("comment"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 // Subscriptions
 export const subscriptions = sqliteTable("subscriptions", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),

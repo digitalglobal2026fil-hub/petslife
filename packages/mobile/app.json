@@ -7,7 +7,8 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FF6B35"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "versionCode": 4
     },
     "extra": {
       "apiUrl": "https://qx7w0z1uul79my5hxm5d2-preview-4200.runable.site/",

@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Home, Heart, ShoppingBag, Users, User, Video } from "lucide-react-native";
+import { Home, Heart, ShoppingBag, Users, User, Video, Building2 } from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -23,8 +23,9 @@ export default function TabLayout() {
       <Tabs.Screen name="health"    options={{ title: "Saúde",     tabBarIcon: ({ color, size }) => <Heart     size={size} color={color} /> }} />
       <Tabs.Screen name="consult"   options={{ title: "Consulta",  tabBarIcon: ({ color, size }) => <Video     size={size} color={color} /> }} />
       <Tabs.Screen name="social"    options={{ title: "Comunidade",tabBarIcon: ({ color, size }) => <Users     size={size} color={color} /> }} />
-      <Tabs.Screen name="marketplace" options={{ title: "Loja",   tabBarIcon: ({ color, size }) => <ShoppingBag size={size} color={color} /> }} />
-      <Tabs.Screen name="profile"   options={{ title: "Perfil",    tabBarIcon: ({ color, size }) => <User      size={size} color={color} /> }} />
+      <Tabs.Screen name="marketplace"  options={{ title: "Loja",     tabBarIcon: ({ color, size }) => <ShoppingBag size={size} color={color} /> }} />
+      <Tabs.Screen name="businesses"   options={{ title: "Negócios", tabBarIcon: ({ color, size }) => <Building2  size={size} color={color} /> }} />
+      <Tabs.Screen name="profile"      options={{ title: "Perfil",   tabBarIcon: ({ color, size }) => <User       size={size} color={color} /> }} />
     </Tabs>
   );
 }
