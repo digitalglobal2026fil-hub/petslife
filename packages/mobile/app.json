@@ -8,7 +8,7 @@
         "backgroundColor": "#FF6B35"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 4
+      "versionCode": 5
     },
     "extra": {
       "apiUrl": "https://qx7w0z1uul79my5hxm5d2-preview-4200.runable.site/",
@@ -27,7 +27,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -42,8 +42,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "A PetsLife precisa de acesso às suas fotos para carregar documentos do seu animal.",
-          "cameraPermission": "A PetsLife precisa de acesso à câmara para fotografar documentos."
+          "photosPermission": "A PetsLife precisa de acesso \u00e0s suas fotos para carregar documentos do seu animal.",
+          "cameraPermission": "A PetsLife precisa de acesso \u00e0 c\u00e2mara para fotografar documentos."
         }
       ]
     ]
