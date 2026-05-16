@@ -17,7 +17,10 @@ export const weightLogs = new Hono()
   .post("/", requireAuth, async (c) => {
     const user = c.get("user")!;
     const body = await c.req.json();
-    const [item] = await db.insert(schema.weightLogs).values({ ...body, userId: user.id }).returning();
+    const today = new Date().toISOString().split("T")[0];
+    const date = body.date || today;
+    const weight = typeof body.weight === "number" ? body.weight : parseFloat(body.weight ?? "0") || 0;
+    const [item] = await db.insert(schema.weightLogs).values({ ...body, date, weight, userId: user.id }).returning();
     return c.json({ weightLog: item }, 201);
   })
   .delete("/:id", requireAuth, async (c) => {

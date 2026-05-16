@@ -73,7 +73,7 @@ export default function AddListingScreen() {
       return res.json();
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["listings"] });
+      qc.invalidateQueries({ queryKey: ["marketplace"] });
       Alert.alert("Sucesso!", "O seu anúncio foi publicado.", [{ text: "OK", onPress: () => router.back() }]);
     },
     onError: (e: any) => Alert.alert("Erro", e.message ?? "Não foi possível publicar o anúncio."),

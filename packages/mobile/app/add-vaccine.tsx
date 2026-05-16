@@ -83,8 +83,9 @@ export default function AddVaccineScreen() {
       return res.json();
     },
     onSuccess: () => {
+      // invalidate all vaccines queries (pet health screen uses ["vaccines", petId])
       qc.invalidateQueries({ queryKey: ["vaccines"] });
-      qc.invalidateQueries({ queryKey: ["health"] });
+      qc.invalidateQueries({ queryKey: ["health-logs"] });
       Alert.alert("✅ Vacina guardada!", "Vacina adicionada com sucesso.", [{ text: "OK", onPress: () => router.back() }]);
     },
     onError: (e: any) => Alert.alert("Erro", e.message ?? "Não foi possível guardar a vacina."),

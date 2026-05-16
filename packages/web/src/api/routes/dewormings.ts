@@ -15,7 +15,9 @@ export const dewormings = new Hono()
   .post("/", requireAuth, async (c) => {
     const user = c.get("user")!;
     const body = await c.req.json();
-    const [item] = await db.insert(schema.dewormings).values({ ...body, userId: user.id }).returning();
+    const today = new Date().toISOString().split("T")[0];
+    const date = body.date || today;
+    const [item] = await db.insert(schema.dewormings).values({ ...body, date, userId: user.id }).returning();
     return c.json({ deworming: item }, 201);
   })
   .delete("/:id", requireAuth, async (c) => {
