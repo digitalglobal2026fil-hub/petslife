@@ -5,7 +5,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Gift, ArrowLeft, CheckCircle } from "lucide-react-native";
-import { api } from "../src/api";
+import { api } from "../lib/api";
 
 export default function PromoCodeScreen() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function PromoCodeScreen() {
     }
     setLoading(true);
     try {
-      const res = await (api as any).post("/promo-codes/redeem", { code: code.trim() });
+      const res = await (api as any)["promo-codes"].redeem.$post({ json: { code: code.trim() } });
       if (res.error) {
         Alert.alert("Erro", res.error);
       } else {

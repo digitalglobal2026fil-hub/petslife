@@ -2,13 +2,13 @@ import { Hono } from "hono";
 import { db } from "../database";
 import * as schema from "../database/schema";
 import { eq } from "drizzle-orm";
-import { getUser } from "../middleware/auth";
+import { requireAuth } from "../middleware/auth";
 
 export const promoCodes = new Hono()
 
   // Resgatar código (app mobile)
-  .post("/redeem", async (c) => {
-    const user = getUser(c);
+  .post("/redeem", requireAuth, async (c) => {
+    const user = c.get("user")!;
     const { code } = await c.req.json();
 
     if (!code) return c.json({ error: "Código inválido" }, 400);
@@ -47,10 +47,10 @@ export const promoCodes = new Hono()
   })
 
   // Listar todos os códigos (admin - só tu)
-  .get("/admin", async (c) => {
-    const user = getUser(c);
+  .get("/admin", requireAuth, async (c) => {
+    const user = c.get("user")!;
     // Só o teu email tem acesso
-    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map(s => s.trim());
+    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map((s: string) => s.trim());
     if (!ADMIN_IDS.includes(user.id) && !ADMIN_IDS.includes(user.email)) {
       return c.json({ error: "Sem permissão" }, 403);
     }
@@ -62,9 +62,9 @@ export const promoCodes = new Hono()
   })
 
   // Criar código (admin)
-  .post("/admin", async (c) => {
-    const user = getUser(c);
-    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map(s => s.trim());
+  .post("/admin", requireAuth, async (c) => {
+    const user = c.get("user")!;
+    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map((s: string) => s.trim());
     if (!ADMIN_IDS.includes(user.id) && !ADMIN_IDS.includes(user.email)) {
       return c.json({ error: "Sem permissão" }, 403);
     }
@@ -88,9 +88,9 @@ export const promoCodes = new Hono()
   })
 
   // Apagar código (admin)
-  .delete("/admin/:id", async (c) => {
-    const user = getUser(c);
-    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map(s => s.trim());
+  .delete("/admin/:id", requireAuth, async (c) => {
+    const user = c.get("user")!;
+    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map((s: string) => s.trim());
     if (!ADMIN_IDS.includes(user.id) && !ADMIN_IDS.includes(user.email)) {
       return c.json({ error: "Sem permissão" }, 403);
     }

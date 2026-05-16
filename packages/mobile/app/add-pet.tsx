@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Platform } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Platform, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Camera, Dog, Cat, Bird, Rabbit } from "lucide-react-native";
+import * as ImagePicker from "expo-image-picker";
 import { api } from "../lib/api";
 
 const SPECIES = [
@@ -30,11 +31,37 @@ export default function AddPetScreen() {
   const [birthDate, setBirthDate] = useState("");
   const [microchip, setMicrochip] = useState("");
   const [notes, setNotes] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+  async function pickPhoto() {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) return Alert.alert("Permissão necessária", "Permite o acesso à galeria nas definições.");
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.8 });
+    if (result.canceled) return;
+    const asset = result.assets[0];
+    setPhoto(asset.uri);
+    setUploadingPhoto(true);
+    try {
+      const filename = asset.uri.split("/").pop() ?? "photo.jpg";
+      const presignRes = await (api as any).upload.presign.$post({ json: { filename, contentType: asset.mimeType ?? "image/jpeg" } });
+      const { presignedUrl, publicUrl } = await presignRes.json();
+      const blob = await (await fetch(asset.uri)).blob();
+      await fetch(presignedUrl, { method: "PUT", body: blob, headers: { "Content-Type": asset.mimeType ?? "image/jpeg" } });
+      setPhotoUrl(publicUrl);
+    } catch {
+      Alert.alert("Erro", "Não foi possível fazer upload da foto.");
+      setPhoto(null);
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
 
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await api.pets.$post({
-        json: { name, species, breed: breed || undefined, gender, birthDate: birthDate || undefined, microchip: microchip || undefined, notes: notes || undefined },
+        json: { name, species, breed: breed || undefined, gender, birthDate: birthDate || undefined, microchip: microchip || undefined, notes: notes || undefined, photoUrl: photoUrl || undefined },
       });
       return res.json();
     },
@@ -77,10 +104,23 @@ export default function AddPetScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 4 }}>
-        {/* Photo placeholder */}
-        <TouchableOpacity style={{ alignSelf: "center", width: 100, height: 100, borderRadius: 50, backgroundColor: "#fff", borderWidth: 2, borderColor: "#F0E8E0", borderStyle: "dashed", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
-          <Camera size={28} color="#FF6B35" />
-          <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 11, fontWeight: "600", marginTop: 4 }}>Adicionar foto</Text>
+        {/* Photo */}
+        <TouchableOpacity onPress={pickPhoto} style={{ alignSelf: "center", width: 100, height: 100, borderRadius: 50, backgroundColor: "#fff", borderWidth: 2, borderColor: "#F0E8E0", borderStyle: photo ? "solid" : "dashed", alignItems: "center", justifyContent: "center", marginBottom: 24, overflow: "hidden" }}>
+          {photo ? (
+            <>
+              <Image source={{ uri: photo }} style={{ width: 100, height: 100, borderRadius: 50 }} />
+              {uploadingPhoto && (
+                <View style={{ position: "absolute", backgroundColor: "rgba(0,0,0,0.4)", width: 100, height: 100, borderRadius: 50, alignItems: "center", justifyContent: "center" }}>
+                  <ActivityIndicator color="#fff" />
+                </View>
+              )}
+            </>
+          ) : (
+            <>
+              <Camera size={28} color="#FF6B35" />
+              <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 11, fontWeight: "600", marginTop: 4 }}>Adicionar foto</Text>
+            </>
+          )}
         </TouchableOpacity>
 
         <Input label="Nome *" value={name} onChangeText={setName} placeholder="Ex: Bola, Luna..." />
