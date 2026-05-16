@@ -2,7 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Ale
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, QrCode, Syringe, Calendar, FileText, MapPin, Trash2, PawPrint } from "lucide-react-native";
+import { ChevronLeft, QrCode, Syringe, Calendar, FileText, MapPin, Trash2, PawPrint, Camera } from "lucide-react-native";
 import { api } from "../../../lib/api";
 
 export default function PetDetailScreen() {
@@ -77,8 +77,8 @@ export default function PetDetailScreen() {
       onPress: () => router.push(`/pet/${id}/health`),
     },
     {
-      icon: Calendar, label: "Consultas", color: "#FF6B35", bg: "#FFF0EB",
-      onPress: () => router.push(`/pet/${id}/health`),
+      icon: Camera, label: "Álbum", color: "#FF6B35", bg: "#FFF0EB",
+      onPress: () => router.push(`/pet/${id}/photos` as any),
     },
     {
       icon: MapPin, label: "Vets", color: "#06D6A0", bg: "#E6FAF5",

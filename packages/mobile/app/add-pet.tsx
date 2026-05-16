@@ -20,6 +20,21 @@ const GENDERS = [
   { key: "female", label: "Fêmea" },
 ];
 
+const Input = ({ label, value, onChangeText, placeholder, keyboardType, maxLength }: any) => (
+  <View style={{ marginBottom: 14 }}>
+    <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{label}</Text>
+    <TextInput
+      value={value}
+      onChangeText={onChangeText}
+      placeholder={placeholder}
+      keyboardType={keyboardType ?? "default"}
+      maxLength={maxLength}
+      placeholderTextColor="#9CA3AF"
+      style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 16, padding: 14, fontSize: 15, color: "#1A1A2E" }}
+    />
+  </View>
+);
+
 export default function AddPetScreen() {
   const router = useRouter();
   const qc = useQueryClient();
@@ -76,21 +91,6 @@ export default function AddPetScreen() {
     if (!name.trim()) return Alert.alert("Erro", "O nome é obrigatório.");
     mutation.mutate();
   }
-
-  const Input = ({ label, value, onChangeText, placeholder, keyboardType, maxLength }: any) => (
-    <View style={{ marginBottom: 14 }}>
-      <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{label}</Text>
-      <TextInput
-        value={value}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-        keyboardType={keyboardType ?? "default"}
-        maxLength={maxLength}
-        placeholderTextColor="#9CA3AF"
-        style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 16, padding: 14, fontSize: 15, color: "#1A1A2E" }}
-      />
-    </View>
-  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>

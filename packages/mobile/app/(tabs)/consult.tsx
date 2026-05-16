@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, TextInput,
-  Alert, Linking, ActivityIndicator, Platform
+  Alert, Linking, ActivityIndicator, Platform, KeyboardAvoidingView
 } from "react-native";
-import { Video, Calendar, Plus, X } from "lucide-react-native";
+import { Video, Calendar, Plus, X, Copy } from "lucide-react-native";
 import Constants from "expo-constants";
+import { Share } from "react-native";
 
-const API_URL =
-  (Constants.expoConfig?.extra?.apiUrl ?? process.env.EXPO_PUBLIC_API_URL) as string ?? "http://localhost:5173";
+const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -84,6 +84,7 @@ export default function ConsultScreen() {
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [bookedRoomUrl, setBookedRoomUrl] = useState<string | null>(null);
 
   // Form state
   const [vetName, setVetName] = useState("");
@@ -109,6 +110,16 @@ export default function ConsultScreen() {
       Alert.alert("Atenção", "Por favor preencha a data e hora.");
       return;
     }
+    // Validar formato data AAAA-MM-DD
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      Alert.alert("Atenção", "Data inválida. Use o formato AAAA-MM-DD (ex: 2025-06-15).");
+      return;
+    }
+    // Validar formato hora HH:MM
+    if (!/^\d{2}:\d{2}$/.test(time)) {
+      Alert.alert("Atenção", "Hora inválida. Use o formato HH:MM (ex: 14:30).");
+      return;
+    }
     setSaving(true);
     const scheduledAt = new Date(`${date}T${time}`).toISOString();
     const result = await bookConsultation({ vetName, vetEmail, specialty, scheduledAt, duration, notes });
@@ -117,7 +128,12 @@ export default function ConsultScreen() {
       setShowModal(false);
       resetForm();
       load();
-      Alert.alert("Consulta agendada!", "Receberá o link de videochamada em breve.");
+      // Mostrar o link de videochamada imediatamente
+      if (result.roomUrl) {
+        setBookedRoomUrl(result.roomUrl);
+      } else {
+        Alert.alert("Consulta agendada!", "Consulta marcada com sucesso.");
+      }
     } else {
       Alert.alert("Erro", "Não foi possível agendar. Tente novamente.");
     }
@@ -180,6 +196,36 @@ export default function ConsultScreen() {
           <ActivityIndicator color="#FF6B35" size="large" style={{ marginTop: 40 }} />
         ) : (
           <>
+            {/* Link de videochamada recém agendado */}
+            {bookedRoomUrl && (
+              <View style={{ backgroundColor: "#D1FAE5", borderRadius: 16, padding: 16, marginHorizontal: 20, marginBottom: 16, borderWidth: 1, borderColor: "#6EE7B7" }}>
+                <Text suppressHighlighting style={{ fontWeight: "800", color: "#047857", fontSize: 15, marginBottom: 6 }}>✅ Consulta agendada!</Text>
+                <Text suppressHighlighting style={{ color: "#065F46", fontSize: 13, marginBottom: 10 }}>
+                  Partilhe este link com o veterinário para entrar na videochamada:
+                </Text>
+                <View style={{ backgroundColor: "#fff", borderRadius: 10, padding: 10, flexDirection: "row", alignItems: "center", gap: 8 }}>
+                  <Text suppressHighlighting style={{ flex: 1, color: "#1D4ED8", fontSize: 12, fontFamily: "monospace" }} numberOfLines={1}>
+                    {bookedRoomUrl}
+                  </Text>
+                  <TouchableOpacity onPress={() => Share.share({ message: bookedRoomUrl, url: bookedRoomUrl })}>
+                    <Copy size={18} color="#1D4ED8" />
+                  </TouchableOpacity>
+                </View>
+                <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
+                  <TouchableOpacity
+                    style={{ flex: 1, backgroundColor: "#047857", borderRadius: 10, padding: 10, alignItems: "center" }}
+                    onPress={() => handleJoin(bookedRoomUrl)}>
+                    <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>Entrar agora</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: "center", borderWidth: 1, borderColor: "#6EE7B7" }}
+                    onPress={() => setBookedRoomUrl(null)}>
+                    <Text suppressHighlighting style={{ color: "#047857", fontWeight: "600", fontSize: 13 }}>Fechar</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+
             {/* Upcoming */}
             <Text suppressHighlighting style={styles.sectionTitle}>Próximas consultas</Text>
             {upcoming.length === 0 ? (
@@ -209,6 +255,15 @@ export default function ConsultScreen() {
                     <Text suppressHighlighting style={styles.cardMetaText}>{formatDate(c.scheduledAt)}</Text>
                   </View>
                   {c.notes ? <Text suppressHighlighting style={styles.cardNotes}>{c.notes}</Text> : null}
+                  {/* Mostrar link de sala */}
+                  {c.roomUrl && (
+                    <View style={{ backgroundColor: "#EFF6FF", borderRadius: 10, padding: 10, marginBottom: 8, flexDirection: "row", alignItems: "center", gap: 8 }}>
+                      <Text suppressHighlighting style={{ flex: 1, color: "#1D4ED8", fontSize: 11, fontFamily: "monospace" }} numberOfLines={1}>{c.roomUrl}</Text>
+                      <TouchableOpacity onPress={() => Share.share({ message: c.roomUrl!, url: c.roomUrl! })}>
+                        <Copy size={16} color="#1D4ED8" />
+                      </TouchableOpacity>
+                    </View>
+                  )}
                   <View style={styles.cardActions}>
                     {c.roomUrl && (
                       <TouchableOpacity style={styles.joinBtn} onPress={() => handleJoin(c.roomUrl!)}>
@@ -255,74 +310,105 @@ export default function ConsultScreen() {
         )}
       </ScrollView>
 
-      {/* Booking Modal */}
+      {/* Booking Modal — com KeyboardAvoidingView para o teclado não tapar */}
       <Modal visible={showModal} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setShowModal(false)}>
-        <View style={styles.modal}>
-          <View style={styles.modalHeader}>
-            <Text suppressHighlighting style={styles.modalTitle}>Agendar consulta</Text>
-            <TouchableOpacity onPress={() => { setShowModal(false); resetForm(); }}>
-              <X size={24} color="#6B7280" />
-            </TouchableOpacity>
-          </View>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Text suppressHighlighting style={styles.fieldLabel}>Nome do veterinário (opcional)</Text>
-            <TextInput style={styles.input} placeholder="Ex: Dr. António Silva" value={vetName} onChangeText={setVetName} />
-
-            <Text suppressHighlighting style={styles.fieldLabel}>Email do vet (para enviar o link)</Text>
-            <TextInput style={styles.input} placeholder="vet@clinica.pt" value={vetEmail} onChangeText={setVetEmail} keyboardType="email-address" autoCapitalize="none" />
-
-            <Text suppressHighlighting style={styles.fieldLabel}>Especialidade</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
-              {SPECIALTIES.map(s => (
-                <TouchableOpacity
-                  key={s}
-                  style={[styles.chip, specialty === s && styles.chipActive]}
-                  onPress={() => setSpecialty(s)}
-                >
-                  <Text suppressHighlighting style={[styles.chipText, specialty === s && styles.chipTextActive]}>{s}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-
-            <Text suppressHighlighting style={styles.fieldLabel}>Data (AAAA-MM-DD)</Text>
-            <TextInput style={styles.input} placeholder="2025-06-15" value={date} onChangeText={setDate} keyboardType="numeric" />
-
-            <Text suppressHighlighting style={styles.fieldLabel}>Hora (HH:MM)</Text>
-            <TextInput style={styles.input} placeholder="14:30" value={time} onChangeText={setTime} keyboardType="numeric" />
-
-            <Text suppressHighlighting style={styles.fieldLabel}>Duração</Text>
-            <View style={styles.durationRow}>
-              {DURATIONS.map(d => (
-                <TouchableOpacity
-                  key={d.value}
-                  style={[styles.durationBtn, duration === d.value && styles.durationBtnActive]}
-                  onPress={() => setDuration(d.value)}
-                >
-                  <Text suppressHighlighting style={[styles.durationText, duration === d.value && styles.durationTextActive]}>{d.label}</Text>
-                </TouchableOpacity>
-              ))}
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+        >
+          <View style={styles.modal}>
+            <View style={styles.modalHeader}>
+              <Text suppressHighlighting style={styles.modalTitle}>Agendar consulta</Text>
+              <TouchableOpacity onPress={() => { setShowModal(false); resetForm(); }}>
+                <X size={24} color="#6B7280" />
+              </TouchableOpacity>
             </View>
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+              <Text suppressHighlighting style={styles.fieldLabel}>Nome do veterinário (opcional)</Text>
+              <TextInput style={styles.input} placeholder="Ex: Dr. António Silva" value={vetName} onChangeText={setVetName} />
 
-            <Text suppressHighlighting style={styles.fieldLabel}>Motivo / Notas</Text>
-            <TextInput
-              style={[styles.input, { height: 80, textAlignVertical: "top" }]}
-              placeholder="Descreva o motivo da consulta..."
-              value={notes}
-              onChangeText={setNotes}
-              multiline
-            />
+              <Text suppressHighlighting style={styles.fieldLabel}>Email do vet (para partilhar o link)</Text>
+              <TextInput style={styles.input} placeholder="vet@clinica.pt" value={vetEmail} onChangeText={setVetEmail} keyboardType="email-address" autoCapitalize="none" />
 
-            <View style={styles.infoBox}>
-              <Text suppressHighlighting style={styles.infoBoxText}>
-                💡 Após agendar, receberá um link de videochamada gratuito. Pode entrar directamente aqui na app ou partilhá-lo com o veterinário.
+              <Text suppressHighlighting style={styles.fieldLabel}>Especialidade</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
+                {SPECIALTIES.map(s => (
+                  <TouchableOpacity
+                    key={s}
+                    style={[styles.chip, specialty === s && styles.chipActive]}
+                    onPress={() => setSpecialty(s)}
+                  >
+                    <Text suppressHighlighting style={[styles.chipText, specialty === s && styles.chipTextActive]}>{s}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              {/* Data e Hora — keyboardType="default" para permitir traços e dois pontos */}
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text suppressHighlighting style={styles.fieldLabel}>Data</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="2025-06-15"
+                    value={date}
+                    onChangeText={setDate}
+                    keyboardType="default"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text suppressHighlighting style={styles.fieldLabel}>Hora</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="14:30"
+                    value={time}
+                    onChangeText={setTime}
+                    keyboardType="default"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
+              </View>
+              <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 11, marginTop: -10, marginBottom: 14 }}>
+                Formato: AAAA-MM-DD e HH:MM
               </Text>
-            </View>
 
-            <TouchableOpacity style={[styles.saveBtn, saving && { opacity: 0.6 }]} onPress={handleBook} disabled={saving}>
-              {saving ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={styles.saveBtnText}>Agendar consulta</Text>}
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
+              <Text suppressHighlighting style={styles.fieldLabel}>Duração</Text>
+              <View style={styles.durationRow}>
+                {DURATIONS.map(d => (
+                  <TouchableOpacity
+                    key={d.value}
+                    style={[styles.durationBtn, duration === d.value && styles.durationBtnActive]}
+                    onPress={() => setDuration(d.value)}
+                  >
+                    <Text suppressHighlighting style={[styles.durationText, duration === d.value && styles.durationTextActive]}>{d.label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <Text suppressHighlighting style={styles.fieldLabel}>Motivo / Notas</Text>
+              <TextInput
+                style={[styles.input, { height: 80, textAlignVertical: "top" }]}
+                placeholder="Descreva o motivo da consulta..."
+                value={notes}
+                onChangeText={setNotes}
+                multiline
+              />
+
+              <View style={styles.infoBox}>
+                <Text suppressHighlighting style={styles.infoBoxText}>
+                  💡 Após agendar, receberá um link de videochamada gratuito visível aqui na app. Pode partilhá-lo com o veterinário.
+                </Text>
+              </View>
+
+              <TouchableOpacity style={[styles.saveBtn, saving && { opacity: 0.6 }]} onPress={handleBook} disabled={saving}>
+                {saving ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={styles.saveBtnText}>Agendar consulta</Text>}
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );
@@ -383,7 +469,6 @@ const styles = StyleSheet.create({
   cancelBtnText: { color: "#EF4444", fontWeight: "600", fontSize: 13 },
   badge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   badgeText: { fontSize: 11, fontWeight: "700" },
-  // Modal
   modal: { flex: 1, backgroundColor: "#FFF9F5", padding: 20 },
   modalHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 24, paddingTop: 8 },
   modalTitle: { fontSize: 22, fontWeight: "800", color: "#1A1A2E" },

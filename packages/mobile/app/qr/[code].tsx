@@ -1,15 +1,18 @@
-import { View, Text, TouchableOpacity, Share, Alert, Linking } from "react-native";
+import { View, Text, TouchableOpacity, Share, Alert, Linking, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ChevronLeft, Share2, Globe } from "lucide-react-native";
+import Constants from "expo-constants";
 
-// Simple QR code display using a QR API service
+const API_BASE = (Constants.expoConfig?.extra?.apiUrl as string ?? "http://localhost:4200").replace(/\/$/, "");
+
 export default function QRCodeScreen() {
   const router = useRouter();
   const { code } = useLocalSearchParams<{ code: string }>();
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(code ?? "")}`;
-  const petProfileUrl = `https://petslife.app/pet/${code}`;
+  // URL pública do perfil do animal — usa o nosso servidor
+  const petProfileUrl = `${API_BASE}/pet/${code}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(petProfileUrl)}`;
 
   async function handleShare() {
     try {
@@ -17,7 +20,7 @@ export default function QRCodeScreen() {
         message: `Encontrei este animal! Aceda ao perfil em: ${petProfileUrl}`,
         url: petProfileUrl,
       });
-    } catch (e) {
+    } catch {
       Alert.alert("Erro ao partilhar");
     }
   }
@@ -34,10 +37,12 @@ export default function QRCodeScreen() {
 
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 24 }}>
         <View style={{ backgroundColor: "#fff", borderRadius: 28, padding: 28, borderWidth: 2, borderColor: "#F0E8E0", shadowColor: "#000", shadowOpacity: 0.06, shadowRadius: 20, elevation: 4, alignItems: "center" }}>
-          {/* QR code via free API */}
           <View style={{ width: 220, height: 220, backgroundColor: "#F9F5F0", borderRadius: 16, alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-            {/* Using Image component to load QR from API */}
-            <QRImage url={qrUrl} />
+            <Image
+              source={{ uri: qrUrl }}
+              style={{ width: 200, height: 200 }}
+              resizeMode="contain"
+            />
           </View>
 
           <View style={{ width: 220, height: 2, backgroundColor: "#F0E8E0", marginVertical: 20 }} />
@@ -71,18 +76,5 @@ export default function QRCodeScreen() {
         </View>
       </View>
     </SafeAreaView>
-  );
-}
-
-// Sub-component to load QR image
-import { Image } from "react-native";
-
-function QRImage({ url }: { url: string }) {
-  return (
-    <Image
-      source={{ uri: url }}
-      style={{ width: 200, height: 200 }}
-      resizeMode="contain"
-    />
   );
 }

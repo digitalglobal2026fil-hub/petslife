@@ -1,23 +1,17 @@
-# PetsLife Task
+# PetsLife Bug Fix Session
 
-## Status: COMPLETO ✅
+## Bugs a corrigir agora
 
-## O que foi feito
-- [x] Web landing page (features, pricing, tips, marketplace preview)
-- [x] Web sign-in / sign-up
-- [x] API completa: pets, vaccines, appointments, health-logs, photos, documents, posts, marketplace, subscriptions, articles, consultations
-- [x] Tabela `consultations` no schema + DB push feito
-- [x] Mobile auth screens (sign-in, sign-up)
-- [x] Mobile tabs: Home, Saúde, Consulta (nova!), Comunidade, Loja, Perfil
-- [x] Mobile: consult.tsx — agendar + entrar na videochamada (Whereby link)
-- [x] Mobile: add-pet, pet/[id], pet/[id]/health, qr/[code], find-vets, add-listing
-- [x] Pricing simplificado: ambos os planos têm tudo igual, só preço diferente
-- [x] CTAs atualizados: "Experimente a app grátis 3 dias" / "Experimente grátis 3 dias"
-- [x] Feature "Consulta Online" adicionada nas features do site
-- [x] TypeCheck passes (mobile + web)
-- [x] Dev server a correr em :5173
+1. ✅ add-pet.tsx - teclado fecha (Input dentro do componente) - CORRIGIDO
+2. 🔧 QR code em ucraniano - petslife.app aponta para site ucraniano; usar URL do servidor próprio
+3. 🔧 Videochamada não envia link - roomUrl gerado mas não enviado; mostrar link no ecrã imediatamente após agendar
+4. 🔧 Teclado tapa a escrita - falta KeyboardAvoidingView nos modais/forms (consult.tsx modal)
+5. 🔧 keyboardType="numeric" em datas/horas - bloqueia traços e dois pontos; mudar para "default"
+6. 🔧 Upload não mostra o que foi colocado (add-document.tsx) - já mostra se for imagem; OK
+7. 🔧 Álbum de fotos - criar ecrã de álbum por animal (rota /photos existe no backend)
+8. 🔧 Anúncio dá JSON Parse error - price é notNull() mas pode chegar undefined; corrigir no backend E no frontend
+9. 🔧 add-listing.tsx - Field component dentro do render = mesmo bug do teclado!
 
-## Decisões
-- Videochamada: gera link Whereby gratuito (sem SDK), abre no browser via Linking.openURL
-- Pricing: nenhuma feature exclusiva do anual — só preço diferente (€3.99/mês vs €19.99/ano)
-- Trial: 3 dias em ambos os planos
+## Estado
+- API URL: https://qx7w0z1uul79my5hxm5d2-preview-4200.runable.site/
+- QR code da app aponta para petslife.app que está em ucraniano (não é o nosso site)

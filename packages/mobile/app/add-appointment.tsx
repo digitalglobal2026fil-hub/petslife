@@ -1,6 +1,6 @@
 import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
-  Alert, TextInput
+  Alert, TextInput, KeyboardAvoidingView, Platform
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -76,6 +76,7 @@ export default function AddAppointmentScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 20, paddingBottom: 16 }}>
         <TouchableOpacity onPress={() => router.back()}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
@@ -157,6 +158,7 @@ export default function AddAppointmentScreen() {
           )}
         </TouchableOpacity>
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
