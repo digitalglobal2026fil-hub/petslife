@@ -2,7 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { User, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle } from "lucide-react-native";
+import { User, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift } from "lucide-react-native";
 import { authClient, clearToken } from "../../lib/auth";
 import { api } from "../../lib/api";
 
@@ -32,6 +32,7 @@ export default function ProfileScreen() {
 
   const menuItems = [
     { icon: CreditCard, label: "Subscrição", sublabel: isTrial ? "Trial ativo" : isActive ? "Premium ativo" : "Inativo", route: "/subscription" as const, color: "#FF6B35" },
+    { icon: Gift, label: "Código Promocional", sublabel: "Tens um código especial?", route: "/promo-code" as const, color: "#10B981" },
     { icon: Bell, label: "Notificações", sublabel: "Configurar lembretes", route: null, color: "#4ECDC4" },
     { icon: MapPin, label: "Vets e Lojas", sublabel: "Encontrar perto de mim", route: "/find-vets" as const, color: "#06D6A0" },
     { icon: Shield, label: "Privacidade", sublabel: "Dados e segurança", route: null, color: "#8B5CF6" },

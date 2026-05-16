@@ -17,6 +17,7 @@ import { upload } from "./routes/upload";
 import { dewormings } from "./routes/dewormings";
 import { weightLogs } from "./routes/weight-logs";
 import { businesses } from "./routes/businesses";
+import { promoCodes } from "./routes/promo-codes";
 
 const app = new Hono()
   .use(cors({
@@ -42,7 +43,8 @@ const app = new Hono()
   .route("/upload", upload)
   .route("/dewormings", dewormings)
   .route("/weight-logs", weightLogs)
-  .route("/businesses", businesses);
+  .route("/businesses", businesses)
+  .route("/promo-codes", promoCodes);
 
 export type AppType = typeof app;
 export default app;

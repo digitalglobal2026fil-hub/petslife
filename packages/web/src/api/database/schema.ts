@@ -255,6 +255,16 @@ export const weightLogs = sqliteTable("weight_logs", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// Promo Codes (acesso vitalício gratuito)
+export const promoCodes = sqliteTable("promo_codes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  code: text("code").notNull().unique(),
+  description: text("description"), // ex: "Influencer João", "Familiar Maria"
+  usedByUserId: text("used_by_user_id"),
+  usedAt: integer("used_at", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 // Blog/Tips Articles
 export const articles = sqliteTable("articles", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),

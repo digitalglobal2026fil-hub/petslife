@@ -1,4 +1,5 @@
 import { Route, Switch } from "wouter";
+import AdminPromo from "./pages/admin-promo";
 import Index from "./pages/index";
 import SignIn from "./pages/sign-in";
 import SignUp from "./pages/sign-up";
@@ -16,6 +17,7 @@ function App() {
         <Route path="/sign-up" component={SignUp} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/delete-account" component={DeleteAccount} />
+        <Route path="/admin/promo" component={AdminPromo} />
       </Switch>
       {import.meta.env.DEV && <AgentFeedback />}
       {<RunableBadge />}
