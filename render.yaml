@@ -1,9 +1,7 @@
 services:
   - type: web
     name: petslife
-    runtime: node
-    buildCommand: curl -fsSL https://bun.sh/install | bash && export PATH="$HOME/.bun/bin:$PATH" && cd packages/web && bun install && bun run build
-    startCommand: export PATH="$HOME/.bun/bin:$PATH" && cd packages/web && bun run start
+    runtime: docker
     envVars:
       - key: NODE_ENV
         value: production
