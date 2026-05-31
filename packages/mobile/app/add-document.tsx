@@ -19,7 +19,7 @@ async function uploadFile(uri: string, filename: string, mimeType: string): Prom
 function Field({ label, value, onChange, placeholder, multiline }: any) {
   return (
     <View style={{ marginBottom: 14 }}>
-      <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
+      <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
       <TextInput
         value={value} onChangeText={onChange} placeholder={placeholder}
         placeholderTextColor="#9CA3AF"
@@ -113,10 +113,10 @@ export default function AddDocumentScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>
             {isPrescription ? "Nova Receita 💊" : "Novo Documento 📄"}
           </Text>
-          <Text style={{ color: "#6B7280", fontSize: 12 }}>
+          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>
             {isPrescription ? "Tire foto ou carregue a receita médica" : "Passaporte, exames, licenças..."}
           </Text>
         </View>
@@ -125,15 +125,15 @@ export default function AddDocumentScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 40) }}>
 
         {/* Pet picker */}
         <View style={{ marginBottom: 20 }}>
-          <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
           {loadPets ? <ActivityIndicator color="#FF6B35" /> : (
             <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
               style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? color : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
+              <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
                 {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : "Selecionar animal..."}
               </Text>
               <ChevronDown size={18} color="#9CA3AF" />
@@ -143,15 +143,15 @@ export default function AddDocumentScreen() {
             <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
               {pets.length === 0 ? (
                 <TouchableOpacity onPress={() => router.replace("/add-pet")} style={{ padding: 14, alignItems: "center" }}>
-                  <Text style={{ color: "#FF6B35", fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
+                  <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
                 </TouchableOpacity>
               ) : pets.map((p: any) => (
                 <TouchableOpacity key={p.id} onPress={() => { setPetId(p.id); setPetPickerOpen(false); }}
                   style={{ padding: 14, flexDirection: "row", alignItems: "center", gap: 10, borderBottomWidth: 1, borderBottomColor: "#F9F5F0" }}>
-                  <Text style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
+                  <Text suppressHighlighting style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
                   <View>
-                    <Text style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
-                    <Text style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
+                    <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
+                    <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
                   </View>
                 </TouchableOpacity>
               ))}
@@ -162,12 +162,12 @@ export default function AddDocumentScreen() {
         {/* Type selector (only for documents, not prescription) */}
         {!isPrescription && (
           <>
-            <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Tipo de documento</Text>
+            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Tipo de documento</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
               {DOC_TYPES.filter(t => t.k !== "receita").map((t) => (
                 <TouchableOpacity key={t.k} onPress={() => setDocType(t.k)}
                   style={{ paddingHorizontal: 14, paddingVertical: 10, borderRadius: 20, backgroundColor: docType === t.k ? color : "#fff", borderWidth: 1.5, borderColor: docType === t.k ? color : "#F0E8E0" }}>
-                  <Text style={{ fontSize: 13, fontWeight: "700", color: docType === t.k ? "#fff" : "#6B7280" }}>{t.l}</Text>
+                  <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: docType === t.k ? "#fff" : "#6B7280" }}>{t.l}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -180,7 +180,7 @@ export default function AddDocumentScreen() {
           placeholder={isPrescription ? "Ex: 1 comp. 2x por dia durante 7 dias..." : "Observações..."} multiline />
 
         {/* Upload zone */}
-        <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>
+        <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>
           {isPrescription ? "Foto / Scan da receita *" : "Foto / Scan do documento *"}
         </Text>
 
@@ -190,18 +190,18 @@ export default function AddDocumentScreen() {
             <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
               <TouchableOpacity onPress={pickCamera} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: bgColor, borderRadius: 12, padding: 10 }}>
                 <Camera size={16} color={color} />
-                <Text style={{ color, fontWeight: "600", fontSize: 12 }}>Nova foto</Text>
+                <Text suppressHighlighting style={{ color, fontWeight: "600", fontSize: 12 }}>Nova foto</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={pickFile} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: bgColor, borderRadius: 12, padding: 10 }}>
                 <Upload size={16} color={color} />
-                <Text style={{ color, fontWeight: "600", fontSize: 12 }}>Outro ficheiro</Text>
+                <Text suppressHighlighting style={{ color, fontWeight: "600", fontSize: 12 }}>Outro ficheiro</Text>
               </TouchableOpacity>
             </View>
           </View>
         ) : uploading ? (
           <View style={{ height: 120, alignItems: "center", justifyContent: "center", backgroundColor: bgColor, borderRadius: 16, marginBottom: 14 }}>
             <ActivityIndicator color={color} />
-            <Text style={{ color: "#6B7280", fontSize: 12, marginTop: 8 }}>A fazer upload...</Text>
+            <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12, marginTop: 8 }}>A fazer upload...</Text>
           </View>
         ) : (
           <View style={{ marginBottom: 14 }}>
@@ -209,13 +209,13 @@ export default function AddDocumentScreen() {
             <TouchableOpacity onPress={pickCamera}
               style={{ backgroundColor: color, borderRadius: 16, padding: 18, alignItems: "center", gap: 8, marginBottom: 10 }}>
               <Camera size={28} color="#fff" />
-              <Text style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>📸 Tirar foto agora</Text>
-              <Text style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>Use a câmara para fotografar o documento</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>📸 Tirar foto agora</Text>
+              <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>Use a câmara para fotografar o documento</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={pickFile}
               style={{ borderWidth: 1.5, borderColor: color, borderRadius: 16, borderStyle: "dashed", padding: 14, alignItems: "center", gap: 6, backgroundColor: bgColor }}>
               <Upload size={20} color={color} />
-              <Text style={{ color, fontWeight: "700", fontSize: 13 }}>Escolher da galeria / ficheiros</Text>
+              <Text suppressHighlighting style={{ color, fontWeight: "700", fontSize: 13 }}>Escolher da galeria / ficheiros</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -223,7 +223,7 @@ export default function AddDocumentScreen() {
         <TouchableOpacity onPress={handleSave} disabled={save.isPending}
           style={{ backgroundColor: color, borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: color, shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
           {save.isPending ? <ActivityIndicator color="#fff" /> : (
-            <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>
               💾 {isPrescription ? "Guardar Receita" : "Guardar Documento"}
             </Text>
           )}

@@ -25,7 +25,7 @@ function Input({ label, value, onChangeText, placeholder, multiline = false, key
 }) {
   return (
     <View style={{ marginBottom: 16 }}>
-      <Text style={{ fontWeight: "600", color: "#374151", marginBottom: 6, fontSize: 14 }}>{label}</Text>
+      <Text suppressHighlighting style={{ fontWeight: "600", color: "#374151", marginBottom: 6, fontSize: 14 }}>{label}</Text>
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -96,11 +96,11 @@ export default function AddBusinessScreen() {
           <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
             <ChevronLeft size={24} color="#1A1A2E" />
           </TouchableOpacity>
-          <Text style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>Registar Negócio</Text>
+          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>Registar Negócio</Text>
         </View>
 
         <ScrollView
-          contentContainerStyle={{ padding: 20, paddingBottom: 60 }}
+          contentContainerStyle={{ padding: 20, paddingBottom: Math.max(insets.bottom, 60) }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
@@ -108,7 +108,7 @@ export default function AddBusinessScreen() {
 
           {/* Tipo */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontWeight: "600", color: "#374151", marginBottom: 8, fontSize: 14 }}>Tipo *</Text>
+            <Text suppressHighlighting style={{ fontWeight: "600", color: "#374151", marginBottom: 8, fontSize: 14 }}>Tipo *</Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
               {types.map(t => (
                 <TouchableOpacity key={t.value} onPress={() => setType(t.value)}
@@ -117,7 +117,7 @@ export default function AddBusinessScreen() {
                     borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8,
                     borderWidth: 1.5, borderColor: type === t.value ? "#8B5E3C" : "#F0E8E0",
                   }}>
-                  <Text style={{ color: type === t.value ? "#fff" : "#6B7280", fontWeight: "600", fontSize: 13 }}>{t.label}</Text>
+                  <Text suppressHighlighting style={{ color: type === t.value ? "#fff" : "#6B7280", fontWeight: "600", fontSize: 13 }}>{t.label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -143,7 +143,7 @@ export default function AddBusinessScreen() {
             }}>
             {isPending
               ? <ActivityIndicator color="#fff" />
-              : <Text style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Registar Negócio</Text>}
+              : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Registar Negócio</Text>}
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

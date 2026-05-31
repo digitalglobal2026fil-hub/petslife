@@ -18,7 +18,7 @@ async function uploadFile(uri: string, filename: string, mimeType: string): Prom
 function Field({ label, value, onChange, placeholder, keyboardType, multiline }: any) {
   return (
     <View style={{ marginBottom: 14 }}>
-      <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
+      <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
       <TextInput
         value={value} onChangeText={onChange} placeholder={placeholder}
         placeholderTextColor="#9CA3AF" keyboardType={keyboardType ?? "default"}
@@ -123,23 +123,23 @@ export default function AddVaccineScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Nova Vacina 💉</Text>
-          <Text style={{ color: "#6B7280", fontSize: 12 }}>Registe a caderneta de vacinação</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Nova Vacina 💉</Text>
+          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>Registe a caderneta de vacinação</Text>
         </View>
         <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#E8FAF9", alignItems: "center", justifyContent: "center" }}>
           <Syringe size={22} color="#4ECDC4" />
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 40) }}>
 
         {/* Pet picker */}
         <View style={{ marginBottom: 20 }}>
-          <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
           {loadPets ? <ActivityIndicator color="#FF6B35" /> : (
             <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
               style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? "#4ECDC4" : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
+              <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
                 {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : "Selecionar animal..."}
               </Text>
               <ChevronDown size={18} color="#9CA3AF" />
@@ -149,15 +149,15 @@ export default function AddVaccineScreen() {
             <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
               {pets.length === 0 ? (
                 <TouchableOpacity onPress={() => router.replace("/add-pet")} style={{ padding: 14, alignItems: "center" }}>
-                  <Text style={{ color: "#FF6B35", fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
+                  <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
                 </TouchableOpacity>
               ) : pets.map((p: any) => (
                 <TouchableOpacity key={p.id} onPress={() => { setPetId(p.id); setPetPickerOpen(false); }}
                   style={{ padding: 14, flexDirection: "row", alignItems: "center", gap: 10, borderBottomWidth: 1, borderBottomColor: "#F9F5F0" }}>
-                  <Text style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
+                  <Text suppressHighlighting style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
                   <View>
-                    <Text style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
-                    <Text style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
+                    <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
+                    <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
                   </View>
                 </TouchableOpacity>
               ))}
@@ -183,32 +183,32 @@ export default function AddVaccineScreen() {
         <Field label="Notas" value={notes} onChange={setNotes} placeholder="Reações, observações..." multiline />
 
         {/* Upload */}
-        <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Caderneta / Comprovativo</Text>
+        <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Caderneta / Comprovativo</Text>
         {docUrl ? (
           <View style={{ marginBottom: 14 }}>
             <Image source={{ uri: docUrl }} style={{ width: "100%", height: 180, borderRadius: 14, resizeMode: "cover" }} />
             <TouchableOpacity onPress={() => setDocUrl(null)} style={{ marginTop: 6, alignSelf: "center" }}>
-              <Text style={{ color: "#EF4444", fontSize: 12, fontWeight: "600" }}>Remover imagem</Text>
+              <Text suppressHighlighting style={{ color: "#EF4444", fontSize: 12, fontWeight: "600" }}>Remover imagem</Text>
             </TouchableOpacity>
           </View>
         ) : uploading ? (
           <View style={{ height: 80, alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
             <ActivityIndicator color="#4ECDC4" />
-            <Text style={{ color: "#6B7280", fontSize: 12, marginTop: 6 }}>A fazer upload...</Text>
+            <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12, marginTop: 6 }}>A fazer upload...</Text>
           </View>
         ) : (
           <View style={{ flexDirection: "row", gap: 10, marginBottom: 14 }}>
             <TouchableOpacity onPress={pickFile}
               style={{ flex: 1, borderWidth: 1.5, borderColor: "#4ECDC4", borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: "#F0FFFE" }}>
               <Upload size={22} color="#4ECDC4" />
-              <Text style={{ fontSize: 12, color: "#4ECDC4", fontWeight: "700" }}>Escolher ficheiro</Text>
-              <Text style={{ fontSize: 10, color: "#9CA3AF" }}>PDF, imagem...</Text>
+              <Text suppressHighlighting style={{ fontSize: 12, color: "#4ECDC4", fontWeight: "700" }}>Escolher ficheiro</Text>
+              <Text suppressHighlighting style={{ fontSize: 10, color: "#9CA3AF" }}>PDF, imagem...</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={pickCamera}
               style={{ flex: 1, borderWidth: 1.5, borderColor: "#4ECDC4", borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: "#F0FFFE" }}>
               <Camera size={22} color="#4ECDC4" />
-              <Text style={{ fontSize: 12, color: "#4ECDC4", fontWeight: "700" }}>Tirar foto</Text>
-              <Text style={{ fontSize: 10, color: "#9CA3AF" }}>Câmara direta</Text>
+              <Text suppressHighlighting style={{ fontSize: 12, color: "#4ECDC4", fontWeight: "700" }}>Tirar foto</Text>
+              <Text suppressHighlighting style={{ fontSize: 10, color: "#9CA3AF" }}>Câmara direta</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -217,7 +217,7 @@ export default function AddVaccineScreen() {
         <TouchableOpacity onPress={handleSave} disabled={save.isPending}
           style={{ backgroundColor: "#4ECDC4", borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: "#4ECDC4", shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
           {save.isPending ? <ActivityIndicator color="#fff" /> : (
-            <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Vacina</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Vacina</Text>
           )}
         </TouchableOpacity>
       </ScrollView>

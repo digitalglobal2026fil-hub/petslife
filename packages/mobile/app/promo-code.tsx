@@ -37,10 +37,10 @@ export default function PromoCodeScreen() {
     return (
       <View style={styles.successContainer}>
         <CheckCircle size={72} color="#FF6B35" />
-        <Text style={styles.successTitle}>Código aplicado!</Text>
-        <Text style={styles.successText}>Tens acesso vitalício à PetsLife. Obrigado! 🐾</Text>
+        <Text suppressHighlighting style={styles.successTitle}>Código aplicado!</Text>
+        <Text suppressHighlighting style={styles.successText}>Tens acesso vitalício à PetsLife. Obrigado! 🐾</Text>
         <TouchableOpacity style={styles.btn} onPress={() => router.replace("/(tabs)")}>
-          <Text style={styles.btnText}>Ir para a app</Text>
+          <Text suppressHighlighting style={styles.btnText}>Ir para a app</Text>
         </TouchableOpacity>
       </View>
     );
@@ -56,8 +56,8 @@ export default function PromoCodeScreen() {
         <Gift size={52} color="#FF6B35" />
       </View>
 
-      <Text style={styles.title}>Código Promocional</Text>
-      <Text style={styles.subtitle}>
+      <Text suppressHighlighting style={styles.title}>Código Promocional</Text>
+      <Text suppressHighlighting style={styles.subtitle}>
         Tens um código especial? Introduz aqui para ativar acesso vitalício gratuito.
       </Text>
 
@@ -74,7 +74,7 @@ export default function PromoCodeScreen() {
       <TouchableOpacity style={styles.btn} onPress={redeem} disabled={loading}>
         {loading
           ? <ActivityIndicator color="#fff" />
-          : <Text style={styles.btnText}>Ativar código</Text>
+          : <Text suppressHighlighting style={styles.btnText}>Ativar código</Text>
         }
       </TouchableOpacity>
     </KeyboardAvoidingView>

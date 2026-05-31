@@ -71,35 +71,35 @@ function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
       style={{ backgroundColor: CARD, borderRadius: 20, marginBottom: 14, borderWidth: 1.5, borderColor: BORDER, shadowColor: BROWN, shadowOpacity: 0.08, shadowRadius: 8, elevation: 0 }}>
       <View style={{ flexDirection: "row", padding: 16, gap: 14 }}>
         <View style={{ width: 64, height: 64, borderRadius: 18, backgroundColor: ICON_BG, alignItems: "center", justifyContent: "center" }}>
-          <Text style={{ fontSize: 30 }}>{typeEmoji[b.type] ?? "📦"}</Text>
+          <Text suppressHighlighting style={{ fontSize: 30 }}>{typeEmoji[b.type] ?? "📦"}</Text>
         </View>
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <Text style={{ fontWeight: "800", color: BROWN, fontSize: 15, flex: 1 }} numberOfLines={1}>{b.name}</Text>
+            <Text suppressHighlighting style={{ fontWeight: "800", color: BROWN, fontSize: 15, flex: 1 }} numberOfLines={1}>{b.name}</Text>
             {b.averageRating > 0 && (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 3, marginLeft: 8 }}>
                 <Star size={13} color="#F59E0B" fill="#F59E0B" />
-                <Text style={{ fontSize: 12, fontWeight: "700", color: "#92400E" }}>{b.averageRating.toFixed(1)}</Text>
+                <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#92400E" }}>{b.averageRating.toFixed(1)}</Text>
               </View>
             )}
           </View>
           {b.city ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6 }}>
               <MapPin size={12} color={GRAY} />
-              <Text style={{ fontSize: 12, color: GRAY }} numberOfLines={1}>{b.city}</Text>
+              <Text suppressHighlighting style={{ fontSize: 12, color: GRAY }} numberOfLines={1}>{b.city}</Text>
             </View>
           ) : null}
           {b.phone ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 3 }}>
               <Phone size={12} color={GRAY} />
-              <Text style={{ fontSize: 12, color: GRAY }}>{b.phone}</Text>
+              <Text suppressHighlighting style={{ fontSize: 12, color: GRAY }}>{b.phone}</Text>
             </View>
           ) : null}
         </View>
       </View>
       {b.description ? (
         <View style={{ paddingHorizontal: 16, paddingBottom: 14 }}>
-          <Text style={{ fontSize: 13, color: GRAY, lineHeight: 19 }} numberOfLines={2}>{b.description}</Text>
+          <Text suppressHighlighting style={{ fontSize: 13, color: GRAY, lineHeight: 19 }} numberOfLines={2}>{b.description}</Text>
         </View>
       ) : null}
     </TouchableOpacity>
@@ -116,20 +116,20 @@ function ListingCard({ l, onPress }: { l: any; onPress: () => void }) {
         </View>
       </View>
       <View style={{ padding: 12 }}>
-        <Text style={{ fontWeight: "700", color: BROWN, fontSize: 13 }} numberOfLines={1}>{l.title}</Text>
+        <Text suppressHighlighting style={{ fontWeight: "700", color: BROWN, fontSize: 13 }} numberOfLines={1}>{l.title}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 6 }}>
-          <Text style={{ color: ORANGE, fontWeight: "800", fontSize: 15 }}>
+          <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "800", fontSize: 15 }}>
             {l.price === 0 ? "Grátis" : `€${Number(l.price).toFixed(2)}`}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
             <Tag size={11} color={GRAY} />
-            <Text style={{ color: GRAY, fontSize: 11 }}>{l.category}</Text>
+            <Text suppressHighlighting style={{ color: GRAY, fontSize: 11 }}>{l.category}</Text>
           </View>
         </View>
         {l.location ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 3, marginTop: 4 }}>
             <MapPin size={10} color={GRAY} />
-            <Text style={{ fontSize: 10, color: GRAY }} numberOfLines={1}>{l.location}</Text>
+            <Text suppressHighlighting style={{ fontSize: 10, color: GRAY }} numberOfLines={1}>{l.location}</Text>
           </View>
         ) : null}
       </View>
@@ -205,17 +205,17 @@ export default function MarketplaceCategory() {
           <ChevronLeft size={20} color={BROWN} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 22, fontWeight: "900", color: BROWN }}>{info.emoji} {info.label}</Text>
+          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: BROWN }}>{info.emoji} {info.label}</Text>
         </View>
         <TouchableOpacity onPress={() => router.push(isBiz ? "/add-business" : "/add-listing")}
           style={{ backgroundColor: isBiz ? BROWN2 : ORANGE, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 8 }}>
-          <Text style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>+ Adicionar</Text>
+          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>+ Adicionar</Text>
         </TouchableOpacity>
       </View>
 
       {/* Phrase banner */}
       <View style={{ marginHorizontal: 20, marginBottom: 14, backgroundColor: info.color, borderRadius: 16, padding: 12, borderWidth: 1.5, borderColor: BORDER }}>
-        <Text style={{ color: BROWN2, fontSize: 13, fontWeight: "600", textAlign: "center", fontStyle: "italic" }}>{phrase}</Text>
+        <Text suppressHighlighting style={{ color: BROWN2, fontSize: 13, fontWeight: "600", textAlign: "center", fontStyle: "italic" }}>{phrase}</Text>
       </View>
 
       {/* Search */}
@@ -230,20 +230,20 @@ export default function MarketplaceCategory() {
         {isLoading ? (
           <View style={{ alignItems: "center", paddingVertical: 60 }}>
             <ActivityIndicator color={ORANGE} size="large" />
-            <Text style={{ color: GRAY, marginTop: 12, fontSize: 13 }}>🐾 A carregar...</Text>
+            <Text suppressHighlighting style={{ color: GRAY, marginTop: 12, fontSize: 13 }}>🐾 A carregar...</Text>
           </View>
         ) : isBiz ? (
           filteredBiz.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
-              <Text style={{ fontSize: 56 }}>🏪</Text>
-              <Text style={{ fontSize: 16, fontWeight: "800", color: BROWN, marginTop: 14, textAlign: "center" }}>{emptyPhrase}</Text>
-              <Text style={{ color: GRAY, marginTop: 6, textAlign: "center", fontSize: 13 }}>
+              <Text suppressHighlighting style={{ fontSize: 56 }}>🏪</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: BROWN, marginTop: 14, textAlign: "center" }}>{emptyPhrase}</Text>
+              <Text suppressHighlighting style={{ color: GRAY, marginTop: 6, textAlign: "center", fontSize: 13 }}>
                 {businesses.length === 0 ? "Sê o primeiro a registar um negócio aqui!" : "Tenta outra pesquisa"}
               </Text>
               {businesses.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-business")}
                   style={{ backgroundColor: BROWN2, borderRadius: 14, paddingHorizontal: 20, paddingVertical: 12, marginTop: 16 }}>
-                  <Text style={{ color: "#fff", fontWeight: "700" }}>+ Registar Negócio</Text>
+                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>+ Registar Negócio</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -253,15 +253,15 @@ export default function MarketplaceCategory() {
         ) : (
           filteredList.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
-              <Text style={{ fontSize: 56 }}>🛒</Text>
-              <Text style={{ fontSize: 16, fontWeight: "800", color: BROWN, marginTop: 14, textAlign: "center" }}>{emptyPhrase}</Text>
-              <Text style={{ color: GRAY, marginTop: 6, textAlign: "center", fontSize: 13 }}>
+              <Text suppressHighlighting style={{ fontSize: 56 }}>🛒</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: BROWN, marginTop: 14, textAlign: "center" }}>{emptyPhrase}</Text>
+              <Text suppressHighlighting style={{ color: GRAY, marginTop: 6, textAlign: "center", fontSize: 13 }}>
                 {listings.length === 0 ? "Publica o primeiro anúncio!" : "Tenta outra pesquisa"}
               </Text>
               {listings.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-listing")}
                   style={{ backgroundColor: ORANGE, borderRadius: 14, paddingHorizontal: 20, paddingVertical: 12, marginTop: 16 }}>
-                  <Text style={{ color: "#fff", fontWeight: "700" }}>+ Publicar Anúncio</Text>
+                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>+ Publicar Anúncio</Text>
                 </TouchableOpacity>
               )}
             </View>

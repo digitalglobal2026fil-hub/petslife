@@ -32,7 +32,7 @@ function todayString() {
 function Field({ label, value, onChange, placeholder, multiline }: any) {
   return (
     <View style={{ marginBottom: 14 }}>
-      <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
+      <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
       <TextInput
         value={value}
         onChangeText={onChange}
@@ -109,25 +109,25 @@ export default function AddDiaryScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Diário de Saúde ❤️</Text>
-          <Text style={{ color: "#6B7280", fontSize: 12 }}>Registe sintomas, comportamentos e mais</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Diário de Saúde ❤️</Text>
+          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>Registe sintomas, comportamentos e mais</Text>
         </View>
         <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#FFF0F3", alignItems: "center", justifyContent: "center" }}>
           <Heart size={22} color={ACCENT} />
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 40) }}>
 
         {/* Pet picker */}
         <View style={{ marginBottom: 20 }}>
-          <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
           {loadPets ? <ActivityIndicator color={ACCENT} /> : (
             <TouchableOpacity
               onPress={() => setPetPickerOpen(!petPickerOpen)}
               style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? ACCENT : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
             >
-              <Text style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
+              <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
                 {selectedPet
                   ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}`
                   : "Selecionar animal..."}
@@ -139,7 +139,7 @@ export default function AddDiaryScreen() {
             <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
               {pets.length === 0 ? (
                 <TouchableOpacity onPress={() => router.replace("/add-pet")} style={{ padding: 14, alignItems: "center" }}>
-                  <Text style={{ color: ACCENT, fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
+                  <Text suppressHighlighting style={{ color: ACCENT, fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
                 </TouchableOpacity>
               ) : pets.map((p: any) => (
                 <TouchableOpacity
@@ -147,10 +147,10 @@ export default function AddDiaryScreen() {
                   onPress={() => { setPetId(p.id); setPetPickerOpen(false); }}
                   style={{ padding: 14, flexDirection: "row", alignItems: "center", gap: 10, borderBottomWidth: 1, borderBottomColor: "#F9F5F0" }}
                 >
-                  <Text style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
+                  <Text suppressHighlighting style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
                   <View>
-                    <Text style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
-                    <Text style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
+                    <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
+                    <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
                   </View>
                 </TouchableOpacity>
               ))}
@@ -160,7 +160,7 @@ export default function AddDiaryScreen() {
 
         {/* Category chips */}
         <View style={{ marginBottom: 20 }}>
-          <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 10 }}>Categoria *</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 10 }}>Categoria *</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
             {CATEGORIES.map((c) => {
               const active = category === c.key;
@@ -177,8 +177,8 @@ export default function AddDiaryScreen() {
                     borderColor: active ? ACCENT : "#F0E8E0",
                   }}
                 >
-                  <Text style={{ fontSize: 15 }}>{c.emoji}</Text>
-                  <Text style={{ fontSize: 13, fontWeight: "700", color: active ? "#fff" : "#1A1A2E" }}>{c.label}</Text>
+                  <Text suppressHighlighting style={{ fontSize: 15 }}>{c.emoji}</Text>
+                  <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: active ? "#fff" : "#1A1A2E" }}>{c.label}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -203,7 +203,7 @@ export default function AddDiaryScreen() {
         >
           {save.isPending
             ? <ActivityIndicator color="#fff" />
-            : <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Registo</Text>
+            : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Registo</Text>
           }
         </TouchableOpacity>
       </ScrollView>

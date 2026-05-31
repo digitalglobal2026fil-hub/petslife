@@ -12,7 +12,7 @@ import { api } from "../lib/api";
 function Field({ label, value, onChange, placeholder, keyboardType, multiline }: any) {
   return (
     <View style={{ marginBottom: 14 }}>
-      <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
+      <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 5 }}>{label}</Text>
       <TextInput
         value={value} onChangeText={onChange} placeholder={placeholder}
         placeholderTextColor="#9CA3AF" keyboardType={keyboardType ?? "default"}
@@ -84,23 +84,23 @@ export default function AddAppointmentScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Nova Consulta 📅</Text>
-          <Text style={{ color: "#6B7280", fontSize: 12 }}>Agende ou registe uma consulta</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Nova Consulta 📅</Text>
+          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>Agende ou registe uma consulta</Text>
         </View>
         <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
           <Calendar size={22} color="#FF6B35" />
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 40) }}>
 
         {/* Pet picker */}
         <View style={{ marginBottom: 20 }}>
-          <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
           {loadPets ? <ActivityIndicator color="#FF6B35" /> : (
             <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
               style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? "#FF6B35" : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
+              <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
                 {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : "Selecionar animal..."}
               </Text>
               <ChevronDown size={18} color="#9CA3AF" />
@@ -110,15 +110,15 @@ export default function AddAppointmentScreen() {
             <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
               {pets.length === 0 ? (
                 <TouchableOpacity onPress={() => router.replace("/add-pet")} style={{ padding: 14, alignItems: "center" }}>
-                  <Text style={{ color: "#FF6B35", fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
+                  <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
                 </TouchableOpacity>
               ) : pets.map((p: any) => (
                 <TouchableOpacity key={p.id} onPress={() => { setPetId(p.id); setPetPickerOpen(false); }}
                   style={{ padding: 14, flexDirection: "row", alignItems: "center", gap: 10, borderBottomWidth: 1, borderBottomColor: "#F9F5F0" }}>
-                  <Text style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
+                  <Text suppressHighlighting style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
                   <View>
-                    <Text style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
-                    <Text style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
+                    <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
+                    <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{p.breed ?? p.species}</Text>
                   </View>
                 </TouchableOpacity>
               ))}
@@ -127,12 +127,12 @@ export default function AddAppointmentScreen() {
         </View>
 
         {/* Type selector */}
-        <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Tipo de consulta</Text>
+        <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Tipo de consulta</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
           {TYPES.map((t) => (
             <TouchableOpacity key={t.k} onPress={() => setType(t.k)}
               style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, backgroundColor: type === t.k ? t.c : "#fff", borderWidth: 1.5, borderColor: type === t.k ? t.c : "#F0E8E0" }}>
-              <Text style={{ fontSize: 13, fontWeight: "700", color: type === t.k ? "#fff" : "#6B7280" }}>{t.l}</Text>
+              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: type === t.k ? "#fff" : "#6B7280" }}>{t.l}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -155,7 +155,7 @@ export default function AddAppointmentScreen() {
         <TouchableOpacity onPress={handleSave} disabled={save.isPending}
           style={{ backgroundColor: "#FF6B35", borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
           {save.isPending ? <ActivityIndicator color="#fff" /> : (
-            <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Consulta</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Consulta</Text>
           )}
         </TouchableOpacity>
       </ScrollView>
