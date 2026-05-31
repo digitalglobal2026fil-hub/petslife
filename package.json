@@ -17,7 +17,9 @@
     "db:studio": "turbo db:studio",
     "start": "npx pm2 delete web-app 2>/dev/null || true; npx pm2 start ecosystem.config.cjs --update-env",
     "build:web": "cd packages/web && bunx vite build",
-    "kill:port": "lsof -t -i :${PORT:-4200} | xargs kill -9"
+    "kill:port": "lsof -t -i :${PORT:-4200} | xargs kill -9",
+    "render-build": "npm install -g bun && cd packages/web && bun install && bun run build",
+    "render-start": "npm install -g bun && bun packages/web/src/server.ts"
   },
   "devDependencies": {
     "@tursodatabase/api": "^1.9.2",
@@ -32,5 +34,8 @@
     "@libsql/client": "^0.17.2",
     "cloudflare": "^5.2.0",
     "pm2": "^7.0.1"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
