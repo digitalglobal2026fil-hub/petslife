@@ -1,17 +1,28 @@
-# PetsLife Bug Fix Session
+# PetsLife Fix Tasks — COMPLETED
 
-## Bugs a corrigir agora
+## DONE ✅
+- [x] Category pages: clinicas, petshops, hoteis, tosquiadores, treino, adocao, perdidos, servicos
+- [x] Marketplace pills navigate to category pages (router.push on click)
+- [x] Jitsi fix: local room URL `https://meet.jit.si/petslife-{id}` when no server URL
+- [x] QR Code: fixed URL to `https://petslife.app/pet/{code}` instead of sandbox
+- [x] AnimalFact added to: health.tsx, social.tsx (already on index.tsx, category pages)
+- [x] backgroundColor transparent on emoji Text elements
+- [x] lib/api.ts: added generic get/post helpers + kept hono typed client
+- [x] auth.ts: exported baseURL and added getTokenAsync()
+- [x] listing/[id].tsx: fixed duplicate alignItems
+- [x] SVG types added for PawIcon
+- [x] versionCode 17 built + uploaded
+- [x] AAB uploaded: https://gofile.io/d/XP6UgB
 
-1. ✅ add-pet.tsx - teclado fecha (Input dentro do componente) - CORRIGIDO
-2. 🔧 QR code em ucraniano - petslife.app aponta para site ucraniano; usar URL do servidor próprio
-3. 🔧 Videochamada não envia link - roomUrl gerado mas não enviado; mostrar link no ecrã imediatamente após agendar
-4. 🔧 Teclado tapa a escrita - falta KeyboardAvoidingView nos modais/forms (consult.tsx modal)
-5. 🔧 keyboardType="numeric" em datas/horas - bloqueia traços e dois pontos; mudar para "default"
-6. 🔧 Upload não mostra o que foi colocado (add-document.tsx) - já mostra se for imagem; OK
-7. 🔧 Álbum de fotos - criar ecrã de álbum por animal (rota /photos existe no backend)
-8. 🔧 Anúncio dá JSON Parse error - price é notNull() mas pode chegar undefined; corrigir no backend E no frontend
-9. 🔧 add-listing.tsx - Field component dentro do render = mesmo bug do teclado!
+## REMAINING (not blocking)
+- [ ] Railway/Render deploy for stable API URL
+  - Once deployed: update app.json extra.apiUrl + WEBSITE_URL in .env
+  - Railway tokens (UUID format) rejected by CLI 4.66.0 — try via web UI or Render.com
+- [ ] "Aspeto mais fofinho" — some further UI polish could be done
+- [ ] Login "sem ligação": works on sandbox, will fail if sandbox restarts without URL update
 
-## Estado
-- API URL: https://qx7w0z1uul79my5hxm5d2-preview-4200.runable.site/
-- QR code da app aponta para petslife.app que está em ucraniano (não é o nosso site)
+## AAB INFO
+- versionCode: 17
+- version: 1.2.0
+- signed with release.keystore
+- Download: https://gofile.io/d/XP6UgB

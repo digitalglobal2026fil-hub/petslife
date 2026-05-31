@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Home, Heart, ShoppingBag, Users, User, Video } from "lucide-react-native";
+import { Home, Heart, ShoppingBag, Users, User, Video, Image as ImageIcon } from "lucide-react-native";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -15,9 +15,8 @@ export default function TabLayout() {
           backgroundColor: "#FFFFFF",
           borderTopColor: "#F0E8E0",
           borderTopWidth: 1,
-          // respect the system nav bar height + extra breathing room
           height: 60 + insets.bottom,
-          paddingBottom: insets.bottom + 6,
+          paddingBottom: Math.max(insets.bottom, 8) + 4,
           paddingTop: 6,
           elevation: 12,
           shadowColor: "#000",
@@ -44,8 +43,8 @@ export default function TabLayout() {
         options={{ title: "Saúde", tabBarIcon: ({ color, size }) => <Heart size={size} color={color} /> }}
       />
       <Tabs.Screen
-        name="consult"
-        options={{ title: "Consulta", tabBarIcon: ({ color, size }) => <Video size={size} color={color} /> }}
+        name="photos"
+        options={{ title: "Álbum", tabBarIcon: ({ color, size }) => <ImageIcon size={size} color={color} /> }}
       />
       <Tabs.Screen
         name="social"
@@ -59,11 +58,9 @@ export default function TabLayout() {
         name="profile"
         options={{ title: "Perfil", tabBarIcon: ({ color, size }) => <User size={size} color={color} /> }}
       />
-      {/* businesses tab hidden — conteúdo fundido no marketplace */}
-      <Tabs.Screen
-        name="businesses"
-        options={{ href: null }}
-      />
+      {/* tabs ocultas */}
+      <Tabs.Screen name="businesses" options={{ href: null }} />
+      <Tabs.Screen name="consult" options={{ href: null }} />
     </Tabs>
   );
 }

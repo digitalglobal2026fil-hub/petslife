@@ -9,13 +9,10 @@ import { useState } from "react";
 import { ChevronLeft, ChevronDown, Upload, Camera, Syringe } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../lib/api";
+import { uploadImage } from "../lib/upload";
 
 async function uploadFile(uri: string, filename: string, mimeType: string): Promise<string> {
-  const presignRes = await (api as any).upload.presign.$post({ json: { filename, contentType: mimeType } });
-  const { presignedUrl, publicUrl } = await presignRes.json();
-  const blob = await (await fetch(uri)).blob();
-  await fetch(presignedUrl, { method: "PUT", body: blob, headers: { "Content-Type": mimeType } });
-  return publicUrl;
+  return uploadImage(uri, mimeType ?? "image/jpeg");
 }
 
 function Field({ label, value, onChange, placeholder, keyboardType, multiline }: any) {

@@ -3,12 +3,13 @@ import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { authClient, captureToken } from "../../lib/auth";
-import { PawPrint } from "lucide-react-native";
+import { PawPrint, Eye, EyeOff } from "lucide-react-native";
 
 export default function SignInScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSignIn() {
@@ -35,16 +36,10 @@ export default function SignInScreen() {
             <View style={{ backgroundColor: "#F5EDE4", borderRadius: 28, padding: 16 }}>
               <PawPrint size={48} color="#8B5E3C" />
             </View>
-            <Text
-              suppressHighlighting
-              style={{ fontSize: 32, fontWeight: "800", color: "#FF6B35", marginTop: 8, backgroundColor: "transparent" }}
-            >
+            <Text suppressHighlighting style={{ fontSize: 32, fontWeight: "800", color: "#FF6B35", marginTop: 8, backgroundColor: "transparent" }}>
               PetsLife
             </Text>
-            <Text
-              suppressHighlighting
-              style={{ color: "#6B7280", marginTop: 4, fontSize: 15, backgroundColor: "transparent" }}
-            >
+            <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, fontSize: 15, backgroundColor: "transparent" }}>
               A vida do seu animal, organizada.
             </Text>
           </View>
@@ -63,20 +58,36 @@ export default function SignInScreen() {
             </View>
             <View>
               <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Password</Text>
-              <TextInput
-                value={password}
-                onChangeText={setPassword}
-                placeholder="••••••••"
-                secureTextEntry
-                style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 16, padding: 14, fontSize: 15, color: "#1A1A2E" }}
-              />
+              <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 16, flexDirection: "row", alignItems: "center" }}>
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="••••••••"
+                  secureTextEntry={!showPassword}
+                  style={{ flex: 1, padding: 14, fontSize: 15, color: "#1A1A2E" }}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ padding: 14 }}>
+                  {showPassword ? <EyeOff size={20} color="#9CA3AF" /> : <Eye size={20} color="#9CA3AF" />}
+                </TouchableOpacity>
+              </View>
             </View>
+
+            {/* Recuperar senha */}
+            <TouchableOpacity
+              onPress={() => router.push("/(auth)/forgot-password")}
+              activeOpacity={0.7}
+              style={{ alignItems: "flex-end" }}
+            >
+              <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 13, fontWeight: "600", backgroundColor: "transparent" }}>
+                Esqueceu a senha?
+              </Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleSignIn}
               disabled={loading}
               activeOpacity={0.85}
-              style={{ backgroundColor: "#FF6B35", borderRadius: 16, padding: 16, alignItems: "center", marginTop: 8, opacity: loading ? 0.7 : 1 }}
+              style={{ backgroundColor: "#FF6B35", borderRadius: 16, padding: 16, alignItems: "center", marginTop: 4, opacity: loading ? 0.7 : 1 }}
             >
               {loading
                 ? <ActivityIndicator color="#fff" />

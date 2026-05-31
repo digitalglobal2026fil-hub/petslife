@@ -6,16 +6,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Plus, Trash2, Camera, Upload } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
+import { uploadImage } from "../../../lib/upload";
 
 const COLS = 3;
 const SIZE = (Dimensions.get("window").width - 40 - (COLS - 1) * 4) / COLS;
 
 async function uploadFile(uri: string, filename: string, mimeType: string): Promise<string> {
-  const presignRes = await (api as any).upload.presign.$post({ json: { filename, contentType: mimeType } });
-  const { presignedUrl, publicUrl } = await presignRes.json();
-  const blob = await (await fetch(uri)).blob();
-  await fetch(presignedUrl, { method: "PUT", body: blob, headers: { "Content-Type": mimeType } });
-  return publicUrl;
+  return uploadImage(uri, mimeType ?? "image/jpeg");
 }
 
 export default function PetPhotosScreen() {

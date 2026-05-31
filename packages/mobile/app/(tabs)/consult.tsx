@@ -128,12 +128,9 @@ export default function ConsultScreen() {
       setShowModal(false);
       resetForm();
       load();
-      // Mostrar o link de videochamada imediatamente
-      if (result.roomUrl) {
-        setBookedRoomUrl(result.roomUrl);
-      } else {
-        Alert.alert("Consulta agendada!", "Consulta marcada com sucesso.");
-      }
+      // Gerar URL Jitsi local se o servidor não devolver roomUrl
+      const roomUrl = result.roomUrl || `https://meet.jit.si/petslife-${result.id}`;
+      setBookedRoomUrl(roomUrl);
     } else {
       Alert.alert("Erro", "Não foi possível agendar. Tente novamente.");
     }
@@ -149,8 +146,11 @@ export default function ConsultScreen() {
     ]);
   };
 
-  const handleJoin = (url: string) => {
-    Linking.openURL(url).catch(() => Alert.alert("Erro", "Não foi possível abrir a videochamada."));
+  const handleJoin = (url: string | null, consultId?: string) => {
+    // Prefer stored roomUrl, fallback to generating a Jitsi URL from consultation ID
+    const target = url || (consultId ? `https://meet.jit.si/petslife-${consultId}` : null);
+    if (!target) { Alert.alert("Erro", "Link de videochamada não disponível."); return; }
+    Linking.openURL(target).catch(() => Alert.alert("Erro", "Não foi possível abrir a videochamada."));
   };
 
   const resetForm = () => {
@@ -214,7 +214,7 @@ export default function ConsultScreen() {
                 <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
                   <TouchableOpacity
                     style={{ flex: 1, backgroundColor: "#047857", borderRadius: 10, padding: 10, alignItems: "center" }}
-                    onPress={() => handleJoin(bookedRoomUrl)}>
+                    onPress={() => handleJoin(bookedRoomUrl, undefined)}>
                     <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>Entrar agora</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -265,8 +265,8 @@ export default function ConsultScreen() {
                     </View>
                   )}
                   <View style={styles.cardActions}>
-                    {c.roomUrl && (
-                      <TouchableOpacity style={styles.joinBtn} onPress={() => handleJoin(c.roomUrl!)}>
+                    {(c.roomUrl || c.id) && (
+                      <TouchableOpacity style={styles.joinBtn} onPress={() => handleJoin(c.roomUrl, c.id)}>
                         <Video size={16} color="#fff" />
                         <Text suppressHighlighting style={styles.joinBtnText}>Entrar na chamada</Text>
                       </TouchableOpacity>

@@ -5,6 +5,7 @@ import { Heart, MessageCircle, Plus, Send, PawPrint } from "lucide-react-native"
 import { useState } from "react";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
+import { AnimalFact } from "../../components/AnimalFact";
 
 export default function SocialScreen() {
   const queryClient = useQueryClient();
@@ -71,6 +72,7 @@ export default function SocialScreen() {
         </View>
       )}
 
+      <AnimalFact />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 8, gap: 12 }}>
         {isLoading ? <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} /> :
           posts.length === 0 ? (
@@ -85,7 +87,7 @@ export default function SocialScreen() {
             <View key={post.id} style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center" }}>
-                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14 }}>{(post.userId ?? "?")[0]?.toUpperCase()}</Text>
+                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14, backgroundColor: "transparent" }}>{(post.userId ?? "?")[0]?.toUpperCase()}</Text>
                 </View>
                 <View>
                   <Text suppressHighlighting style={{ fontWeight: "600", color: "#1A1A2E", fontSize: 13 }}>Utilizador</Text>

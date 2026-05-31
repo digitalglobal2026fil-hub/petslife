@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { Syringe, Calendar, FileText, ChevronRight, Heart, PawPrint } from "lucide-react-native";
 import { api } from "../../lib/api";
+import { AnimalFact } from "../../components/AnimalFact";
 
 type SectionKey = "vaccines" | "appointments" | "diary" | "documents";
 
@@ -34,6 +35,8 @@ export default function HealthScreen() {
           <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#1A1A2E" }}>Saúde 🏥</Text>
           <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4 }}>Gerencie a saúde dos seus animais</Text>
         </View>
+
+        <AnimalFact />
 
         {/* Quick nav */}
         <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>

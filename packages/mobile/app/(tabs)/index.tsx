@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
+import { AnimalFact } from "../../components/AnimalFact";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -29,6 +30,9 @@ export default function HomeScreen() {
   const trialEndsAt = sub?.subscription?.trialEndsAt ? new Date(sub.subscription.trialEndsAt) : null;
   const daysLeft = trialEndsAt ? Math.max(0, Math.ceil((trialEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
 
+  // Seed baseado no dia para variar diariamente
+  const factSeed = Math.floor(Date.now() / 86400000);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -38,7 +42,9 @@ export default function HomeScreen() {
             <Text suppressHighlighting style={{ fontSize: 13, color: "#6B7280" }}>Olá, {session?.user?.name?.split(" ")[0]} 👋</Text>
             <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>Os meus animais</Text>
           </View>
-          <TouchableOpacity style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
+          <TouchableOpacity
+            onPress={() => router.push("/notifications" as any)}
+            style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
             <Bell size={20} color="#FF6B35" />
           </TouchableOpacity>
         </View>
@@ -71,6 +77,9 @@ export default function HomeScreen() {
               style={{ backgroundColor: "#FF6B35", borderRadius: 16, paddingHorizontal: 24, paddingVertical: 14, marginTop: 20 }}>
               <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>+ Adicionar animal</Text>
             </TouchableOpacity>
+
+            {/* Dica quando não há animais */}
+            <AnimalFact seed={factSeed} style={{ marginTop: 24, width: "100%" }} />
           </View>
         ) : (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12, paddingBottom: 4 }}>
@@ -133,9 +142,14 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* Dica do dia — aparece sempre */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 4 }}>
+          <AnimalFact seed={factSeed + 1} compact />
+        </View>
+
         {/* Upcoming appointments */}
-        {appointments.length > 0 && (
-          <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
+        {appointments.length > 0 ? (
+          <View style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 20 }}>
             <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "700", color: "#1A1A2E", marginBottom: 12 }}>Próximas consultas</Text>
             {appointments.map((apt: any) => (
               <View key={apt.id} style={{ backgroundColor: "#fff", borderRadius: 16, padding: 14, marginBottom: 8, borderWidth: 1.5, borderColor: "#F0E8E0", flexDirection: "row", alignItems: "center", gap: 12 }}>
@@ -148,6 +162,11 @@ export default function HomeScreen() {
                 </View>
               </View>
             ))}
+          </View>
+        ) : (
+          /* Segunda dica quando não há consultas */
+          <View style={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 24 }}>
+            <AnimalFact seed={factSeed + 3} style={{ marginBottom: 8 }} />
           </View>
         )}
       </ScrollView>

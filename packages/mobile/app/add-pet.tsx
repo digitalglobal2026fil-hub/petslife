@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Camera, Dog, Cat, Bird, Rabbit } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../lib/api";
+import { uploadImage } from "../lib/upload";
 
 const SPECIES = [
   { key: "dog", label: "Cão", icon: Dog, emoji: "🐕" },
@@ -59,11 +60,7 @@ export default function AddPetScreen() {
     setPhoto(asset.uri);
     setUploadingPhoto(true);
     try {
-      const filename = asset.uri.split("/").pop() ?? "photo.jpg";
-      const presignRes = await (api as any).upload.presign.$post({ json: { filename, contentType: asset.mimeType ?? "image/jpeg" } });
-      const { presignedUrl, publicUrl } = await presignRes.json();
-      const blob = await (await fetch(asset.uri)).blob();
-      await fetch(presignedUrl, { method: "PUT", body: blob, headers: { "Content-Type": asset.mimeType ?? "image/jpeg" } });
+      const publicUrl = await uploadImage(asset.uri, asset.mimeType ?? "image/jpeg");
       setPhotoUrl(publicUrl);
     } catch {
       Alert.alert("Erro", "Não foi possível fazer upload da foto.");

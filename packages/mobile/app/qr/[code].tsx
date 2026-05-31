@@ -4,14 +4,15 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ChevronLeft, Share2, Globe } from "lucide-react-native";
 import Constants from "expo-constants";
 
-const API_BASE = (Constants.expoConfig?.extra?.apiUrl as string ?? "http://localhost:4200").replace(/\/$/, "");
+// URL fixa de produção — não depende do servidor sandbox temporário
+const PET_BASE_URL = "https://petslife.app/pet";
 
 export default function QRCodeScreen() {
   const router = useRouter();
   const { code } = useLocalSearchParams<{ code: string }>();
 
-  // URL pública do perfil do animal — usa o nosso servidor
-  const petProfileUrl = `${API_BASE}/pet/${code}`;
+  // URL pública permanente do perfil do animal
+  const petProfileUrl = `${PET_BASE_URL}/${code}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(petProfileUrl)}`;
 
   async function handleShare() {

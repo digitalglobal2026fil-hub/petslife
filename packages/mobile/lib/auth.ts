@@ -23,7 +23,7 @@ function removeToken() {
   SecureStore.deleteItemAsync(TOKEN_KEY);
 }
 
-const baseURL =
+export const baseURL =
   Constants.expoConfig?.extra?.apiUrl ??
   process.env.EXPO_PUBLIC_API_URL;
 
@@ -45,4 +45,9 @@ export function captureToken(ctx: { response: Response }) {
 
 export function clearToken() {
   removeToken();
+}
+
+// Async version for upload.ts compatibility
+export async function getTokenAsync(): Promise<string> {
+  return getToken();
 }

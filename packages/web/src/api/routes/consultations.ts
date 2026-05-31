@@ -32,9 +32,9 @@ export const consultations = new Hono()
     const user = c.get("user")!;
     const body = await c.req.json();
 
-    // Generate a Whereby-style room name (free, no SDK needed)
-    const roomName = `petslife-${crypto.randomUUID().slice(0, 8)}`;
-    const roomUrl = `https://whereby.com/${roomName}`;
+    // Jitsi Meet — gratuito, sem API key, funciona imediatamente
+    const roomName = `petslife-${crypto.randomUUID().slice(0, 10)}`;
+    const roomUrl = `https://meet.jit.si/${roomName}`;
 
     const [consultation] = await db
       .insert(schema.consultations)

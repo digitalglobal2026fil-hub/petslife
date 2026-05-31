@@ -84,7 +84,7 @@ export default function ListingDetailScreen() {
               if (c.includes("@")) Linking.openURL(`mailto:${c}`);
               else Linking.openURL(`tel:${c}`);
             }}
-            style={{ flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: "#FF6B35", borderRadius: 16, padding: 16, alignItems: "center", justifyContent: "center" }}>
+            style={{ flexDirection: "row", gap: 10, backgroundColor: "#FF6B35", borderRadius: 16, padding: 16, alignItems: "center", justifyContent: "center" }}>
             <Phone size={18} color="#fff" />
             <Text style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Contactar: {l.contact}</Text>
           </TouchableOpacity>

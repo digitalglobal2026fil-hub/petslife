@@ -57,7 +57,7 @@ function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
           width: 64, height: 64, borderRadius: 18,
           backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center",
         }}>
-          <Text style={{ fontSize: 30 }}>{typeEmoji[b.type] ?? "📦"}</Text>
+          <Text style={{ fontSize: 30, backgroundColor: "transparent" }}>{typeEmoji[b.type] ?? "📦"}</Text>
         </View>
 
         {/* Info */}
@@ -143,22 +143,22 @@ function ListingCard({ l, onPress }: { l: any; onPress: () => void }) {
 
 // ─── Business categories ──────────────────────────────────────────────────────
 const BIZ_CATS = [
-  { key: "todos",      label: "Todos",       emoji: "🔍" },
-  { key: "clinica",    label: "Clínicas",    emoji: "🏥" },
-  { key: "petshop",    label: "Petshops",    emoji: "🐾" },
-  { key: "hotel",      label: "Hotéis",      emoji: "🏠" },
-  { key: "tosquiador", label: "Tosquiadores",emoji: "✂️" },
-  { key: "treino",     label: "Treino",      emoji: "🎾" },
-  { key: "outro",      label: "Outro",       emoji: "📦" },
+  { key: "todos",      label: "Todos",       emoji: "🔍", route: null },
+  { key: "clinica",    label: "Clínicas",    emoji: "🏥", route: "/category/clinicas" },
+  { key: "petshop",    label: "Petshops",    emoji: "🐾", route: "/category/petshops" },
+  { key: "hotel",      label: "Hotéis",      emoji: "🏨", route: "/category/hoteis" },
+  { key: "tosquiador", label: "Tosquiadores",emoji: "✂️", route: "/category/tosquiadores" },
+  { key: "treino",     label: "Treino",      emoji: "🎯", route: "/category/treino" },
+  { key: "outro",      label: "Outro",       emoji: "📦", route: null },
 ];
 
 // ─── Listing categories ────────────────────────────────────────────────────────
 const LIST_CATS = [
-  { key: "todos",     label: "Todos",          emoji: "🔍" },
-  { key: "adoption",  label: "Adoção",         emoji: "🏠" },
-  { key: "products",  label: "Produtos",       emoji: "🛍️" },
-  { key: "services",  label: "Serviços",       emoji: "✂️" },
-  { key: "lost",      label: "Animal Perdido", emoji: "🔎" },
+  { key: "todos",     label: "Todos",          emoji: "🔍", route: null },
+  { key: "adoption",  label: "Adoção",         emoji: "❤️", route: "/category/adocao" },
+  { key: "products",  label: "Produtos",       emoji: "🛍️", route: null },
+  { key: "services",  label: "Serviços",       emoji: "🛠️", route: "/category/servicos" },
+  { key: "lost",      label: "Animal Perdido", emoji: "🔍", route: "/category/perdidos" },
 ];
 
 // ─── Main screen ──────────────────────────────────────────────────────────────
@@ -274,15 +274,21 @@ export default function MarketplaceScreen() {
           return (
             <TouchableOpacity
               key={c.key}
-              onPress={() => tab === "businesses" ? setBizCat(c.key) : setListCat(c.key)}
+              onPress={() => {
+                if (c.route && c.key !== "todos") {
+                  router.push(c.route as any);
+                } else {
+                  tab === "businesses" ? setBizCat(c.key) : setListCat(c.key);
+                }
+              }}
               style={{
                 flexDirection: "row", alignItems: "center", gap: 5,
                 backgroundColor: active ? activeColor : "#fff",
                 borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8,
                 borderWidth: 1.5, borderColor: active ? activeColor : "#F0E8E0",
               }}>
-              <Text style={{ fontSize: 14 }}>{c.emoji}</Text>
-              <Text style={{ color: active ? "#fff" : "#6B7280", fontWeight: "600", fontSize: 13 }}>{c.label}</Text>
+              <Text style={{ fontSize: 14, backgroundColor: "transparent" }}>{c.emoji}</Text>
+              <Text suppressHighlighting style={{ color: active ? "#fff" : "#6B7280", fontWeight: "600", fontSize: 13, backgroundColor: "transparent" }}>{c.label}</Text>
             </TouchableOpacity>
           );
         })}
@@ -299,7 +305,7 @@ export default function MarketplaceScreen() {
         ) : tab === "businesses" ? (
           filteredBiz.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 40 }}>
-              <Text style={{ fontSize: 48 }}>🏪</Text>
+              <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🏪</Text>
               <Text style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>
                 {businesses.length === 0 ? "Ainda sem negócios" : "Sem resultados"}
               </Text>
@@ -327,7 +333,7 @@ export default function MarketplaceScreen() {
         ) : (
           filteredList.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 40 }}>
-              <Text style={{ fontSize: 48 }}>🛒</Text>
+              <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🛒</Text>
               <Text style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>
                 {listings.length === 0 ? "Sem anúncios ainda" : "Sem resultados"}
               </Text>
