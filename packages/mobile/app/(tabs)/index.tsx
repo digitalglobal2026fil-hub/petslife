@@ -85,7 +85,7 @@ export default function HomeScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12, paddingBottom: 4 }}>
             {pets.map((pet: any) => (
               <TouchableOpacity key={pet.id} onPress={() => router.push(`/pet/${pet.id}`)}
-                style={{ backgroundColor: "#fff", borderRadius: 24, padding: 16, width: 160, borderWidth: 1.5, borderColor: "#F0E8E0", shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}>
+                style={{ backgroundColor: "#fff", borderRadius: 24, padding: 16, width: 160, borderWidth: 1.5, borderColor: "#F0E8E0", shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 0 }}>
                 <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
                   {pet.photoUrl ? (
                     <Image source={{ uri: pet.photoUrl }} style={{ width: 64, height: 64, borderRadius: 32 }} />

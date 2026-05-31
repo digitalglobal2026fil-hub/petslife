@@ -50,7 +50,7 @@ export function CategoryHeader({ emoji, title, subtitle, bgColor, accentColor }:
           width: 56, height: 56, borderRadius: 20,
           backgroundColor: "rgba(255,255,255,0.85)",
           alignItems: "center", justifyContent: "center",
-          shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 6, elevation: 2,
+          shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 6, elevation: 0,
         }}>
           <Text style={{ fontSize: 30, backgroundColor: "transparent" }}>{emoji}</Text>
         </View>

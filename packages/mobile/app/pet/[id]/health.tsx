@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
   Alert, TextInput, Modal, Image, Platform
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useCallback } from "react";
@@ -114,6 +114,7 @@ function EmptyState({ emoji, text, onAdd }: { emoji: string; text: string; onAdd
 // ─── Main screen ──────────────────────────────────────────────────────────────
 export default function PetHealthScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { id, tab: tabParam } = useLocalSearchParams<{ id: string; tab?: string }>();
   const qc = useQueryClient();
   const validTabs: Tab[] = ["vaccines","appointments","documents","diary","deworming","weight","prescriptions"];
@@ -324,7 +325,7 @@ export default function PetHealthScreen() {
         ))}
       </ScrollView>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 0 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 0 , paddingBottom: Math.max(insets.bottom, 24) }}>
 
         {/* ── VACCINES ── */}
         {tab === "vaccines" && (
@@ -523,7 +524,7 @@ export default function PetHealthScreen() {
       {/* Add Vaccine */}
       <Modal visible={modal === "vaccines"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
-          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 }}>
+          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Nova Vacina</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
@@ -550,14 +551,14 @@ export default function PetHealthScreen() {
       {/* Add Appointment */}
       <Modal visible={modal === "appointments"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
-          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 }}>
+          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Nova Consulta</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <View style={{ marginBottom: 12 }}>
               <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Tipo</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 , paddingBottom: Math.max(insets.bottom, 24) }}>
                 {["consulta", "vacina", "exame", "cirurgia", "outro"].map((t) => (
                   <TouchableOpacity key={t} onPress={() => setAType(t)}
                     style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: aType === t ? "#FF6B35" : "#FFF9F5", borderWidth: 1.5, borderColor: aType === t ? "#FF6B35" : "#F0E8E0" }}>
@@ -585,7 +586,7 @@ export default function PetHealthScreen() {
       {/* Add Prescription */}
       <Modal visible={modal === "prescriptions"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
-          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 }}>
+          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Nova Receita Médica</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
@@ -607,14 +608,14 @@ export default function PetHealthScreen() {
       {/* Add Document */}
       <Modal visible={modal === "documents"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
-          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 }}>
+          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Novo Documento</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <View style={{ marginBottom: 12 }}>
               <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Tipo de documento</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 , paddingBottom: Math.max(insets.bottom, 24) }}>
                 {["passaporte", "licença", "exame", "seguro", "caderneta", "outro"].map((t) => (
                   <TouchableOpacity key={t} onPress={() => setDType(t)}
                     style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: dType === t ? "#06D6A0" : "#FFF9F5", borderWidth: 1.5, borderColor: dType === t ? "#06D6A0" : "#F0E8E0" }}>
@@ -640,14 +641,14 @@ export default function PetHealthScreen() {
       {/* Add Diary Entry */}
       <Modal visible={modal === "diary"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
-          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 }}>
+          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Entrada no Diário</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <View style={{ marginBottom: 12 }}>
               <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Categoria</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 , paddingBottom: Math.max(insets.bottom, 24) }}>
                 {["sintoma", "comportamento", "medicacao", "alimentacao", "peso", "outro"].map((t) => (
                   <TouchableOpacity key={t} onPress={() => setDiaryType(t)}
                     style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: diaryType === t ? "#EF476F" : "#FFF9F5", borderWidth: 1.5, borderColor: diaryType === t ? "#EF476F" : "#F0E8E0" }}>
@@ -676,7 +677,7 @@ export default function PetHealthScreen() {
       {/* Add Deworming */}
       <Modal visible={modal === "deworming"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
-          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 }}>
+          <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Nova Desparasitação</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>

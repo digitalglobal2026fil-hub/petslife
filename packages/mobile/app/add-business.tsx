@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, TextInput, Alert,
   ActivityIndicator, KeyboardAvoidingView, Platform,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -51,6 +51,7 @@ function Input({ label, value, onChangeText, placeholder, multiline = false, key
 
 export default function AddBusinessScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
 
   const [name, setName] = useState("");

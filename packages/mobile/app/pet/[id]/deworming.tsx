@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
   Alert, TextInput, Modal, Image
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -57,6 +57,7 @@ async function cameraAndUpload(setter: (u: string) => void, setLoading: (b: bool
 
 export default function DewormingPage() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const qc = useQueryClient();
   const [modal, setModal] = useState(false);

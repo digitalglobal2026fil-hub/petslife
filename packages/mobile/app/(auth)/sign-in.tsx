@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { authClient, captureToken } from "../../lib/auth";
 import { PawPrint, Eye, EyeOff } from "lucide-react-native";
 
 export default function SignInScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -17,10 +19,14 @@ export default function SignInScreen() {
     setLoading(true);
     try {
       const res = await authClient.signIn.email({ email, password }, { onSuccess: captureToken });
-      if (res.error) throw new Error(res.error.message);
+      if (res.error) {
+        const msg = res.error.message || res.error.statusText || JSON.stringify(res.error);
+        throw new Error(msg);
+      }
       router.replace("/(tabs)");
     } catch (e: any) {
-      Alert.alert("Erro", e.message ?? "Não foi possível entrar.");
+      const msg = e.message && e.message !== "undefined" ? e.message : "Email ou password incorretos.";
+      Alert.alert("Erro ao entrar", msg);
     } finally {
       setLoading(false);
     }
@@ -29,7 +35,10 @@ export default function SignInScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24 }} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24, paddingBottom: Math.max(insets.bottom, 24) }}
+          keyboardShouldPersistTaps="handled"
+        >
 
           {/* Logo */}
           <View style={{ alignItems: "center", marginBottom: 40 }}>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert, FlatList, Dimensions } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Plus, Trash2, Camera, Upload } from "lucide-react-native";
@@ -17,6 +17,7 @@ async function uploadFile(uri: string, filename: string, mimeType: string): Prom
 
 export default function PetPhotosScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const qc = useQueryClient();
   const [uploading, setUploading] = useState(false);

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, QrCode, Syringe, Calendar, FileText, MapPin, Trash2, PawPrint, Camera } from "lucide-react-native";
@@ -7,6 +7,7 @@ import { api } from "../../../lib/api";
 
 export default function PetDetailScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const qc = useQueryClient();
 
@@ -105,7 +106,7 @@ export default function PetDetailScreen() {
 
         {/* Pet hero */}
         <View style={{ alignItems: "center", paddingVertical: 20 }}>
-          <View style={{ width: 110, height: 110, borderRadius: 55, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center", borderWidth: 4, borderColor: "#fff", shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 16, elevation: 8 }}>
+          <View style={{ width: 110, height: 110, borderRadius: 55, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center", borderWidth: 4, borderColor: "#fff", shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 16, elevation: 0 }}>
             {pet.photoUrl ? (
               <Image source={{ uri: pet.photoUrl }} style={{ width: 110, height: 110, borderRadius: 55 }} />
             ) : (

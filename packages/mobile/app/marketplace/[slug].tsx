@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, TextInput,
   ActivityIndicator, RefreshControl, Image,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search, MapPin, Phone, Star, Tag, PawPrint, ChevronLeft } from "lucide-react-native";
@@ -68,7 +68,7 @@ function SearchInput({ onSearch, placeholder }: { onSearch: (v: string) => void;
 function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.85}
-      style={{ backgroundColor: CARD, borderRadius: 20, marginBottom: 14, borderWidth: 1.5, borderColor: BORDER, shadowColor: BROWN, shadowOpacity: 0.08, shadowRadius: 8, elevation: 2 }}>
+      style={{ backgroundColor: CARD, borderRadius: 20, marginBottom: 14, borderWidth: 1.5, borderColor: BORDER, shadowColor: BROWN, shadowOpacity: 0.08, shadowRadius: 8, elevation: 0 }}>
       <View style={{ flexDirection: "row", padding: 16, gap: 14 }}>
         <View style={{ width: 64, height: 64, borderRadius: 18, backgroundColor: ICON_BG, alignItems: "center", justifyContent: "center" }}>
           <Text style={{ fontSize: 30 }}>{typeEmoji[b.type] ?? "📦"}</Text>
@@ -140,6 +140,7 @@ function ListingCard({ l, onPress }: { l: any; onPress: () => void }) {
 export default function MarketplaceCategory() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [search, setSearch] = useState("");
   const handleSearch = useCallback((v: string) => setSearch(v), []);
 

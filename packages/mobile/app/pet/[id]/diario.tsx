@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
   Alert, TextInput, Modal
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -39,6 +39,7 @@ function Campo({ label, value, onChange, placeholder, multiline }: any) {
 
 export default function DiarioPage() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const qc = useQueryClient();
   const [modal, setModal] = useState(false);
@@ -161,7 +162,7 @@ export default function DiarioPage() {
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
             <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>Tipo</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
               {TIPOS.map((t) => (
                 <TouchableOpacity key={t.key} onPress={() => setTipo(t.key)}
                   style={{ paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, borderWidth: 2, borderColor: tipo === t.key ? COLOR : BORDER, backgroundColor: tipo === t.key ? COLOR_BG : CARD, alignItems: "center", gap: 4 }}>

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert, ActivityIndicator } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { authClient, captureToken } from "../../lib/auth";
 import { PawPrint, Eye, EyeOff } from "lucide-react-native";
 
 export default function SignUpScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +32,7 @@ export default function SignUpScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24 }} keyboardShouldPersistTaps="handled">
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24, paddingBottom: Math.max(insets.bottom, 24) }} keyboardShouldPersistTaps="handled">
 
           {/* Logo */}
           <View style={{ alignItems: "center", marginBottom: 32 }}>

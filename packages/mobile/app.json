@@ -8,10 +8,10 @@
         "backgroundColor": "#FF6B35"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 17
+      "versionCode": 19
     },
     "extra": {
-      "apiUrl": "https://qx7w0z1uul79my5hxm5d2-preview-4200.runable.site/",
+      "apiUrl": "https://petslife.onrender.com",
       "eas": {
         "projectId": "1cf237a5-8621-4e30-80b9-90145a80262c"
       }
@@ -27,7 +27,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",

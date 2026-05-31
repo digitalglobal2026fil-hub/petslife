@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Tag, Package } from "lucide-react-native";
@@ -44,6 +44,7 @@ function Field({ label, value, onChangeText, placeholder, keyboardType, multilin
 
 export default function AddListingScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const qc = useQueryClient();
 
   const [title, setTitle] = useState("");
@@ -102,7 +103,7 @@ export default function AddListingScreen() {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ padding: 20, paddingTop: 4 }}
+          contentContainerStyle={{ padding: 20, paddingTop: 4 , paddingBottom: Math.max(insets.bottom, 24) }}
           keyboardShouldPersistTaps="handled"
         >
           {/* Category selector */}

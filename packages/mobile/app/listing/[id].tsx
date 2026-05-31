@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Linking, ActivityIndicator, Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, MapPin, Phone, Tag, PawPrint, Trash2 } from "lucide-react-native";
@@ -12,6 +12,7 @@ const catEmoji: Record<string, string> = {
 export default function ListingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({

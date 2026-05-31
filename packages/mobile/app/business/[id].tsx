@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Linking, TextInput, Alert, ActivityIndicator } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Phone, Globe, MapPin, Clock, Star, MessageSquare } from "lucide-react-native";
@@ -9,6 +9,7 @@ import { api } from "../../lib/api";
 export default function BusinessDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");

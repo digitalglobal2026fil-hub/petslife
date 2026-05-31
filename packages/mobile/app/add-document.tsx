@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
   Alert, TextInput, Image
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -46,6 +46,7 @@ const DOC_TYPES = [
 
 export default function AddDocumentScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const qc = useQueryClient();
   const { mode } = useLocalSearchParams<{ mode?: string }>();
   const isPrescription = mode === "prescription";
@@ -162,7 +163,7 @@ export default function AddDocumentScreen() {
         {!isPrescription && (
           <>
             <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Tipo de documento</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
               {DOC_TYPES.filter(t => t.k !== "receita").map((t) => (
                 <TouchableOpacity key={t.k} onPress={() => setDocType(t.k)}
                   style={{ paddingHorizontal: 14, paddingVertical: 10, borderRadius: 20, backgroundColor: docType === t.k ? color : "#fff", borderWidth: 1.5, borderColor: docType === t.k ? color : "#F0E8E0" }}>
@@ -220,7 +221,7 @@ export default function AddDocumentScreen() {
         )}
 
         <TouchableOpacity onPress={handleSave} disabled={save.isPending}
-          style={{ backgroundColor: color, borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: color, shadowOpacity: 0.3, shadowRadius: 12, elevation: 4 }}>
+          style={{ backgroundColor: color, borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: color, shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
           {save.isPending ? <ActivityIndicator color="#fff" /> : (
             <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>
               💾 {isPrescription ? "Guardar Receita" : "Guardar Documento"}

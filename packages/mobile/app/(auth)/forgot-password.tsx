@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert, ActivityIndicator } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { baseURL } from "../../lib/auth";
 
@@ -13,6 +13,7 @@ const GRAY = "#A08060";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -41,10 +42,10 @@ export default function ForgotPasswordScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24 }} keyboardShouldPersistTaps="handled">
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24, paddingBottom: Math.max(insets.bottom, 24) }} keyboardShouldPersistTaps="handled">
 
           <View style={{ alignItems: "center", marginBottom: 40 }}>
-            <View style={{ backgroundColor: BROWN, borderRadius: 36, width: 90, height: 90, alignItems: "center", justifyContent: "center", marginBottom: 16, shadowColor: BROWN, shadowOpacity: 0.3, shadowRadius: 16, elevation: 8 }}>
+            <View style={{ backgroundColor: BROWN, borderRadius: 36, width: 90, height: 90, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
               <Text suppressHighlighting style={{ fontSize: 48 }}>🔑</Text>
             </View>
             <Text suppressHighlighting style={{ fontSize: 28, fontWeight: "900", color: BROWN }}>Recuperar password</Text>
@@ -66,7 +67,7 @@ export default function ForgotPasswordScreen() {
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={{ backgroundColor: CARD, borderRadius: 28, padding: 24, borderWidth: 1.5, borderColor: BORDER, shadowColor: BROWN, shadowOpacity: 0.10, shadowRadius: 20, elevation: 6 }}>
+            <View style={{ backgroundColor: CARD, borderRadius: 28, padding: 24, borderWidth: 1.5, borderColor: BORDER }}>
               <View style={{ gap: 14 }}>
                 <View>
                   <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: GRAY, marginBottom: 8 }}>Email</Text>
@@ -81,7 +82,7 @@ export default function ForgotPasswordScreen() {
                   />
                 </View>
                 <TouchableOpacity onPress={handleSubmit} disabled={loading}
-                  style={{ backgroundColor: BROWN, borderRadius: 18, padding: 18, alignItems: "center", marginTop: 8, shadowColor: BROWN, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5 }}>
+                  style={{ backgroundColor: BROWN, borderRadius: 18, padding: 18, alignItems: "center", marginTop: 8 }}>
                   {loading ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "900", fontSize: 16 }}>Enviar link</Text>}
                 </TouchableOpacity>
               </View>

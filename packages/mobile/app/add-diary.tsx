@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
   Alert, TextInput
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -58,6 +58,7 @@ function Field({ label, value, onChange, placeholder, multiline }: any) {
 
 export default function AddDiaryScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const qc = useQueryClient();
 
   const [petId, setPetId] = useState<string | null>(null);
@@ -197,7 +198,7 @@ export default function AddDiaryScreen() {
             backgroundColor: ACCENT,
             borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8,
             opacity: save.isPending ? 0.7 : 1,
-            shadowColor: ACCENT, shadowOpacity: 0.3, shadowRadius: 12, elevation: 4,
+            shadowColor: ACCENT, shadowOpacity: 0.3, shadowRadius: 12, elevation: 0,
           }}
         >
           {save.isPending

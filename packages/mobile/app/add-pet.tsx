@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Platform, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Camera, Dog, Cat, Bird, Rabbit } from "lucide-react-native";
@@ -38,6 +38,7 @@ const Input = ({ label, value, onChangeText, placeholder, keyboardType, maxLengt
 
 export default function AddPetScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const qc = useQueryClient();
 
   const [name, setName] = useState("");
@@ -100,7 +101,7 @@ export default function AddPetScreen() {
         <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Adicionar Animal</Text>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 4 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 4 , paddingBottom: Math.max(insets.bottom, 24) }}>
         {/* Photo */}
         <TouchableOpacity onPress={pickPhoto} style={{ alignSelf: "center", width: 100, height: 100, borderRadius: 50, backgroundColor: "#fff", borderWidth: 2, borderColor: "#F0E8E0", borderStyle: photo ? "solid" : "dashed", alignItems: "center", justifyContent: "center", marginBottom: 24, overflow: "hidden" }}>
           {photo ? (
@@ -125,7 +126,7 @@ export default function AddPetScreen() {
         {/* Species selector */}
         <View style={{ marginBottom: 14 }}>
           <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 8 }}>Espécie *</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 , paddingBottom: Math.max(insets.bottom, 24) }}>
             {SPECIES.map((s) => (
               <TouchableOpacity key={s.key} onPress={() => setSpecies(s.key)}
                 style={{ alignItems: "center", paddingHorizontal: 16, paddingVertical: 10, borderRadius: 14, backgroundColor: species === s.key ? "#FF6B35" : "#fff", borderWidth: 1.5, borderColor: species === s.key ? "#FF6B35" : "#F0E8E0", gap: 4 }}>

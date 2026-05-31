@@ -1,28 +1,32 @@
-# PetsLife Fix Tasks — COMPLETED
+# PetsLife Bug Fixes (AAB v19)
 
-## DONE ✅
-- [x] Category pages: clinicas, petshops, hoteis, tosquiadores, treino, adocao, perdidos, servicos
-- [x] Marketplace pills navigate to category pages (router.push on click)
-- [x] Jitsi fix: local room URL `https://meet.jit.si/petslife-{id}` when no server URL
-- [x] QR Code: fixed URL to `https://petslife.app/pet/{code}` instead of sandbox
-- [x] AnimalFact added to: health.tsx, social.tsx (already on index.tsx, category pages)
-- [x] backgroundColor transparent on emoji Text elements
-- [x] lib/api.ts: added generic get/post helpers + kept hono typed client
-- [x] auth.ts: exported baseURL and added getTokenAsync()
-- [x] listing/[id].tsx: fixed duplicate alignItems
-- [x] SVG types added for PawIcon
-- [x] versionCode 17 built + uploaded
-- [x] AAB uploaded: https://gofile.io/d/XP6UgB
+## Status
+- [ ] Fix 1: Login blank error dialog
+- [ ] Fix 2: Black shadow on text labels (sombra preta)
+- [ ] Fix 3: Reset password email not arriving (needs Resend key)
+- [ ] Fix 4: Buttons cut off at bottom (safe area)
+- [ ] Build AAB v19
+- [ ] Upload to gofile + Play Store
 
-## REMAINING (not blocking)
-- [ ] Railway/Render deploy for stable API URL
-  - Once deployed: update app.json extra.apiUrl + WEBSITE_URL in .env
-  - Railway tokens (UUID format) rejected by CLI 4.66.0 — try via web UI or Render.com
-- [ ] "Aspeto mais fofinho" — some further UI polish could be done
-- [ ] Login "sem ligação": works on sandbox, will fail if sandbox restarts without URL update
+## Root Causes
+1. Login: `res.error.message` may be undefined — need fallback chain
+2. Black shadow: `elevation` + `shadowColor: "#000"` on tab bar and cards on Android
+   - Tab bar: elevation:12, shadowColor:"#000"
+   - Cards: various elevation values
+   - Fix: lower elevation or use `shadowColor` with lighter color
+3. Email: Better Auth emailAndPassword has no `sendResetPassword` callback
+   - Need Resend API key from user
+4. Safe area: sign-in uses edges=["top","left","right"] — missing bottom
+   - ScrollView contentContainer needs paddingBottom with insets.bottom
 
-## AAB INFO
-- versionCode: 17
-- version: 1.2.0
-- signed with release.keystore
-- Download: https://gofile.io/d/XP6UgB
+## Files to Edit
+- packages/mobile/app/(auth)/sign-in.tsx — fix 1, 4
+- packages/mobile/app/(auth)/sign-up.tsx — fix 4
+- packages/mobile/app/(auth)/forgot-password.tsx — fix 4
+- packages/mobile/app/(tabs)/_layout.tsx — fix 2 (elevation)
+- packages/web/src/api/auth.ts — fix 3 (email)
+- packages/web/.env — add RESEND_API_KEY
+
+## Notes
+- versionCode currently 18, will become 19
+- Server: https://petslife.onrender.com

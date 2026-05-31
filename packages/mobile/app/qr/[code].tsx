@@ -37,7 +37,7 @@ export default function QRCodeScreen() {
       </View>
 
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 24 }}>
-        <View style={{ backgroundColor: "#fff", borderRadius: 28, padding: 28, borderWidth: 2, borderColor: "#F0E8E0", shadowColor: "#000", shadowOpacity: 0.06, shadowRadius: 20, elevation: 4, alignItems: "center" }}>
+        <View style={{ backgroundColor: "#fff", borderRadius: 28, padding: 28, borderWidth: 2, borderColor: "#F0E8E0", shadowColor: "#000", shadowOpacity: 0.06, shadowRadius: 20, elevation: 0, alignItems: "center" }}>
           <View style={{ width: 220, height: 220, backgroundColor: "#F9F5F0", borderRadius: 16, alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
             <Image
               source={{ uri: qrUrl }}

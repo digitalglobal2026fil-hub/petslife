@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { useMemo } from "react";
 
 const BROWN = "#6B3A2A";
@@ -57,12 +57,12 @@ export function AnimalFact({ seed, style, compact }: AnimalFactProps) {
         borderWidth: 1,
         borderColor: BORDER,
       }, style]}>
-        <Text style={{ fontSize: 26 }}>{fact.emoji}</Text>
+        <Text suppressHighlighting style={{ fontSize: 26, backgroundColor: "transparent" }}>{fact.emoji}</Text>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 10, fontWeight: "700", color: BROWN2, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 }}>
+          <Text suppressHighlighting style={{ fontSize: 10, fontWeight: "700", color: BROWN2, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2, backgroundColor: "transparent" }}>
             Sabia que... 🌟
           </Text>
-          <Text style={{ fontSize: 12, color: BROWN, fontStyle: "italic", lineHeight: 17, fontWeight: "600" }}>
+          <Text suppressHighlighting style={{ fontSize: 12, color: BROWN, fontStyle: "italic", lineHeight: 17, fontWeight: "600", backgroundColor: "transparent" }}>
             {fact.fact}
           </Text>
         </View>
@@ -81,21 +81,21 @@ export function AnimalFact({ seed, style, compact }: AnimalFactProps) {
       alignItems: "center",
       gap: 14,
       shadowColor: BROWN,
-      shadowOpacity: 0.06,
+      shadowOpacity: Platform.OS === "ios" ? 0.06 : 0,
       shadowRadius: 8,
-      elevation: 2,
+      elevation: 0,
     }, style]}>
       <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: ICON_BG, alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ fontSize: 28 }}>{fact.emoji}</Text>
+        <Text suppressHighlighting style={{ fontSize: 28, backgroundColor: "transparent" }}>{fact.emoji}</Text>
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 11, fontWeight: "800", color: BROWN2, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4 }}>
+        <Text suppressHighlighting style={{ fontSize: 11, fontWeight: "800", color: BROWN2, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4, backgroundColor: "transparent" }}>
           🌟 Sabia que...
         </Text>
-        <Text style={{ fontSize: 13, color: BROWN, fontStyle: "italic", lineHeight: 19, fontWeight: "600" }}>
+        <Text suppressHighlighting style={{ fontSize: 13, color: BROWN, fontStyle: "italic", lineHeight: 19, fontWeight: "600", backgroundColor: "transparent" }}>
           {fact.fact}
         </Text>
-        <Text style={{ fontSize: 10, color: "#C4A882", marginTop: 4, fontWeight: "600" }}>— {fact.animal}</Text>
+        <Text suppressHighlighting style={{ fontSize: 10, color: "#C4A882", marginTop: 4, fontWeight: "600", backgroundColor: "transparent" }}>— {fact.animal}</Text>
       </View>
     </View>
   );

@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
   Alert, TextInput, KeyboardAvoidingView, Platform
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -37,6 +37,7 @@ const TYPES = [
 
 export default function AddAppointmentScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const qc = useQueryClient();
 
   const [petId, setPetId] = useState<string | null>(null);
@@ -127,7 +128,7 @@ export default function AddAppointmentScreen() {
 
         {/* Type selector */}
         <Text style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Tipo de consulta</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
           {TYPES.map((t) => (
             <TouchableOpacity key={t.k} onPress={() => setType(t.k)}
               style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, backgroundColor: type === t.k ? t.c : "#fff", borderWidth: 1.5, borderColor: type === t.k ? t.c : "#F0E8E0" }}>
@@ -152,7 +153,7 @@ export default function AddAppointmentScreen() {
         <Field label="Notas / Resultados" value={notes} onChange={setNotes} placeholder="Observações, diagnóstico, tratamento..." multiline />
 
         <TouchableOpacity onPress={handleSave} disabled={save.isPending}
-          style={{ backgroundColor: "#FF6B35", borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 12, elevation: 4 }}>
+          style={{ backgroundColor: "#FF6B35", borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
           {save.isPending ? <ActivityIndicator color="#fff" /> : (
             <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Consulta</Text>
           )}

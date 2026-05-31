@@ -83,7 +83,7 @@ export default function LanguageBar() {
                         backgroundColor: selected ? BROWN : CARD,
                         borderRadius: 16, padding: 14,
                         borderWidth: 2, borderColor: selected ? BROWN : BORDER,
-                        shadowColor: BROWN, shadowOpacity: 0.07, shadowRadius: 6, elevation: 2,
+                        shadowColor: BROWN, shadowOpacity: 0.07, shadowRadius: 6, elevation: 0,
                       }}>
                       <Text suppressHighlighting style={{ fontSize: 28 }}>{item.flag}</Text>
                       <View style={{ flex: 1 }}>

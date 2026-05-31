@@ -50,7 +50,7 @@ function PetAlbumCard({ pet }: { pet: any }) {
         shadowColor: BROWN,
         shadowOpacity: 0.07,
         shadowRadius: 10,
-        elevation: 3,
+        elevation: 0,
       }}
     >
       {/* Preview strip */}

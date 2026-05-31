@@ -10,4 +10,4 @@ EXPOSE 10000
 
 ENV PORT=10000
 
-CMD ["bun", "run", "packages/web/src/server.ts"]
+CMD ["bun", "--env-file=.env", "packages/web/src/server.ts"]

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Linking } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { CheckCircle, ArrowLeft, Star, PawPrint } from "lucide-react-native";
 
@@ -19,6 +19,7 @@ const features = [
 
 export default function SubscriptionScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>

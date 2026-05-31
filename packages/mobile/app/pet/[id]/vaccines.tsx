@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
   Alert, TextInput, Modal, Image, Platform
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -78,6 +78,7 @@ async function cameraAndUpload(setter: (u: string) => void, setLoading: (b: bool
 
 export default function VaccinesPage() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const qc = useQueryClient();
   const [modal, setModal] = useState(false);
@@ -170,7 +171,7 @@ export default function VaccinesPage() {
           </View>
         ) : (
           vaccines.map((v: any) => (
-            <View key={v.id} style={{ backgroundColor: CARD, borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 1.5, borderColor: BORDER, shadowColor: BROWN, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2 }}>
+            <View key={v.id} style={{ backgroundColor: CARD, borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 1.5, borderColor: BORDER, shadowColor: BROWN, shadowOpacity: 0.07, shadowRadius: 8, elevation: 0 }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
                 <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: GREEN_BG, alignItems: "center", justifyContent: "center" }}>
                   <Text suppressHighlighting style={{ fontSize: 22 }}>💉</Text>

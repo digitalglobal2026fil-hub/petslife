@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, RefreshControl, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Search, MapPin, Tag } from "lucide-react-native";
@@ -13,7 +13,7 @@ function ServiceCard({ item, onPress }: { item: any; onPress: () => void }) {
     <TouchableOpacity onPress={onPress} activeOpacity={0.85} style={{
       backgroundColor: "#fff", borderRadius: 20, marginBottom: 14,
       borderWidth: 1.5, borderColor: "#E0E7FF",
-      shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 2,
+      shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 0,
     }}>
       <View style={{ flexDirection: "row", padding: 16, gap: 14 }}>
         <View style={{ width: 72, height: 72, borderRadius: 18, backgroundColor: "#EEF2FF", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
@@ -50,6 +50,7 @@ function ServiceCard({ item, onPress }: { item: any; onPress: () => void }) {
 
 export default function ServicosScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [search, setSearch] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 

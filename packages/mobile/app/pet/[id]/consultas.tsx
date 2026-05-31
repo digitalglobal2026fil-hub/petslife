@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
   Alert, TextInput, Modal
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -30,6 +30,7 @@ const TIPOS = ["consulta", "cirurgia", "exame", "urgência", "outro"];
 
 export default function ConsultasPage() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const qc = useQueryClient();
   const [modal, setModal] = useState(false);
@@ -150,7 +151,7 @@ export default function ConsultasPage() {
             <Campo label="Notas" value={notas} onChange={setNotas} placeholder="Observações..." />
 
             <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>Tipo</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 14 }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 14 , paddingBottom: Math.max(insets.bottom, 24) }}>
               {TIPOS.map((t) => (
                 <TouchableOpacity key={t} onPress={() => setTipo(t)}
                   style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, borderWidth: 2, borderColor: tipo === t ? ORANGE : BORDER, backgroundColor: tipo === t ? "#FFE8D0" : CARD }}>
