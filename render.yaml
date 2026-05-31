@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: petslife-api
+    runtime: node
+    buildCommand: cd packages/web && npm install -g bun && bun install && bun run build
+    startCommand: cd packages/web && bun run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
