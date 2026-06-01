@@ -2,11 +2,15 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { bearer } from "better-auth/plugins";
 import { db } from "./database";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
-  : null;
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 export const auth = betterAuth({
   basePath: "/api/auth",
@@ -15,12 +19,12 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
-      if (!resend) {
-        console.warn("[auth] RESEND_API_KEY não configurado — email não enviado");
+      if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+        console.warn("[auth] Gmail não configurado — email não enviado");
         return;
       }
-      await resend.emails.send({
-        from: "PetsLife <onboarding@resend.dev>",
+      await transporter.sendMail({
+        from: `"PetsLife" <${process.env.GMAIL_USER}>`,
         to: user.email,
         subject: "Recuperar a tua password — PetsLife",
         html: `
