@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 export const auth = betterAuth({
   basePath: "/api/auth",
-  baseURL: process.env.WEBSITE_URL,
+  baseURL: process.env.WEBSITE_URL ?? "https://petslife.onrender.com",
   database: drizzleAdapter(db, { provider: "sqlite" }),
   emailAndPassword: {
     enabled: true,
