@@ -1,32 +1,15 @@
-# PetsLife Bug Fixes (AAB v19)
+# PetsLife — Correções Mobile
 
-## Status
-- [ ] Fix 1: Login blank error dialog
-- [ ] Fix 2: Black shadow on text labels (sombra preta)
-- [ ] Fix 3: Reset password email not arriving (needs Resend key)
-- [ ] Fix 4: Buttons cut off at bottom (safe area)
-- [ ] Build AAB v19
-- [ ] Upload to gofile + Play Store
+## Problemas a corrigir
+1. ✅ QR Code URL (já corrigido localmente)
+2. ⬜ Upload fotos — servidor só tem /presign (S3), precisa /image (base64 → guarda como data URL ou ficheiro local)
+3. ⬜ index.tsx — abre direto para /(tabs) sem verificar sessão (AuthGuard trata mas há flicker)
+4. ⬜ Texto preto — já todos têm suppressHighlighting, OK
+5. ⬜ Consulta vídeo — OK, usa Linking.openURL para Jitsi
+6. ⬜ Esqueci password — verificar se endpoint existe no servidor
+7. ⬜ Dicas/curiosidades — já existe AnimalFact, adicionar mais
+8. ⬜ Commit + build AAB
 
-## Root Causes
-1. Login: `res.error.message` may be undefined — need fallback chain
-2. Black shadow: `elevation` + `shadowColor: "#000"` on tab bar and cards on Android
-   - Tab bar: elevation:12, shadowColor:"#000"
-   - Cards: various elevation values
-   - Fix: lower elevation or use `shadowColor` with lighter color
-3. Email: Better Auth emailAndPassword has no `sendResetPassword` callback
-   - Need Resend API key from user
-4. Safe area: sign-in uses edges=["top","left","right"] — missing bottom
-   - ScrollView contentContainer needs paddingBottom with insets.bottom
-
-## Files to Edit
-- packages/mobile/app/(auth)/sign-in.tsx — fix 1, 4
-- packages/mobile/app/(auth)/sign-up.tsx — fix 4
-- packages/mobile/app/(auth)/forgot-password.tsx — fix 4
-- packages/mobile/app/(tabs)/_layout.tsx — fix 2 (elevation)
-- packages/web/src/api/auth.ts — fix 3 (email)
-- packages/web/.env — add RESEND_API_KEY
-
-## Notes
-- versionCode currently 18, will become 19
-- Server: https://petslife.onrender.com
+## Decisões
+- Upload: adicionar rota /api/upload/image que guarda base64 como ficheiro em /tmp e devolve data URL, ou simplesmente guarda a data URL diretamente na BD
+- Mais simples: servidor aceita base64, guarda data URL na BD (sem S3 necessário)

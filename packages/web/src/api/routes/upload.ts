@@ -29,6 +29,24 @@ if (S3_ENABLED) {
 
 export const upload = new Hono()
   .use("*", authMiddleware)
+  // Rota base64 → data URL (funciona sem S3)
+  .post("/image", requireAuth, async (c) => {
+    try {
+      const { base64, mimeType } = await c.req.json();
+      if (!base64 || base64.length < 100) {
+        return c.json({ error: "Imagem inválida" }, 400);
+      }
+      // Limitar tamanho: ~5MB em base64 ≈ ~3.75MB real
+      if (base64.length > 7_000_000) {
+        return c.json({ error: "Imagem demasiado grande (máx 5MB)" }, 413);
+      }
+      const mime = mimeType ?? "image/jpeg";
+      const dataUrl = `data:${mime};base64,${base64}`;
+      return c.json({ url: dataUrl });
+    } catch (e: any) {
+      return c.json({ error: "Erro interno: " + (e?.message ?? "desconhecido") }, 500);
+    }
+  })
   .post("/presign", requireAuth, async (c) => {
     if (!S3_ENABLED) {
       return c.json({ error: "File uploads not configured" }, 503);

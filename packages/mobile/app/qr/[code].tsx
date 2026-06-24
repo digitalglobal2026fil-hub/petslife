@@ -4,8 +4,8 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { ChevronLeft, Share2, Globe } from "lucide-react-native";
 import Constants from "expo-constants";
 
-// URL fixa de produção — não depende do servidor sandbox temporário
-const PET_BASE_URL = "https://petslife.app/pet";
+// URL do servidor real
+const PET_BASE_URL = "https://petslife.onrender.com/pet";
 
 export default function QRCodeScreen() {
   const router = useRouter();
