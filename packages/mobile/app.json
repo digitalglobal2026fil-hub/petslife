@@ -2,13 +2,13 @@
   "expo": {
     "icon": "./assets/icon.png",
     "android": {
-      "package": "com.petslife.app",
+      "package": "com.petislife2.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FF6B35"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 19
+      "versionCode": 21
     },
     "extra": {
       "apiUrl": "https://petslife.onrender.com",
@@ -17,7 +17,7 @@
       }
     },
     "ios": {
-      "bundleIdentifier": "com.petslife.app",
+      "bundleIdentifier": "com.petislife2.app",
       "supportsTablet": true
     },
     "splash": {
@@ -27,7 +27,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.3.0",
+    "version": "1.5.0",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",

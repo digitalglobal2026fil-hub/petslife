@@ -1,15 +1,100 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint } from "lucide-react-native";
+import { useRef, useEffect } from "react";
+import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
 import { AnimalFact } from "../../components/AnimalFact";
 
+function PetCard({ pet, index, onPress }: { pet: any; index: number; onPress: () => void }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 400, delay: index * 100, useNativeDriver: true }),
+      Animated.spring(slideAnim, { toValue: 0, delay: index * 100, tension: 80, friction: 10, useNativeDriver: true }),
+    ]).start();
+  }, []);
+
+  const speciesEmoji = pet.species === "cat" ? "🐱" : pet.species === "bird" ? "🦜" : pet.species === "rabbit" ? "🐰" : "🐕";
+  const speciesColor = pet.species === "cat" ? "#8B5CF6" : pet.species === "bird" ? "#06D6A0" : pet.species === "rabbit" ? "#F59E0B" : "#FF6B35";
+  const speciesBg = pet.species === "cat" ? "#F3EEFF" : pet.species === "bird" ? "#E6FAF5" : pet.species === "rabbit" ? "#FEF3C7" : "#FFF0EB";
+
+  return (
+    <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+      <TouchableOpacity onPress={onPress}
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: 28,
+          padding: 18,
+          width: 165,
+          borderWidth: 0,
+          shadowColor: speciesColor,
+          shadowOpacity: 0.15,
+          shadowRadius: 16,
+          shadowOffset: { width: 0, height: 6 },
+          elevation: 0,
+        }}>
+        {/* Species color accent top */}
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 6, backgroundColor: speciesColor, borderTopLeftRadius: 28, borderTopRightRadius: 28 }} />
+
+        <View style={{ width: 68, height: 68, borderRadius: 34, backgroundColor: speciesBg, alignItems: "center", justifyContent: "center", marginBottom: 12, marginTop: 6 }}>
+          {pet.photoUrl ? (
+            <Image source={{ uri: pet.photoUrl }} style={{ width: 68, height: 68, borderRadius: 34 }} />
+          ) : (
+            <Text suppressHighlighting style={{ fontSize: 32 }}>{speciesEmoji}</Text>
+          )}
+        </View>
+        <Text suppressHighlighting style={{ fontWeight: "800", fontSize: 16, color: "#1A1A2E" }}>{pet.name}</Text>
+        <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 12, marginTop: 2 }}>{pet.breed ?? pet.species}</Text>
+        <View style={{ flexDirection: "row", gap: 8, marginTop: 12 }}>
+          <View style={{ flex: 1, backgroundColor: speciesBg, borderRadius: 12, padding: 7, alignItems: "center" }}>
+            <QrCode size={15} color={speciesColor} />
+          </View>
+          <View style={{ flex: 1, backgroundColor: "#E8FAF9", borderRadius: 12, padding: 7, alignItems: "center" }}>
+            <Syringe size={15} color="#4ECDC4" />
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+}
+
+function QuickActionCard({ item, index }: { item: any; index: number }) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  function onPressIn() {
+    Animated.spring(scale, { toValue: 0.93, useNativeDriver: true, tension: 300, friction: 10 }).start();
+  }
+  function onPressOut() {
+    Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 300, friction: 10 }).start();
+  }
+
+  return (
+    <Animated.View style={{ flex: 1, transform: [{ scale }] }}>
+      <TouchableOpacity
+        onPress={item.onPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        activeOpacity={1}
+        style={{ backgroundColor: item.bg, borderRadius: 20, padding: 14, alignItems: "center", gap: 8 }}>
+        <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", shadowColor: item.color, shadowOpacity: 0.25, shadowRadius: 8, shadowOffset: { width: 0, height: 3 }, elevation: 0 }}>
+          <item.icon size={22} color={item.color} />
+        </View>
+        <Text suppressHighlighting style={{ fontSize: 11, fontWeight: "700", color: "#1A1A2E", textAlign: "center" }}>{item.label}</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+}
+
 export default function HomeScreen() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
+  const headerAnim = useRef(new Animated.Value(0)).current;
+
   const { data: petsData, isLoading } = useQuery({
     queryKey: ["pets"],
     queryFn: async () => (await api.pets.$get()).json(),
@@ -23,148 +108,148 @@ export default function HomeScreen() {
     queryFn: async () => (await api.appointments.upcoming.$get()).json(),
   });
 
+  useEffect(() => {
+    Animated.timing(headerAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
+  }, []);
+
   const pets = (petsData as any)?.pets ?? [];
   const sub = (subData as any);
   const appointments = ((appointmentsData as any)?.appointments ?? []).slice(0, 3);
   const isTrial = sub?.isTrial;
   const trialEndsAt = sub?.subscription?.trialEndsAt ? new Date(sub.subscription.trialEndsAt) : null;
   const daysLeft = trialEndsAt ? Math.max(0, Math.ceil((trialEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
-
-  // Seed baseado no dia para variar diariamente
   const factSeed = Math.floor(Date.now() / 86400000);
+  const firstName = session?.user?.name?.split(" ")[0];
+
+  const quickActions = [
+    { icon: Syringe, label: "Vacinas", color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/health" as any) },
+    { icon: Calendar, label: "Agenda", color: "#FF6B35", bg: "#FFF0EB", onPress: () => router.push("/health" as any) },
+    { icon: MapPin, label: "Vets", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/find-vets" as any) },
+    {
+      icon: QrCode, label: "QR Code", color: "#8B5CF6", bg: "#F3EEFF", onPress: () => {
+        if (pets.length === 0) { Alert.alert("QR Code", "Adicione um animal primeiro."); return; }
+        const qr = pets[0]?.qrCode;
+        if (qr) { router.push(`/qr/${qr}` as any); } else { Alert.alert("QR Code", "QR Code não gerado ainda."); }
+      }
+    },
+  ];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 12 }}>
-          <View>
-            <Text suppressHighlighting style={{ fontSize: 13, color: "#6B7280" }}>Olá, {session?.user?.name?.split(" ")[0]} 👋</Text>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>Os meus animais</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F6FF" }} edges={["top", "left", "right"]}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20 }}>
+
+        {/* Header com gradiente simulado */}
+        <Animated.View style={{
+          opacity: headerAnim,
+          transform: [{ translateY: headerAnim.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }) }],
+          backgroundColor: "#FF6B35",
+          paddingHorizontal: 20,
+          paddingTop: 18,
+          paddingBottom: 32,
+          borderBottomLeftRadius: 32,
+          borderBottomRightRadius: 32,
+          marginBottom: -16,
+        }}>
+          {/* Decorações */}
+          <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.08)" }} />
+          <View style={{ position: "absolute", top: 20, right: 60, width: 60, height: 60, borderRadius: 30, backgroundColor: "rgba(255,255,255,0.06)" }} />
+
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <View>
+              <Text suppressHighlighting style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: "500" }}>Olá, {firstName} 👋</Text>
+              <Text suppressHighlighting style={{ fontSize: 24, fontWeight: "800", color: "#fff", marginTop: 2 }}>Os meus animais</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push("/notifications" as any)}
+              style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" }}>
+              <Bell size={20} color="#fff" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => router.push("/notifications" as any)}
-            style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
-            <Bell size={20} color="#FF6B35" />
-          </TouchableOpacity>
-        </View>
+        </Animated.View>
 
         {/* Trial banner */}
         {isTrial && daysLeft > 0 && (
-          <View style={{ marginHorizontal: 20, marginBottom: 16, backgroundColor: "#FF6B35", borderRadius: 16, padding: 14, flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <AlertCircle size={20} color="#fff" />
+          <View style={{ marginHorizontal: 20, marginTop: 28, marginBottom: 4, backgroundColor: "#1A1A2E", borderRadius: 20, padding: 16, flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <Sparkles size={20} color="#FFE66D" />
             <View style={{ flex: 1 }}>
               <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>Trial termina em {daysLeft} dia{daysLeft !== 1 ? "s" : ""}</Text>
-              <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.8)", fontSize: 11 }}>Subscreva para continuar a usar a PetsLife</Text>
+              <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.6)", fontSize: 11 }}>Subscreva para continuar a usar a PetsLife</Text>
             </View>
-            <TouchableOpacity onPress={() => router.push("/subscription")} style={{ backgroundColor: "#fff", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6 }}>
-              <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "700", fontSize: 12 }}>Ver planos</Text>
+            <TouchableOpacity onPress={() => router.push("/subscription")} style={{ backgroundColor: "#FF6B35", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 7 }}>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>Ver planos</Text>
             </TouchableOpacity>
           </View>
         )}
 
         {/* Pets list */}
+        <View style={{ marginTop: 28, paddingHorizontal: 20, marginBottom: 8 }}>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>Os meus pets</Text>
+        </View>
         {isLoading ? (
-          <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} />
+          <ActivityIndicator color="#FF6B35" style={{ marginTop: 20 }} />
         ) : pets.length === 0 ? (
-          <View style={{ alignItems: "center", paddingVertical: 40, paddingHorizontal: 20 }}>
-            <View style={{ backgroundColor: "#F5EDE4", borderRadius: 32, padding: 18, marginBottom: 4 }}>
-              <PawPrint size={52} color="#8B5E3C" />
+          <View style={{ alignItems: "center", paddingVertical: 32, paddingHorizontal: 20 }}>
+            <View style={{ backgroundColor: "#FFF0EB", borderRadius: 40, padding: 22, marginBottom: 4 }}>
+              <Text suppressHighlighting style={{ fontSize: 56 }}>🐾</Text>
             </View>
-            <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Adicione o seu primeiro animal</Text>
-            <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>Crie o perfil do seu pet e comece a organizar a sua saúde.</Text>
+            <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E", marginTop: 14 }}>Adicione o seu primeiro animal</Text>
+            <Text suppressHighlighting style={{ color: "#9CA3AF", marginTop: 6, textAlign: "center", lineHeight: 20 }}>Crie o perfil do seu pet e comece a organizar a sua saúde.</Text>
             <TouchableOpacity onPress={() => router.push("/add-pet")}
-              style={{ backgroundColor: "#FF6B35", borderRadius: 16, paddingHorizontal: 24, paddingVertical: 14, marginTop: 20 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>+ Adicionar animal</Text>
+              style={{ backgroundColor: "#FF6B35", borderRadius: 20, paddingHorizontal: 28, paddingVertical: 15, marginTop: 20, shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 0 }}>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>+ Adicionar animal</Text>
             </TouchableOpacity>
-
-            {/* Dica quando não há animais */}
             <AnimalFact seed={factSeed} style={{ marginTop: 24, width: "100%" }} />
           </View>
         ) : (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 12, paddingBottom: 4 }}>
-            {pets.map((pet: any) => (
-              <TouchableOpacity key={pet.id} onPress={() => router.push(`/pet/${pet.id}`)}
-                style={{ backgroundColor: "#fff", borderRadius: 24, padding: 16, width: 160, borderWidth: 1.5, borderColor: "#F0E8E0", shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 0 }}>
-                <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
-                  {pet.photoUrl ? (
-                    <Image source={{ uri: pet.photoUrl }} style={{ width: 64, height: 64, borderRadius: 32 }} />
-                  ) : (
-                    <Text suppressHighlighting style={{ fontSize: 28 }}>{pet.species === "cat" ? "🐱" : pet.species === "bird" ? "🦜" : pet.species === "rabbit" ? "🐰" : "🐕"}</Text>
-                  )}
-                </View>
-                <Text suppressHighlighting style={{ fontWeight: "700", fontSize: 16, color: "#1A1A2E" }}>{pet.name}</Text>
-                <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12, marginTop: 2 }}>{pet.breed ?? pet.species}</Text>
-                <View style={{ flexDirection: "row", gap: 6, marginTop: 10 }}>
-                  <TouchableOpacity onPress={() => pet.qrCode ? router.push(`/qr/${pet.qrCode}`) : Alert.alert("QR Code", "QR Code ainda não gerado para este animal.")}
-                    style={{ flex: 1, backgroundColor: "#FFF9F5", borderRadius: 10, padding: 6, alignItems: "center" }}>
-                    <QrCode size={16} color="#FF6B35" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => router.push(`/pet/${pet.id}/health`)}
-                    style={{ flex: 1, backgroundColor: "#FFF9F5", borderRadius: 10, padding: 6, alignItems: "center" }}>
-                    <Syringe size={16} color="#4ECDC4" />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 14, paddingBottom: 8 }}>
+            {pets.map((pet: any, index: number) => (
+              <PetCard key={pet.id} pet={pet} index={index} onPress={() => router.push(`/pet/${pet.id}` as any)} />
             ))}
             <TouchableOpacity onPress={() => router.push("/add-pet")}
-              style={{ backgroundColor: "#FFF9F5", borderRadius: 24, padding: 16, width: 120, borderWidth: 1.5, borderColor: "#F0E8E0", borderStyle: "dashed", alignItems: "center", justifyContent: "center" }}>
-              <Plus size={28} color="#FF6B35" />
-              <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600", fontSize: 12, marginTop: 6, textAlign: "center" }}>Adicionar animal</Text>
+              style={{ backgroundColor: "#fff", borderRadius: 28, padding: 18, width: 120, borderWidth: 2, borderColor: "#FF6B35", borderStyle: "dashed", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
+                <Plus size={24} color="#FF6B35" />
+              </View>
+              <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "700", fontSize: 12, textAlign: "center" }}>Adicionar</Text>
             </TouchableOpacity>
           </ScrollView>
         )}
 
         {/* Quick actions */}
         <View style={{ padding: 20, paddingTop: 24 }}>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "700", color: "#1A1A2E", marginBottom: 12 }}>Acesso rápido</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>Acesso rápido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
-            {[
-              { icon: Syringe, label: "Vacinas", color: "#4ECDC4", bg: "#E8FAF9", route: "/health" as const },
-              { icon: Calendar, label: "Agenda", color: "#FF6B35", bg: "#FFF0EB", route: "/health" as const },
-              { icon: MapPin, label: "Vets", color: "#06D6A0", bg: "#E6FAF5", route: "/find-vets" as const },
-              { icon: QrCode, label: "QR Code", color: "#8B5CF6", bg: "#F3EEFF", route: null as any },
-            ].map((item) => (
-              <TouchableOpacity key={item.label} onPress={() => {
-                if (item.label === "QR Code") {
-                  if (pets.length === 0) { Alert.alert("QR Code", "Adicione um animal primeiro."); return; }
-                  const qr = pets[0]?.qrCode;
-                  if (qr) { router.push(`/qr/${qr}` as any); } else { Alert.alert("QR Code", "QR Code não gerado ainda."); }
-                  return;
-                }
-                router.push(item.route as any);
-              }}
-                style={{ flex: 1, backgroundColor: item.bg, borderRadius: 16, padding: 12, alignItems: "center", gap: 6 }}>
-                <item.icon size={22} color={item.color} />
-                <Text suppressHighlighting style={{ fontSize: 11, fontWeight: "600", color: "#1A1A2E" }}>{item.label}</Text>
-              </TouchableOpacity>
+            {quickActions.map((item, index) => (
+              <QuickActionCard key={item.label} item={item} index={index} />
             ))}
           </View>
         </View>
 
-        {/* Dica do dia — aparece sempre */}
+        {/* Dica do dia */}
         <View style={{ paddingHorizontal: 20, marginBottom: 4 }}>
           <AnimalFact seed={factSeed + 1} compact />
         </View>
 
         {/* Upcoming appointments */}
         {appointments.length > 0 ? (
-          <View style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 20 }}>
-            <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "700", color: "#1A1A2E", marginBottom: 12 }}>Próximas consultas</Text>
+          <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
+            <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>Próximas consultas</Text>
             {appointments.map((apt: any) => (
-              <View key={apt.id} style={{ backgroundColor: "#fff", borderRadius: 16, padding: 14, marginBottom: 8, borderWidth: 1.5, borderColor: "#F0E8E0", flexDirection: "row", alignItems: "center", gap: 12 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
-                  <Calendar size={18} color="#FF6B35" />
+              <View key={apt.id} style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, marginBottom: 10, flexDirection: "row", alignItems: "center", gap: 12, shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 0 }}>
+                <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
+                  <Calendar size={20} color="#FF6B35" />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text suppressHighlighting style={{ fontWeight: "600", color: "#1A1A2E", fontSize: 14 }}>{apt.title}</Text>
-                  <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{apt.date} {apt.time ? `• ${apt.time}` : ""}</Text>
+                  <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E", fontSize: 14 }}>{apt.title}</Text>
+                  <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 12, marginTop: 2 }}>{apt.date} {apt.time ? `• ${apt.time}` : ""}</Text>
+                </View>
+                <View style={{ backgroundColor: "#FFF0EB", borderRadius: 10, paddingHorizontal: 10, paddingVertical: 4 }}>
+                  <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 11, fontWeight: "700" }}>Em breve</Text>
                 </View>
               </View>
             ))}
           </View>
         ) : (
-          /* Segunda dica quando não há consultas */
           <View style={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 24 }}>
             <AnimalFact seed={factSeed + 3} style={{ marginBottom: 8 }} />
           </View>
