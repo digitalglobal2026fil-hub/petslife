@@ -3,9 +3,10 @@ import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, TextInput,
   Alert, Linking, ActivityIndicator, Platform, KeyboardAvoidingView
 } from "react-native";
-import { Video, Calendar, Plus, X, Copy } from "lucide-react-native";
+import { Video, Calendar, Plus, X, Copy, HelpCircle } from "lucide-react-native";
 import Constants from "expo-constants";
 import { Share } from "react-native";
+import { useRouter } from "expo-router";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -81,6 +82,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function ConsultScreen() {
+  const router = useRouter();
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -181,15 +183,19 @@ export default function ConsultScreen() {
       </View>
 
       {/* Info card */}
-      <View style={styles.infoCard}>
+      <TouchableOpacity style={styles.infoCard} onPress={() => router.push("/video-call-guide" as never)} activeOpacity={0.85}>
         <Video size={22} color="#4ECDC4" />
         <View style={{ flex: 1, marginLeft: 12 }}>
           <Text suppressHighlighting style={styles.infoTitle}>Como funciona?</Text>
           <Text suppressHighlighting style={styles.infoText}>
-            Agende uma consulta, receba o link de videochamada e entre directamente aqui na app. Sem instalações, sem complicações.
+            Agende, receba o link, partilhe com o vet e entre directamente aqui. Sem instalações.
           </Text>
         </View>
-      </View>
+        <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 8 }}>
+          <HelpCircle size={20} color="#4ECDC4" />
+          <Text suppressHighlighting style={{ fontSize: 10, color: "#4ECDC4", fontWeight: "700", marginTop: 2 }}>Guia</Text>
+        </View>
+      </TouchableOpacity>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
         {loading ? (
