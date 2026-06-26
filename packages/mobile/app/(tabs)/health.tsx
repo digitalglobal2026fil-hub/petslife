@@ -8,12 +8,12 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 
 const sections = [
-  { icon: Syringe,     label: "Vacinas",         sublabel: "Registo e lembretes", color: "#4ECDC4", bg: "#E8FAF9", route: "/add-vaccine" },
-  { icon: Calendar,    label: "Consultas",        sublabel: "Agenda e histórico",  color: "#FF6B35", bg: "#FFF0EB", route: "/add-appointment" },
-  { icon: Heart,       label: "Diário de Saúde",  sublabel: "Peso e bem-estar",    color: "#EF476F", bg: "#FFF0F3", route: "/add-diary" },
-  { icon: FileText,    label: "Documentos",       sublabel: "Receitas e exames",   color: "#8B5CF6", bg: "#F3EEFF", route: "/add-document" },
-  { icon: Pill,        label: "Desparasitação",   sublabel: "Controlo interno/externo", color: "#F59E0B", bg: "#FEF3C7", route: "/add-deworming" },
-  { icon: Stethoscope, label: "Peso",             sublabel: "Evolução do peso",    color: "#06D6A0", bg: "#E6FAF5", route: "/add-weight" },
+  { icon: Syringe,     label: "Vacinas",         sublabel: "Registo e lembretes",      color: "#4ECDC4", bg: "#E8FAF9", route: "/add-vaccine" },
+  { icon: Calendar,    label: "Consultas",        sublabel: "Agenda e histórico",        color: "#FF6B35", bg: "#FFF0EB", route: "/add-appointment" },
+  { icon: Heart,       label: "Diário de Saúde",  sublabel: "Registo diário",            color: "#EF476F", bg: "#FFF0F3", route: "/add-diary" },
+  { icon: FileText,    label: "Documentos",       sublabel: "Receitas e exames",         color: "#8B5CF6", bg: "#F3EEFF", route: "/add-document" },
+  { icon: Pill,        label: "Desparasitação",   sublabel: "Controlo interno/externo",  color: "#F59E0B", bg: "#FEF3C7", route: "/add-deworming" },
+  { icon: Stethoscope, label: "Peso",             sublabel: "Gráfico de evolução",       color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
 ];
 
 function SectionCard({ s, index }: { s: any; index: number }) {
@@ -31,7 +31,7 @@ function SectionCard({ s, index }: { s: any; index: number }) {
   return (
     <Animated.View style={{ width: "47%", opacity: fadeAnim, transform: [{ translateY: slideAnim }, { scale }] }}>
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={() => router.push(s.route as any)}
         onPressIn={() => Animated.spring(scale, { toValue: 0.95, useNativeDriver: true, tension: 300, friction: 10 }).start()}
         onPressOut={() => Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 300, friction: 10 }).start()}
         activeOpacity={1}
@@ -101,6 +101,32 @@ export default function HealthScreen() {
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
             {sections.map((s, index) => (
               <SectionCard key={s.label} s={s} index={index} />
+            ))}
+          </View>
+        </View>
+
+        {/* Ferramentas extra */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>Ferramentas</Text>
+          <View style={{ gap: 10 }}>
+            {[
+              { emoji: "🚑", label: "Primeiros Socorros", sublabel: "Guia de emergências", color: "#FF4757", bg: "#FFF0F2", route: "/first-aid" },
+              { emoji: "💊", label: "Farmácia Pet", sublabel: "Medicamentos e produtos", color: "#4ECDC4", bg: "#E8FAF9", route: "/pharmacy" },
+              { emoji: "⚖️", label: "Gráfico de Peso", sublabel: "Monitorize a evolução", color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
+            ].map(tool => (
+              <TouchableOpacity key={tool.label} onPress={() => router.push(tool.route as any)}
+                style={{ backgroundColor: tool.bg, borderRadius: 20, padding: 16, flexDirection: "row", alignItems: "center", gap: 14 }}>
+                <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", shadowColor: tool.color, shadowOpacity: 0.15, shadowRadius: 6, elevation: 0 }}>
+                  <Text suppressHighlighting style={{ fontSize: 22 }}>{tool.emoji}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text suppressHighlighting style={{ fontWeight: "800", color: "#1A1A2E", fontSize: 14 }}>{tool.label}</Text>
+                  <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 12, marginTop: 2 }}>{tool.sublabel}</Text>
+                </View>
+                <View style={{ backgroundColor: tool.color + "20", borderRadius: 10, padding: 8 }}>
+                  <Text suppressHighlighting style={{ fontSize: 14 }}>›</Text>
+                </View>
+              </TouchableOpacity>
             ))}
           </View>
         </View>

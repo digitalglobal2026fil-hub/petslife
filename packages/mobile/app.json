@@ -8,7 +8,7 @@
         "backgroundColor": "#FF6B35"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 21
+      "versionCode": 23
     },
     "extra": {
       "apiUrl": "https://petslife.onrender.com",
@@ -27,7 +27,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",

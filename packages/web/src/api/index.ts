@@ -18,6 +18,8 @@ import { dewormings } from "./routes/dewormings";
 import { weightLogs } from "./routes/weight-logs";
 import { businesses } from "./routes/businesses";
 import { promoCodes } from "./routes/promo-codes";
+import chat from "./routes/chat";
+import { lostPets } from "./routes/lost-pets";
 
 const app = new Hono()
   .use(cors({
@@ -44,7 +46,9 @@ const app = new Hono()
   .route("/dewormings", dewormings)
   .route("/weight-logs", weightLogs)
   .route("/businesses", businesses)
-  .route("/promo-codes", promoCodes);
+  .route("/promo-codes", promoCodes)
+  .route("/chats", chat)
+  .route("/lost-pets", lostPets);
 
 export type AppType = typeof app;
 export default app;
