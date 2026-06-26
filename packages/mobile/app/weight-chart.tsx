@@ -6,7 +6,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useSession } from '../src/context/auth';
+
+import { Platform } from 'react-native';
+
+const TOKEN_KEY = "bearer_token";
+function getToken(): string {
+  if (Platform.OS === "web") return (typeof localStorage !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null) ?? "";
+  try { const SecureStore = require("expo-secure-store"); return SecureStore.getItem(TOKEN_KEY) ?? ""; } catch { return ""; }
+}
+
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://petslife.onrender.com';
 const COLORS = { bg: '#F8F6FF', orange: '#FF6B35', teal: '#4ECDC4', purple: '#8B5CF6', dark: '#1A1A2E', text: '#333', gray: '#888', lightGray: '#E8E4F8', card: '#FFFFFF', green: '#2ED573', red: '#FF4757' };
@@ -34,7 +42,6 @@ function AnimatedBar({ value, maxValue, color, label, delay }: { value: number; 
 }
 
 export default function WeightChartScreen() {
-  const { session } = useSession();
   const params = useLocalSearchParams();
   const [pets, setPets] = useState<any[]>([]);
   const [selectedPet, setSelectedPet] = useState<any>(null);
@@ -55,7 +62,7 @@ export default function WeightChartScreen() {
 
   const fetchPets = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/pets`, { headers: { Authorization: `Bearer ${session?.token}` } });
+      const res = await fetch(`${API_URL}/api/pets`, { headers: { Authorization: `Bearer ${getToken()}` } });
       if (res.ok) {
         const data = await res.json();
         const petList = data.pets || [];
@@ -71,7 +78,7 @@ export default function WeightChartScreen() {
 
   const fetchLogs = async (petId: string) => {
     try {
-      const res = await fetch(`${API_URL}/api/weight-logs/pet/${petId}`, { headers: { Authorization: `Bearer ${session?.token}` } });
+      const res = await fetch(`${API_URL}/api/weight-logs/pet/${petId}`, { headers: { Authorization: `Bearer ${getToken()}` } });
       if (res.ok) {
         const data = await res.json();
         setLogs(data.logs || []);
@@ -89,7 +96,7 @@ export default function WeightChartScreen() {
     try {
       const res = await fetch(`${API_URL}/api/weight-logs`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify({ petId: selectedPet.id, weight: parseFloat(newWeight), note: newNote }),
       });
       if (res.ok) {

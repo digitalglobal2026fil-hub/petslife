@@ -7,13 +7,18 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useSession } from '../src/context/auth';
+import { authClient } from '../lib/auth';
+
+const TOKEN_KEY = "bearer_token";
+function getToken(): string {
+  if (Platform.OS === "web") return (typeof localStorage !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null) ?? "";
+  try { const SecureStore = require("expo-secure-store"); return SecureStore.getItem(TOKEN_KEY) ?? ""; } catch { return ""; }
+}
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://petslife.onrender.com';
 const COLORS = { bg: '#F8F6FF', orange: '#FF6B35', teal: '#4ECDC4', purple: '#8B5CF6', dark: '#1A1A2E', text: '#333', gray: '#888', lightGray: '#E8E4F8', card: '#FFFFFF' };
 
 export default function ChatScreen() {
-  const { session } = useSession();
   const params = useLocalSearchParams();
   const { chatId, otherUserName, otherUserId } = params as any;
 
@@ -24,7 +29,8 @@ export default function ChatScreen() {
   const flatListRef = useRef<FlatList>(null);
   const pollRef = useRef<ReturnType<typeof setInterval>>();
 
-  const userId = (session as any)?.user?.id || (session as any)?.id;
+  const { data: sessionData } = authClient.useSession();
+  const userId = sessionData?.user?.id || '';
 
   useEffect(() => {
     if (chatId) {
@@ -37,7 +43,7 @@ export default function ChatScreen() {
   const fetchMessages = async () => {
     try {
       const res = await fetch(`${API_URL}/api/chats/${chatId}/messages`, {
-        headers: { Authorization: `Bearer ${session?.token}`, 'x-user-id': userId || '' },
+        headers: { Authorization: `Bearer ${getToken()}`, 'x-user-id': userId || '' },
       });
       if (res.ok) {
         const data = await res.json();
@@ -60,7 +66,7 @@ export default function ChatScreen() {
     try {
       const res = await fetch(`${API_URL}/api/chats/${chatId}/messages`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.token}`, 'x-user-id': userId || '' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}`, 'x-user-id': userId || '' },
         body: JSON.stringify({ senderId: userId, content }),
       });
       if (!res.ok) {

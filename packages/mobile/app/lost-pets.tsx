@@ -7,13 +7,20 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useSession } from '../src/context/auth';
+
+import { Platform } from 'react-native';
+
+const TOKEN_KEY = "bearer_token";
+function getToken(): string {
+  if (Platform.OS === "web") return (typeof localStorage !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null) ?? "";
+  try { const SecureStore = require("expo-secure-store"); return SecureStore.getItem(TOKEN_KEY) ?? ""; } catch { return ""; }
+}
+
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://petslife.onrender.com';
 const COLORS = { bg: '#F8F6FF', orange: '#FF6B35', teal: '#4ECDC4', purple: '#8B5CF6', dark: '#1A1A2E', text: '#333', gray: '#888', lightGray: '#E8E4F8', card: '#FFFFFF', red: '#FF4757', green: '#2ED573' };
 
 export default function LostPetsScreen() {
-  const { session } = useSession();
   const [tab, setTab] = useState<'lost' | 'found'>('lost');
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +72,7 @@ export default function LostPetsScreen() {
     try {
       const res = await fetch(`${API_URL}/api/lost-pets`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify({ ...form, type: tab }),
       });
       if (res.ok) {
