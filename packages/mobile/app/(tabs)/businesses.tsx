@@ -5,6 +5,8 @@ import { useRouter } from "expo-router";
 import { Search, Plus, Phone, Globe, MapPin, Star, Stethoscope, Store, Scissors, Home, Dumbbell } from "lucide-react-native";
 import { useState, useCallback } from "react";
 import { api } from "../../lib/api";
+import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
+import { PaywallScreen } from "../../components/PaywallScreen";
 
 const categories = ["Todos", "Clínica", "Petshop", "Tosquiador", "Hotel", "Treino", "Outro"];
 
@@ -37,6 +39,7 @@ function SearchInput({ onSearch }: { onSearch: (v: string) => void }) {
 
 export default function BusinessesScreen() {
   const router = useRouter();
+  const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todos");
   const handleSearch = useCallback((v: string) => setSearch(v), []);
@@ -51,6 +54,10 @@ export default function BusinessesScreen() {
     const matchCat = category === "Todos" || b.type === category.toLowerCase();
     return matchSearch && matchCat;
   });
+
+  if (!gateLoading && isBlocked) {
+    return <PaywallScreen featureName="Negócios" />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>

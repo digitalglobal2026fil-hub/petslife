@@ -1,4 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, FlatList, Dimensions } from "react-native";
+const MASCOT_HAPPY = require("../../assets/mascot-happy_1784664046237.png");
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -119,7 +120,7 @@ export default function PhotosTabScreen() {
         <ActivityIndicator color={ORANGE} size="large" style={{ marginTop: 60 }} />
       ) : pets.length === 0 ? (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 40 }}>
-          <Text suppressHighlighting style={{ fontSize: 64, marginBottom: 16 }}>🐾</Text>
+          <Image source={MASCOT_HAPPY} style={{ width: 180, height: 180, marginBottom: 8 }} resizeMode="contain" />
           <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: BROWN, marginBottom: 8 }}>Sem animais</Text>
           <Text suppressHighlighting style={{ color: GRAY, fontSize: 14, textAlign: "center", lineHeight: 22 }}>
             Adiciona o teu primeiro animal para começar a criar memórias!

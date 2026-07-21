@@ -8,6 +8,8 @@ import { useRouter } from "expo-router";
 import { Search, Plus, Tag, PawPrint, Building2, MapPin, Phone, Star } from "lucide-react-native";
 import { useState, useCallback } from "react";
 import { api } from "../../lib/api";
+import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
+import { PaywallScreen } from "../../components/PaywallScreen";
 
 // ─── Search input isolated so focus is never lost ───────────────────────────
 function SearchInput({ onSearch, placeholder }: { onSearch: (v: string) => void; placeholder: string }) {
@@ -164,6 +166,7 @@ const LIST_CATS = [
 // ─── Main screen ──────────────────────────────────────────────────────────────
 export default function MarketplaceScreen() {
   const router = useRouter();
+  const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
   const [tab, setTab] = useState<"businesses" | "listings">("businesses");
   const [search, setSearch] = useState("");
   const [bizCat, setBizCat] = useState("todos");
@@ -208,6 +211,10 @@ export default function MarketplaceScreen() {
 
   const isLoading = tab === "businesses" ? bizQuery.isLoading : listQuery.isLoading;
   const refetch = tab === "businesses" ? bizQuery.refetch : listQuery.refetch;
+
+  if (!gateLoading && isBlocked) {
+    return <PaywallScreen featureName="Loja" />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>

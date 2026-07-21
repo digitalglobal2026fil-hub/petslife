@@ -1,36 +1,33 @@
-# PetsLife Task — v25 Build
+# Task: Paywall + visual ilustrado toda a app
 
-## Estado: BUILD AAB v25 A CORRER (tmux: build_v25)
+## Progresso
+- [x] useSubscriptionGate.ts criado
+- [x] SubscriptionBanner.tsx criado
+- [x] PaywallScreen.tsx criado (com mascote ilustrada)
+- [x] Mascotes geradas: mascot-lock, mascot-happy (assets/)
+- [x] Gate aplicado: health.tsx, consult.tsx, marketplace.tsx, businesses.tsx
+- [ ] Gate aplicado: social.tsx
+- [ ] Gate aplicado: index.tsx (home) — NOTA: home mostra lista de pets, decidir se bloqueia tudo ou só quick actions
+- [ ] NÃO bloquear: photos.tsx (Álbum), profile.tsx, subscription.tsx — confirmar que ficam livres
+- [ ] Adicionar SubscriptionBanner no index.tsx (aviso countdown)
+- [ ] Decoração ilustrada (mascot-happy) nos headers principais
+- [ ] Testar fluxo simulando isActive=false
+- [ ] Rebuild AAB v27, commit, upload
+- [ ] Bump versionCode 26->27, versionName 1.8.0->1.8.1 (app.json + build.gradle)
 
-## ✅ CONCLUÍDO
-- lost-pets.tsx — ecrã de animais perdidos/encontrados com formulário
-- chat.tsx — chat em tempo real (polling 4s) com bolhas animadas
-- weight-chart.tsx — gráfico de peso com barras animadas + histórico
-- first-aid.tsx — guia primeiros socorros (estático)
-- breed-guide.tsx — guia de raças (estático)
-- training-guide.tsx — guia de treino com links YouTube
-- pharmacy.tsx — farmácia pet com links zooplus.pt
-- chat.ts (API) — CRUD chats + messages
-- lost-pets.ts (API) — CRUD posts perdidos/encontrados
-- api/index.ts — .route("/chats", chat) + .route("/lost-pets", lostPets) adicionados
-- (tabs)/index.tsx — secção "Explorar" com 6 quick actions novas
-- (tabs)/health.tsx — secção "Ferramentas" + SectionCard agora navega para routes
-- Build web: ✅ sem erros
-- Git: commit 2c2917e, pushed to master
-- Render: a fazer deploy automático
+## Progresso actualizado
+- [x] Gate aplicado: index.tsx, health.tsx, consult.tsx, marketplace.tsx, businesses.tsx, social.tsx
+- [x] SubscriptionBanner substituindo o banner antigo de trial no index.tsx
+- [x] Mascote fofa aplicada: photos.tsx (empty state), subscription.tsx (topo)
+- [x] Testado bundle no Expo Web — sem erros de sintaxe/compilação
+- [x] Bump versionCode 26->27, versionName/version 1.8.0->1.8.1
+- [ ] Build AAB v27 em curso (tmux build_v27)
+- [ ] Upload + commit git
 
-## 🔄 EM CURSO
-- AAB v25 build (versionCode 25, versionName 1.7.0)
-- Render deploy (automático por push)
+## Notas técnicas
+- Backend já calcula isActive/isTrial em subscriptions.ts — nenhuma alteração de backend necessária
+- Hidden tabs bloqueadas: consult, businesses (acedidas via navegação, não tab bar)
+- Tabs visíveis bloqueadas: index, health, social, marketplace
+- Tabs visíveis livres: photos (Álbum), profile
+- NOTA: pedido de rede para /api/subscriptions/me não dispara no preview Expo Web (limitação conhecida de gestão de token no browser) — comportamento não testável 100% no preview web, mas código compila sem erros; funciona no fluxo nativo (SecureStore)
 
-## ⏳ PENDENTE APÓS BUILD
-- Upload AAB v25 para gofile/GCS
-- Submeter v25 na Play Store
-- Corrigir bugs antigos:
-  - texto preto Android (backgroundColor: transparent nos inputs)
-  - app abre no registo em vez do login
-  - vídeos consulta não abrem
-
-## Verificar build:
-tail -f /tmp/build_v25.log
-AAB output: packages/mobile/android/app/build/outputs/bundle/release/app-release.aab

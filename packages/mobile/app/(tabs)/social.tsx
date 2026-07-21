@@ -6,10 +6,13 @@ import { useState } from "react";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
 import { AnimalFact } from "../../components/AnimalFact";
+import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
+import { PaywallScreen } from "../../components/PaywallScreen";
 
 export default function SocialScreen() {
   const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
+  const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
   const [newPost, setNewPost] = useState("");
   const [showForm, setShowForm] = useState(false);
 
@@ -40,6 +43,10 @@ export default function SocialScreen() {
   });
 
   const posts = (data as any)?.posts ?? [];
+
+  if (!gateLoading && isBlocked) {
+    return <PaywallScreen featureName="Comunidade" />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>

@@ -7,6 +7,9 @@ import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, S
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
 import { AnimalFact } from "../../components/AnimalFact";
+import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
+import { PaywallScreen } from "../../components/PaywallScreen";
+import { SubscriptionBanner } from "../../components/SubscriptionBanner";
 
 function PetCard({ pet, index, onPress }: { pet: any; index: number; onPress: () => void }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -94,6 +97,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const headerAnim = useRef(new Animated.Value(0)).current;
+  const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
 
   const { data: petsData, isLoading } = useQuery({
     queryKey: ["pets"],
@@ -143,6 +147,10 @@ export default function HomeScreen() {
     { emoji: "⚖️", label: "Peso", color: "#F59E0B", bg: "#FEF3C7", onPress: () => router.push("/weight-chart" as any) },
   ];
 
+  if (!gateLoading && isBlocked) {
+    return <PaywallScreen />;
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F6FF" }} edges={["top", "left", "right"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20 }}>
@@ -176,19 +184,10 @@ export default function HomeScreen() {
           </View>
         </Animated.View>
 
-        {/* Trial banner */}
-        {isTrial && daysLeft > 0 && (
-          <View style={{ marginHorizontal: 20, marginTop: 28, marginBottom: 4, backgroundColor: "#1A1A2E", borderRadius: 20, padding: 16, flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <Sparkles size={20} color="#FFE66D" />
-            <View style={{ flex: 1 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>Trial termina em {daysLeft} dia{daysLeft !== 1 ? "s" : ""}</Text>
-              <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.6)", fontSize: 11 }}>Subscreva para continuar a usar a PetsLife</Text>
-            </View>
-            <TouchableOpacity onPress={() => router.push("/subscription")} style={{ backgroundColor: "#FF6B35", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 7 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>Ver planos</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        {/* Aviso de expiração do trial/subscrição */}
+        <View style={{ marginTop: 28 }}>
+          <SubscriptionBanner />
+        </View>
 
         {/* Pets list */}
         <View style={{ marginTop: 28, paddingHorizontal: 20, marginBottom: 8 }}>

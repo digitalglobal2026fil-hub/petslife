@@ -6,6 +6,8 @@ import { useRef, useEffect } from "react";
 import { Syringe, Calendar, FileText, ChevronRight, Heart, PawPrint, Stethoscope, Pill } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
+import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
+import { PaywallScreen } from "../../components/PaywallScreen";
 
 const sections = [
   { icon: Syringe,     label: "Vacinas",         sublabel: "Registo e lembretes",      color: "#4ECDC4", bg: "#E8FAF9", route: "/add-vaccine" },
@@ -62,6 +64,7 @@ function SectionCard({ s, index }: { s: any; index: number }) {
 export default function HealthScreen() {
   const router = useRouter();
   const headerAnim = useRef(new Animated.Value(0)).current;
+  const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
 
   useEffect(() => {
     Animated.timing(headerAnim, { toValue: 1, duration: 500, useNativeDriver: true }).start();
@@ -72,6 +75,10 @@ export default function HealthScreen() {
     queryFn: async () => (await api.pets.$get()).json(),
   });
   const pets = (petsData as any)?.pets ?? [];
+
+  if (!gateLoading && isBlocked) {
+    return <PaywallScreen featureName="Saúde" />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F6FF" }} edges={["top", "left", "right"]}>

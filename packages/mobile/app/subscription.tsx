@@ -1,7 +1,9 @@
-import { View, Text, ScrollView, TouchableOpacity, Linking } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Linking, Image } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { CheckCircle, ArrowLeft, Star, PawPrint } from "lucide-react-native";
+
+const MASCOT_HAPPY = require("../assets/mascot-happy_1784664046237.png");
 
 const MONTHLY_LINK = "https://buy.stripe.com/cNi3cugz46Xs2pQ1Oo4sE02";
 const ANNUAL_LINK = "https://buy.stripe.com/eVq4gyfv081w3tU9gQ4sE03";
@@ -32,9 +34,7 @@ export default function SubscriptionScreen() {
         </View>
 
         <View style={{ alignItems: "center", paddingVertical: 20 }}>
-          <View style={{ backgroundColor: "#F5EDE4", borderRadius: 28, padding: 14, alignSelf: "center", marginBottom: 4 }}>
-            <PawPrint size={44} color="#8B5E3C" />
-          </View>
+          <Image source={MASCOT_HAPPY} style={{ width: 160, height: 160 }} resizeMode="contain" />
           <Text suppressHighlighting style={{ fontSize: 24, fontWeight: "800", color: "#1A1A2E", marginTop: 8 }}>Cuide do seu animal</Text>
           <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center", paddingHorizontal: 40 }}>Acesso completo a todas as funcionalidades. Cancele quando quiser.</Text>
         </View>

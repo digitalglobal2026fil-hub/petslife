@@ -1,0 +1,43 @@
+import { useQuery } from "@tanstack/react-query";
+import { api } from "./api";
+
+export interface SubscriptionGate {
+  isLoading: boolean;
+  isActive: boolean;
+  isTrial: boolean;
+  isBlocked: boolean;
+  daysLeft: number;
+  expiresAt: Date | null;
+  showWarning: boolean; // true when <=3 days left (or already expired)
+  plan: string | null;
+}
+
+/**
+ * Central hook to check subscription/trial status across the app.
+ * - Trial: 3 days free, then blocked unless subscribed.
+ * - Paid (monthly/annual): blocked if not renewed after currentPeriodEnd.
+ * - When blocked, only the "Álbum" tab + Profile/Subscription screens remain usable.
+ */
+export function useSubscriptionGate(): SubscriptionGate {
+  const { data, isLoading } = useQuery({
+    queryKey: ["subscription"],
+    queryFn: async () => (await api.subscriptions.me.$get()).json(),
+    refetchInterval: 60000,
+  });
+
+  const sub = (data as any)?.subscription;
+  const isActive = !!(data as any)?.isActive;
+  const isTrial = !!(data as any)?.isTrial;
+  const plan = sub?.plan ?? null;
+
+  const expiresAtRaw = isTrial ? sub?.trialEndsAt : sub?.currentPeriodEnd;
+  const expiresAt = expiresAtRaw ? new Date(expiresAtRaw) : null;
+  const daysLeft = expiresAt
+    ? Math.max(0, Math.ceil((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : 0;
+
+  const isBlocked = !isLoading && !isActive;
+  const showWarning = !isLoading && (isBlocked || daysLeft <= 3);
+
+  return { isLoading, isActive, isTrial, isBlocked, daysLeft, expiresAt, showWarning, plan };
+}

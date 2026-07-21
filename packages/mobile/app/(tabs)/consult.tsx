@@ -7,6 +7,8 @@ import { Video, Calendar, Plus, X, Copy, HelpCircle } from "lucide-react-native"
 import Constants from "expo-constants";
 import { Share } from "react-native";
 import { useRouter } from "expo-router";
+import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
+import { PaywallScreen } from "../../components/PaywallScreen";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -83,6 +85,7 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function ConsultScreen() {
   const router = useRouter();
+  const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -168,6 +171,10 @@ export default function ConsultScreen() {
 
   const upcoming = consultations.filter(c => ["pending", "confirmed", "ongoing"].includes(c.status));
   const past = consultations.filter(c => ["done", "cancelled"].includes(c.status));
+
+  if (!gateLoading && isBlocked) {
+    return <PaywallScreen featureName="Consulta Online" />;
+  }
 
   return (
     <View style={styles.container}>
