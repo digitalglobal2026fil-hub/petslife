@@ -19,6 +19,7 @@ const sections = [
 ];
 
 function SectionCard({ s, index }: { s: any; index: number }) {
+  const router = useRouter();
   const scale = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
