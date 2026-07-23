@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles } from "lucide-react-native";
+import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles, Siren, Dog, Dumbbell, Pill, Search as SearchIcon, Gauge } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
 import { AnimalFact } from "../../components/AnimalFact";
@@ -139,12 +139,12 @@ export default function HomeScreen() {
   ];
 
   const extraActions = [
-    { emoji: "🚑", label: "Primeiros Socorros", color: "#FF4757", bg: "#FFF0F2", onPress: () => router.push("/first-aid" as any) },
-    { emoji: "🐕", label: "Guia de Raças", color: "#8B5CF6", bg: "#F3EEFF", onPress: () => router.push("/breed-guide" as any) },
-    { emoji: "🎓", label: "Treino", color: "#FF6B35", bg: "#FFF0EB", onPress: () => router.push("/training-guide" as any) },
-    { emoji: "💊", label: "Farmácia", color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/pharmacy" as any) },
-    { emoji: "🔍", label: "Perdidos", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/lost-pets" as any) },
-    { emoji: "⚖️", label: "Peso", color: "#F59E0B", bg: "#FEF3C7", onPress: () => router.push("/weight-chart" as any) },
+    { icon: Siren, label: "Primeiros Socorros", color: "#FF4757", bg: "#FFF0F2", onPress: () => router.push("/first-aid" as any) },
+    { icon: Dog, label: "Guia de Raças", color: "#8B5CF6", bg: "#F3EEFF", onPress: () => router.push("/breed-guide" as any) },
+    { icon: Dumbbell, label: "Treino", color: "#FF6B35", bg: "#FFF0EB", onPress: () => router.push("/training-guide" as any) },
+    { icon: Pill, label: "Farmácia", color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/pharmacy" as any) },
+    { icon: SearchIcon, label: "Perdidos", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/lost-pets" as any) },
+    { icon: Gauge, label: "Peso", color: "#F59E0B", bg: "#FEF3C7", onPress: () => router.push("/weight-chart" as any) },
   ];
 
   if (!gateLoading && isBlocked) {
@@ -240,7 +240,7 @@ export default function HomeScreen() {
             {extraActions.map(item => (
               <TouchableOpacity key={item.label} onPress={item.onPress}
                 style={{ backgroundColor: item.bg, borderRadius: 18, paddingVertical: 12, paddingHorizontal: 14, flexDirection: "row", alignItems: "center", gap: 8, minWidth: "30%" }}>
-                <Text suppressHighlighting style={{ fontSize: 18 }}>{item.emoji}</Text>
+                <item.icon size={18} color={item.color} />
                 <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: item.color, flexShrink: 1 }}>{item.label}</Text>
               </TouchableOpacity>
             ))}

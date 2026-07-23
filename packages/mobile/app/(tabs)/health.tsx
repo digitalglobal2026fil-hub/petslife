@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Syringe, Calendar, FileText, ChevronRight, Heart, PawPrint, Stethoscope, Pill } from "lucide-react-native";
+import { Syringe, Calendar, FileText, ChevronRight, Heart, PawPrint, Stethoscope, Pill, Siren, Gauge } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
@@ -118,14 +118,14 @@ export default function HealthScreen() {
           <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>Ferramentas</Text>
           <View style={{ gap: 10 }}>
             {[
-              { emoji: "🚑", label: "Primeiros Socorros", sublabel: "Guia de emergências", color: "#FF4757", bg: "#FFF0F2", route: "/first-aid" },
-              { emoji: "💊", label: "Farmácia Pet", sublabel: "Medicamentos e produtos", color: "#4ECDC4", bg: "#E8FAF9", route: "/pharmacy" },
-              { emoji: "⚖️", label: "Gráfico de Peso", sublabel: "Monitorize a evolução", color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
+              { icon: Siren, label: "Primeiros Socorros", sublabel: "Guia de emergências", color: "#FF4757", bg: "#FFF0F2", route: "/first-aid" },
+              { icon: Pill, label: "Farmácia Pet", sublabel: "Medicamentos e produtos", color: "#4ECDC4", bg: "#E8FAF9", route: "/pharmacy" },
+              { icon: Gauge, label: "Gráfico de Peso", sublabel: "Monitorize a evolução", color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
             ].map(tool => (
               <TouchableOpacity key={tool.label} onPress={() => router.push(tool.route as any)}
                 style={{ backgroundColor: tool.bg, borderRadius: 20, padding: 16, flexDirection: "row", alignItems: "center", gap: 14 }}>
                 <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", shadowColor: tool.color, shadowOpacity: 0.15, shadowRadius: 6, elevation: 0 }}>
-                  <Text suppressHighlighting style={{ fontSize: 22 }}>{tool.emoji}</Text>
+                  <tool.icon size={22} color={tool.color} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text suppressHighlighting style={{ fontWeight: "800", color: "#1A1A2E", fontSize: 14 }}>{tool.label}</Text>

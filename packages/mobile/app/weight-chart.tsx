@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { Gauge } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 
 import { Platform } from 'react-native';
@@ -134,7 +135,10 @@ export default function WeightChartScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color={COLORS.dark} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>⚖️ Peso</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Gauge size={20} color={COLORS.dark} />
+          <Text style={styles.headerTitle}>Peso</Text>
+        </View>
         <TouchableOpacity onPress={() => setShowAddModal(true)} style={styles.addBtn}>
           <Ionicons name="add" size={22} color="#fff" />
         </TouchableOpacity>
@@ -191,7 +195,7 @@ export default function WeightChartScreen() {
                 <Text style={styles.chartTitle}>Evolução do Peso</Text>
                 {chartLogs.length === 0 ? (
                   <View style={{ alignItems: 'center', padding: 30 }}>
-                    <Text style={{ fontSize: 32, marginBottom: 8 }}>⚖️</Text>
+                    <Gauge size={40} color={COLORS.orange} style={{ marginBottom: 8 }} />
                     <Text style={{ color: COLORS.gray, fontSize: 14 }}>Nenhum registo ainda</Text>
                     <Text style={{ color: COLORS.gray, fontSize: 12, marginTop: 4 }}>Clica no + para adicionar o primeiro peso</Text>
                   </View>
