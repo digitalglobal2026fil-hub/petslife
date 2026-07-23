@@ -14,6 +14,13 @@ const TESTER_EMAILS = [
   "marianasousa42@gmail.com",
   "aleclikes@outlook.pt",
   "alessandra100275@gmail.com",
+  "amorim2309izabel@gmail.com",
+  "marco_reis19@hotmail.com",
+  "ricardoabril1977@gmail.com",
+  "amordebolo.almada@gmail.com",
+  "amordebolo.corroios@gmail.com",
+  "ritaraquelbia@gmail.com",
+  "wiser.pt@hotmail.com",
 ];
 
 export const subscriptions = new Hono()

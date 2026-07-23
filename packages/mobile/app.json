@@ -27,7 +27,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.8.3",
+    "version": "1.8.4",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
