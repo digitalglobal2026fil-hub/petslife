@@ -4,10 +4,27 @@ import * as schema from "../database/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth, authMiddleware } from "../middleware/auth";
 
+// Testadores fechados (Play Console) — acesso ilimitado, sem bloqueio de trial/subscrição
+const TESTER_EMAILS = [
+  "videira.xana82@gmail.com",
+  "ale.c.cardoso2010@gmail.com",
+  "alebtc2121@gmail.com",
+  "barbarateresa735@gmail.com",
+  "julianasousa2006@gmail.com",
+  "marianasousa42@gmail.com",
+  "aleclikes@outlook.pt",
+  "alessandra100275@gmail.com",
+];
+
 export const subscriptions = new Hono()
   .use("*", authMiddleware)
   .get("/me", requireAuth, async (c) => {
     const user = c.get("user")!;
+
+    if (user.email && TESTER_EMAILS.includes(user.email.toLowerCase())) {
+      return c.json({ subscription: null, isActive: true, isTrial: false, isTester: true }, 200);
+    }
+
     const [sub] = await db.select().from(schema.subscriptions).where(eq(schema.subscriptions.userId, user.id));
     if (!sub) {
       // Auto-create trial

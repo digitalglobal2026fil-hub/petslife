@@ -60,11 +60,16 @@ export default function BusinessesScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
-      <View style={{ padding: 20, paddingBottom: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#1A1A2E" }}>Negócios 🏪</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF6FA" }} edges={["top", "left", "right"]}>
+      <View style={{
+        backgroundColor: "#D6699E", padding: 20, paddingTop: 18, paddingBottom: 28,
+        borderBottomLeftRadius: 32, borderBottomRightRadius: 32, marginBottom: 16,
+        flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+      }}>
+        <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.12)" }} />
+        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>Negócios</Text>
         <TouchableOpacity onPress={() => router.push("/add-business")}
-          style={{ backgroundColor: "#8B5E3C", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
+          style={{ backgroundColor: "rgba(255,255,255,0.25)", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
           <Plus size={20} color="#fff" />
         </TouchableOpacity>
       </View>

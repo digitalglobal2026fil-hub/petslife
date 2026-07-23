@@ -49,14 +49,19 @@ export default function SocialScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
-      <View style={{ padding: 20, paddingBottom: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F6FF" }} edges={["top", "left", "right"]}>
+      <View style={{
+        backgroundColor: "#8B7FD6", padding: 20, paddingTop: 18, paddingBottom: 28,
+        borderBottomLeftRadius: 32, borderBottomRightRadius: 32, marginBottom: 16,
+        flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+      }}>
+        <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.1)" }} />
         <View>
-          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#1A1A2E" }}>Comunidade 🐾</Text>
-          <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 2, fontSize: 13 }}>Partilhe momentos dos seus animais</Text>
+          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>Comunidade</Text>
+          <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", marginTop: 2, fontSize: 13 }}>Partilhe momentos dos seus animais</Text>
         </View>
         <TouchableOpacity onPress={() => setShowForm(!showForm)}
-          style={{ backgroundColor: "#FF6B35", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
+          style={{ backgroundColor: "rgba(255,255,255,0.25)", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
           <Plus size={20} color="#fff" />
         </TouchableOpacity>
       </View>

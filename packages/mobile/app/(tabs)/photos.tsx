@@ -7,14 +7,16 @@ import { Camera, ChevronRight, Image as ImageIcon } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { useLang } from "../../lib/i18n";
 import { AnimalFact } from "../../components/AnimalFact";
+import { PetIllustration } from "../../components/PetIllustration";
 
-const BG = "#F5ECD7";
-const BROWN = "#6B3A2A";
-const ORANGE = "#E07A3A";
+// Álbum usa um tom azul médio, diferente das outras páginas
+const BG = "#F0F6FF";
+const BROWN = "#1E3A5F";
+const ORANGE = "#4A7FC9";
 const CARD = "#FFFFFF";
-const BORDER = "#E8D5B7";
-const GRAY = "#A08060";
-const ICON_BG = "#EDD8B8";
+const BORDER = "#DCE8FA";
+const GRAY = "#7B93B3";
+const ICON_BG = "#E0EDFF";
 
 const THUMB_SIZE = (Dimensions.get("window").width - 40 - 8) / 3;
 
@@ -58,7 +60,7 @@ function PetAlbumCard({ pet }: { pet: any }) {
       <View style={{ flexDirection: "row", height: 110 }}>
         {preview.length === 0 ? (
           <View style={{ flex: 1, backgroundColor: ICON_BG, alignItems: "center", justifyContent: "center" }}>
-            <Text suppressHighlighting style={{ fontSize: 40, marginBottom: 4 }}>📷</Text>
+            <Camera size={32} color={ORANGE} style={{ marginBottom: 4 }} />
             <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, fontWeight: "600" }}>Sem fotos ainda</Text>
           </View>
         ) : (
@@ -81,7 +83,7 @@ function PetAlbumCard({ pet }: { pet: any }) {
       {/* Footer */}
       <View style={{ flexDirection: "row", alignItems: "center", padding: 14, gap: 12 }}>
         <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: ICON_BG, alignItems: "center", justifyContent: "center" }}>
-          <Text suppressHighlighting style={{ fontSize: 24 }}>{petEmoji(pet.species)}</Text>
+          <PetIllustration species={pet.species} size={32} />
         </View>
         <View style={{ flex: 1 }}>
           <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "800", color: BROWN }}>{pet.name}</Text>
@@ -108,9 +110,13 @@ export default function PhotosTabScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       {/* Header */}
-      <View style={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 4 }}>
-        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "900", color: BROWN }}>Álbum 📷</Text>
-        <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, marginTop: 2 }}>As memórias dos teus animais</Text>
+      <View style={{
+        backgroundColor: ORANGE, paddingHorizontal: 20, paddingTop: 18, paddingBottom: 28,
+        borderBottomLeftRadius: 32, borderBottomRightRadius: 32, marginBottom: 8,
+      }}>
+        <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.1)" }} />
+        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "900", color: "#fff" }}>Álbum</Text>
+        <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 2 }}>As memórias dos teus animais</Text>
       </View>
 
       {/* Curiosidade animal */}

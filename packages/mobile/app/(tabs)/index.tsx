@@ -10,6 +10,7 @@ import { AnimalFact } from "../../components/AnimalFact";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
 import { SubscriptionBanner } from "../../components/SubscriptionBanner";
+import { PetIllustration } from "../../components/PetIllustration";
 
 function PetCard({ pet, index, onPress }: { pet: any; index: number; onPress: () => void }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -22,7 +23,6 @@ function PetCard({ pet, index, onPress }: { pet: any; index: number; onPress: ()
     ]).start();
   }, []);
 
-  const speciesEmoji = pet.species === "cat" ? "🐱" : pet.species === "bird" ? "🦜" : pet.species === "rabbit" ? "🐰" : "🐕";
   const speciesColor = pet.species === "cat" ? "#8B5CF6" : pet.species === "bird" ? "#06D6A0" : pet.species === "rabbit" ? "#F59E0B" : "#FF6B35";
   const speciesBg = pet.species === "cat" ? "#F3EEFF" : pet.species === "bird" ? "#E6FAF5" : pet.species === "rabbit" ? "#FEF3C7" : "#FFF0EB";
 
@@ -48,7 +48,7 @@ function PetCard({ pet, index, onPress }: { pet: any; index: number; onPress: ()
           {pet.photoUrl ? (
             <Image source={{ uri: pet.photoUrl }} style={{ width: 68, height: 68, borderRadius: 34 }} />
           ) : (
-            <Text suppressHighlighting style={{ fontSize: 32 }}>{speciesEmoji}</Text>
+            <PetIllustration species={pet.species} size={48} />
           )}
         </View>
         <Text suppressHighlighting style={{ fontWeight: "800", fontSize: 16, color: "#1A1A2E" }}>{pet.name}</Text>
