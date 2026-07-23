@@ -26,39 +26,12 @@ export const BASE_URL = (
 // Typed Hono client for known endpoints
 const honoClient = hc<AppType>(BASE_URL + "/");
 
-// Generic fetch helper
-const apiFetch = {
-  get: async (path: string) => {
-    const url = `${BASE_URL}/api${path}`;
-    const token = getToken();
-    const res = await fetch(url, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    const data = await res.json();
-    return { data };
-  },
+// IMPORTANT: honoClient.api is a Proxy that dynamically resolves routes
+// (api.pets, api.businesses, etc.) on property access. Spreading it with
+// {...honoClient.api} only copies real enumerable own properties, which the
+// Proxy doesn't have — this silently produced an object with NONE of the
+// route methods, causing "Cannot read property '$post' of undefined" in
+// production for every screen that calls api.<resource>.$post/$get.
+// Export the proxy directly instead of spreading it.
+export const api = honoClient.api;
 
-  post: async (path: string, body: unknown) => {
-    const url = `${BASE_URL}/api${path}`;
-    const token = getToken();
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    const data = await res.json();
-    return { data };
-  },
-};
-
-// Export combined API — Hono typed client routes + generic helpers
-export const api = {
-  ...honoClient.api,
-  get: apiFetch.get,
-  post: apiFetch.post,
-} as typeof honoClient.api & typeof apiFetch;
