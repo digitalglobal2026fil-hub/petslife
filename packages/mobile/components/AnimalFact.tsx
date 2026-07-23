@@ -1,33 +1,37 @@
 import { View, Text, Platform } from "react-native";
 import { useMemo } from "react";
+import { PetIllustration } from "./PetIllustration";
 
 const BROWN = "#6B3A2A";
 const BROWN2 = "#8B5E3C";
 const CARD = "#FFFFFF";
 const BORDER = "#E8D5B7";
-const ICON_BG = "#EDD8B8";
+// Fundo neutro para o círculo do ícone — não usa a cor bege antiga para não se misturar com a ilustração
+const ICON_CIRCLE_BG = "#FFFFFF";
 
+// speciesKey aponta para uma das ilustrações disponíveis (dog, cat, bird, rabbit, hamster, turtle).
+// Quando não há ilustração para o animal, speciesKey fica undefined e usamos o emoji como reserva.
 export const ANIMAL_FACTS = [
-  { fact: "Os cães reconhecem o teu humor pela voz e cheiro!", emoji: "🐕", animal: "Cão" },
-  { fact: "Os gatos passam 70% da vida a dormir. Que vida boa! 😴", emoji: "🐱", animal: "Gato" },
-  { fact: "Os coelhos ronronam de felicidade, tal como os gatos!", emoji: "🐰", animal: "Coelho" },
-  { fact: "Os papagaios podem viver mais de 80 anos!", emoji: "🦜", animal: "Papagaio" },
-  { fact: "Os cães têm 18 músculos só nas orelhas para expressar emoções!", emoji: "🐶", animal: "Cão" },
-  { fact: "Animais de estimação reduzem o stress em até 37%!", emoji: "🐾", animal: "Curioso" },
-  { fact: "Os gatos têm 32 músculos em cada orelha!", emoji: "🐈", animal: "Gato" },
-  { fact: "Os cães sonham enquanto dormem — provavelmente contigo! 💛", emoji: "🐕", animal: "Cão" },
-  { fact: "Os peixinhos dourados têm memória de 3 meses, não 3 segundos!", emoji: "🐠", animal: "Peixe" },
-  { fact: "Os golfinhos têm nomes uns para os outros — chamam-se!", emoji: "🐬", animal: "Golfinho" },
-  { fact: "Os elefantes são os únicos animais que não conseguem saltar!", emoji: "🐘", animal: "Elefante" },
-  { fact: "Os polvos têm três corações e sangue azul!", emoji: "🐙", animal: "Polvo" },
-  { fact: "Os coalas dormem até 22 horas por dia! 😴", emoji: "🐨", animal: "Coala" },
-  { fact: "As vacas têm melhores amigos e ficam stressadas quando separadas!", emoji: "🐄", animal: "Vaca" },
-  { fact: "Os ratos riem quando fazem cócegas — em ultrassons!", emoji: "🐭", animal: "Rato" },
-  { fact: "Os pinguins formam casais para toda a vida e oferecem pedras!", emoji: "🐧", animal: "Pinguim" },
-  { fact: "Os caracóis podem dormir até 3 anos de seguida!", emoji: "🐌", animal: "Caracol" },
-  { fact: "Os hamsters corriam 8km por noite na natureza!", emoji: "🐹", animal: "Hamster" },
-  { fact: "Os cães inclinam a cabeça para te perceber melhor! 🥺", emoji: "🐕", animal: "Cão" },
-  { fact: "Os gatos ronronam a 25-50 Hz — frequência que cura ossos!", emoji: "🐱", animal: "Gato" },
+  { fact: "Os cães reconhecem o teu humor pela voz e cheiro!", emoji: "🐕", animal: "Cão", speciesKey: "dog" },
+  { fact: "Os gatos passam 70% da vida a dormir. Que vida boa! 😴", emoji: "🐱", animal: "Gato", speciesKey: "cat" },
+  { fact: "Os coelhos ronronam de felicidade, tal como os gatos!", emoji: "🐰", animal: "Coelho", speciesKey: "rabbit" },
+  { fact: "Os papagaios podem viver mais de 80 anos!", emoji: "🦜", animal: "Papagaio", speciesKey: "bird" },
+  { fact: "Os cães têm 18 músculos só nas orelhas para expressar emoções!", emoji: "🐶", animal: "Cão", speciesKey: "dog" },
+  { fact: "Animais de estimação reduzem o stress em até 37%!", emoji: "🐾", animal: "Curioso", speciesKey: undefined },
+  { fact: "Os gatos têm 32 músculos em cada orelha!", emoji: "🐈", animal: "Gato", speciesKey: "cat" },
+  { fact: "Os cães sonham enquanto dormem — provavelmente contigo! 💛", emoji: "🐕", animal: "Cão", speciesKey: "dog" },
+  { fact: "Os peixinhos dourados têm memória de 3 meses, não 3 segundos!", emoji: "🐠", animal: "Peixe", speciesKey: undefined },
+  { fact: "Os golfinhos têm nomes uns para os outros — chamam-se!", emoji: "🐬", animal: "Golfinho", speciesKey: undefined },
+  { fact: "Os elefantes são os únicos animais que não conseguem saltar!", emoji: "🐘", animal: "Elefante", speciesKey: undefined },
+  { fact: "Os polvos têm três corações e sangue azul!", emoji: "🐙", animal: "Polvo", speciesKey: undefined },
+  { fact: "Os coalas dormem até 22 horas por dia! 😴", emoji: "🐨", animal: "Coala", speciesKey: undefined },
+  { fact: "As vacas têm melhores amigos e ficam stressadas quando separadas!", emoji: "🐄", animal: "Vaca", speciesKey: undefined },
+  { fact: "Os ratos riem quando fazem cócegas — em ultrassons!", emoji: "🐭", animal: "Rato", speciesKey: undefined },
+  { fact: "Os pinguins formam casais para toda a vida e oferecem pedras!", emoji: "🐧", animal: "Pinguim", speciesKey: undefined },
+  { fact: "Os caracóis podem dormir até 3 anos de seguida!", emoji: "🐌", animal: "Caracol", speciesKey: undefined },
+  { fact: "Os hamsters corriam 8km por noite na natureza!", emoji: "🐹", animal: "Hamster", speciesKey: "hamster" },
+  { fact: "Os cães inclinam a cabeça para te perceber melhor! 🥺", emoji: "🐕", animal: "Cão", speciesKey: "dog" },
+  { fact: "Os gatos ronronam a 25-50 Hz — frequência que cura ossos!", emoji: "🐱", animal: "Gato", speciesKey: "cat" },
 ];
 
 // Pick a fact based on a seed (changes every 5 minutes or per page)
@@ -42,22 +46,43 @@ interface AnimalFactProps {
   compact?: boolean;
 }
 
+function FactIcon({ fact, size }: { fact: typeof ANIMAL_FACTS[0]; size: number }) {
+  if (fact.speciesKey) {
+    return (
+      <View style={{
+        width: size, height: size, borderRadius: size / 2, backgroundColor: ICON_CIRCLE_BG,
+        alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: BORDER,
+      }}>
+        <PetIllustration species={fact.speciesKey} size={size * 0.8} />
+      </View>
+    );
+  }
+  return (
+    <View style={{
+      width: size, height: size, borderRadius: size / 2, backgroundColor: ICON_CIRCLE_BG,
+      alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: BORDER,
+    }}>
+      <Text suppressHighlighting style={{ fontSize: size * 0.5, backgroundColor: "transparent" }}>{fact.emoji}</Text>
+    </View>
+  );
+}
+
 export function AnimalFact({ seed, style, compact }: AnimalFactProps) {
   const fact = useMemo(() => getRandomFact(seed), [seed]);
 
   if (compact) {
     return (
       <View style={[{
-        backgroundColor: ICON_BG,
+        backgroundColor: "#FFF8EF",
         borderRadius: 14,
         padding: 12,
         flexDirection: "row",
         alignItems: "center",
-        gap: 10,
+        gap: 12,
         borderWidth: 1,
         borderColor: BORDER,
       }, style]}>
-        <Text suppressHighlighting style={{ fontSize: 26, backgroundColor: "transparent" }}>{fact.emoji}</Text>
+        <FactIcon fact={fact} size={56} />
         <View style={{ flex: 1 }}>
           <Text suppressHighlighting style={{ fontSize: 10, fontWeight: "700", color: BROWN2, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2, backgroundColor: "transparent" }}>
             Sabia que... 🌟
@@ -85,9 +110,7 @@ export function AnimalFact({ seed, style, compact }: AnimalFactProps) {
       shadowRadius: 8,
       elevation: 0,
     }, style]}>
-      <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: ICON_BG, alignItems: "center", justifyContent: "center" }}>
-        <Text suppressHighlighting style={{ fontSize: 28, backgroundColor: "transparent" }}>{fact.emoji}</Text>
-      </View>
+      <FactIcon fact={fact} size={76} />
       <View style={{ flex: 1 }}>
         <Text suppressHighlighting style={{ fontSize: 11, fontWeight: "800", color: BROWN2, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 4, backgroundColor: "transparent" }}>
           🌟 Sabia que...
