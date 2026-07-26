@@ -4,6 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { authClient } from "../lib/auth";
 import { StatusBar } from "expo-status-bar";
+import { AppLoading } from "../components/AppLoading";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,10 @@ function AuthGuard() {
     if (!session && !inAuth) router.replace("/(auth)/sign-in");
     if (session && inAuth) router.replace("/(tabs)");
   }, [session, isPending]);
+
+  if (isPending) {
+    return <AppLoading message="Só um instante, quase lá..." />;
+  }
 
   return <Slot />;
 }
