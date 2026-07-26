@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Syringe, Calendar, FileText, ChevronRight, Heart, PawPrint, Stethoscope, Pill, Siren, Gauge } from "lucide-react-native";
+import { Syringe, Calendar, FileText, ChevronRight, Heart, PawPrint, Stethoscope, Pill, Siren, Gauge, Video } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
@@ -118,6 +118,7 @@ export default function HealthScreen() {
           <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>Ferramentas</Text>
           <View style={{ gap: 10 }}>
             {[
+              { icon: Video, label: "Consulta Online", sublabel: "Videochamada com o vet", color: "#FF6B35", bg: "#FFF0EB", route: "/consult" },
               { icon: Siren, label: "Primeiros Socorros", sublabel: "Guia de emergências", color: "#FF4757", bg: "#FFF0F2", route: "/first-aid" },
               { icon: Pill, label: "Farmácia Pet", sublabel: "Medicamentos e produtos", color: "#4ECDC4", bg: "#E8FAF9", route: "/pharmacy" },
               { icon: Gauge, label: "Gráfico de Peso", sublabel: "Monitorize a evolução", color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },

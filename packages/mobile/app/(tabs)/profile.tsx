@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert, Image, Animated } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, Image, Animated, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -109,8 +109,8 @@ export default function ProfileScreen() {
     { icon: Gift, label: "Código Promocional", sublabel: "Tens um código especial?", color: "#10B981", onPress: () => router.push("/promo-code" as any) },
     { icon: Bell, label: "Notificações", sublabel: "Vacinas e consultas", color: "#4ECDC4", onPress: () => Alert.alert("Notificações", "Em breve!") },
     { icon: MapPin, label: "Vets e Lojas", sublabel: "Encontrar perto de mim", color: "#06D6A0", onPress: () => router.push("/find-vets") },
-    { icon: Shield, label: "Privacidade", sublabel: "Dados e segurança", color: "#8B5CF6", onPress: () => Alert.alert("Privacidade", "Em breve!") },
-    { icon: HelpCircle, label: "Ajuda e Suporte", sublabel: "FAQ e contacto", color: "#6B7280", onPress: () => Alert.alert("Suporte", "Em breve!") },
+    { icon: Shield, label: "Privacidade", sublabel: "Política de privacidade", color: "#8B5CF6", onPress: () => Linking.openURL(`${API_URL}/privacy`).catch(() => Alert.alert("Erro", "Não foi possível abrir a política de privacidade.")) },
+    { icon: HelpCircle, label: "Ajuda e Suporte", sublabel: "Contacte-nos por email", color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert("Erro", "Não foi possível abrir o email.")) },
   ];
 
   const statusColor = isTrial ? "#FF6B35" : isActive ? "#06D6A0" : "#9CA3AF";
