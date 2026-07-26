@@ -6,6 +6,7 @@ import { requireAuth, authMiddleware } from "../middleware/auth";
 
 // Testadores fechados (Play Console) — acesso ilimitado, sem bloqueio de trial/subscrição
 const TESTER_EMAILS = [
+  "teste.screenshots.pl@gmail.com",
   "digitalglobal2026fil@gmail.com",
   "videira.xana82@gmail.com",
   "ale.c.cardoso2010@gmail.com",
