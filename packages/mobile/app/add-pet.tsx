@@ -53,21 +53,26 @@ export default function AddPetScreen() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   async function pickPhoto() {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) return Alert.alert("Permissão necessária", "Permite o acesso à galeria nas definições.");
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.8 });
-    if (result.canceled) return;
-    const asset = result.assets[0];
-    setPhoto(asset.uri);
-    setUploadingPhoto(true);
     try {
-      const publicUrl = await uploadImage(asset.uri, asset.mimeType ?? "image/jpeg");
-      setPhotoUrl(publicUrl);
-    } catch {
-      Alert.alert("Erro", "Não foi possível fazer upload da foto.");
-      setPhoto(null);
-    } finally {
+      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!perm.granted) { Alert.alert("Permissão necessária", "Permite o acesso à galeria nas definições."); return; }
+      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.8 });
+      if (result.canceled) return;
+      const asset = result.assets[0];
+      setPhoto(asset.uri);
+      setUploadingPhoto(true);
+      try {
+        const publicUrl = await uploadImage(asset.uri, asset.mimeType ?? "image/jpeg");
+        setPhotoUrl(publicUrl);
+      } catch {
+        Alert.alert("Erro", "Não foi possível fazer upload da foto.");
+        setPhoto(null);
+      } finally {
+        setUploadingPhoto(false);
+      }
+    } catch (e: any) {
       setUploadingPhoto(false);
+      Alert.alert("Erro ao escolher foto", e?.message ?? "Tenta novamente ou escolhe outra imagem.");
     }
   }
 
