@@ -213,14 +213,14 @@ export default function ConsultScreen() {
               <View style={{ backgroundColor: "#D1FAE5", borderRadius: 16, padding: 16, marginHorizontal: 20, marginBottom: 16, borderWidth: 1, borderColor: "#6EE7B7" }}>
                 <Text suppressHighlighting style={{ fontWeight: "800", color: "#047857", fontSize: 15, marginBottom: 6 }}>✅ Consulta agendada!</Text>
                 <Text suppressHighlighting style={{ color: "#065F46", fontSize: 13, marginBottom: 10 }}>
-                  Partilhe este link com o veterinário para entrar na videochamada:
+                  Há só um link, e é este (a caixa verde). Partilhe-o com o veterinário — é por aqui que os dois entram na videochamada.
                 </Text>
                 <View style={{ backgroundColor: "#fff", borderRadius: 10, padding: 10, flexDirection: "row", alignItems: "center", gap: 8 }}>
-                  <Text suppressHighlighting style={{ flex: 1, color: "#1D4ED8", fontSize: 12, fontFamily: "monospace" }} numberOfLines={1}>
+                  <Text suppressHighlighting style={{ flex: 1, color: "#065F46", fontSize: 12, fontFamily: "monospace" }} numberOfLines={1}>
                     {bookedRoomUrl}
                   </Text>
                   <TouchableOpacity onPress={() => Share.share({ message: bookedRoomUrl, url: bookedRoomUrl })}>
-                    <Copy size={18} color="#1D4ED8" />
+                    <Copy size={18} color="#047857" />
                   </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
@@ -267,13 +267,21 @@ export default function ConsultScreen() {
                     <Text suppressHighlighting style={styles.cardMetaText}>{formatDate(c.scheduledAt)}</Text>
                   </View>
                   {c.notes ? <Text suppressHighlighting style={styles.cardNotes}>{c.notes}</Text> : null}
-                  {/* Mostrar link de sala */}
+                  {/* Link único da consulta (verde) */}
                   {c.roomUrl && (
-                    <View style={{ backgroundColor: "#EFF6FF", borderRadius: 10, padding: 10, marginBottom: 8, flexDirection: "row", alignItems: "center", gap: 8 }}>
-                      <Text suppressHighlighting style={{ flex: 1, color: "#1D4ED8", fontSize: 11, fontFamily: "monospace" }} numberOfLines={1}>{c.roomUrl}</Text>
-                      <TouchableOpacity onPress={() => Share.share({ message: c.roomUrl!, url: c.roomUrl! })}>
-                        <Copy size={16} color="#1D4ED8" />
-                      </TouchableOpacity>
+                    <View style={{ backgroundColor: "#D1FAE5", borderRadius: 12, padding: 12, marginBottom: 8, borderWidth: 1, borderColor: "#6EE7B7" }}>
+                      <Text suppressHighlighting style={{ color: "#047857", fontSize: 12, fontWeight: "800", marginBottom: 6 }}>
+                        Link da consulta (este verde é o único)
+                      </Text>
+                      <View style={{ backgroundColor: "#fff", borderRadius: 10, padding: 10, flexDirection: "row", alignItems: "center", gap: 8 }}>
+                        <Text suppressHighlighting style={{ flex: 1, color: "#065F46", fontSize: 11, fontFamily: "monospace" }} numberOfLines={1}>{c.roomUrl}</Text>
+                        <TouchableOpacity onPress={() => Share.share({ message: c.roomUrl!, url: c.roomUrl! })}>
+                          <Copy size={16} color="#047857" />
+                        </TouchableOpacity>
+                      </View>
+                      <Text suppressHighlighting style={{ color: "#065F46", fontSize: 11, marginTop: 6 }}>
+                        Partilhe este link com o veterinário. Os dois entram por ele — carregue no ícone para partilhar, ou em "Entrar na chamada" para entrar.
+                      </Text>
                     </View>
                   )}
                   <View style={styles.cardActions}>

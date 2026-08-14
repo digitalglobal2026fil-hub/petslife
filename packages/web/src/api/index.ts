@@ -71,6 +71,29 @@ const app = new Hono()
     }
     return c.json({ ...cfg, emailSent, lastError: getLastMailError(), probe }, 200);
   })
+  // Reset de password da conta da administradora (protegido pelo ADMIN_PIN).
+  // GET /api/admin/reset-password?pin=2776&email=...&password=...
+  .get("/admin/reset-password", async (c) => {
+    const pin = c.req.query("pin");
+    if (pin !== (process.env.ADMIN_PIN ?? "2776")) return c.json({ error: "PIN inválido" }, 403);
+    const email = (c.req.query("email") ?? "").trim().toLowerCase();
+    const password = c.req.query("password") ?? "";
+    if (!email || password.length < 8) return c.json({ error: "email e password (min 8) obrigatórios" }, 400);
+    try {
+      const { db } = await import("./database");
+      const { user: userTable } = await import("./database/auth-schema");
+      const { eq } = await import("drizzle-orm");
+      const rows = await db.select().from(userTable).where(eq(userTable.email, email));
+      const found = rows[0];
+      if (!found) return c.json({ error: "Utilizador não existe" }, 404);
+      const actx = await auth.$context;
+      const hashed = await actx.password.hash(password);
+      await actx.internalAdapter.updatePassword(found.id, hashed);
+      return c.json({ ok: true, email, userId: found.id }, 200);
+    } catch (e: any) {
+      return c.json({ error: String(e?.message ?? e) }, 500);
+    }
+  })
   .route("/pets", pets)
   .route("/vaccines", vaccines)
   .route("/appointments", appointments)

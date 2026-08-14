@@ -486,14 +486,21 @@ export default function BreedGuideScreen() {
       </View>
 
       {/* Filtros */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 20, paddingVertical: 14 }}>
-        {FILTERS.map(f => (
-          <TouchableOpacity key={f} onPress={() => setFilter(f)}
-            style={{ paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: filter === f ? PURPLE : CARD, borderWidth: 1.5, borderColor: filter === f ? PURPLE : "#E5E7EB" }}>
-            <Text suppressHighlighting style={{ color: filter === f ? "#fff" : GRAY, fontWeight: "700", fontSize: 13 }}>{f}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <View style={{ height: 68 }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ flexGrow: 0, flexShrink: 0 }}
+          contentContainerStyle={{ gap: 8, paddingHorizontal: 20, paddingVertical: 14, alignItems: "center" }}
+        >
+          {FILTERS.map(f => (
+            <TouchableOpacity key={f} onPress={() => setFilter(f)}
+              style={{ height: 40, justifyContent: "center", paddingHorizontal: 16, borderRadius: 20, backgroundColor: filter === f ? PURPLE : CARD, borderWidth: 1.5, borderColor: filter === f ? PURPLE : "#E5E7EB" }}>
+              <Text suppressHighlighting numberOfLines={1} style={{ color: filter === f ? "#fff" : GRAY, fontWeight: "700", fontSize: 13, lineHeight: 18 }}>{f}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 20) + 60, gap: 12 }}>
         {filtered.map(b => (

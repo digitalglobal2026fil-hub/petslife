@@ -8,6 +8,7 @@ import { AppLoading } from "../components/AppLoading";
 import { BrandIntro } from "../components/BrandIntro";
 import { onSessionExpired } from "../lib/session-expired";
 import { ensureToken } from "../lib/auth-fetch";
+import { useScanAlerts } from "../lib/scan-alerts";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,9 @@ function AuthGuard() {
   useEffect(() => {
     if (session) ensureToken().catch(() => {});
   }, [session]);
+
+  // Avisos com som/vibração quando o QR de um animal é digitalizado
+  useScanAlerts(Boolean(session));
 
   useEffect(() => {
     if (isPending) return;

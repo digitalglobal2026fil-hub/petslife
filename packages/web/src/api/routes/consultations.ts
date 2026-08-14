@@ -14,7 +14,15 @@ export const consultations = new Hono()
       .from(schema.consultations)
       .where(eq(schema.consultations.userId, user.id))
       .orderBy(desc(schema.consultations.scheduledAt));
-    return c.json({ consultations: result }, 200);
+    // Normaliza links antigos (meet.jit.si ou domínios desactualizados):
+    // a sala é sempre a nossa página /call/:roomName.
+    const base = (process.env.WEBSITE_URL ?? "https://petslife.onrender.com").replace(/\/$/, "");
+    const normalized = result.map((r) => {
+      const room = r.roomName || `petslife-${r.id}`;
+      const good = `${base}/call/${room}`;
+      return r.roomUrl === good ? r : { ...r, roomUrl: good };
+    });
+    return c.json({ consultations: normalized }, 200);
   })
   // Get single
   .get("/:id", requireAuth, async (c) => {

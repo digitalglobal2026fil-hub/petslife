@@ -303,6 +303,10 @@ export default function CallPage() {
   // ---------- chamada ----------
   return (
     <div style={{ position: "fixed", inset: 0, background: "#0B0B12", overflow: "hidden" }}>
+      {/* Esconde badges/modais externos que ficavam por cima dos controlos */}
+      <style>{`
+        .dev-modal, #runable-badge, [class*="runable-badge"], [id*="runable-badge"] { display: none !important; }
+      `}</style>
       {/* vídeo do outro participante */}
       <video
         ref={remoteVideo}
@@ -409,8 +413,8 @@ export default function CallPage() {
 
       {/* botões */}
       <div style={{
-        position: "absolute", bottom: 24, left: 0, right: 0, display: "flex",
-        justifyContent: "center", gap: 14,
+        position: "absolute", bottom: "max(28px, env(safe-area-inset-bottom))", left: 0, right: 0, display: "flex",
+        justifyContent: "center", gap: 14, zIndex: 2147483647, pointerEvents: "auto",
       }}>
         <RoundBtn onClick={toggleMic} bg={micOn ? "rgba(255,255,255,.14)" : "#EF476F"}>
           {micOn ? <Mic size={22} color="#fff" /> : <MicOff size={22} color="#fff" />}

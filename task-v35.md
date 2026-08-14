@@ -42,3 +42,27 @@
 - [x] BONUS: /api/users/me nao estava registado no index.ts e a tabela user_profiles nao existia no schema -> ecra Perfil / Editar perfil dava 404. Corrigido e testado (GET/PUT 200).
 - [x] 11. v35 / versionCode 35 / 1.9.1 build OK, commit 546a026 pushed, deploy Render confirmado (users/me 401 em vez de 404, /call/x 200)
 AAB v35: https://gofile.io/d/N74dvAlu (md5 d5a73e9abd81ef61f7eedb8d8354bea9)
+
+## v36 (1.9.2, versionCode 36) — correccoes apos teste da alpha
+Download: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.2/petslife_v36.aab
+
+1. [x] LOGIN/LOGOFF BLOQUEADO ("Missing or null Origin") — better-auth exige
+   cabecalho Origin quando o pedido traz cookie; a app nativa nao envia Origin.
+   Depois do logout ficava impossivel entrar. Corrigido com
+   advanced.disableCSRFCheck/disableOriginCheck em api/auth.ts.
+   Reproduzido antes (403) e confirmado depois (200), local e em producao.
+2. [x] AVISO DO QR nao chegava — duas causas:
+   a) o aviso so era enviado se a pessoa carregasse em "Avisar o dono onde estou";
+      agora e registado logo ao abrir a pagina do QR (POST automatico) e a
+      partilha de localizacao faz PUT no mesmo registo (novo endpoint PUT /:id),
+      por isso o dono ve 1 unica entrada e recebe 2 emails no maximo.
+   b) o servidor no Render nao tinha GMAIL_USER nem WEBSITE_URL (estavam num
+      Environment Group nao ligado ao servico) e a app password tinha espacos;
+      SMTP passou a 465 SSL directo com timeouts. Testado: emailSent true.
+3. [x] Imagem do ecra branco substituida pela arte PetsLife enviada pela
+   utilizadora (assets/petslife-loading.png), fundo branco, 250x285.
+4. [x] Diagnostico: GET /api/diag/notify?pin=2776[&to=email&probe=1] mostra se
+   Gmail/Twilio estao configurados, envia email de teste e testa portas SMTP.
+5. [ ] SMS do QR — falta TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN/TWILIO_FROM.
+6. [ ] Avisos da Google (edge-to-edge, orientacao) — adiados pela utilizadora.
+7. [ ] Modo escuro — continua de fora.

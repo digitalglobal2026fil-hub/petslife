@@ -55,6 +55,19 @@ export async function uploadImage(
     }
   }
 
+  // Segunda rede de segurança: se a foto original for enorme e a compressão
+  // tiver falhado, tenta reduzir mais antes de desistir (evita o erro
+  // "imagem demasiado grande" com fotos de telemóveis recentes).
+  const shrink = async (width: number, quality: number) => {
+    const ImageManipulator = require("expo-image-manipulator");
+    const out = await ImageManipulator.manipulateAsync(
+      uri,
+      [{ resize: { width } }],
+      { compress: quality, format: ImageManipulator.SaveFormat.JPEG }
+    );
+    return out.uri as string;
+  };
+
   // Read as base64
   let base64: string;
   try {
@@ -86,6 +99,26 @@ export async function uploadImage(
 
   if (!base64 || base64.length < 100) {
     throw new Error("Imagem inválida ou vazia.");
+  }
+
+  // Se ainda for grande demais para o servidor, reduz progressivamente.
+  if (Platform.OS !== "web" && base64.length > 6_000_000) {
+    for (const [w, q] of [[1200, 0.6], [800, 0.5], [600, 0.4]] as const) {
+      try {
+        const smallUri = await shrink(w, q);
+        const b = await FileSystem.readAsStringAsync(smallUri, { encoding: "base64" as any });
+        console.log("[upload] retry", w, q, "->", b.length);
+        if (b.length < 6_000_000) {
+          base64 = b;
+          finalMime = "image/jpeg";
+          break;
+        }
+        base64 = b;
+      } catch (e) {
+        console.warn("[upload] shrink failed", e);
+        break;
+      }
+    }
   }
 
   // POST to server
