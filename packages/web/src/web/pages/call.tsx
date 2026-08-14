@@ -413,7 +413,7 @@ export default function CallPage() {
 
       {/* botões */}
       <div style={{
-        position: "absolute", bottom: "max(28px, env(safe-area-inset-bottom))", left: 0, right: 0, display: "flex",
+        position: "absolute", bottom: "calc(96px + env(safe-area-inset-bottom))", left: 0, right: 0, display: "flex",
         justifyContent: "center", gap: 14, zIndex: 2147483647, pointerEvents: "auto",
       }}>
         <RoundBtn onClick={toggleMic} bg={micOn ? "rgba(255,255,255,.14)" : "#EF476F"}>

@@ -8,7 +8,7 @@
         "backgroundColor": "#FF6B35"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 37,
+      "versionCode": 38,
       "permissions": [
         "VIBRATE",
         "POST_NOTIFICATIONS"
@@ -31,7 +31,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.9.3",
+    "version": "1.9.4",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",

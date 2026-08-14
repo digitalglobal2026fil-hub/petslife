@@ -228,6 +228,10 @@ export default function ProfileScreen() {
             </View>
             <Text suppressHighlighting style={{ fontWeight: "700", color: "#EF476F", fontSize: 14, flex: 1 }}>Sair da conta</Text>
           </TouchableOpacity>
+
+          <Text style={{ textAlign: "center", color: "#9CA3AF", fontSize: 12, marginTop: 18, marginBottom: 4 }}>
+            PetsLife v{Constants.expoConfig?.version ?? "?"} (build {String(Constants.expoConfig?.android?.versionCode ?? "?")})
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
