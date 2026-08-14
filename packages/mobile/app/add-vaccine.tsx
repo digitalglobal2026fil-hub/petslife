@@ -11,6 +11,7 @@ import * as ImagePicker from "expo-image-picker";
 import { api } from "../lib/api";
 import { uploadImage } from "../lib/upload";
 import { netError } from "../lib/net-error";
+import { DateFieldPT } from "../components/DateFieldPT";
 
 async function uploadFile(uri: string, filename: string, mimeType: string): Promise<string> {
   return uploadImage(uri, mimeType ?? "image/jpeg");
@@ -176,10 +177,10 @@ export default function AddVaccineScreen() {
 
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View style={{ flex: 1 }}>
-            <Field label="Data de administração" value={date} onChange={setDate} placeholder="AAAA-MM-DD" />
+            <DateFieldPT label="Data de administração" value={date} onChange={setDate} />
           </View>
           <View style={{ flex: 1 }}>
-            <Field label="Próxima dose" value={next} onChange={setNext} placeholder="AAAA-MM-DD" />
+            <DateFieldPT label="Próxima dose" value={next} onChange={setNext} />
           </View>
         </View>
 

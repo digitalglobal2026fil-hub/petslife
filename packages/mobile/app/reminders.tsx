@@ -11,6 +11,8 @@ import {
 import { BASE_URL } from "../lib/api";
 import { netError } from "../lib/net-error";
 import { AnimatedPetGroup } from "../components/AnimatedPet";
+import { authFetch } from "../lib/auth-fetch";
+import { DateFieldPT } from "../components/DateFieldPT";
 
 const TEAL = "#4ECDC4";
 const BG = "#F2FBFA";
@@ -43,7 +45,7 @@ function getToken(): string {
   } catch { return ""; }
 }
 
-const headers = () => ({ "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` });
+const headers = () => ({ "Content-Type": "application/json" });
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -69,7 +71,7 @@ export default function RemindersScreen() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch(`${BASE_URL}/api/reminders`, { headers: headers() });
+      const res = await authFetch(`${BASE_URL}/api/reminders`, { headers: headers() });
       const d = await res.json();
       setItems(d.reminders ?? []);
     } catch (e: any) {
@@ -87,10 +89,10 @@ export default function RemindersScreen() {
 
   async function save() {
     if (!title.trim()) { Alert.alert("Atenção", "Escreve o nome da medicação ou tratamento."); return; }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) { Alert.alert("Atenção", "A data de início deve estar no formato AAAA-MM-DD."); return; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) { Alert.alert("Atenção", "Indique a data de início no formato dia/mês/ano."); return; }
     setSaving(true);
     try {
-      const res = await fetch(`${BASE_URL}/api/reminders`, {
+      const res = await authFetch(`${BASE_URL}/api/reminders`, {
         method: "POST",
         headers: headers(),
         body: JSON.stringify({
@@ -111,7 +113,7 @@ export default function RemindersScreen() {
 
   async function markDone(r: any) {
     try {
-      await fetch(`${BASE_URL}/api/reminders/${r.id}/done`, {
+      await authFetch(`${BASE_URL}/api/reminders/${r.id}/done`, {
         method: "POST", headers: headers(), body: JSON.stringify({}),
       });
       Alert.alert("Registado", `Dose de "${r.title}" marcada como dada. ✓`);
@@ -126,7 +128,7 @@ export default function RemindersScreen() {
       {
         text: "Apagar", style: "destructive", onPress: async () => {
           try {
-            await fetch(`${BASE_URL}/api/reminders/${r.id}`, { method: "DELETE", headers: headers() });
+            await authFetch(`${BASE_URL}/api/reminders/${r.id}`, { method: "DELETE", headers: headers() });
             await load();
           } catch (e: any) { Alert.alert("Erro", netError(e)); }
         },
@@ -316,10 +318,10 @@ export default function RemindersScreen() {
               )}
 
               <Label>Data de início</Label>
-              <Input value={startDate} onChangeText={setStartDate} placeholder="AAAA-MM-DD" />
+              <DateFieldPT label="" value={startDate} onChange={setStartDate} />
 
               <Label>Data de fim (opcional)</Label>
-              <Input value={endDate} onChangeText={setEndDate} placeholder="AAAA-MM-DD — vazio = sem fim" />
+              <DateFieldPT label="" value={endDate} onChange={setEndDate} showToday={false} />
 
               <Label>Notas (opcional)</Label>
               <Input value={notes} onChangeText={setNotes} placeholder="Ex: dar com comida" />

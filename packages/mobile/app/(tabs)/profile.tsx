@@ -8,6 +8,7 @@ import { authClient, clearToken } from "../../lib/auth";
 import { api } from "../../lib/api";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
+import { authFetch } from "../../lib/auth-fetch";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -72,7 +73,7 @@ export default function ProfileScreen() {
     queryKey: ["user-me"],
     queryFn: async () => {
       const token = getToken();
-      const res = await fetch(`${API_URL}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await authFetch(`${API_URL}/api/users/me`, {});
       if (!res.ok) return null;
       return res.json();
     },
@@ -117,7 +118,7 @@ export default function ProfileScreen() {
     { icon: CreditCard, label: "Subscrição", sublabel: isTrial ? "Trial ativo" : isActive ? "Premium ativo" : "Inativo", color: "#FF6B35", onPress: () => router.push("/subscription") },
     { icon: Gift, label: "Código Promocional", sublabel: "Tens um código especial?", color: "#10B981", onPress: () => router.push("/promo-code" as any) },
     { icon: Pill, label: "Lembretes", sublabel: "Medicação, tratamentos e vacinas", color: "#4ECDC4", onPress: () => router.push("/reminders" as any) },
-    { icon: MapPin, label: "Vets e Lojas", sublabel: "Encontrar perto de mim", color: "#06D6A0", onPress: () => router.push("/find-vets") },
+    { icon: MapPin, label: "Vets e Outros", sublabel: "Clínicas, lojas e serviços", color: "#06D6A0", onPress: () => router.push("/find-vets") },
     { icon: Shield, label: "Privacidade", sublabel: "Política de privacidade", color: "#8B5CF6", onPress: () => Linking.openURL(`${API_URL}/privacy`).catch(() => Alert.alert("Erro", "Não foi possível abrir a política de privacidade.")) },
     { icon: HelpCircle, label: "Ajuda e Suporte", sublabel: "Contacte-nos por email", color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert("Erro", "Não foi possível abrir o email.")) },
   ];

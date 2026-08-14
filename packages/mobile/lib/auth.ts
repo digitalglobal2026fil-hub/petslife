@@ -39,6 +39,15 @@ export const authClient = createAuthClient({
       type: "Bearer",
       token: () => getToken(),
     },
+    // Guardar o token em QUALQUER resposta que o devolva (não só no
+    // sign-in/sign-up): sem isto, uma sessão válida por cookie podia ficar
+    // sem token guardado e os ecrãs que usam Bearer davam 401.
+    onSuccess: (ctx: any) => {
+      try {
+        const t = ctx?.response?.headers?.get?.("set-auth-token");
+        if (t) setToken(t);
+      } catch {}
+    },
   },
 });
 

@@ -363,3 +363,16 @@ export const petScans = sqliteTable("pet_scans", {
   userAgent: text("user_agent"),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
+
+// Perfil do utilizador (telefone, endereço, foto) — usado por /api/users/me
+export const userProfiles = sqliteTable("user_profiles", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull(),
+  phone: text("phone"),
+  address: text("address"),
+  city: text("city"),
+  photoUrl: text("photo_url"),
+  language: text("language"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});

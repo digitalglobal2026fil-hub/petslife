@@ -1,7 +1,7 @@
 import * as FileSystem from "expo-file-system/legacy";
 import Constants from "expo-constants";
 import { Platform, Alert } from "react-native";
-import { getTokenAsync } from "./auth";
+import { authFetch } from "./auth-fetch";
 
 const API_URL = (
   (Constants.expoConfig?.extra?.apiUrl as string) ??
@@ -19,13 +19,10 @@ export async function uploadImage(
   mimeType?: string,
   _unused?: string
 ): Promise<string> {
-  const token = await getTokenAsync();
-
-  console.log("[upload] START uri=", uri?.slice(0, 60), "token=", token ? "✓" : "✗");
-
-  if (!token) {
-    throw new Error("Sessão expirada. Faz login novamente.");
-  }
+  // NÃO exigir um token aqui: a sessão da app também é válida por cookie.
+  // Antes, se o token não estivesse guardado, isto abortava com
+  // "Sessão expirada" mesmo estando a utilizadora com sessão activa.
+  console.log("[upload] START uri=", uri?.slice(0, 60));
 
   let finalUri = uri;
   let finalMime = mimeType ?? "image/jpeg";
@@ -94,12 +91,9 @@ export async function uploadImage(
   // POST to server
   let res: Response;
   try {
-    res = await fetch(`${API_URL}/api/upload/image`, {
+    res = await authFetch(`${API_URL}/api/upload/image`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ base64, mimeType: finalMime }),
     });
   } catch (netErr: any) {

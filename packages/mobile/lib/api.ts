@@ -2,6 +2,7 @@ import { hc } from "hono/client";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 import type { AppType } from "@template/web";
+import { fetchWithSessionCheck } from "./session-expired";
 
 const TOKEN_KEY = "bearer_token";
 
@@ -23,8 +24,12 @@ export const BASE_URL = (
   "http://localhost:4200"
 ).replace(/\/$/, "");
 
-// Typed Hono client for known endpoints
-const honoClient = hc<AppType>(BASE_URL + "/");
+// Typed Hono client for known endpoints.
+// fetchWithSessionCheck: qualquer 401 limpa a sessão e leva ao ecrã de entrada,
+// em vez de deixar o utilizador preso com um token expirado.
+const honoClient = hc<AppType>(BASE_URL + "/", {
+  fetch: fetchWithSessionCheck,
+});
 
 // IMPORTANT: honoClient.api is a Proxy that dynamically resolves routes
 // (api.pets, api.businesses, etc.) on property access. Spreading it with

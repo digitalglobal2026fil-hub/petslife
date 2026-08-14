@@ -32,9 +32,12 @@ export const consultations = new Hono()
     const user = c.get("user")!;
     const body = await c.req.json();
 
-    // Jitsi Meet — gratuito, sem API key, funciona imediatamente
+    // Sala na NOSSA página (/call/:roomId), não em meet.jit.si.
+    // Um link para meet.jit.si obriga o Android a instalar a app do Jitsi;
+    // na nossa página a chamada abre logo no browser, sem instalações.
     const roomName = `petslife-${crypto.randomUUID().slice(0, 10)}`;
-    const roomUrl = `https://meet.jit.si/${roomName}`;
+    const base = (process.env.WEBSITE_URL ?? "https://petslife.onrender.com").replace(/\/$/, "");
+    const roomUrl = `${base}/call/${roomName}`;
 
     const [consultation] = await db
       .insert(schema.consultations)

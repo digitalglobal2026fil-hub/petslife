@@ -6,6 +6,7 @@ import { ChevronLeft, User, Phone, MapPin, Mail, Save, Camera } from "lucide-rea
 import Constants from "expo-constants";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImage } from "../lib/upload";
+import { authFetch } from "../lib/auth-fetch";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -54,7 +55,7 @@ export default function EditProfileScreen() {
     (async () => {
       try {
         const token = getToken();
-        const res = await fetch(`${API_URL}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await authFetch(`${API_URL}/api/users/me`, {});
         if (res.ok) {
           const data = await res.json();
           setName(data.user?.name ?? "");
@@ -77,9 +78,9 @@ export default function EditProfileScreen() {
       console.log("[edit-profile] Upload ok:", url?.slice(0, 60));
       setPhotoUrl(url);
       const token = getToken();
-      const saveRes = await fetch(`${API_URL}/api/users/me`, {
+      const saveRes = await authFetch(`${API_URL}/api/users/me`, {
         method: "PUT",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ photoUrl: url }),
       });
       if (!saveRes.ok) {
@@ -150,9 +151,9 @@ export default function EditProfileScreen() {
     setSaving(true);
     try {
       const token = getToken();
-      const res = await fetch(`${API_URL}/api/users/me`, {
+      const res = await authFetch(`${API_URL}/api/users/me`, {
         method: "PUT",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim(),
           phone: phone.trim() || undefined,

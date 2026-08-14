@@ -8,6 +8,7 @@ import { Gift, ArrowLeft, CheckCircle, BadgePercent, Infinity as InfinityIcon, C
 import { api, BASE_URL } from "../lib/api";
 import { AnimatedPet } from "../components/AnimatedPet";
 import { netError } from "../lib/net-error";
+import { authFetch } from "../lib/auth-fetch";
 
 const BENEFIT_INFO: Record<string, { title: string; desc: string; icon: any; color: string }> = {
   lifetime: { title: "Acesso vitalício", desc: "Acesso completo para sempre. Nunca pagas nada.", icon: InfinityIcon, color: "#8B5CF6" },
@@ -40,7 +41,7 @@ export default function PromoCodeScreen() {
     setChecking(true);
     setPreview(null);
     try {
-      const res = await fetch(`${BASE_URL}/api/partners/check/${encodeURIComponent(c)}`);
+      const res = await authFetch(`${BASE_URL}/api/partners/check/${encodeURIComponent(c)}`);
       const data = await res.json();
       if (data.valid) setPreview(data);
       else Alert.alert("Código inválido", data.error || "Este código não existe.");
@@ -60,9 +61,9 @@ export default function PromoCodeScreen() {
     setLoading(true);
     try {
       const token = await getToken();
-      const res = await fetch(`${BASE_URL}/api/partners/redeem`, {
+      const res = await authFetch(`${BASE_URL}/api/partners/redeem`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: c }),
       });
       const data = await res.json();

@@ -56,6 +56,13 @@ export const auth = betterAuth({
     },
   },
   secret: process.env.BETTER_AUTH_SECRET ?? "petslife2024secretkey",
+  // Sem isto o better-auth usa o default de 7 dias: a sessão guardada no
+  // telemóvel expirava e a app dava "Sessão expirada" em tudo o que exige
+  // login (upload de fotos/documentos), sem forma de recuperar.
+  session: {
+    expiresIn: 60 * 60 * 24 * 365, // 1 ano
+    updateAge: 60 * 60 * 24,       // renova a validade a cada dia de uso
+  },
   trustedOrigins: ["*"],
   plugins: [bearer()],
 });

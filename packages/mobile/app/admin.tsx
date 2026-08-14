@@ -11,6 +11,7 @@ import {
 } from "lucide-react-native";
 import { BASE_URL } from "../lib/api";
 import { netError } from "../lib/net-error";
+import { authFetch } from "../lib/auth-fetch";
 
 const PURPLE = "#8B5CF6";
 const BG = "#F8F6FF";
@@ -57,7 +58,6 @@ export default function AdminScreen() {
 
   const authHeaders = () => ({
     "Content-Type": "application/json",
-    Authorization: `Bearer ${getToken()}`,
     "x-admin-pin": pin,
   });
 
@@ -65,9 +65,9 @@ export default function AdminScreen() {
     if (pin.length < 4) return;
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/api/partners/admin/login`, {
+      const res = await authFetch(`${BASE_URL}/api/partners/admin/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin }),
       });
       const d = await res.json();
@@ -86,7 +86,7 @@ export default function AdminScreen() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch(`${BASE_URL}/api/partners/admin/dashboard`, { headers: authHeaders() });
+      const res = await authFetch(`${BASE_URL}/api/partners/admin/dashboard`, { headers: authHeaders() });
       const d = await res.json();
       if (res.ok) setData(d);
       else Alert.alert("Erro", d.error || "Não foi possível carregar.");
@@ -98,7 +98,7 @@ export default function AdminScreen() {
   async function createPartner() {
     if (!pName.trim()) { Alert.alert("Atenção", "Escreve o nome do parceiro."); return; }
     try {
-      const res = await fetch(`${BASE_URL}/api/partners/admin/partners`, {
+      const res = await authFetch(`${BASE_URL}/api/partners/admin/partners`, {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ name: pName.trim(), mainCode: pCode.trim() || undefined, partnerBenefit: pBenefit, notes: pNotes || undefined }),
@@ -116,7 +116,7 @@ export default function AdminScreen() {
   async function createCode() {
     if (!newCodeFor) return;
     try {
-      const res = await fetch(`${BASE_URL}/api/partners/admin/partners/${newCodeFor.id}/codes`, {
+      const res = await authFetch(`${BASE_URL}/api/partners/admin/partners/${newCodeFor.id}/codes`, {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ code: cCode.trim() || undefined, benefit: cBenefit, label: cLabel || undefined }),
@@ -137,7 +137,7 @@ export default function AdminScreen() {
       {
         text: "Apagar", style: "destructive", onPress: async () => {
           try {
-            await fetch(`${BASE_URL}/api/partners/admin/codes/${id}`, { method: "DELETE", headers: authHeaders() });
+            await authFetch(`${BASE_URL}/api/partners/admin/codes/${id}`, { method: "DELETE", headers: authHeaders() });
             await load();
           } catch (e: any) { Alert.alert("Erro", netError(e)); }
         },
@@ -151,7 +151,7 @@ export default function AdminScreen() {
       {
         text: "Apagar", style: "destructive", onPress: async () => {
           try {
-            await fetch(`${BASE_URL}/api/partners/admin/partners/${id}`, { method: "DELETE", headers: authHeaders() });
+            await authFetch(`${BASE_URL}/api/partners/admin/partners/${id}`, { method: "DELETE", headers: authHeaders() });
             await load();
           } catch (e: any) { Alert.alert("Erro", netError(e)); }
         },

@@ -1,4 +1,5 @@
 import app from "./api";
+import { handleCallSocket } from "./call-signaling";
 
 const port = Number(process.env.PORT ?? 3000);
 const distDir = `${import.meta.dir}/../dist`;
@@ -7,8 +8,15 @@ const indexPath = `${distDir}/index.html`;
 const server = Bun.serve({
   port,
   hostname: "0.0.0.0",
-  async fetch(request) {
+  websocket: handleCallSocket(),
+  async fetch(request, server) {
     const url = new URL(request.url);
+
+    // Sinalização das consultas online (WebRTC ponto a ponto)
+    if (url.pathname === "/ws/call") {
+      if (server.upgrade(request, { data: {} })) return undefined as any;
+      return new Response("Expected a WebSocket upgrade", { status: 400 });
+    }
 
     if (url.pathname.startsWith("/api")) {
       return app.fetch(request);
@@ -41,6 +49,11 @@ function getStaticFilePath(pathname: string) {
   const cleanPath = decodeURIComponent(pathname)
     .replace(/^\/+/, "")
     .replaceAll("..", "");
+
+  // O index.html referencia ./runable.js de forma relativa, pelo que em rotas
+  // com sub-caminho (/call/xxx, /pet/xxx) o pedido ia para /call/runable.js,
+  // caía no index.html e o browser atirava "Unexpected token '<'".
+  if (cleanPath.endsWith("runable.js")) return `${distDir}/runable.js`;
 
   return cleanPath ? `${distDir}/${cleanPath}` : indexPath;
 }

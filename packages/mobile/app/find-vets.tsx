@@ -60,7 +60,16 @@ export default function FindVetsScreen() {
     { emoji: "🏥", label: "Clínicas Veterinárias", query: "veterinário clínica veterinária perto de mim" },
     { emoji: "🚑", label: "Urgências 24h", query: "clínica veterinária urgência 24 horas" },
     { emoji: "💊", label: "Pet Shops", query: "pet shop loja animais perto de mim" },
-    { emoji: "✂️", label: "Grooming", query: "grooming banho tosquia cão gato perto de mim" },
+    { emoji: "✂️", label: "Grooming / Tosquia", query: "grooming banho tosquia cão gato perto de mim" },
+    { emoji: "🏨", label: "Hotéis e Creches", query: "hotel para cães creche canina perto de mim" },
+    { emoji: "🎓", label: "Treinadores", query: "treinador canino adestrador perto de mim" },
+    { emoji: "🚶", label: "Passeadores e Pet Sitters", query: "passeador de cães pet sitter perto de mim" },
+    { emoji: "🐦", label: "Vets de Exóticos", query: "veterinário animais exóticos aves répteis perto de mim" },
+    { emoji: "🐴", label: "Vets de Grandes Animais", query: "veterinário equinos animais de quinta perto de mim" },
+    { emoji: "🏡", label: "Associações e Canis", query: "associação animais canil gatil adoção perto de mim" },
+    { emoji: "🐟", label: "Aquariofilia", query: "loja aquários peixes aquariofilia perto de mim" },
+    { emoji: "🌾", label: "Rações e Agro-Lojas", query: "loja rações agro animais perto de mim" },
+    { emoji: "🕊️", label: "Serviços Funerários", query: "crematório animais serviço funerário pet perto de mim" },
   ];
 
   return (
@@ -71,8 +80,8 @@ export default function FindVetsScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Encontrar Vets</Text>
-          <Text suppressHighlighting style={{ fontSize: 12, color: "#6B7280" }}>Clínicas e serviços próximos</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Vets e Outros</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, color: "#6B7280" }}>Clínicas, lojas e serviços perto de si</Text>
         </View>
       </View>
 

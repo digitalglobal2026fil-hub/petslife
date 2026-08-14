@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import { api } from "../lib/api";
 import { uploadImage } from "../lib/upload";
 import { netError } from "../lib/net-error";
+import { DateFieldPT } from "../components/DateFieldPT";
 
 const SPECIES = [
   { key: "dog", label: "Cão", icon: Dog, emoji: "🐕" },
@@ -162,7 +163,7 @@ export default function AddPetScreen() {
         </View>
 
         <Input label="Raça" value={breed} onChangeText={setBreed} placeholder="Ex: Labrador, Siamês..." />
-        <Input label="Data de nascimento" value={birthDate} onChangeText={setBirthDate} placeholder="YYYY-MM-DD" />
+        <DateFieldPT label="Data de nascimento" value={birthDate} onChange={setBirthDate} />
         <Input label="Nº Microchip" value={microchip} onChangeText={setMicrochip} placeholder="Ex: 620098123456789" keyboardType="numeric" maxLength={20} />
 
         <View style={{ marginBottom: 14 }}>

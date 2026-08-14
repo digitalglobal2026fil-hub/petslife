@@ -9,6 +9,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronDown, Calendar } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
+import { DateFieldPT } from "../components/DateFieldPT";
 
 function Field({ label, value, onChange, placeholder, keyboardType, multiline }: any) {
   return (
@@ -142,7 +143,7 @@ export default function AddAppointmentScreen() {
 
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View style={{ flex: 1 }}>
-            <Field label="Data *" value={date} onChange={setDate} placeholder="AAAA-MM-DD" />
+            <DateFieldPT label="Data *" value={date} onChange={setDate} />
           </View>
           <View style={{ flex: 1 }}>
             <Field label="Hora" value={time} onChange={setTime} placeholder="HH:MM" />

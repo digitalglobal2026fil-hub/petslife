@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "../../../lib/api";
 import { netError } from "../../../lib/net-error";
+import { DateFieldPT } from "../../../components/DateFieldPT";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -173,7 +174,7 @@ export default function DiarioPage() {
               ))}
             </ScrollView>
             <Campo label="Título *" value={titulo} onChange={setTitulo} placeholder="Ex: Brincou muito hoje! 🎉" />
-            <Campo label="Data" value={data} onChange={setData} placeholder="AAAA-MM-DD (hoje por omissão)" />
+            <DateFieldPT label="Data" value={data} onChange={setData} />
             <Campo label="Descrição" value={descricao} onChange={setDescricao} placeholder="Conta tudo sobre o teu bichinho... 🐾" multiline />
           </ScrollView>
         </SafeAreaView>

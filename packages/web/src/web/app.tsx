@@ -6,6 +6,7 @@ import SignUp from "./pages/sign-up";
 import Privacy from "./pages/privacy";
 import DeleteAccount from "./pages/delete-account";
 import PetProfile from "./pages/pet-profile";
+import Call from "./pages/call";
 import { Provider } from "./components/provider";
 import { AgentFeedback, RunableBadge } from "@runablehq/website-runtime";
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/privacy" component={Privacy} />
         <Route path="/delete-account" component={DeleteAccount} />
         <Route path="/pet/:code" component={PetProfile} />
+        <Route path="/call/:roomId" component={Call} />
         <Route path="/admin/promo" component={AdminPromo} />
       </Switch>
       {import.meta.env.DEV && <AgentFeedback />}

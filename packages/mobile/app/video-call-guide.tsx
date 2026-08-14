@@ -8,6 +8,9 @@ import {
   ChevronLeft, Video, Calendar, Share2, PhoneCall, CheckCircle2,
   AlertCircle, Wifi, Mic, Camera, Smartphone, HelpCircle
 } from "lucide-react-native";
+import Constants from "expo-constants";
+
+const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "https://petslife.onrender.com").replace(/\/$/, "");
 
 const STEPS = [
   {
@@ -21,7 +24,7 @@ const STEPS = [
   {
     icon: "🔗",
     title: "2. Receba o link",
-    desc: "Após agendar, aparece automaticamente um link de videochamada gratuito. Esse link é único para a sua consulta.",
+    desc: "Após confirmar a marcação, aparece UM link, só seu. É o mesmo link para os dois: para si e para o veterinário.",
     tip: "O link fica sempre visível no card da consulta, mesmo depois de fechar a app.",
     color: "#4ECDC4",
     bg: "#E6F7F6",
@@ -37,7 +40,7 @@ const STEPS = [
   {
     icon: "📱",
     title: "4. Entre na chamada",
-    desc: "Na hora marcada, carregue em \"Entrar na chamada\" no card da consulta. Abre o browser com a sala de vídeo.",
+    desc: "Na hora marcada, carregue em \"Entrar na chamada\". Escreve o seu nome, toca em Permitir à câmara e já está — não há nada para instalar nem salas para escolher.",
     tip: "Entre 2-3 minutos antes para testar o microfone e câmara.",
     color: "#10B981",
     bg: "#D1FAE5",
@@ -62,7 +65,7 @@ const REQUIREMENTS = [
 const FAQS = [
   {
     q: "O veterinário precisa de instalar alguma app?",
-    a: "Não. O link abre directamente no browser, em qualquer dispositivo. Sem instalações.",
+    a: "Não. O link abre a sala dentro do site da PetsLife, directamente no browser (Chrome, Safari...). Não é preciso instalar aplicações nem criar contas.",
   },
   {
     q: "A videochamada é segura e privada?",
@@ -91,7 +94,8 @@ export default function VideoCallGuideScreen() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   function openJitsiTest() {
-    Linking.openURL("https://meet.jit.si/petslife-teste-demo").catch(() =>
+    // Sala de teste na nossa própria página: abre no browser, sem instalações
+    Linking.openURL(`${API_URL}/call/petslife-sala-de-teste`).catch(() =>
       Alert.alert("Erro", "Não foi possível abrir o browser.")
     );
   }

@@ -3,6 +3,8 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, QrCode, Syringe, Calendar, FileText, MapPin, Trash2, PawPrint, Camera, Share2 } from "lucide-react-native";
+import { useState } from "react";
+import { uploadImage, pickFromGallery, takePhoto } from "../../../lib/upload";
 import { api } from "../../../lib/api";
 import { PetIllustration } from "../../../components/PetIllustration";
 import { netError } from "../../../lib/net-error";
@@ -12,6 +14,32 @@ export default function PetDetailScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const qc = useQueryClient();
+  const [savingPhoto, setSavingPhoto] = useState(false);
+
+  async function savePhoto(uri: string | null) {
+    try {
+      setSavingPhoto(true);
+      let url: string | null = null;
+      if (uri) url = await uploadImage(uri);
+      await api.pets[":id"].$put({ param: { id }, json: { photoUrl: url } } as any);
+      await qc.invalidateQueries({ queryKey: ["pet", id] });
+      await qc.invalidateQueries({ queryKey: ["pets"] });
+    } catch (e: any) {
+      Alert.alert("Ups", netError(e, "Não foi possível guardar a foto."));
+    } finally {
+      setSavingPhoto(false);
+    }
+  }
+
+  function changePhoto() {
+    const opts: any[] = [
+      { text: "Tirar foto", onPress: async () => { const r = await takePhoto([1, 1]); if (r?.uri) savePhoto(r.uri); } },
+      { text: "Escolher da galeria", onPress: async () => { const r = await pickFromGallery(); if (r?.uri) savePhoto(r.uri); } },
+    ];
+    if (pet?.photoUrl) opts.push({ text: "Remover foto", style: "destructive", onPress: () => savePhoto(null) });
+    opts.push({ text: "Cancelar", style: "cancel" });
+    Alert.alert("Foto de perfil", "Escolha a foto do " + (pet?.name ?? "animal") + ":", opts);
+  }
 
   const { data, isLoading } = useQuery({
     queryKey: ["pet", id],
@@ -101,7 +129,7 @@ export default function PetDetailScreen() {
       onPress: () => router.push(`/pet/${id}/photos` as any),
     },
     {
-      icon: MapPin, label: "Vets", color: "#06D6A0", bg: "#E6FAF5",
+      icon: MapPin, label: "Vets e Outros", color: "#06D6A0", bg: "#E6FAF5",
       onPress: () => router.push("/find-vets"),
     },
   ];
@@ -132,14 +160,23 @@ export default function PetDetailScreen() {
 
         {/* Pet hero */}
         <View style={{ alignItems: "center", paddingVertical: 20 }}>
-          <View style={{ width: 110, height: 110, borderRadius: 55, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center", borderWidth: 4, borderColor: "#fff", shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 16, elevation: 0 }}>
-            {pet.photoUrl ? (
+          <TouchableOpacity activeOpacity={0.85} onPress={changePhoto} disabled={savingPhoto}
+            style={{ width: 110, height: 110, borderRadius: 55, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center", borderWidth: 4, borderColor: "#fff", shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 16, elevation: 0 }}>
+            {savingPhoto ? (
+              <ActivityIndicator color="#fff" />
+            ) : pet.photoUrl ? (
               <Image source={{ uri: pet.photoUrl }} style={{ width: 110, height: 110, borderRadius: 55 }} />
             ) : (
               <PetIllustration species={pet.species} size={86} />
             )}
-          </View>
-          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#1A1A2E", marginTop: 12 }}>{pet.name}</Text>
+            <View style={{ position: "absolute", bottom: -2, right: -2, width: 34, height: 34, borderRadius: 17, backgroundColor: "#fff", borderWidth: 2, borderColor: "#FFD5C2", alignItems: "center", justifyContent: "center" }}>
+              <Camera size={16} color="#FF6B35" />
+            </View>
+          </TouchableOpacity>
+          <Text suppressHighlighting style={{ fontSize: 11, color: "#9CA3AF", marginTop: 8 }}>
+            {savingPhoto ? "A guardar foto..." : "Toque na foto para mudar"}
+          </Text>
+          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#1A1A2E", marginTop: 6 }}>{pet.name}</Text>
           <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 14, marginTop: 2 }}>{pet.breed ?? pet.species}{age ? ` • ${age}` : ""}</Text>
           {pet.microchip && (
             <View style={{ backgroundColor: "#F3EEFF", borderRadius: 10, paddingHorizontal: 10, paddingVertical: 4, marginTop: 8 }}>

@@ -72,6 +72,14 @@ export function AppLoading({ message = "Só um instante..." }: { message?: strin
           }}
         />
       </View>
+
+      {/* Marca */}
+      <Text
+        suppressHighlighting
+        style={{ marginTop: 18, fontSize: 11, letterSpacing: 3, fontWeight: "800", color: "#7C5CFF", textTransform: "uppercase" }}
+      >
+        DigitalGlobal
+      </Text>
     </View>
   );
 }

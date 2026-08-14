@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "../../../lib/api";
 import { netError } from "../../../lib/net-error";
+import { DateFieldPT } from "../../../components/DateFieldPT";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -145,7 +146,7 @@ export default function ConsultasPage() {
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
             <Campo label="Título *" value={titulo} onChange={setTitulo} placeholder="Ex: Consulta de rotina..." />
-            <Campo label="Data *" value={data} onChange={setData} placeholder="AAAA-MM-DD" />
+            <DateFieldPT label="Data *" value={data} onChange={setData} />
             <Campo label="Hora" value={hora} onChange={setHora} placeholder="Ex: 14:30" />
             <Campo label="Veterinário" value={vet} onChange={setVet} placeholder="Nome do veterinário" />
             <Campo label="Clínica" value={clinica} onChange={setClinica} placeholder="Nome da clínica" />

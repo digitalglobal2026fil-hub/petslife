@@ -10,6 +10,7 @@ import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
+import { DateFieldPT } from "../../../components/DateFieldPT";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -216,8 +217,8 @@ export default function VaccinesPage() {
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
             <Field label="Nome da vacina *" value={name} onChange={setName} placeholder="Ex: Raiva, Parvovírus..." />
-            <Field label="Data de administração" value={date} onChange={setDate} placeholder="AAAA-MM-DD" />
-            <Field label="Próxima dose" value={nextDate} onChange={setNextDate} placeholder="AAAA-MM-DD" />
+            <DateFieldPT label="Data de administração" value={date} onChange={setDate} />
+            <DateFieldPT label="Próxima dose" value={nextDate} onChange={setNextDate} />
             <Field label="Veterinário" value={vet} onChange={setVet} placeholder="Nome do veterinário" />
             <Field label="Clínica" value={clinic} onChange={setClinic} placeholder="Nome da clínica" />
             <Field label="Número de lote" value={batch} onChange={setBatch} placeholder="Lote da vacina" />

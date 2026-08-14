@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, Calendar, Clock, Edit2, Trash2, Save, X, MapPin, FileText } from "lucide-react-native";
 import Constants from "expo-constants";
 import { authClient } from "../../lib/auth";
+import { authFetch } from "../../lib/auth-fetch";
+import { DateFieldPT } from "../../components/DateFieldPT";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -69,9 +71,7 @@ export default function AppointmentDetailScreen() {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_URL}/api/appointments/${id}`, {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        });
+        const res = await authFetch(`${API_URL}/api/appointments/${id}`, {});
         if (res.ok) {
           const data = await res.json();
           const a = data.appointment;
@@ -90,9 +90,9 @@ export default function AppointmentDetailScreen() {
 
   const updateMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`${API_URL}/api/appointments/${id}`, {
+      const res = await authFetch(`${API_URL}/api/appointments/${id}`, {
         method: "PUT",
-        headers: { Authorization: `Bearer ${getToken()}`, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, date, time, location, notes }),
       });
       if (!res.ok) throw new Error("update failed");
@@ -109,10 +109,9 @@ export default function AppointmentDetailScreen() {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`${API_URL}/api/appointments/${id}`, {
+      const res = await authFetch(`${API_URL}/api/appointments/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
+        });
       if (!res.ok) throw new Error("delete failed");
       return res.json();
     },
@@ -228,7 +227,7 @@ export default function AppointmentDetailScreen() {
           </View>
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <Field label="Título" value={title} onChange={setTitle} placeholder="Ex: Consulta anual" />
-            <Field label="Data (AAAA-MM-DD)" value={date} onChange={setDate} placeholder="2025-06-15" />
+            <DateFieldPT label="Data" value={date} onChange={setDate} />
             <Field label="Hora (HH:MM)" value={time} onChange={setTime} placeholder="10:30" />
             <Field label="Local / Clínica" value={location} onChange={setLocation} placeholder="Ex: Clínica Vet Lisboa" />
             <Field label="Notas / Motivo" value={notes} onChange={setNotes} placeholder="Descreva o motivo..." multiline />

@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { authClient } from '../lib/auth';
+import { authFetch } from "../lib/auth-fetch";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -42,8 +43,8 @@ export default function ChatScreen() {
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/chats/${chatId}/messages`, {
-        headers: { Authorization: `Bearer ${getToken()}`, 'x-user-id': userId || '' },
+      const res = await authFetch(`${API_URL}/api/chats/${chatId}/messages`, {
+        headers: { 'x-user-id': userId || '' },
       });
       if (res.ok) {
         const data = await res.json();
@@ -64,9 +65,9 @@ export default function ChatScreen() {
     setMessages(prev => [...prev, optimistic]);
 
     try {
-      const res = await fetch(`${API_URL}/api/chats/${chatId}/messages`, {
+      const res = await authFetch(`${API_URL}/api/chats/${chatId}/messages`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}`, 'x-user-id': userId || '' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': userId || '' },
         body: JSON.stringify({ senderId: userId, content }),
       });
       if (!res.ok) {

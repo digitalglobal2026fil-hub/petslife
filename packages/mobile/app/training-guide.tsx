@@ -189,7 +189,7 @@ const GUIDES = [
     ],
   },
   {
-    category: "🐰 Coelhos", color: "#EC4899", bg: "#FDF2F8",
+    category: "🐭 Roedores", color: "#A16207", bg: "#FEF8E7",
     guides: [
       {
         title: "Usar o Banheirinho", emoji: "🪣", difficulty: "Iniciante",
@@ -230,11 +230,6 @@ const GUIDES = [
         videoTitle: "Escovar o coelho e cortar unhas",
         videoUrl: "https://www.youtube.com/watch?v=V2HpifC8G-8",
       },
-    ],
-  },
-  {
-    category: "🐹 Hamsters e Roedores", color: "#A16207", bg: "#FEF8E7",
-    guides: [
       {
         title: "Amansar o Hamster", emoji: "🤲", difficulty: "Iniciante",
         steps: [

@@ -9,6 +9,8 @@ import { Share } from "react-native";
 import { useRouter } from "expo-router";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
+import { authFetch } from "../../lib/auth-fetch";
+import { DateFieldPT } from "../../components/DateFieldPT";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -39,9 +41,7 @@ interface Consultation {
 
 async function fetchConsultations(): Promise<Consultation[]> {
   const token = getToken();
-  const res = await fetch(`${API_URL}/api/consultations`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const res = await authFetch(`${API_URL}/api/consultations`, {});
   if (!res.ok) return [];
   const data = await res.json();
   return data.consultations ?? [];
@@ -49,9 +49,9 @@ async function fetchConsultations(): Promise<Consultation[]> {
 
 async function bookConsultation(payload: Record<string, unknown>): Promise<Consultation | null> {
   const token = getToken();
-  const res = await fetch(`${API_URL}/api/consultations`, {
+  const res = await authFetch(`${API_URL}/api/consultations`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   if (!res.ok) return null;
@@ -61,10 +61,9 @@ async function bookConsultation(payload: Record<string, unknown>): Promise<Consu
 
 async function cancelConsultation(id: string): Promise<void> {
   const token = getToken();
-  await fetch(`${API_URL}/api/consultations/${id}`, {
+  await authFetch(`${API_URL}/api/consultations/${id}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  });
+    });
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -115,9 +114,9 @@ export default function ConsultScreen() {
       Alert.alert("Atenção", "Por favor preencha a data e hora.");
       return;
     }
-    // Validar formato data AAAA-MM-DD
+    // A data chega do DateFieldPT já como AAAA-MM-DD
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      Alert.alert("Atenção", "Data inválida. Use o formato AAAA-MM-DD (ex: 2025-06-15).");
+      Alert.alert("Atenção", "Escolha a data da consulta (dia/mês/ano).");
       return;
     }
     // Validar formato hora HH:MM
@@ -133,8 +132,8 @@ export default function ConsultScreen() {
       setShowModal(false);
       resetForm();
       load();
-      // Gerar URL Jitsi local se o servidor não devolver roomUrl
-      const roomUrl = result.roomUrl || `https://meet.jit.si/petslife-${result.id}`;
+      // A sala vive na nossa página (/call/:id) — abre no browser sem instalar nada
+      const roomUrl = result.roomUrl || `${API_URL}/call/petslife-${result.id}`;
       setBookedRoomUrl(roomUrl);
     } else {
       Alert.alert("Erro", "Não foi possível agendar. Tente novamente.");
@@ -152,8 +151,8 @@ export default function ConsultScreen() {
   };
 
   const handleJoin = (url: string | null, consultId?: string) => {
-    // Prefer stored roomUrl, fallback to generating a Jitsi URL from consultation ID
-    const target = url || (consultId ? `https://meet.jit.si/petslife-${consultId}` : null);
+    // Sala na nossa página: abre directamente no browser, sem instalar apps
+    const target = url || (consultId ? `${API_URL}/call/petslife-${consultId}` : null);
     if (!target) { Alert.alert("Erro", "Link de videochamada não disponível."); return; }
     Linking.openURL(target).catch(() => Alert.alert("Erro", "Não foi possível abrir a videochamada."));
   };
@@ -357,35 +356,23 @@ export default function ConsultScreen() {
                 ))}
               </ScrollView>
 
-              {/* Data e Hora — keyboardType="default" para permitir traços e dois pontos */}
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <View style={{ flex: 1 }}>
-                  <Text suppressHighlighting style={styles.fieldLabel}>Data</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="2025-06-15"
-                    value={date}
-                    onChangeText={setDate}
-                    keyboardType="default"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text suppressHighlighting style={styles.fieldLabel}>Hora</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="14:30"
-                    value={time}
-                    onChangeText={setTime}
-                    keyboardType="default"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                </View>
-              </View>
-              <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 11, marginTop: -10, marginBottom: 14 }}>
-                Formato: AAAA-MM-DD e HH:MM
+              {/* Data em DD/MM/AAAA (ordem portuguesa) e hora */}
+              <DateFieldPT label="Data da consulta" value={date} onChange={setDate} />
+              <Text suppressHighlighting style={styles.fieldLabel}>Hora</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="14:30"
+                value={time}
+                onChangeText={(t) => {
+                  // máscara automática HH:MM
+                  const d = t.replace(/\D/g, "").slice(0, 4);
+                  setTime(d.length <= 2 ? d : `${d.slice(0, 2)}:${d.slice(2)}`);
+                }}
+                keyboardType="number-pad"
+                maxLength={5}
+              />
+              <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 11, marginTop: 4, marginBottom: 14 }}>
+                Hora em formato 24h — ex: 14:30
               </Text>
 
               <Text suppressHighlighting style={styles.fieldLabel}>Duração</Text>

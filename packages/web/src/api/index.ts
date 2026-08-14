@@ -23,6 +23,7 @@ import { lostPets } from "./routes/lost-pets";
 import { partners } from "./routes/partners";
 import { reminders } from "./routes/reminders";
 import { petScans } from "./routes/pet-scans";
+import { users } from "./routes/users";
 import { ensureTables } from "./database/ensure-tables";
 
 // Cria tabelas novas no arranque (o projecto não tem migrações automáticas)
@@ -58,7 +59,8 @@ const app = new Hono()
   .route("/lost-pets", lostPets)
   .route("/partners", partners)
   .route("/reminders", reminders)
-  .route("/pet-scans", petScans);
+  .route("/pet-scans", petScans)
+  .route("/users", users);
 
 export type AppType = typeof app;
 export default app;

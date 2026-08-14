@@ -76,6 +76,18 @@ const STATEMENTS = [
     user_agent TEXT,
     created_at INTEGER
   )`,
+  `CREATE TABLE IF NOT EXISTS user_profiles (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    phone TEXT,
+    address TEXT,
+    city TEXT,
+    photo_url TEXT,
+    language TEXT,
+    created_at INTEGER,
+    updated_at INTEGER
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_user_profiles_user ON user_profiles(user_id)`,
   `CREATE INDEX IF NOT EXISTS idx_partner_codes_partner ON partner_codes(partner_id)`,
   `CREATE INDEX IF NOT EXISTS idx_redemptions_partner ON code_redemptions(partner_id)`,
   `CREATE INDEX IF NOT EXISTS idx_reminders_user ON reminders(user_id)`,

@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 import { Platform } from 'react-native';
+import { authFetch } from "../lib/auth-fetch";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -43,7 +44,7 @@ export default function LostPetsScreen() {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/lost-pets?type=${tab}`);
+      const res = await authFetch(`${API_URL}/api/lost-pets?type=${tab}`);
       if (res.ok) {
         const data = await res.json();
         setPosts(data.posts || []);
@@ -70,9 +71,9 @@ export default function LostPetsScreen() {
       return;
     }
     try {
-      const res = await fetch(`${API_URL}/api/lost-pets`, {
+      const res = await authFetch(`${API_URL}/api/lost-pets`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, type: tab }),
       });
       if (res.ok) {

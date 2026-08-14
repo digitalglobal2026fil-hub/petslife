@@ -9,6 +9,7 @@ import { Gauge } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 
 import { Platform } from 'react-native';
+import { authFetch } from "../lib/auth-fetch";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -63,7 +64,7 @@ export default function WeightChartScreen() {
 
   const fetchPets = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/pets`, { headers: { Authorization: `Bearer ${getToken()}` } });
+      const res = await authFetch(`${API_URL}/api/pets`, {});
       if (res.ok) {
         const data = await res.json();
         const petList = data.pets || [];
@@ -79,7 +80,7 @@ export default function WeightChartScreen() {
 
   const fetchLogs = async (petId: string) => {
     try {
-      const res = await fetch(`${API_URL}/api/weight-logs/pet/${petId}`, { headers: { Authorization: `Bearer ${getToken()}` } });
+      const res = await authFetch(`${API_URL}/api/weight-logs/pet/${petId}`, {});
       if (res.ok) {
         const data = await res.json();
         setLogs(data.logs || []);
@@ -95,9 +96,9 @@ export default function WeightChartScreen() {
       return;
     }
     try {
-      const res = await fetch(`${API_URL}/api/weight-logs`, {
+      const res = await authFetch(`${API_URL}/api/weight-logs`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ petId: selectedPet.id, weight: parseFloat(newWeight), note: newNote }),
       });
       if (res.ok) {

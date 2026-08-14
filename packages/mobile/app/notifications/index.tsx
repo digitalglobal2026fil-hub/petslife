@@ -1,9 +1,13 @@
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react-native";
 import { api } from "../../lib/api";
+import { authFetch } from "../../lib/auth-fetch";
+import Constants from "expo-constants";
+
+const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -86,10 +90,23 @@ export default function NotificationsScreen() {
     enabled: !loadPets && pets.length > 0,
   });
 
-  const loading = loadPets || loadV || loadA || loadDw;
+  const { data: scansData, isLoading: loadScans } = useQuery({
+    queryKey: ["qr-scans-notif"],
+    queryFn: async () => {
+      try {
+        const res = await authFetch(`${API_URL}/api/pet-scans/mine`, {});
+        if (!res.ok) return { scans: [] };
+        return (await res.json()) as any;
+      } catch {
+        return { scans: [] };
+      }
+    },
+  });
+
+  const loading = loadPets || loadV || loadA || loadDw || loadScans;
 
   // Build notifications list
-  const notifications: { id: string; emoji: string; title: string; body: string; time: string; urgency: "high" | "medium" | "low" }[] = [];
+  const notifications: { id: string; emoji: string; title: string; body: string; time: string; urgency: "high" | "medium" | "low"; url?: string }[] = [];
 
   // Vaccines overdue / upcoming
   (allVaccines ?? []).forEach((v: any) => {
@@ -160,6 +177,27 @@ export default function NotificationsScreen() {
     }
   });
 
+  // QR code digitalizado — alguém encontrou o animal
+  ((scansData as any)?.scans ?? []).forEach((sc: any) => {
+    const when = sc.createdAt ? new Date(sc.createdAt) : null;
+    const hasCoords = sc.lat != null && sc.lng != null;
+    const parts: string[] = [];
+    if (sc.finderName) parts.push(`Quem encontrou: ${sc.finderName}`);
+    if (sc.finderPhone) parts.push(`Tel: ${sc.finderPhone}`);
+    if (sc.message) parts.push(`"${sc.message}"`);
+    if (sc.address) parts.push(sc.address);
+    if (hasCoords) parts.push("Toca para ver no mapa");
+    notifications.push({
+      id: `scan-${sc.id}`,
+      emoji: "\ud83d\udea8",
+      title: `QR code digitalizado — ${sc.petName || "o teu animal"}`,
+      body: parts.length ? parts.join(" · ") : "Alguém digitalizou o QR code do teu animal.",
+      time: when ? when.toLocaleString("pt-PT") : "",
+      urgency: "high",
+      url: hasCoords ? `https://www.google.com/maps?q=${sc.lat},${sc.lng}` : undefined,
+    });
+  });
+
   // Sort: high first
   notifications.sort((a, b) => {
     const ord = { high: 0, medium: 1, low: 2 };
@@ -199,7 +237,8 @@ export default function NotificationsScreen() {
             notifications.map((n) => {
               const style = urgencyStyle(n.urgency);
               return (
-                <View key={n.id}
+                <TouchableOpacity key={n.id} activeOpacity={n.url ? 0.7 : 1}
+                  onPress={() => { if (n.url) Linking.openURL(n.url); }}
                   style={{ backgroundColor: style.bg, borderRadius: 16, padding: 14, flexDirection: "row", alignItems: "flex-start", gap: 12, borderWidth: 1.5, borderColor: style.border }}>
                   <View style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: CARD, alignItems: "center", justifyContent: "center", borderWidth: 1.5, borderColor: style.border }}>
                     <Text suppressHighlighting style={{ fontSize: 22 }}>{n.emoji}</Text>
@@ -212,7 +251,7 @@ export default function NotificationsScreen() {
                     <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, lineHeight: 18 }}>{n.body}</Text>
                     <Text suppressHighlighting style={{ color: GRAY, fontSize: 11, marginTop: 5, opacity: 0.7 }}>{n.time}</Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               );
             })
           )}

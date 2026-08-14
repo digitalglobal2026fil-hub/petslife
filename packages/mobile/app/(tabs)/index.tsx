@@ -128,7 +128,7 @@ export default function HomeScreen() {
   const quickActions = [
     { icon: Syringe, label: "Vacinas", color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/health" as any) },
     { icon: Calendar, label: "Agenda", color: "#FF6B35", bg: "#FFF0EB", onPress: () => router.push("/health" as any) },
-    { icon: MapPin, label: "Vets", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/find-vets" as any) },
+    { icon: MapPin, label: "Vets e Outros", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/find-vets" as any) },
     {
       icon: QrCode, label: "QR Code", color: "#8B5CF6", bg: "#F3EEFF", onPress: () => {
         if (pets.length === 0) { Alert.alert("QR Code", "Adicione um animal primeiro."); return; }

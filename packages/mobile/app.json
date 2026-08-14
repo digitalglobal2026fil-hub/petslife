@@ -8,7 +8,7 @@
         "backgroundColor": "#FF6B35"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 34
+      "versionCode": 35
     },
     "extra": {
       "apiUrl": "https://petslife.onrender.com",
@@ -21,13 +21,13 @@
       "supportsTablet": true
     },
     "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#FF6B35"
+      "image": "./assets/digitalglobal-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#05060F"
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.9.0",
+    "version": "1.9.1",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -42,8 +42,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "A PetsLife precisa de acesso \u00e0s suas fotos para carregar documentos do seu animal.",
-          "cameraPermission": "A PetsLife precisa de acesso \u00e0 c\u00e2mara para fotografar documentos."
+          "photosPermission": "A PetsLife precisa de acesso às suas fotos para carregar documentos do seu animal.",
+          "cameraPermission": "A PetsLife precisa de acesso à câmara para fotografar documentos."
         }
       ]
     ]

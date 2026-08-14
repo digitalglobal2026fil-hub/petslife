@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "../../../lib/api";
 import { netError } from "../../../lib/net-error";
+import { DateFieldPT } from "../../../components/DateFieldPT";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -170,7 +171,7 @@ export default function WeightPage() {
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
             <Field label="Peso (kg) *" value={weight} onChange={setWeight} placeholder="Ex: 4.5" keyboardType="decimal-pad" />
-            <Field label="Data" value={date} onChange={setDate} placeholder="AAAA-MM-DD" />
+            <DateFieldPT label="Data" value={date} onChange={setDate} />
             <Field label="Notas" value={notes} onChange={setNotes} placeholder="Observações..." />
           </ScrollView>
         </SafeAreaView>

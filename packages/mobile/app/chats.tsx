@@ -5,6 +5,7 @@ import { router, useFocusEffect } from "expo-router";
 import { ChevronLeft, MessageCircle, Users } from "lucide-react-native";
 import { authClient } from "../lib/auth";
 import { netError } from "../lib/net-error";
+import { authFetch } from "../lib/auth-fetch";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -27,8 +28,8 @@ export default function ChatsListScreen() {
     if (!userId) return;
     try {
       setError(null);
-      const res = await fetch(`${API_URL}/api/chats?userId=${encodeURIComponent(userId)}`, {
-        headers: { Authorization: `Bearer ${getToken()}`, "x-user-id": userId },
+      const res = await authFetch(`${API_URL}/api/chats?userId=${encodeURIComponent(userId)}`, {
+        headers: { "x-user-id": userId },
       });
       const data = await res.json();
       setChats(data.chats || []);

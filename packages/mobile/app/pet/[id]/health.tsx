@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
+import { DateFieldPT } from "../../../components/DateFieldPT";
 
 type Tab = "vaccines" | "appointments" | "documents" | "diary" | "deworming" | "weight" | "prescriptions";
 
@@ -531,8 +532,8 @@ export default function PetHealthScreen() {
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <Field label="Nome da vacina *" value={vName} onChange={setVName} placeholder="Ex: Raiva, Parvovírus, Esgana..." />
-            <Field label="Data de administração" value={vDate} onChange={setVDate} placeholder="YYYY-MM-DD" />
-            <Field label="Próxima dose" value={vNext} onChange={setVNext} placeholder="YYYY-MM-DD" />
+            <DateFieldPT label="Data de administração" value={vDate} onChange={setVDate} />
+            <DateFieldPT label="Próxima dose" value={vNext} onChange={setVNext} />
             <Field label="Veterinário" value={vVet} onChange={setVVet} placeholder="Nome do médico veterinário" />
             <Field label="Clínica" value={vClinic} onChange={setVClinic} placeholder="Nome da clínica" />
             <Field label="Número de lote" value={vBatch} onChange={setVBatch} placeholder="Ex: AB12345" />
@@ -569,7 +570,7 @@ export default function PetHealthScreen() {
               </ScrollView>
             </View>
             <Field label="Motivo *" value={aTitle} onChange={setATitle} placeholder="Ex: Check-up anual, Vacinação..." />
-            <Field label="Data" value={aDate} onChange={setADate} placeholder="YYYY-MM-DD" />
+            <DateFieldPT label="Data" value={aDate} onChange={setADate} />
             <Field label="Hora" value={aTime} onChange={setATime} placeholder="HH:MM" />
             <Field label="Veterinário" value={aVet} onChange={setAVet} placeholder="Nome do médico veterinário" />
             <Field label="Clínica / Hospital" value={aClinic} onChange={setAClinic} placeholder="Nome da clínica" />
@@ -659,7 +660,7 @@ export default function PetHealthScreen() {
               </ScrollView>
             </View>
             <Field label="Título *" value={diaryTitle} onChange={setDiaryTitle} placeholder="Ex: Vómito após refeição, Letargia..." />
-            <Field label="Data" value={diaryDate} onChange={setDiaryDate} placeholder={`YYYY-MM-DD (hoje: ${new Date().toISOString().slice(0, 10)})`} />
+            <DateFieldPT label="Data" value={diaryDate} onChange={setDiaryDate} />
             <View style={{ marginBottom: 12 }}>
               <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 5 }}>Descrição</Text>
               <TextInput value={diaryDesc} onChangeText={setDiaryDesc} placeholder="Descreva em detalhe o que observou..." placeholderTextColor="#9CA3AF" multiline numberOfLines={4}
@@ -695,8 +696,8 @@ export default function PetHealthScreen() {
               </View>
             </View>
             <Field label="Produto *" value={dwProduct} onChange={setDwProduct} placeholder="Ex: Frontline, Milbemax, Advocate..." />
-            <Field label="Data de aplicação" value={dwDate} onChange={setDwDate} placeholder="YYYY-MM-DD" />
-            <Field label="Próxima aplicação" value={dwNext} onChange={setDwNext} placeholder="YYYY-MM-DD" />
+            <DateFieldPT label="Data de aplicação" value={dwDate} onChange={setDwDate} />
+            <DateFieldPT label="Próxima aplicação" value={dwNext} onChange={setDwNext} />
             <Field label="Notas" value={dwNotes} onChange={setDwNotes} placeholder="Observações..." />
             <UploadButton label="Comprovativo / Foto" url={dwDocUrl} loading={uploadingDoc}
               onUpload={(uri, name, mime) => handleUpload(setDwDocUrl, uri, name, mime)} />
@@ -719,7 +720,7 @@ export default function PetHealthScreen() {
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <Field label="Peso (kg) *" value={wWeight} onChange={setWWeight} placeholder="Ex: 4.5" keyboardType="decimal-pad" />
-            <Field label="Data" value={wDate} onChange={setWDate} placeholder={`YYYY-MM-DD (hoje: ${new Date().toISOString().slice(0, 10)})`} />
+            <DateFieldPT label="Data" value={wDate} onChange={setWDate} />
             <Field label="Notas" value={wNotes} onChange={setWNotes} placeholder="Observações..." />
             <TouchableOpacity onPress={() => { if (!wWeight || isNaN(parseFloat(wWeight))) { Alert.alert("Erro", "Insira um peso válido"); return; } addWeight.mutate(); }}
               disabled={addWeight.isPending}

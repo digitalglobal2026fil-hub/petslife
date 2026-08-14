@@ -10,6 +10,7 @@ import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
+import { DateFieldPT } from "../../../components/DateFieldPT";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -180,8 +181,8 @@ export default function DewormingPage() {
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
             <Field label="Produto *" value={product} onChange={setProduct} placeholder="Ex: Stronghold, Advantage..." />
-            <Field label="Data de aplicação" value={date} onChange={setDate} placeholder="AAAA-MM-DD" />
-            <Field label="Próxima aplicação" value={nextDate} onChange={setNextDate} placeholder="AAAA-MM-DD" />
+            <DateFieldPT label="Data de aplicação" value={date} onChange={setDate} />
+            <DateFieldPT label="Próxima aplicação" value={nextDate} onChange={setNextDate} />
 
             <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>Tipo</Text>
             <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
