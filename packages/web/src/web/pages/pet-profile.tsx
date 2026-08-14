@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PawPrint, Phone, AlertTriangle } from "lucide-react";
+import { PawPrint, Phone, AlertTriangle, MapPin, Check, Loader2 } from "lucide-react";
 
 const EMOJI: Record<string, string> = {
   dog: "🐕", cat: "🐱", bird: "🐦", rabbit: "🐰", fish: "🐟",
@@ -45,6 +45,7 @@ export default function PetProfilePage() {
   );
 
   const emoji = EMOJI[pet.species?.toLowerCase()] ?? "🐾";
+  const code = getCode();
 
   return (
     <div className="min-h-screen bg-[#FFF9F5] flex flex-col items-center justify-center px-4 py-10">
@@ -102,9 +103,121 @@ export default function PetProfilePage() {
             Sem contacto disponível. Por favor entregue numa clínica veterinária.
           </div>
         )}
+
+        {/* Enviar localização ao dono */}
+        <FinderLocation qrCode={code} petName={pet.name} />
       </div>
 
       <p className="text-xs text-gray-300 mt-8">Powered by PetsLife 🐾</p>
+    </div>
+  );
+}
+
+/**
+ * Quem encontra o animal pode enviar a sua localização ao dono.
+ * Usa a geolocalização do browser (pede permissão) — não precisa de app nem login.
+ */
+function FinderLocation({ qrCode, petName }: { qrCode: string; petName?: string }) {
+  const [state, setState] = useState<"idle" | "locating" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [open, setOpen] = useState(false);
+
+  async function send(lat?: number, lng?: number, accuracy?: number) {
+    setState("sending");
+    try {
+      const res = await fetch("/api/pet-scans", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ qrCode, lat, lng, accuracy, finderName: name || null, finderPhone: phone || null }),
+      });
+      if (!res.ok) throw new Error("falhou");
+      setState("sent");
+    } catch {
+      setError("Não foi possível enviar. Verifique a ligação à internet.");
+      setState("error");
+    }
+  }
+
+  function locateAndSend() {
+    setError("");
+    if (!navigator.geolocation) {
+      send();
+      return;
+    }
+    setState("locating");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => send(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy),
+      () => {
+        // Sem permissão? envia mesmo assim, só sem coordenadas
+        send();
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 },
+    );
+  }
+
+  if (state === "sent") {
+    return (
+      <div className="mt-5 bg-green-50 border border-green-200 rounded-2xl p-4 text-center">
+        <Check size={22} className="mx-auto text-green-600 mb-1" />
+        <p className="font-bold text-green-700 text-sm">Localização enviada!</p>
+        <p className="text-xs text-green-600 mt-1">
+          O dono {petName ? `d${petName.endsWith("a") ? "a" : "o"} ${petName}` : ""} vai receber onde está.
+          Obrigado pela ajuda 💛
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-5 border-t border-[#F0E8E0] pt-5">
+      {!open ? (
+        <button
+          onClick={() => setOpen(true)}
+          className="flex items-center justify-center gap-2 w-full bg-[#FFF5F0] text-[#FF6B35] font-bold rounded-2xl py-3.5 text-sm border-2 border-[#FF6B35]/20 hover:bg-[#FFEDE4] transition-colors"
+        >
+          <MapPin size={17} />
+          Avisar o dono onde estou
+        </button>
+      ) : (
+        <div className="text-left">
+          <p className="text-xs text-gray-500 mb-3">
+            Envie a sua localização ao dono para ele vir buscar o animal. Os seus dados são opcionais.
+          </p>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="O seu nome (opcional)"
+            className="w-full border border-[#F0E8E0] rounded-xl px-3 py-2.5 text-sm mb-2 outline-none focus:border-[#FF6B35]"
+          />
+          <input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="O seu telefone (opcional)"
+            inputMode="tel"
+            className="w-full border border-[#F0E8E0] rounded-xl px-3 py-2.5 text-sm mb-3 outline-none focus:border-[#FF6B35]"
+          />
+          {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+          <button
+            onClick={locateAndSend}
+            disabled={state === "locating" || state === "sending"}
+            className="flex items-center justify-center gap-2 w-full bg-[#FF6B35] text-white font-bold rounded-2xl py-3.5 text-sm disabled:opacity-60"
+          >
+            {state === "locating" || state === "sending" ? (
+              <>
+                <Loader2 size={17} className="animate-spin" />
+                {state === "locating" ? "A obter localização..." : "A enviar..."}
+              </>
+            ) : (
+              <>
+                <MapPin size={17} />
+                Enviar a minha localização
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

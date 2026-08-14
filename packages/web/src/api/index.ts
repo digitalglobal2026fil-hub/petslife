@@ -20,6 +20,13 @@ import { businesses } from "./routes/businesses";
 import { promoCodes } from "./routes/promo-codes";
 import chat from "./routes/chat";
 import { lostPets } from "./routes/lost-pets";
+import { partners } from "./routes/partners";
+import { reminders } from "./routes/reminders";
+import { petScans } from "./routes/pet-scans";
+import { ensureTables } from "./database/ensure-tables";
+
+// Cria tabelas novas no arranque (o projecto não tem migrações automáticas)
+ensureTables();
 
 const app = new Hono()
   .use(cors({
@@ -48,7 +55,10 @@ const app = new Hono()
   .route("/businesses", businesses)
   .route("/promo-codes", promoCodes)
   .route("/chats", chat)
-  .route("/lost-pets", lostPets);
+  .route("/lost-pets", lostPets)
+  .route("/partners", partners)
+  .route("/reminders", reminders)
+  .route("/pet-scans", petScans);
 
 export type AppType = typeof app;
 export default app;

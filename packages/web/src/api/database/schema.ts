@@ -277,3 +277,89 @@ export const articles = sqliteTable("articles", {
   published: integer("published", { mode: "boolean" }).default(true),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
+
+// ============ PARCEIROS / AFILIADOS ============
+// Um parceiro (ex: influencer) recebe UM código principal, e pode distribuir
+// códigos-filhos aos seguidores. Assim sabemos quanto cada parceiro trouxe.
+export const partners = sqliteTable("partners", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),               // "Influencer João"
+  email: text("email"),
+  phone: text("phone"),
+  notes: text("notes"),
+  mainCode: text("main_code").notNull().unique(), // código do próprio parceiro
+  // benefício que o PRÓPRIO parceiro recebe ao resgatar o mainCode
+  partnerBenefit: text("partner_benefit").notNull().default("lifetime"), // lifetime | year1 | months3 | none
+  active: integer("active", { mode: "boolean" }).default(true),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// Códigos que o parceiro distribui (ou o código principal dele)
+export const partnerCodes = sqliteTable("partner_codes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  partnerId: text("partner_id").notNull(),
+  code: text("code").notNull().unique(),
+  kind: text("kind").notNull().default("referral"), // main | referral
+  // benefício de quem resgata: lifetime | year1 | months3 | discount | none
+  benefit: text("benefit").notNull().default("discount"),
+  maxUses: integer("max_uses"),        // null = ilimitado
+  uses: integer("uses").notNull().default(0),
+  label: text("label"),                // nome/nota para identificar (ex: "story out/26")
+  active: integer("active", { mode: "boolean" }).default(true),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// Cada resgate individual — base do relatório de desempenho
+export const codeRedemptions = sqliteTable("code_redemptions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  codeId: text("code_id").notNull(),
+  code: text("code").notNull(),
+  partnerId: text("partner_id"),
+  userId: text("user_id").notNull(),
+  userEmail: text("user_email"),
+  benefit: text("benefit"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// ============ LEMBRETES (medicação, tratamentos, geral) ============
+export const reminders = sqliteTable("reminders", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull(),
+  petId: text("pet_id"),
+  title: text("title").notNull(),
+  kind: text("kind").notNull().default("medication"), // medication | treatment | vaccine | appointment | other
+  dosage: text("dosage"),              // "1 comprimido", "5ml"
+  notes: text("notes"),
+  startDate: text("start_date").notNull(),   // YYYY-MM-DD
+  endDate: text("end_date"),                 // null = sem fim
+  times: text("times").notNull().default("[]"), // JSON: ["08:00","20:00"]
+  frequency: text("frequency").notNull().default("daily"), // daily | weekly | monthly | once | interval
+  intervalDays: integer("interval_days"),     // usado quando frequency=interval
+  active: integer("active", { mode: "boolean" }).default(true),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// Registo de doses dadas / marcadas como feitas
+export const reminderLogs = sqliteTable("reminder_logs", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  reminderId: text("reminder_id").notNull(),
+  userId: text("user_id").notNull(),
+  dueAt: text("due_at").notNull(),    // "2026-08-14 08:00"
+  doneAt: integer("done_at", { mode: "timestamp" }),
+  skipped: integer("skipped", { mode: "boolean" }).default(false),
+});
+
+// ============ QR CODE: localização de quem encontrou ============
+export const petScans = sqliteTable("pet_scans", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  petId: text("pet_id").notNull(),
+  lat: real("lat"),
+  lng: real("lng"),
+  accuracy: real("accuracy"),
+  address: text("address"),
+  finderName: text("finder_name"),
+  finderPhone: text("finder_phone"),
+  message: text("message"),
+  userAgent: text("user_agent"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
