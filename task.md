@@ -13,3 +13,10 @@
 - [ ] Rebuild AAB v31 (bump version)
 - [ ] Commit + push GitHub (o backend também mudou? Não, só mobile desta vez — subscriptions.ts já tinha sido pushed antes)
 - [ ] Deliver ao utilizador com explicação clara do que foi a causa raiz
+
+## 2026-08-14 — Correcções servidor (commit 8026ead) — LIVE em produção ✓
+- chat.ts reescrito com drizzle (o SQL cru usava tabela `users` e colunas camelCase que não existem; e db.execute não existe no drizzle) → GET /api/chats agora 200
+- lost-pets.ts passa a usar `sqlClient` (cliente libsql cru, exportado em database/index.ts)
+- teste.screenshots.pl@gmail.com removido de TESTER_EMAILS
+- AppLoading: barra de progresso adicionada (0→70% rápido, →95% lento) — PRECISA de build v34
+- Verificado em prod: /api/chats 200, POST /api/chats 201, /api/lost-pets 200
