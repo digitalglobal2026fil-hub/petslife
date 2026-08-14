@@ -64,7 +64,12 @@ const app = new Hono()
          </div>`,
       );
     }
-    return c.json({ ...cfg, emailSent, lastError: getLastMailError() }, 200);
+    let probe: any = null;
+    if (to && c.req.query("probe") === "1") {
+      const { probeMail } = await import("../api/mail-probe");
+      probe = await probeMail(to);
+    }
+    return c.json({ ...cfg, emailSent, lastError: getLastMailError(), probe }, 200);
   })
   .route("/pets", pets)
   .route("/vaccines", vaccines)
