@@ -36,3 +36,9 @@
 - [x] 8. Foto de perfil do animal: toque no avatar (câmara/galeria/remover) em pet/[id]/index.tsx
 - [ ] 9. Aviso do QR (email + notificação in-app + SMS Twilio - falta credenciais)
 - [ ] 10. Splash universo + AppLoading com marca DigitalGlobal
+
+- [x] 9. Aviso do QR: email (nodemailer, testado OK) + notificacao in-app (/api/pet-scans/mine no ecra Notificacoes, toca para abrir mapa) + SMS Twilio (codigo pronto em api/notify.ts, falta TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN/TWILIO_FROM no Render)
+- [x] 10. Splash: BrandIntro (universo escuro + logo Digital Global a entrar) -> AppLoading branco com barra + mascote + "DigitalGlobal"; splash nativo tambem passou a escuro (#05060F) com o logo
+- [x] BONUS: /api/users/me nao estava registado no index.ts e a tabela user_profiles nao existia no schema -> ecra Perfil / Editar perfil dava 404. Corrigido e testado (GET/PUT 200).
+- [x] 11. v35 / versionCode 35 / 1.9.1 build OK, commit 546a026 pushed, deploy Render confirmado (users/me 401 em vez de 404, /call/x 200)
+AAB v35: https://gofile.io/d/N74dvAlu (md5 d5a73e9abd81ef61f7eedb8d8354bea9)

@@ -25,6 +25,7 @@ import { reminders } from "./routes/reminders";
 import { petScans } from "./routes/pet-scans";
 import { users } from "./routes/users";
 import { ensureTables } from "./database/ensure-tables";
+import { sendMail } from "./notify";
 
 // Cria tabelas novas no arranque (o projecto não tem migrações automáticas)
 ensureTables();
@@ -39,6 +40,32 @@ const app = new Hono()
   .basePath("api")
   .use("*", authMiddleware)
   .get("/health", (c) => c.json({ status: "ok" }, 200))
+  // Diagnóstico de notificações (protegido pelo PIN de administração).
+  // Serve para confirmar se o Gmail/Twilio estão configurados no servidor e
+  // para enviar um email de teste sem precisar de digitalizar um QR real.
+  .get("/diag/notify", async (c) => {
+    const pin = c.req.query("pin");
+    if (pin !== (process.env.ADMIN_PIN ?? "2776")) return c.json({ error: "PIN inválido" }, 403);
+    const to = c.req.query("to");
+    const cfg = {
+      gmailUser: Boolean(process.env.GMAIL_USER),
+      gmailPassword: Boolean(process.env.GMAIL_APP_PASSWORD),
+      twilio: Boolean(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_FROM),
+      websiteUrl: process.env.WEBSITE_URL ?? null,
+    };
+    let emailSent: boolean | null = null;
+    if (to) {
+      emailSent = await sendMail(
+        to,
+        "\✅ Teste de aviso — PetsLife",
+        `<div style="font-family:sans-serif;padding:24px">
+           <h2 style="color:#FF6B35">\ud83d\udc3e PetsLife</h2>
+           <p>Este é um email de teste do servidor. Se o recebeu, os avisos do QR code chegam bem.</p>
+         </div>`,
+      );
+    }
+    return c.json({ ...cfg, emailSent }, 200);
+  })
   .route("/pets", pets)
   .route("/vaccines", vaccines)
   .route("/appointments", appointments)

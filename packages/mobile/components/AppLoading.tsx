@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { View, Text, Image, Animated, Easing } from "react-native";
 
-const MASCOT_HAPPY = require("../assets/mascot-happy_1784664046237.png");
+const LOADING_ART = require("../assets/petslife-loading.png");
 
 /**
  * Full-screen loading state shown while the app checks the session or a
@@ -41,9 +41,9 @@ export function AppLoading({ message = "Só um instante..." }: { message?: strin
   const rotate = bounce.interpolate({ inputRange: [0, 1], outputRange: ["-3deg", "3deg"] });
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#F8F6FF", alignItems: "center", justifyContent: "center", padding: 24 }}>
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <Animated.View style={{ transform: [{ translateY }, { rotate }] }}>
-        <Image source={MASCOT_HAPPY} style={{ width: 160, height: 160 }} resizeMode="contain" />
+        <Image source={LOADING_ART} style={{ width: 250, height: 285 }} resizeMode="contain" />
       </Animated.View>
       <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: "#1A1A2E", marginTop: 20 }}>
         {message}

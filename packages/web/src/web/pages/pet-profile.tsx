@@ -15,13 +15,35 @@ export default function PetProfilePage() {
   const [pet, setPet] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  // Id do registo criado assim que a pagina abre — o dono e avisado logo,
+  // mesmo que quem encontrou nao chegue a partilhar a localizacao.
+  const [scanId, setScanId] = useState<string | null>(null);
 
   useEffect(() => {
     const code = getCode();
     if (!code) { setNotFound(true); setLoading(false); return; }
     fetch(`/api/pets/qr/${code}`)
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
-      .then(d => { setPet(d.pet); setLoading(false); })
+      .then(d => {
+        setPet(d.pet);
+        setLoading(false);
+        // Aviso imediato ao dono: o QR foi digitalizado.
+        // Uma vez por aba, para nao avisar de novo se a pagina recarregar.
+        const key = `dgscan_${code}`;
+        const already = sessionStorage.getItem(key);
+        if (already) { setScanId(already); return; }
+        fetch("/api/pet-scans", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ qrCode: code }),
+        })
+          .then(r => r.ok ? r.json() : null)
+          .then(res => {
+            const id = res?.scan?.id ?? null;
+            if (id) { sessionStorage.setItem(key, id); setScanId(id); }
+          })
+          .catch(() => {});
+      })
       .catch(() => { setNotFound(true); setLoading(false); });
   }, []);
 
@@ -105,7 +127,7 @@ export default function PetProfilePage() {
         )}
 
         {/* Enviar localização ao dono */}
-        <FinderLocation qrCode={code} petName={pet.name} />
+        <FinderLocation qrCode={code} petName={pet.name} scanId={scanId} />
       </div>
 
       <p className="text-xs text-gray-300 mt-8">Powered by PetsLife 🐾</p>
@@ -117,7 +139,7 @@ export default function PetProfilePage() {
  * Quem encontra o animal pode enviar a sua localização ao dono.
  * Usa a geolocalização do browser (pede permissão) — não precisa de app nem login.
  */
-function FinderLocation({ qrCode, petName }: { qrCode: string; petName?: string }) {
+function FinderLocation({ qrCode, petName, scanId }: { qrCode: string; petName?: string; scanId?: string | null }) {
   const [state, setState] = useState<"idle" | "locating" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
   const [name, setName] = useState("");
@@ -127,8 +149,8 @@ function FinderLocation({ qrCode, petName }: { qrCode: string; petName?: string 
   async function send(lat?: number, lng?: number, accuracy?: number) {
     setState("sending");
     try {
-      const res = await fetch("/api/pet-scans", {
-        method: "POST",
+      const res = await fetch(scanId ? `/api/pet-scans/${scanId}` : "/api/pet-scans", {
+        method: scanId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ qrCode, lat, lng, accuracy, finderName: name || null, finderPhone: phone || null }),
       });

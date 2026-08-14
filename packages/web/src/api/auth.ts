@@ -64,5 +64,14 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24,       // renova a validade a cada dia de uso
   },
   trustedOrigins: ["*"],
+  // A app Android/iOS não envia cabeçalho "Origin". Assim que o telemóvel
+  // tem um cookie guardado, o better-auth exigia esse cabeçalho e rejeitava
+  // o login com "Missing or null Origin" (ficava impossível entrar depois de
+  // fazer logout). Esta API é usada por app nativa, não por formulários web
+  // de terceiros, por isso a verificação de CSRF/origem não se aplica.
+  advanced: {
+    disableCSRFCheck: true,
+    disableOriginCheck: true,
+  },
   plugins: [bearer()],
 });
