@@ -10,3 +10,6 @@ const client = createClient({
 });
 
 export const db = drizzle(client, { schema });
+
+// Raw libsql client for routes that need raw SQL (db.execute is not available on drizzle)
+export const sqlClient = client;

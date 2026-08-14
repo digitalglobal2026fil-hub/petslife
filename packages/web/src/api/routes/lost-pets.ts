@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { db } from '../database';
+import { sqlClient as db } from '../database';
 
 const lostPets = new Hono();
 

@@ -1,5 +1,8 @@
 import { Hono } from 'hono';
 import { db } from '../database';
+import { chats, messages } from '../database/schema';
+import { user } from '../database/auth-schema';
+import { and, desc, eq, or, sql } from 'drizzle-orm';
 
 const chat = new Hono();
 
@@ -9,24 +12,40 @@ chat.get('/', async (c) => {
     const userId = c.req.header('x-user-id') || c.req.query('userId');
     if (!userId) return c.json({ error: 'userId required' }, 400);
 
-    const chats = await db.execute({
-      sql: `SELECT c.*, 
-              u1.name as user1Name, u2.name as user2Name,
-              m.content as lastMessage, m.createdAt as lastMessageAt
-            FROM chats c
-            LEFT JOIN users u1 ON c.user1Id = u1.id
-            LEFT JOIN users u2 ON c.user2Id = u2.id
-            LEFT JOIN messages m ON m.id = (
-              SELECT id FROM messages WHERE chatId = c.id ORDER BY createdAt DESC LIMIT 1
-            )
-            WHERE c.user1Id = ? OR c.user2Id = ?
-            ORDER BY COALESCE(m.createdAt, c.createdAt) DESC`,
-      args: [userId, userId],
-    });
+    const rows = await db
+      .select({
+        id: chats.id,
+        user1Id: chats.user1Id,
+        user2Id: chats.user2Id,
+        lastMessage: chats.lastMessage,
+        lastMessageAt: chats.lastMessageAt,
+        createdAt: chats.createdAt,
+      })
+      .from(chats)
+      .where(or(eq(chats.user1Id, userId), eq(chats.user2Id, userId)))
+      .orderBy(desc(sql`COALESCE(${chats.lastMessageAt}, ${chats.createdAt})`))
+      .limit(100);
 
-    return c.json({ chats: chats.rows });
+    // Attach the other participant's name/image
+    const result = [];
+    for (const row of rows) {
+      const otherId = row.user1Id === userId ? row.user2Id : row.user1Id;
+      const other = await db
+        .select({ id: user.id, name: user.name, image: user.image })
+        .from(user)
+        .where(eq(user.id, otherId))
+        .limit(1);
+      result.push({
+        ...row,
+        otherUserId: otherId,
+        otherUserName: other[0]?.name ?? 'Utilizador',
+        otherUserImage: other[0]?.image ?? null,
+      });
+    }
+
+    return c.json({ chats: result });
   } catch (e: any) {
-    return c.json({ error: e.message }, 500);
+    return c.json({ chats: [], error: e.message }, 200);
   }
 });
 
@@ -37,23 +56,21 @@ chat.post('/', async (c) => {
     const { user1Id, user2Id } = body;
     if (!user1Id || !user2Id) return c.json({ error: 'user1Id and user2Id required' }, 400);
 
-    // Check if chat already exists
-    const existing = await db.execute({
-      sql: `SELECT * FROM chats WHERE (user1Id = ? AND user2Id = ?) OR (user1Id = ? AND user2Id = ?) LIMIT 1`,
-      args: [user1Id, user2Id, user2Id, user1Id],
-    });
+    const existing = await db
+      .select()
+      .from(chats)
+      .where(
+        or(
+          and(eq(chats.user1Id, user1Id), eq(chats.user2Id, user2Id)),
+          and(eq(chats.user1Id, user2Id), eq(chats.user2Id, user1Id)),
+        ),
+      )
+      .limit(1);
 
-    if (existing.rows.length > 0) {
-      return c.json({ chat: existing.rows[0] });
-    }
+    if (existing.length > 0) return c.json({ chat: existing[0] });
 
-    const id = `chat_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    await db.execute({
-      sql: `INSERT INTO chats (id, user1Id, user2Id, createdAt) VALUES (?, ?, ?, datetime('now'))`,
-      args: [id, user1Id, user2Id],
-    });
-
-    return c.json({ chat: { id, user1Id, user2Id } }, 201);
+    const inserted = await db.insert(chats).values({ user1Id, user2Id }).returning();
+    return c.json({ chat: inserted[0] }, 201);
   } catch (e: any) {
     return c.json({ error: e.message }, 500);
   }
@@ -66,19 +83,28 @@ chat.get('/:chatId/messages', async (c) => {
     const limit = parseInt(c.req.query('limit') || '50');
     const offset = parseInt(c.req.query('offset') || '0');
 
-    const messages = await db.execute({
-      sql: `SELECT m.*, u.name as senderName, u.image as senderImage
-            FROM messages m
-            LEFT JOIN users u ON m.senderId = u.id
-            WHERE m.chatId = ?
-            ORDER BY m.createdAt DESC
-            LIMIT ? OFFSET ?`,
-      args: [chatId, limit, offset],
-    });
+    const rows = await db
+      .select({
+        id: messages.id,
+        chatId: messages.chatId,
+        senderId: messages.senderId,
+        content: messages.content,
+        imageUrl: messages.imageUrl,
+        read: messages.read,
+        createdAt: messages.createdAt,
+        senderName: user.name,
+        senderImage: user.image,
+      })
+      .from(messages)
+      .leftJoin(user, eq(messages.senderId, user.id))
+      .where(eq(messages.chatId, chatId))
+      .orderBy(desc(messages.createdAt))
+      .limit(limit)
+      .offset(offset);
 
-    return c.json({ messages: messages.rows.reverse() });
+    return c.json({ messages: rows.reverse() });
   } catch (e: any) {
-    return c.json({ error: e.message }, 500);
+    return c.json({ messages: [], error: e.message }, 200);
   }
 });
 
@@ -87,22 +113,38 @@ chat.post('/:chatId/messages', async (c) => {
   try {
     const { chatId } = c.req.param();
     const body = await c.req.json();
-    const { senderId, content, type = 'text' } = body;
+    const { senderId, content, imageUrl } = body;
 
-    if (!senderId || !content) return c.json({ error: 'senderId and content required' }, 400);
+    if (!senderId || (!content && !imageUrl)) {
+      return c.json({ error: 'senderId and content required' }, 400);
+    }
 
-    const id = `msg_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    await db.execute({
-      sql: `INSERT INTO messages (id, chatId, senderId, content, type, createdAt) VALUES (?, ?, ?, ?, ?, datetime('now'))`,
-      args: [id, chatId, senderId, content, type],
-    });
+    const inserted = await db
+      .insert(messages)
+      .values({ chatId, senderId, content: content ?? null, imageUrl: imageUrl ?? null })
+      .returning();
 
-    const message = await db.execute({
-      sql: `SELECT m.*, u.name as senderName, u.image as senderImage FROM messages m LEFT JOIN users u ON m.senderId = u.id WHERE m.id = ?`,
-      args: [id],
-    });
+    await db
+      .update(chats)
+      .set({ lastMessage: content ?? '📷 Foto', lastMessageAt: new Date() })
+      .where(eq(chats.id, chatId));
 
-    return c.json({ message: message.rows[0] }, 201);
+    return c.json({ message: inserted[0] }, 201);
+  } catch (e: any) {
+    return c.json({ error: e.message }, 500);
+  }
+});
+
+// Mark messages as read
+chat.patch('/:chatId/read', async (c) => {
+  try {
+    const { chatId } = c.req.param();
+    const userId = c.req.header('x-user-id') || '';
+    await db
+      .update(messages)
+      .set({ read: true })
+      .where(and(eq(messages.chatId, chatId), sql`${messages.senderId} != ${userId}`));
+    return c.json({ success: true });
   } catch (e: any) {
     return c.json({ error: e.message }, 500);
   }
@@ -112,12 +154,13 @@ chat.post('/:chatId/messages', async (c) => {
 chat.delete('/:chatId/messages/:messageId', async (c) => {
   try {
     const { chatId, messageId } = c.req.param();
-    const userId = c.req.header('x-user-id');
+    const userId = c.req.header('x-user-id') || '';
 
-    await db.execute({
-      sql: `DELETE FROM messages WHERE id = ? AND chatId = ? AND senderId = ?`,
-      args: [messageId, chatId, userId || ''],
-    });
+    await db
+      .delete(messages)
+      .where(
+        and(eq(messages.id, messageId), eq(messages.chatId, chatId), eq(messages.senderId, userId)),
+      );
 
     return c.json({ success: true });
   } catch (e: any) {

@@ -11,6 +11,16 @@ const MASCOT_HAPPY = require("../assets/mascot-happy_1784664046237.png");
 export function AppLoading({ message = "Só um instante..." }: { message?: string }) {
   const bounce = useRef(new Animated.Value(0)).current;
   const dots = useRef(new Animated.Value(0)).current;
+  const progress = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Progress bar: fast to 70%, then slow crawl to 95% (never "finishes"
+    // on its own — the screen unmounts when loading is actually done).
+    Animated.sequence([
+      Animated.timing(progress, { toValue: 0.7, duration: 900, easing: Easing.out(Easing.cubic), useNativeDriver: false }),
+      Animated.timing(progress, { toValue: 0.95, duration: 4000, easing: Easing.out(Easing.quad), useNativeDriver: false }),
+    ]).start();
+  }, []);
 
   useEffect(() => {
     Animated.loop(
@@ -41,6 +51,27 @@ export function AppLoading({ message = "Só um instante..." }: { message?: strin
       <Text suppressHighlighting style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
         A preparar tudo com carinho 🐾
       </Text>
+
+      {/* Progress bar */}
+      <View
+        style={{
+          width: 200,
+          height: 8,
+          borderRadius: 999,
+          backgroundColor: "#E9E4FB",
+          marginTop: 22,
+          overflow: "hidden",
+        }}
+      >
+        <Animated.View
+          style={{
+            height: "100%",
+            borderRadius: 999,
+            backgroundColor: "#7C5CFF",
+            width: progress.interpolate({ inputRange: [0, 1], outputRange: ["0%", "100%"] }),
+          }}
+        />
+      </View>
     </View>
   );
 }
