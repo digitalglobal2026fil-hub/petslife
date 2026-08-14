@@ -4,7 +4,7 @@ import * as schema from "../database/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { requireAuth } from "../middleware/auth";
 
-const ADMIN_EMAIL = "digitalglobal2026fil@gmail.com";
+const ADMIN_EMAILS = ["digitalglobal2026fil@gmail.com", "aleclikes@outlook.pt"];
 const ADMIN_PIN = process.env.ADMIN_PIN || "2776";
 
 // Benefícios possíveis e a sua duração
@@ -34,7 +34,7 @@ function isAdmin(c: any) {
   const pin = c.req.header("x-admin-pin") || c.req.query("pin");
   const extra = (process.env.ADMIN_USER_IDS || "").split(",").map((s: string) => s.trim()).filter(Boolean);
   const emailOk =
-    user?.email?.toLowerCase() === ADMIN_EMAIL || extra.includes(user?.email) || extra.includes(user?.id);
+    ADMIN_EMAILS.includes(user?.email?.toLowerCase()) || extra.includes(user?.email) || extra.includes(user?.id);
   return emailOk && pin === ADMIN_PIN;
 }
 
@@ -131,7 +131,7 @@ export const partners = new Hono()
     const user = c.get("user")!;
     const { pin } = await c.req.json();
     const extra = (process.env.ADMIN_USER_IDS || "").split(",").map((s: string) => s.trim()).filter(Boolean);
-    const emailOk = user.email?.toLowerCase() === ADMIN_EMAIL || extra.includes(user.email) || extra.includes(user.id);
+    const emailOk = ADMIN_EMAILS.includes(user.email?.toLowerCase()) || extra.includes(user.email) || extra.includes(user.id);
     if (!emailOk) return c.json({ error: "Sem permissão" }, 403);
     if (pin !== ADMIN_PIN) return c.json({ error: "PIN incorrecto" }, 401);
     return c.json({ ok: true });

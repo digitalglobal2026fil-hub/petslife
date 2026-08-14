@@ -124,7 +124,7 @@ export default function ProfileScreen() {
   ];
 
   // Área de gestão de parceiros — só aparece na conta de administração
-  const ADMIN_EMAILS = ["digitalglobal2026fil@gmail.com"];
+  const ADMIN_EMAILS = ["digitalglobal2026fil@gmail.com", "aleclikes@outlook.pt"];
   if (session?.user?.email && ADMIN_EMAILS.includes(session.user.email.toLowerCase())) {
     menuItems.push({
       icon: Lock, label: "Gestão de Parceiros", sublabel: "Códigos e desempenho (PIN)",
