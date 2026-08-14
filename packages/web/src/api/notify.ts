@@ -1,23 +1,37 @@
 // Notificações: email (Gmail/nodemailer) e SMS (Twilio, opcional)
 
+/** Guarda o último erro de email, para o endpoint de diagnóstico o mostrar. */
+let lastMailError: string | null = null;
+export function getLastMailError() {
+  return lastMailError;
+}
+
 export async function sendMail(to: string, subject: string, html: string) {
   const user = process.env.GMAIL_USER;
-  const pass = process.env.GMAIL_APP_PASSWORD;
+  const pass = (process.env.GMAIL_APP_PASSWORD ?? "").replace(/\s+/g, ""); // a Google mostra a password em blocos de 4
   if (!user || !pass) {
+    lastMailError = "GMAIL_USER ou GMAIL_APP_PASSWORD em falta";
     console.warn("[notify] Gmail não configurado — email não enviado");
     return false;
   }
   try {
     const nodemailer = await import("nodemailer");
     const transporter = nodemailer.default.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: { user, pass },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
     });
     await transporter.sendMail({ from: `"PetsLife" <${user}>`, to, subject, html });
+    lastMailError = null;
     console.log("[notify] email enviado para", to);
     return true;
   } catch (err: any) {
-    console.error("[notify] erro no email:", err?.message);
+    lastMailError = err?.message ?? String(err);
+    console.error("[notify] erro no email:", lastMailError);
     return false;
   }
 }

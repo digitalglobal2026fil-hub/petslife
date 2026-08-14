@@ -25,7 +25,7 @@ import { reminders } from "./routes/reminders";
 import { petScans } from "./routes/pet-scans";
 import { users } from "./routes/users";
 import { ensureTables } from "./database/ensure-tables";
-import { sendMail } from "./notify";
+import { sendMail, getLastMailError } from "./notify";
 
 // Cria tabelas novas no arranque (o projecto não tem migrações automáticas)
 ensureTables();
@@ -64,7 +64,7 @@ const app = new Hono()
          </div>`,
       );
     }
-    return c.json({ ...cfg, emailSent }, 200);
+    return c.json({ ...cfg, emailSent, lastError: getLastMailError() }, 200);
   })
   .route("/pets", pets)
   .route("/vaccines", vaccines)
