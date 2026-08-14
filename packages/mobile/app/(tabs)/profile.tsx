@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles } from "lucide-react-native";
+import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill } from "lucide-react-native";
 import { authClient, clearToken } from "../../lib/auth";
 import { api } from "../../lib/api";
 import Constants from "expo-constants";
@@ -107,11 +107,20 @@ export default function ProfileScreen() {
   const menuItems = [
     { icon: CreditCard, label: "Subscrição", sublabel: isTrial ? "Trial ativo" : isActive ? "Premium ativo" : "Inativo", color: "#FF6B35", onPress: () => router.push("/subscription") },
     { icon: Gift, label: "Código Promocional", sublabel: "Tens um código especial?", color: "#10B981", onPress: () => router.push("/promo-code" as any) },
-    { icon: Bell, label: "Notificações", sublabel: "Vacinas e consultas", color: "#4ECDC4", onPress: () => Alert.alert("Notificações", "Em breve!") },
+    { icon: Pill, label: "Lembretes", sublabel: "Medicação, tratamentos e vacinas", color: "#4ECDC4", onPress: () => router.push("/reminders" as any) },
     { icon: MapPin, label: "Vets e Lojas", sublabel: "Encontrar perto de mim", color: "#06D6A0", onPress: () => router.push("/find-vets") },
     { icon: Shield, label: "Privacidade", sublabel: "Política de privacidade", color: "#8B5CF6", onPress: () => Linking.openURL(`${API_URL}/privacy`).catch(() => Alert.alert("Erro", "Não foi possível abrir a política de privacidade.")) },
     { icon: HelpCircle, label: "Ajuda e Suporte", sublabel: "Contacte-nos por email", color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert("Erro", "Não foi possível abrir o email.")) },
   ];
+
+  // Área de gestão de parceiros — só aparece na conta de administração
+  const ADMIN_EMAILS = ["digitalglobal2026fil@gmail.com"];
+  if (session?.user?.email && ADMIN_EMAILS.includes(session.user.email.toLowerCase())) {
+    menuItems.push({
+      icon: Lock, label: "Gestão de Parceiros", sublabel: "Códigos e desempenho (PIN)",
+      color: "#8B5CF6", onPress: () => router.push("/admin" as any),
+    });
+  }
 
   const statusColor = isTrial ? "#FF6B35" : isActive ? "#06D6A0" : "#9CA3AF";
   const statusLabel = isTrial ? "🎉 Trial ativo" : isActive ? "⭐ Premium" : "Sem plano";

@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ChevronLeft, ChevronDown, Calendar } from "lucide-react-native";
 import { api } from "../lib/api";
+import { netError } from "../lib/net-error";
 
 function Field({ label, value, onChange, placeholder, keyboardType, multiline }: any) {
   return (
@@ -65,7 +66,7 @@ export default function AddAppointmentScreen() {
       qc.invalidateQueries({ queryKey: ["appointments-upcoming"] });
       Alert.alert("✅ Consulta guardada!", "Consulta adicionada com sucesso.", [{ text: "OK", onPress: () => router.back() }]);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const handleSave = () => {

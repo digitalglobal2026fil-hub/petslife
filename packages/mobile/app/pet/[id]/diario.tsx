@@ -7,6 +7,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "../../../lib/api";
+import { netError } from "../../../lib/net-error";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -72,7 +73,7 @@ export default function DiarioPage() {
       setModal(false);
       setTitulo(""); setDescricao(""); setData(""); setTipo("outro");
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const eliminar = (lid: string) => Alert.alert("Eliminar entrada?", "", [

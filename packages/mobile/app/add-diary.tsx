@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ChevronLeft, ChevronDown, Heart } from "lucide-react-native";
 import { api } from "../lib/api";
+import { netError } from "../lib/net-error";
 
 const ACCENT = "#EF476F";
 
@@ -89,7 +90,7 @@ export default function AddDiaryScreen() {
         { text: "OK", onPress: () => router.back() },
       ]);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const handleSave = () => {

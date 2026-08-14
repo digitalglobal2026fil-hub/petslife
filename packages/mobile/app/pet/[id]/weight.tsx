@@ -7,6 +7,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "../../../lib/api";
+import { netError } from "../../../lib/net-error";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -62,7 +63,7 @@ export default function WeightPage() {
       setModal(false);
       setWeight(""); setDate(""); setNotes("");
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const del = (wid: string) => Alert.alert("Eliminar registo?", "", [

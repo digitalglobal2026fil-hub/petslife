@@ -1,9 +1,11 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert, Share } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, QrCode, Syringe, Calendar, FileText, MapPin, Trash2, PawPrint, Camera } from "lucide-react-native";
+import { ChevronLeft, QrCode, Syringe, Calendar, FileText, MapPin, Trash2, PawPrint, Camera, Share2 } from "lucide-react-native";
 import { api } from "../../../lib/api";
+import { PetIllustration } from "../../../components/PetIllustration";
+import { netError } from "../../../lib/net-error";
 
 export default function PetDetailScreen() {
   const router = useRouter();
@@ -23,7 +25,7 @@ export default function PetDetailScreen() {
       qc.invalidateQueries({ queryKey: ["pets"] });
       router.back();
     },
-    onError: (e: any) => Alert.alert("Erro", e.message ?? "Não foi possível eliminar."),
+    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível eliminar.")),
   });
 
   function confirmDelete() {
@@ -31,6 +33,23 @@ export default function PetDetailScreen() {
       { text: "Cancelar", style: "cancel" },
       { text: "Eliminar", style: "destructive", onPress: () => deleteMutation.mutate() },
     ]);
+  }
+
+  async function sharePet() {
+    if (!pet) return;
+    const link = pet.qrCode ? `https://petslife.onrender.com/pet/${pet.qrCode}` : null;
+    const linhas = [
+      `Este é o ${pet.name}! 🐾`,
+      pet.breed ? `${pet.breed}${age ? ` • ${age}` : ""}` : null,
+      pet.microchip ? `Microchip: ${pet.microchip}` : null,
+      link ? `\nPerfil completo: ${link}` : null,
+      "\nPartilhado com a app PetsLife",
+    ].filter(Boolean);
+    try {
+      await Share.share({ message: linhas.join("\n"), title: pet.name, ...(link ? { url: link } : {}) });
+    } catch (e: any) {
+      Alert.alert("Ups", netError(e, "Não foi possível partilhar."));
+    }
   }
 
   const pet = (data as any)?.pet;
@@ -97,11 +116,18 @@ export default function PetDetailScreen() {
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={20} color="#1A1A2E" />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={confirmDelete}
-            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#FFF0EB", borderWidth: 1.5, borderColor: "#FFD5C2", alignItems: "center", justifyContent: "center" }}>
-            <Trash2 size={18} color="#FF6B35" />
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <TouchableOpacity
+              onPress={sharePet}
+              style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#F3EEFF", borderWidth: 1.5, borderColor: "#E4D9FF", alignItems: "center", justifyContent: "center" }}>
+              <Share2 size={18} color="#8B5CF6" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={confirmDelete}
+              style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#FFF0EB", borderWidth: 1.5, borderColor: "#FFD5C2", alignItems: "center", justifyContent: "center" }}>
+              <Trash2 size={18} color="#FF6B35" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Pet hero */}
@@ -110,7 +136,7 @@ export default function PetDetailScreen() {
             {pet.photoUrl ? (
               <Image source={{ uri: pet.photoUrl }} style={{ width: 110, height: 110, borderRadius: 55 }} />
             ) : (
-              <Text suppressHighlighting style={{ fontSize: 52 }}>{speciesEmoji}</Text>
+              <PetIllustration species={pet.species} size={86} />
             )}
           </View>
           <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#1A1A2E", marginTop: 12 }}>{pet.name}</Text>

@@ -7,6 +7,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "../../../lib/api";
+import { netError } from "../../../lib/net-error";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -67,7 +68,7 @@ export default function ConsultasPage() {
       setModal(false);
       setTitulo(""); setData(""); setHora(""); setVet(""); setClinica(""); setNotas(""); setTipo("consulta");
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   return (

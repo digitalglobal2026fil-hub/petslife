@@ -9,6 +9,7 @@ import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
+import { netError } from "../../../lib/net-error";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -96,7 +97,7 @@ export default function DocumentosPage() {
       setModal(false);
       setTitulo(""); setTipo("outro"); setNotas(""); setFotoUrl(null);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const eliminar = (did: string) => Alert.alert("Eliminar documento?", "", [

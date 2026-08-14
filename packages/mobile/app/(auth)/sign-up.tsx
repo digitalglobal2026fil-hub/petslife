@@ -4,6 +4,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { useRouter } from "expo-router";
 import { authClient, captureToken } from "../../lib/auth";
 import { Eye, EyeOff, Sparkles, ArrowRight } from "lucide-react-native";
+import { netError } from "../../lib/net-error";
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function SignUpScreen() {
       if (res.error) throw new Error(res.error.message);
       router.replace("/(tabs)");
     } catch (e: any) {
-      Alert.alert("Erro", e.message ?? "Não foi possível criar conta.");
+      Alert.alert("Ups", netError(e, "Não foi possível criar conta."));
     } finally {
       setLoading(false);
     }

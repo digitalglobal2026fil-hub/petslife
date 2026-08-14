@@ -13,6 +13,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
+import { netError } from "../../../lib/net-error";
 
 type Tab = "vaccines" | "appointments" | "documents" | "diary" | "deworming" | "weight" | "prescriptions";
 
@@ -231,37 +232,37 @@ export default function PetHealthScreen() {
       return res.json();
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["vaccines", id] }); setModal(null); reset(["v"]); },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const addAppt = useMutation({
     mutationFn: async () => (await api.appointments.$post({ json: { petId: id, title: aTitle, type: aType, date: aDate, time: aTime || undefined, veterinarian: aVet || undefined, clinic: aClinic || undefined, notes: aNotes || undefined } })).json(),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["appointments", id] }); setModal(null); reset(["a"]); },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const addDoc = useMutation({
     mutationFn: async (type: string) => (await api.documents.$post({ json: { petId: id, type, title: type === "receita" ? pTitle : dTitle, url: (type === "receita" ? pUrl : dUrl) ?? "", notes: type === "receita" ? pNotes || undefined : dNotes || undefined } })).json(),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["documents", id] }); setModal(null); reset(["d", "p"]); },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const addDiary = useMutation({
     mutationFn: async () => (await (api as any)["health-logs"].$post({ json: { petId: id, type: diaryType, title: diaryTitle, description: diaryDesc || undefined, date: diaryDate || new Date().toISOString().slice(0, 10) } })).json(),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["health-logs", id] }); setModal(null); reset(["diary"]); },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const addDeworming = useMutation({
     mutationFn: async () => (await (api as any).dewormings.$post({ json: { petId: id, product: dwProduct, date: dwDate, nextDate: dwNext || undefined, type: dwType, notes: dwNotes || undefined, documentUrl: dwDocUrl || undefined } })).json(),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["dewormings", id] }); setModal(null); reset(["dw"]); },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const addWeight = useMutation({
     mutationFn: async () => (await (api as any)["weight-logs"].$post({ json: { petId: id, weight: parseFloat(wWeight), date: wDate || new Date().toISOString().slice(0, 10), notes: wNotes || undefined } })).json(),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["weight-logs", id] }); setModal(null); reset(["w"]); },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const deleteVaccine = (vid: string) => Alert.alert("Eliminar vacina?", "Esta ação não pode ser desfeita.", [

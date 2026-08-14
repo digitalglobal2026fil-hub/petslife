@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronDown, Upload, Camera, FileText } from "lucide-react
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../lib/api";
 import { uploadImage } from "../lib/upload";
+import { netError } from "../lib/net-error";
 
 async function uploadFile(uri: string, filename: string, mimeType: string): Promise<string> {
   // Usa base64 upload que funciona no Android/iOS
@@ -73,7 +74,7 @@ export default function AddDocumentScreen() {
       qc.invalidateQueries({ queryKey: ["documents"] });
       Alert.alert("✅ Documento guardado!", "Documento adicionado com sucesso.", [{ text: "OK", onPress: () => router.back() }]);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const pickFile = async () => {

@@ -1,45 +1,92 @@
 import { useState } from "react";
 import {
   View, Text, TextInput, TouchableOpacity,
-  StyleSheet, Alert, ActivityIndicator, KeyboardAvoidingView, Platform
+  StyleSheet, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Gift, ArrowLeft, CheckCircle } from "lucide-react-native";
-import { api } from "../lib/api";
+import { Gift, ArrowLeft, CheckCircle, BadgePercent, Infinity as InfinityIcon, CalendarCheck } from "lucide-react-native";
+import { api, BASE_URL } from "../lib/api";
+import { AnimatedPet } from "../components/AnimatedPet";
+import { netError } from "../lib/net-error";
+
+const BENEFIT_INFO: Record<string, { title: string; desc: string; icon: any; color: string }> = {
+  lifetime: { title: "Acesso vitalício", desc: "Acesso completo para sempre. Nunca pagas nada.", icon: InfinityIcon, color: "#8B5CF6" },
+  year1: { title: "1 ano grátis", desc: "Acesso completo durante 12 meses, sem pagar.", icon: CalendarCheck, color: "#10B981" },
+  months3: { title: "3 meses grátis", desc: "Acesso completo durante 3 meses, sem pagar.", icon: CalendarCheck, color: "#06B6D4" },
+  discount: { title: "Desconto especial", desc: "Preço reduzido na tua subscrição.", icon: BadgePercent, color: "#FF6B35" },
+  none: { title: "Código de parceiro", desc: "Código registado com sucesso.", icon: Gift, color: "#FF6B35" },
+};
 
 export default function PromoCodeScreen() {
   const router = useRouter();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [preview, setPreview] = useState<any>(null);
+  const [success, setSuccess] = useState<{ benefit: string; message: string } | null>(null);
+
+  async function getToken(): Promise<string> {
+    try {
+      if (Platform.OS === "web") return (typeof localStorage !== "undefined" ? localStorage.getItem("bearer_token") : null) ?? "";
+      const SecureStore = require("expo-secure-store");
+      return SecureStore.getItem("bearer_token") ?? "";
+    } catch { return ""; }
+  }
+
+  // Mostra o que o código dá, antes de resgatar
+  async function check() {
+    const c = code.trim().toUpperCase();
+    if (!c) return;
+    setChecking(true);
+    setPreview(null);
+    try {
+      const res = await fetch(`${BASE_URL}/api/partners/check/${encodeURIComponent(c)}`);
+      const data = await res.json();
+      if (data.valid) setPreview(data);
+      else Alert.alert("Código inválido", data.error || "Este código não existe.");
+    } catch (e: any) {
+      Alert.alert("Sem ligação", netError(e));
+    } finally {
+      setChecking(false);
+    }
+  }
 
   async function redeem() {
-    if (!code.trim()) {
+    const c = code.trim().toUpperCase();
+    if (!c) {
       Alert.alert("Atenção", "Introduz um código primeiro.");
       return;
     }
     setLoading(true);
     try {
-      const res = await (api as any)["promo-codes"].redeem.$post({ json: { code: code.trim() } });
-      if (res.error) {
-        Alert.alert("Erro", res.error);
+      const token = await getToken();
+      const res = await fetch(`${BASE_URL}/api/partners/redeem`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ code: c }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        Alert.alert("Erro", data.error || "Não foi possível aplicar o código.");
       } else {
-        setSuccess(true);
+        setSuccess({ benefit: data.benefit, message: data.message });
       }
     } catch (e: any) {
-      Alert.alert("Erro", e?.message || "Código inválido");
+      Alert.alert("Sem ligação", netError(e));
     } finally {
       setLoading(false);
     }
   }
 
   if (success) {
+    const info = BENEFIT_INFO[success.benefit] ?? BENEFIT_INFO.none;
     return (
       <View style={styles.successContainer}>
-        <CheckCircle size={72} color="#FF6B35" />
-        <Text suppressHighlighting style={styles.successTitle}>Código aplicado!</Text>
-        <Text suppressHighlighting style={styles.successText}>Tens acesso vitalício à PetsLife. Obrigado! 🐾</Text>
-        <TouchableOpacity style={styles.btn} onPress={() => router.replace("/(tabs)")}>
+        <AnimatedPet species="dog" size={130} />
+        <CheckCircle size={44} color={info.color} style={{ marginTop: 8 }} />
+        <Text suppressHighlighting style={styles.successTitle}>{info.title}</Text>
+        <Text suppressHighlighting style={styles.successText}>{success.message}</Text>
+        <TouchableOpacity style={[styles.btn, { backgroundColor: info.color }]} onPress={() => router.replace("/(tabs)")}>
           <Text suppressHighlighting style={styles.btnText}>Ir para a app</Text>
         </TouchableOpacity>
       </View>
@@ -47,67 +94,83 @@ export default function PromoCodeScreen() {
   }
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.container}>
-      <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-        <ArrowLeft size={22} color="#FF6B35" />
-      </TouchableOpacity>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <TouchableOpacity style={styles.back} onPress={() => router.back()}>
+          <ArrowLeft size={22} color="#FF6B35" />
+        </TouchableOpacity>
 
-      <View style={styles.iconWrap}>
-        <Gift size={52} color="#FF6B35" />
-      </View>
+        <AnimatedPet species="cat" size={110} />
 
-      <Text suppressHighlighting style={styles.title}>Código Promocional</Text>
-      <Text suppressHighlighting style={styles.subtitle}>
-        Tens um código especial? Introduz aqui para ativar acesso vitalício gratuito.
-      </Text>
+        <Text suppressHighlighting style={styles.title}>Código de Parceiro</Text>
+        <Text suppressHighlighting style={styles.subtitle}>
+          Recebeste um código de um parceiro ou influencer? Introduz aqui para activar o teu benefício.
+        </Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Ex: PETS-AB123"
-        placeholderTextColor="#9CA3AF"
-        value={code}
-        onChangeText={t => setCode(t.toUpperCase())}
-        autoCapitalize="characters"
-        autoCorrect={false}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Ex: JOAO10"
+          placeholderTextColor="#9CA3AF"
+          value={code}
+          onChangeText={t => { setCode(t.toUpperCase()); setPreview(null); }}
+          onBlur={check}
+          autoCapitalize="characters"
+          autoCorrect={false}
+        />
 
-      <TouchableOpacity style={styles.btn} onPress={redeem} disabled={loading}>
-        {loading
-          ? <ActivityIndicator color="#fff" />
-          : <Text suppressHighlighting style={styles.btnText}>Ativar código</Text>
-        }
-      </TouchableOpacity>
+        {checking && <ActivityIndicator color="#FF6B35" style={{ marginBottom: 14 }} />}
+
+        {preview && (() => {
+          const info = BENEFIT_INFO[preview.benefit] ?? BENEFIT_INFO.none;
+          return (
+            <View style={[styles.previewCard, { borderColor: info.color + "44", backgroundColor: info.color + "0D" }]}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <info.icon size={22} color={info.color} />
+                <Text suppressHighlighting style={{ fontWeight: "800", color: info.color, fontSize: 15 }}>{info.title}</Text>
+              </View>
+              <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 13, marginTop: 6, lineHeight: 19 }}>{info.desc}</Text>
+              {preview.partnerName && (
+                <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 12, marginTop: 8 }}>
+                  Código de {preview.partnerName}
+                </Text>
+              )}
+            </View>
+          );
+        })()}
+
+        <TouchableOpacity style={styles.btn} onPress={redeem} disabled={loading}>
+          {loading
+            ? <ActivityIndicator color="#fff" />
+            : <Text suppressHighlighting style={styles.btnText}>Activar código</Text>
+          }
+        </TouchableOpacity>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, backgroundColor: "#fff",
-    paddingHorizontal: 28, paddingTop: 80, alignItems: "center",
+    paddingHorizontal: 28, paddingTop: 80, paddingBottom: 40, alignItems: "center", flexGrow: 1,
   },
-  back: { position: "absolute", top: 52, left: 20, padding: 8 },
-  iconWrap: {
-    width: 100, height: 100, borderRadius: 50,
-    backgroundColor: "#FFF3EE", alignItems: "center", justifyContent: "center",
-    marginBottom: 24,
-  },
-  title: { fontSize: 26, fontWeight: "700", color: "#1F2937", marginBottom: 10, textAlign: "center" },
-  subtitle: { fontSize: 15, color: "#6B7280", textAlign: "center", lineHeight: 22, marginBottom: 32 },
+  back: { position: "absolute", top: 52, left: 20, padding: 8, zIndex: 5 },
+  title: { fontSize: 25, fontWeight: "800", color: "#1F2937", marginTop: 10, marginBottom: 10, textAlign: "center" },
+  subtitle: { fontSize: 14.5, color: "#6B7280", textAlign: "center", lineHeight: 21, marginBottom: 28 },
   input: {
     width: "100%", borderWidth: 2, borderColor: "#FF6B35",
-    borderRadius: 14, padding: 16, fontSize: 20, fontWeight: "700",
-    color: "#1F2937", textAlign: "center", letterSpacing: 3, marginBottom: 20,
+    borderRadius: 14, padding: 16, fontSize: 20, fontWeight: "800",
+    color: "#1F2937", textAlign: "center", letterSpacing: 3, marginBottom: 18,
   },
+  previewCard: { width: "100%", borderWidth: 1.5, borderRadius: 16, padding: 16, marginBottom: 18 },
   btn: {
     width: "100%", backgroundColor: "#FF6B35",
     borderRadius: 14, padding: 16, alignItems: "center",
   },
-  btnText: { color: "#fff", fontSize: 17, fontWeight: "700" },
+  btnText: { color: "#fff", fontSize: 17, fontWeight: "800" },
   successContainer: {
     flex: 1, backgroundColor: "#fff",
     alignItems: "center", justifyContent: "center", paddingHorizontal: 32,
   },
-  successTitle: { fontSize: 28, fontWeight: "700", color: "#1F2937", marginTop: 24, marginBottom: 12 },
-  successText: { fontSize: 16, color: "#6B7280", textAlign: "center", lineHeight: 24, marginBottom: 36 },
+  successTitle: { fontSize: 26, fontWeight: "800", color: "#1F2937", marginTop: 16, marginBottom: 12, textAlign: "center" },
+  successText: { fontSize: 15.5, color: "#6B7280", textAlign: "center", lineHeight: 23, marginBottom: 34 },
 });

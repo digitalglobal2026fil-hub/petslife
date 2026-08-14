@@ -7,6 +7,7 @@ import { ChevronLeft, Plus, Trash2, Camera, Upload } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
+import { netError } from "../../../lib/net-error";
 
 const COLS = 3;
 const SIZE = (Dimensions.get("window").width - 40 - (COLS - 1) * 4) / COLS;
@@ -36,7 +37,7 @@ export default function PetPhotosScreen() {
       qc.invalidateQueries({ queryKey: ["photos", id] });
       setSelectedPhoto(null);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const addPhoto = async (fromCamera: boolean) => {

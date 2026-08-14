@@ -9,6 +9,7 @@ import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
+import { netError } from "../../../lib/net-error";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -92,7 +93,7 @@ export default function DewormingPage() {
       setModal(false);
       setProduct(""); setDate(""); setNextDate(""); setType("internal"); setNotes(""); setDocUrl(null);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message),
+    onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const del = (did: string) => Alert.alert("Eliminar?", "", [

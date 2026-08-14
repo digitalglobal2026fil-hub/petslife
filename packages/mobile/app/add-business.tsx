@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react-native";
 import { api } from "../lib/api";
+import { netError } from "../lib/net-error";
 
 const types = [
   { value: "clinica",     label: "🏥 Clínica Veterinária" },
@@ -82,7 +83,7 @@ export default function AddBusinessScreen() {
       Alert.alert("✅ Negócio registado!", "O teu negócio já está visível para todos os utilizadores.");
       router.back();
     },
-    onError: (e: any) => Alert.alert("Erro", e.message ?? "Não foi possível registar o negócio."),
+    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível registar o negócio.")),
   });
 
   return (

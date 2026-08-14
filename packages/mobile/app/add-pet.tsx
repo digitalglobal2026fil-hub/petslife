@@ -7,6 +7,7 @@ import { ChevronLeft, Camera, Dog, Cat, Bird, Rabbit } from "lucide-react-native
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../lib/api";
 import { uploadImage } from "../lib/upload";
+import { netError } from "../lib/net-error";
 
 const SPECIES = [
   { key: "dog", label: "Cão", icon: Dog, emoji: "🐕" },
@@ -87,7 +88,7 @@ export default function AddPetScreen() {
       qc.invalidateQueries({ queryKey: ["pets"] });
       router.back();
     },
-    onError: (e: any) => Alert.alert("Erro", e.message ?? "Não foi possível adicionar o animal."),
+    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível adicionar o animal.")),
   });
 
   function handleSubmit() {

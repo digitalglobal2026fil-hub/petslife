@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Tag, Package } from "lucide-react-native";
 import { api } from "../lib/api";
+import { netError } from "../lib/net-error";
 
 const CATEGORIES = [
   { key: "adoption", label: "Adoção", emoji: "🏠" },
@@ -77,7 +78,7 @@ export default function AddListingScreen() {
       qc.invalidateQueries({ queryKey: ["marketplace"] });
       Alert.alert("Sucesso!", "O seu anúncio foi publicado.", [{ text: "OK", onPress: () => router.back() }]);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message ?? "Não foi possível publicar o anúncio."),
+    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível publicar o anúncio.")),
   });
 
   function handleSubmit() {

@@ -3,11 +3,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart, MessageCircle, Plus, Send, PawPrint } from "lucide-react-native";
 import { useState } from "react";
+import { router } from "expo-router";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
 import { AnimalFact } from "../../components/AnimalFact";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
+import { netError } from "../../lib/net-error";
 
 export default function SocialScreen() {
   const queryClient = useQueryClient();
@@ -24,7 +26,7 @@ export default function SocialScreen() {
   const createPost = useMutation({
     mutationFn: async (content: string) => (await api.posts.$post({ json: { content } })).json(),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["posts"] }); setNewPost(""); setShowForm(false); },
-    onError: () => Alert.alert("Erro", "Não foi possível publicar."),
+    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível publicar.")),
   });
 
   const likePost = useMutation({
@@ -60,10 +62,16 @@ export default function SocialScreen() {
           <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>Comunidade</Text>
           <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", marginTop: 2, fontSize: 13 }}>Partilhe momentos dos seus animais</Text>
         </View>
-        <TouchableOpacity onPress={() => setShowForm(!showForm)}
-          style={{ backgroundColor: "rgba(255,255,255,0.25)", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
-          <Plus size={20} color="#fff" />
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <TouchableOpacity onPress={() => router.push("/chats" as any)}
+            style={{ backgroundColor: "rgba(255,255,255,0.25)", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
+            <MessageCircle size={20} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowForm(!showForm)}
+            style={{ backgroundColor: "rgba(255,255,255,0.25)", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
+            <Plus size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {showForm && (

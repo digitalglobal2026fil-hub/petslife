@@ -144,6 +144,125 @@ const GUIDES = [
       },
     ],
   },
+  {
+    category: "🦜 Aves", color: "#F59E0B", bg: "#FFF8E7",
+    guides: [
+      {
+        title: "Subir ao Dedo", emoji: "🖐️", difficulty: "Iniciante",
+        steps: [
+          "Deixe a ave habituar-se à sua presença durante alguns dias",
+          "Fale com voz suave junto à gaiola, sem movimentos bruscos",
+          "Aproxime o dedo lentamente da barriguinha dela",
+          "Faça uma leve pressão — o instinto dela é subir",
+          "Recompense com um petisco (milho, painço) e repita diariamente",
+        ],
+        tip: "Nunca agarre a ave à força. Sessões curtas de 5 minutos, todos os dias, dão melhor resultado que uma sessão longa.",
+        videoTitle: "Ensinar periquito a subir no dedo",
+        videoUrl: "https://www.youtube.com/watch?v=sesqJZuS2hU",
+      },
+      {
+        title: "Voar até Você", emoji: "🕊️", difficulty: "Intermédio",
+        steps: [
+          "Só depois de a ave já subir ao dedo com confiança",
+          "Comece a uma distância muito curta, com petisco na mão",
+          "Chame-a sempre com a mesma palavra ou assobio",
+          "Aumente a distância aos poucos, sessão a sessão",
+          "Faça sempre num espaço fechado, com janelas e portas fechadas",
+        ],
+        tip: "Serve para qualquer ave: periquito, calopsita, agapornis, canário ou papagaio.",
+        videoTitle: "Ensinar o pássaro a voar até você",
+        videoUrl: "https://www.youtube.com/watch?v=QFprzs2vS4U",
+      },
+      {
+        title: "Amansar Ave Arisca", emoji: "🪶", difficulty: "Intermédio",
+        steps: [
+          "Coloque a gaiola num local com movimento de pessoas",
+          "Passe tempo perto sem tentar tocar — só presença",
+          "Ofereça petisco através das grades da gaiola",
+          "Quando ela aceitar, ofereça com a mão dentro da gaiola",
+          "Só depois tente o contacto direto",
+        ],
+        tip: "Uma ave assustada não é uma ave má. Pode levar semanas — a pressa estraga o progresso.",
+        videoTitle: "Como amansar o seu periquito",
+        videoUrl: "https://www.youtube.com/watch?v=uf4ueHytyEs",
+      },
+    ],
+  },
+  {
+    category: "🐰 Coelhos", color: "#EC4899", bg: "#FDF2F8",
+    guides: [
+      {
+        title: "Usar o Banheirinho", emoji: "🪣", difficulty: "Iniciante",
+        steps: [
+          "Escolha o canto onde ele já costuma fazer as necessidades",
+          "Coloque lá a caixa com feno numa ponta",
+          "Ponha os cocós dele dentro da caixa para marcar o cheiro",
+          "Limpe muito bem os sítios errados para não deixar odor",
+          "Nunca castigue — recompense quando acertar",
+        ],
+        tip: "Coelhos esterilizados aprendem muito mais rápido e marcam menos território.",
+        videoTitle: "Ensinar o coelho a usar o banheirinho",
+        videoUrl: "https://www.youtube.com/watch?v=SGcUQa7LCD8",
+      },
+      {
+        title: "Higiene: Cortar as Unhas", emoji: "✂️", difficulty: "Intermédio",
+        steps: [
+          "Escolha um local calmo e bem iluminado",
+          "Envolva o coelho suavemente numa toalha (deixando a pata de fora)",
+          "Identifique a parte rosada (veia) — nunca corte aí",
+          "Corte só a ponta branca, uma unha de cada vez",
+          "Se ele se agitar, pare e continue mais tarde",
+        ],
+        tip: "As unhas dos coelhos crescem sempre. Se estiverem muito compridas, o coelho pode magoar-se nas patas.",
+        videoTitle: "Como cortar as unhas do coelho",
+        videoUrl: "https://www.youtube.com/watch?v=AoztTU0Fnbo",
+      },
+      {
+        title: "Escovar e Ganhar Confiança", emoji: "🪮", difficulty: "Iniciante",
+        steps: [
+          "Deixe-o cheirar a escova antes de a usar",
+          "Comece por passar a mão nas costas, sem escova",
+          "Escove no sentido do pelo, com movimentos leves",
+          "Aumente o tempo gradualmente em cada sessão",
+          "Termine sempre com um petisco",
+        ],
+        tip: "Escovar é essencial nas mudas de pelo — o coelho não vomita bolas de pelo como o gato e pode ficar com obstrução.",
+        videoTitle: "Escovar o coelho e cortar unhas",
+        videoUrl: "https://www.youtube.com/watch?v=V2HpifC8G-8",
+      },
+    ],
+  },
+  {
+    category: "🐹 Hamsters e Roedores", color: "#A16207", bg: "#FEF8E7",
+    guides: [
+      {
+        title: "Amansar o Hamster", emoji: "🤲", difficulty: "Iniciante",
+        steps: [
+          "Nos primeiros dias, deixe-o adaptar-se sem lhe tocar",
+          "Fale baixinho perto da gaiola para ele conhecer a sua voz",
+          "Ofereça um petisco na palma da mão aberta, dentro da gaiola",
+          "Espere que ele venha — nunca o vá buscar",
+          "Só quando subir sozinho é que o pode levantar",
+        ],
+        tip: "Hamsters são noturnos. Nunca o acorde para brincar — um hamster acordado à força morde.",
+        videoTitle: "Como amansar o seu hamster",
+        videoUrl: "https://www.youtube.com/watch?v=-3o6Ak0108g",
+      },
+      {
+        title: "Subir à Mão", emoji: "✋", difficulty: "Iniciante",
+        steps: [
+          "Lave as mãos — cheiro a comida faz com que ele morda",
+          "Ponha a mão dentro da gaiola, quieta, durante 2 minutos",
+          "Coloque uma semente na palma da mão",
+          "Quando ele subir, não feche a mão nem o aperte",
+          "Levante-o sempre com as duas mãos em taça, junto ao chão",
+        ],
+        tip: "Se ele morder, não tire a mão de repente — pode fazê-lo cair. Sopre suavemente.",
+        videoTitle: "Ensinar o hamster a subir na mão",
+        videoUrl: "https://www.youtube.com/watch?v=INCP0oGFgSc",
+      },
+    ],
+  },
 ];
 
 export default function TrainingGuideScreen() {

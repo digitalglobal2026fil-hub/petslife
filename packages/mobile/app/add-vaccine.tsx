@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronDown, Upload, Camera, Syringe } from "lucide-react-
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../lib/api";
 import { uploadImage } from "../lib/upload";
+import { netError } from "../lib/net-error";
 
 async function uploadFile(uri: string, filename: string, mimeType: string): Promise<string> {
   return uploadImage(uri, mimeType ?? "image/jpeg");
@@ -86,7 +87,7 @@ export default function AddVaccineScreen() {
       qc.invalidateQueries({ queryKey: ["health-logs"] });
       Alert.alert("✅ Vacina guardada!", "Vacina adicionada com sucesso.", [{ text: "OK", onPress: () => router.back() }]);
     },
-    onError: (e: any) => Alert.alert("Erro", e.message ?? "Não foi possível guardar a vacina."),
+    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível guardar a vacina.")),
   });
 
   const pickFile = async () => {
