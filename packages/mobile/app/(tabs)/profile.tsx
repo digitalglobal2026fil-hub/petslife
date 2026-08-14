@@ -97,8 +97,17 @@ export default function ProfileScreen() {
       { text: "Cancelar", style: "cancel" },
       {
         text: "Sair", style: "destructive", onPress: async () => {
-          await authClient.signOut();
+          // Limpar o token PRIMEIRO: garante que a sessão local termina
+          // mesmo que o servidor esteja em baixo ou sem rede.
           clearToken();
+          try {
+            await authClient.signOut();
+          } catch {
+            // Sem rede/servidor em baixo: a sessão local já foi limpa.
+          }
+          // Forçar a ida para o ecrã de entrada (o redirect do index
+          // só corre no arranque da app).
+          router.replace("/(auth)/sign-in" as any);
         }
       }
     ]);

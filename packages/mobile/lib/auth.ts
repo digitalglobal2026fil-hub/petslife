@@ -20,7 +20,11 @@ function setToken(token: string) {
 function removeToken() {
   if (isWeb) return localStorage.removeItem(TOKEN_KEY);
   const SecureStore = require("expo-secure-store");
-  SecureStore.deleteItemAsync(TOKEN_KEY);
+  // Escrever vazio é SÍNCRONO: o token deixa de ser válido imediatamente.
+  // (deleteItemAsync é assíncrono e getToken lê de forma síncrona, pelo que
+  // sem isto o token antigo ainda podia ser lido logo após o logout.)
+  try { SecureStore.setItem(TOKEN_KEY, ""); } catch {}
+  try { SecureStore.deleteItemAsync(TOKEN_KEY); } catch {}
 }
 
 export const baseURL =
