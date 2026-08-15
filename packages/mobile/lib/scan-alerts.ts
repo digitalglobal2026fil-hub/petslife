@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { AppState, Platform, Vibration } from "react-native";
+import { Alert, AppState, Linking, Vibration } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { authFetch } from "./auth-fetch";
@@ -12,57 +12,13 @@ const API_URL = (
 
 const SEEN_KEY = "dg_seen_scan_ids";
 
-let notificationsReady = false;
-
-async function setupNotifications() {
-  if (notificationsReady) return null;
-  try {
-    const Notifications = require("expo-notifications");
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-        shouldShowBanner: true,
-        shouldShowList: true,
-      }),
-    });
-    if (Platform.OS === "android") {
-      await Notifications.setNotificationChannelAsync("qr-alerts", {
-        name: "Avisos do QR Code",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 400, 200, 400],
-        lightColor: "#FF6B35",
-        sound: "default",
-      });
-    }
-    const perm = await Notifications.getPermissionsAsync();
-    if (!perm.granted) await Notifications.requestPermissionsAsync();
-    notificationsReady = true;
-    return Notifications;
-  } catch (e) {
-    console.warn("[scan-alerts] notifications indisponíveis", e);
-    return null;
-  }
-}
-
-async function notify(title: string, body: string) {
-  Vibration.vibrate([0, 400, 200, 400]);
-  const Notifications = await setupNotifications();
-  if (!Notifications) return;
-  try {
-    await Notifications.scheduleNotificationAsync({
-      content: { title, body, sound: "default", priority: "max", data: { type: "qr-scan" } },
-      trigger: null,
-    });
-  } catch (e) {
-    console.warn("[scan-alerts] falha a mostrar notificação", e);
-  }
-}
-
 /**
- * Verifica periodicamente se o QR code de algum animal foi digitalizado e
- * dispara uma notificação com som e vibração quando aparece um registo novo.
+ * Avisa o dono quando o QR code de um animal é digitalizado.
+ *
+ * NOTA: não usamos expo-notifications aqui de propósito. Esse pacote arrasta o
+ * Firebase Messaging e, sem um ficheiro google-services.json, a app rebenta
+ * logo no arranque. O aviso fiável chega por email (enviado pelo servidor) e
+ * aqui dentro da app mostramos um alerta com vibração.
  */
 export function useScanAlerts(enabled: boolean) {
   const seen = useRef<Set<string> | null>(null);
@@ -83,6 +39,33 @@ export function useScanAlerts(enabled: boolean) {
       }
     };
 
+    const announce = (scan: any) => {
+      try {
+        Vibration.vibrate([0, 400, 200, 400]);
+      } catch {
+        /* alguns aparelhos não têm vibração */
+      }
+      const nome = scan?.petName ?? "o seu animal";
+      const quem = scan?.finderName ? `\n\nEncontrado por: ${scan.finderName}` : "";
+      const tel = scan?.finderPhone ? `\nTelefone: ${scan.finderPhone}` : "";
+      const temMapa = scan?.lat && scan?.lng;
+      const botoes: any[] = [{ text: "Fechar", style: "cancel" }];
+      if (temMapa) {
+        botoes.push({
+          text: "Ver no mapa",
+          onPress: () =>
+            Linking.openURL(
+              `https://www.google.com/maps/search/?api=1&query=${scan.lat},${scan.lng}`,
+            ).catch(() => {}),
+        });
+      }
+      Alert.alert(
+        "QR code digitalizado!",
+        `Alguém encontrou ${nome}.${quem}${tel}`,
+        botoes,
+      );
+    };
+
     const check = async () => {
       if (stopped) return;
       await load();
@@ -92,22 +75,18 @@ export function useScanAlerts(enabled: boolean) {
         const data = await res.json();
         const scans: any[] = data?.scans ?? data?.petScans ?? [];
         const fresh = scans.filter((s) => s?.id && !seen.current!.has(s.id));
-        if (fresh.length && primed.current) {
-          const s = fresh[0];
-          await notify(
-            "🐾 QR code digitalizado!",
-            `Alguém encontrou ${s.petName ?? "o seu animal"}${s.finderName ? ` — ${s.finderName}` : ""}. Abra a app para ver a localização.`,
-          );
-        }
+        if (fresh.length && primed.current) announce(fresh[0]);
         for (const s of fresh) seen.current!.add(s.id);
         primed.current = true;
-        await AsyncStorage.setItem(SEEN_KEY, JSON.stringify([...seen.current!].slice(-200)));
+        await AsyncStorage.setItem(
+          SEEN_KEY,
+          JSON.stringify([...seen.current!].slice(-200)),
+        );
       } catch {
         /* offline — tenta outra vez mais tarde */
       }
     };
 
-    setupNotifications();
     check();
     const timer = setInterval(check, 60_000);
     const sub = AppState.addEventListener("change", (state) => {
