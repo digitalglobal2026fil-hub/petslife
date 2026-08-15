@@ -9,6 +9,7 @@ import { BrandIntro } from "../components/BrandIntro";
 import { onSessionExpired } from "../lib/session-expired";
 import { ensureToken } from "../lib/auth-fetch";
 import { useScanAlerts } from "../lib/scan-alerts";
+import { ErrorCatcher } from "../components/ErrorCatcher";
 
 const queryClient = new QueryClient();
 
@@ -51,11 +52,13 @@ export default function RootLayout() {
   const [introDone, setIntroDone] = useState(false);
 
   return (
-    <SafeAreaProvider>
+    <ErrorCatcher>
+      <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <StatusBar style={introDone ? "auto" : "light"} />
         {introDone ? <AuthGuard /> : <BrandIntro onDone={() => setIntroDone(true)} />}
       </QueryClientProvider>
-    </SafeAreaProvider>
+      </SafeAreaProvider>
+    </ErrorCatcher>
   );
 }

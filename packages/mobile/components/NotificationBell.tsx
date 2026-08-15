@@ -26,7 +26,9 @@ export function NotificationBell({ onPress }: { onPress: () => void }) {
   const { data } = useQuery({
     queryKey: ["scan-alerts-badge"],
     refetchInterval: 45_000,
+    retry: false,
     queryFn: async () => {
+      try {
       const res = await authFetch(`${API_URL}/api/pet-scans/mine`, {});
       if (!res.ok) return { unread: 0 };
       const json = await res.json();
@@ -39,6 +41,9 @@ export function NotificationBell({ onPress }: { onPress: () => void }) {
         read = [];
       }
       return { unread: scans.filter((s) => s?.id && !read.includes(s.id)).length };
+      } catch {
+        return { unread: 0 };
+      }
     },
   });
 
@@ -59,7 +64,7 @@ export function NotificationBell({ onPress }: { onPress: () => void }) {
         Animated.timing(swing, { toValue: -1, duration: 110, easing: Easing.linear, useNativeDriver: true }),
         Animated.timing(swing, { toValue: 1, duration: 110, easing: Easing.linear, useNativeDriver: true }),
         Animated.timing(swing, { toValue: 0, duration: 110, easing: Easing.linear, useNativeDriver: true }),
-        Animated.delay(1400),
+        Animated.timing(swing, { toValue: 0, duration: 1400, easing: Easing.linear, useNativeDriver: true }),
       ]),
     );
     const pump = Animated.loop(
