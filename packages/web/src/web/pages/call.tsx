@@ -305,7 +305,9 @@ export default function CallPage() {
     <div style={{ position: "fixed", inset: 0, background: "#0B0B12", overflow: "hidden" }}>
       {/* Esconde badges/modais externos que ficavam por cima dos controlos */}
       <style>{`
-        .dev-modal, #runable-badge, [class*="runable-badge"], [id*="runable-badge"] { display: none !important; }
+        .dev-modal, #runable-badge, [class*="runable-badge"], [id*="runable-badge"],
+        a[href*="runable"], div[style*="Made with"] { display: none !important; }
+        body > div:not(#root), body > a, body > iframe:not([data-call]) { display: none !important; }
       `}</style>
       {/* vídeo do outro participante */}
       <video

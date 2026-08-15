@@ -1,11 +1,13 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authFetch } from "../../lib/auth-fetch";
 import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -102,6 +104,25 @@ export default function NotificationsScreen() {
       }
     },
   });
+
+  const queryClient = useQueryClient();
+
+  // Ao abrir este ecrã os avisos passam a lidos, para o sino parar de tocar.
+  useEffect(() => {
+    const scans: any[] = (scansData as any)?.scans ?? (scansData as any)?.petScans ?? [];
+    if (!scans.length) return;
+    (async () => {
+      try {
+        await AsyncStorage.setItem(
+          "dg_read_scan_ids",
+          JSON.stringify(scans.map((s) => s.id).slice(-200)),
+        );
+        queryClient.invalidateQueries({ queryKey: ["scan-alerts-badge"] });
+      } catch {
+        /* ignora */
+      }
+    })();
+  }, [scansData]);
 
   const loading = loadPets || loadV || loadA || loadDw || loadScans;
 

@@ -7,12 +7,13 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FF6B35"
       },
-      "edgeToEdgeEnabled": true,
-      "versionCode": 39,
+      "edgeToEdgeEnabled": false,
+      "versionCode": 40,
       "permissions": [
         "VIBRATE",
         "POST_NOTIFICATIONS"
-      ]
+      ],
+      "navigationBarColor": "#FFFFFF"
     },
     "extra": {
       "apiUrl": "https://petslife.onrender.com",
@@ -31,7 +32,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.9.5",
+    "version": "1.9.6",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",

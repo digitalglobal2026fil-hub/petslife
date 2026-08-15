@@ -11,6 +11,7 @@ import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
 import { SubscriptionBanner } from "../../components/SubscriptionBanner";
 import { PetIllustration } from "../../components/PetIllustration";
+import { NotificationBell } from "../../components/NotificationBell";
 
 function PetCard({ pet, index, onPress }: { pet: any; index: number; onPress: () => void }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -176,11 +177,7 @@ export default function HomeScreen() {
               <Text suppressHighlighting style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: "500" }}>Olá, {firstName} 👋</Text>
               <Text suppressHighlighting style={{ fontSize: 24, fontWeight: "800", color: "#fff", marginTop: 2 }}>Os meus animais</Text>
             </View>
-            <TouchableOpacity
-              onPress={() => router.push("/notifications" as any)}
-              style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" }}>
-              <Bell size={20} color="#fff" />
-            </TouchableOpacity>
+            <NotificationBell onPress={() => router.push("/notifications" as any)} />
           </View>
         </Animated.View>
 
