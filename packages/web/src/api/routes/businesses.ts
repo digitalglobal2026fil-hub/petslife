@@ -3,6 +3,7 @@ import { db } from "../database";
 import * as schema from "../database/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { requireAuth, authMiddleware } from "../middleware/auth";
+import { isAdmin } from "../lib/admin";
 
 export const businesses = new Hono()
   .use("*", authMiddleware)
@@ -51,12 +52,19 @@ export const businesses = new Hono()
     return c.json({ business }, 200);
   })
 
-  // Apagar negócio
+  // Apagar negócio: o dono apaga o seu; a administradora apaga qualquer um
+  // (clínicas/lojas que já não existem, testes ou registos falsos).
   .delete("/:id", requireAuth, async (c) => {
     const user = c.get("user")!;
     const { id } = c.req.param();
-    await db.delete(schema.businesses).where(and(eq(schema.businesses.id, id), eq(schema.businesses.userId, user.id)));
-    return c.json({ success: true }, 200);
+    const [business] = await db.select().from(schema.businesses).where(eq(schema.businesses.id, id));
+    if (!business) return c.json({ message: "Não encontrado" }, 404);
+    if (business.userId !== user.id && !isAdmin(user)) {
+      return c.json({ message: "Sem permissão" }, 403);
+    }
+    await db.delete(schema.businessReviews).where(eq(schema.businessReviews.businessId, id));
+    await db.delete(schema.businesses).where(eq(schema.businesses.id, id));
+    return c.json({ success: true, byAdmin: business.userId !== user.id }, 200);
   })
 
   // Adicionar review

@@ -1,5 +1,7 @@
 import { Hono } from 'hono';
 import { sqlClient as db } from '../database';
+import { auth } from '../auth';
+import { isAdmin } from '../lib/admin';
 
 const lostPets = new Hono();
 
@@ -59,6 +61,22 @@ lostPets.patch('/:id/resolve', async (c) => {
   try {
     const { id } = c.req.param();
     await db.execute({ sql: `UPDATE lost_pets SET resolved = 1 WHERE id = ?`, args: [id] });
+    return c.json({ success: true });
+  } catch (e: any) {
+    return c.json({ error: e.message }, 500);
+  }
+});
+
+// Apagar anúncio de animal perdido/encontrado.
+// Só a administradora — os anúncios falsos ou já resolvidos saem daqui.
+lostPets.delete('/:id', async (c) => {
+  try {
+    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    if (!isAdmin(session?.user as any)) {
+      return c.json({ message: 'Sem permissão' }, 403);
+    }
+    const { id } = c.req.param();
+    await db.execute({ sql: `DELETE FROM lost_pets WHERE id = ?`, args: [id] });
     return c.json({ success: true });
   } catch (e: any) {
     return c.json({ error: e.message }, 500);

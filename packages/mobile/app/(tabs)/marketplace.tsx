@@ -8,6 +8,10 @@ import { useRouter } from "expo-router";
 import { Search, Plus, Tag, PawPrint, Building2, MapPin, Phone, Star } from "lucide-react-native";
 import { useState, useCallback } from "react";
 import { api } from "../../lib/api";
+import { authClient } from "../../lib/auth";
+import { ModerationButton } from "../../components/ModerationButton";
+import { deleteContent } from "../../lib/moderation";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
 
@@ -43,7 +47,7 @@ const typeLabel: Record<string, string> = {
   hotel: "Hotel Animal", treino: "Treino", outro: "Outro",
 };
 
-function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
+function BusinessCard({ b, onPress, isOwner, onDelete }: { b: any; onPress: () => void; isOwner?: boolean; onDelete: () => void }) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -72,6 +76,14 @@ function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
                 <Text style={{ fontSize: 12, fontWeight: "700", color: "#92400E" }}>{b.averageRating.toFixed(1)}</Text>
               </View>
             )}
+            <ModerationButton
+              target="business"
+              targetId={String(b.id)}
+              preview={b.name}
+              isOwner={isOwner}
+              label={`"${b.name}"`}
+              onDelete={onDelete}
+            />
           </View>
 
           <View style={{
@@ -107,7 +119,7 @@ function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
 }
 
 // ─── Listing card ────────────────────────────────────────────────────────────
-function ListingCard({ l, onPress }: { l: any; onPress: () => void }) {
+function ListingCard({ l, onPress, isOwner, onDelete }: { l: any; onPress: () => void; isOwner?: boolean; onDelete: () => void }) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -119,6 +131,16 @@ function ListingCard({ l, onPress }: { l: any; onPress: () => void }) {
       <View style={{ height: 100, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
         <View style={{ backgroundColor: "#F5EDE4", borderRadius: 20, padding: 10 }}>
           <PawPrint size={32} color="#8B5E3C" />
+        </View>
+        <View style={{ position: "absolute", top: 2, right: 2, backgroundColor: "rgba(255,255,255,0.9)", borderRadius: 15 }}>
+          <ModerationButton
+            target="listing"
+            targetId={String(l.id)}
+            preview={l.title}
+            isOwner={isOwner}
+            label={`"${l.title}"`}
+            onDelete={onDelete}
+          />
         </View>
       </View>
       <View style={{ padding: 12 }}>
@@ -166,6 +188,9 @@ const LIST_CATS = [
 // ─── Main screen ──────────────────────────────────────────────────────────────
 export default function MarketplaceScreen() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { data: session } = authClient.useSession();
+  const myId = (session as any)?.user?.id;
   const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
   const [tab, setTab] = useState<"businesses" | "listings">("businesses");
   const [search, setSearch] = useState("");
@@ -338,6 +363,11 @@ export default function MarketplaceScreen() {
               <BusinessCard
                 key={b.id}
                 b={b}
+                isOwner={!!myId && b.userId === myId}
+                onDelete={async () => {
+                  const ok = await deleteContent("business", String(b.id));
+                  if (ok) queryClient.invalidateQueries({ queryKey: ["businesses"] });
+                }}
                 onPress={() => router.push(`/business/${b.id}` as any)}
               />
             ))
@@ -367,6 +397,11 @@ export default function MarketplaceScreen() {
                 <ListingCard
                   key={l.id}
                   l={l}
+                  isOwner={!!myId && l.userId === myId}
+                  onDelete={async () => {
+                    const ok = await deleteContent("listing", String(l.id));
+                    if (ok) queryClient.invalidateQueries({ queryKey: ["marketplace"] });
+                  }}
                   onPress={() => router.push(`/listing/${l.id}` as any)}
                 />
               ))}

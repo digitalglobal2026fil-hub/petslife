@@ -7,6 +7,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { ModerationButton } from "../components/ModerationButton";
+import { deleteContent } from "../lib/moderation";
 
 import { Platform } from 'react-native';
 import { authFetch } from "../lib/auth-fetch";
@@ -134,7 +136,15 @@ export default function LostPetsScreen() {
             </View>
           )}
           {filtered.map((post, i) => (
-            <PostCard key={post.id || i} post={post} onMaps={handleOpenMaps} />
+            <PostCard
+              key={post.id || i}
+              post={post}
+              onMaps={handleOpenMaps}
+              onDelete={async () => {
+                const ok = await deleteContent("lost_pet", String(post.id));
+                if (ok) fetchPosts();
+              }}
+            />
           ))}
         </ScrollView>
       )}
@@ -193,7 +203,7 @@ export default function LostPetsScreen() {
   );
 }
 
-function PostCard({ post, onMaps }: { post: any; onMaps: (lat: number, lng: number, name: string) => void }) {
+function PostCard({ post, onMaps, onDelete }: { post: any; onMaps: (lat: number, lng: number, name: string) => void; onDelete: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const isLost = post.type === 'lost';
 
@@ -206,6 +216,13 @@ function PostCard({ post, onMaps }: { post: any; onMaps: (lat: number, lng: numb
           </Text>
         </View>
         <Text style={styles.cardDate}>{post.date || new Date().toLocaleDateString('pt-PT')}</Text>
+        <ModerationButton
+          target="lost_pet"
+          targetId={String(post.id)}
+          preview={post.petName || ''}
+          label="este anúncio"
+          onDelete={onDelete}
+        />
       </View>
       <Text style={styles.cardName}>{post.petName || 'Animal sem nome'}</Text>
       <Text style={styles.cardBreed}>{post.breed || post.species || 'Espécie desconhecida'} • {post.color || ''}</Text>

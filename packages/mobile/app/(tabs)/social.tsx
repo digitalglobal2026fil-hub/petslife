@@ -10,10 +10,13 @@ import { AnimalFact } from "../../components/AnimalFact";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
 import { netError } from "../../lib/net-error";
+import { ModerationButton } from "../../components/ModerationButton";
+import { deleteContent } from "../../lib/moderation";
 
 export default function SocialScreen() {
   const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
+  const myId = (session as any)?.user?.id;
   const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
   const [newPost, setNewPost] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -109,10 +112,21 @@ export default function SocialScreen() {
                 <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center" }}>
                   <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14, backgroundColor: "transparent" }}>{(post.userId ?? "?")[0]?.toUpperCase()}</Text>
                 </View>
-                <View>
+                <View style={{ flex: 1 }}>
                   <Text suppressHighlighting style={{ fontWeight: "600", color: "#1A1A2E", fontSize: 13 }}>Utilizador</Text>
                   <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 11 }}>{new Date(post.createdAt).toLocaleDateString("pt-PT")}</Text>
                 </View>
+                <ModerationButton
+                  target="post"
+                  targetId={String(post.id)}
+                  preview={String(post.content ?? "").slice(0, 120)}
+                  isOwner={!!myId && post.userId === myId}
+                  label="esta publicação"
+                  onDelete={async () => {
+                    const ok = await deleteContent("post", String(post.id));
+                    if (ok) queryClient.invalidateQueries({ queryKey: ["posts"] });
+                  }}
+                />
               </View>
               {post.imageUrl && <Image source={{ uri: post.imageUrl }} style={{ width: "100%", height: 200, borderRadius: 12, marginBottom: 10 }} resizeMode="cover" />}
               <Text suppressHighlighting style={{ color: "#1A1A2E", fontSize: 14, lineHeight: 20 }}>{post.content}</Text>

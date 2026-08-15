@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill } from "lucide-react-native";
+import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill, ShieldAlert } from "lucide-react-native";
 import { authClient, clearToken } from "../../lib/auth";
 import { api } from "../../lib/api";
 import Constants from "expo-constants";
@@ -69,6 +69,20 @@ export default function ProfileScreen() {
     queryKey: ["subscription"],
     queryFn: async () => (await api.subscriptions.me.$get()).json(),
   });
+  // Denúncias por tratar (só a administração recebe um número > 0)
+  const { data: reportData } = useQuery({
+    queryKey: ["reports-count"],
+    refetchInterval: 60000,
+    queryFn: async () => {
+      try {
+        const res = await authFetch(`${API_URL}/api/reports/count`, {});
+        if (!res.ok) return { count: 0 };
+        return res.json();
+      } catch { return { count: 0 }; }
+    },
+  });
+  const reportCount = Number((reportData as any)?.count ?? 0);
+
   const { data: meData } = useQuery({
     queryKey: ["user-me"],
     queryFn: async () => {
@@ -123,9 +137,17 @@ export default function ProfileScreen() {
     { icon: HelpCircle, label: "Ajuda e Suporte", sublabel: "Contacte-nos por email", color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert("Erro", "Não foi possível abrir o email.")) },
   ];
 
-  // Área de gestão de parceiros — só aparece na conta de administração
+  // Área de administração — só aparece nas contas de administração
   const ADMIN_EMAILS = ["digitalglobal2026fil@gmail.com", "aleclikes@outlook.pt"];
   if (session?.user?.email && ADMIN_EMAILS.includes(session.user.email.toLowerCase())) {
+    menuItems.push({
+      icon: ShieldAlert, label: "Denúncias",
+      sublabel: reportCount > 0
+        ? `${reportCount} ${reportCount === 1 ? "denúncia por ver" : "denúncias por ver"}`
+        : "Conteúdo assinalado pelos utilizadores",
+      color: "#EF4444", onPress: () => router.push("/reports" as any),
+      badge: reportCount,
+    } as any);
     menuItems.push({
       icon: Lock, label: "Gestão de Parceiros", sublabel: "Códigos e desempenho (PIN)",
       color: "#8B5CF6", onPress: () => router.push("/admin" as any),

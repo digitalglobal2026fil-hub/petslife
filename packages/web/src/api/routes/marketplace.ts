@@ -3,6 +3,7 @@ import { db } from "../database";
 import * as schema from "../database/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { requireAuth, authMiddleware } from "../middleware/auth";
+import { isAdmin } from "../lib/admin";
 
 export const marketplace = new Hono()
   .use("*", authMiddleware)
@@ -37,9 +38,16 @@ export const marketplace = new Hono()
     const [listing] = await db.update(schema.listings).set(body).where(and(eq(schema.listings.id, id), eq(schema.listings.userId, user.id))).returning();
     return c.json({ listing }, 200);
   })
+  // Apagar anúncio: o dono apaga o seu; a administradora apaga qualquer um
+  // (anúncios falsos, de teste, ou de lojas que já fecharam).
   .delete("/:id", requireAuth, async (c) => {
     const user = c.get("user")!;
     const { id } = c.req.param();
-    await db.delete(schema.listings).where(and(eq(schema.listings.id, id), eq(schema.listings.userId, user.id)));
-    return c.json({ success: true }, 200);
+    const [listing] = await db.select().from(schema.listings).where(eq(schema.listings.id, id));
+    if (!listing) return c.json({ message: "Não encontrado" }, 404);
+    if (listing.userId !== user.id && !isAdmin(user)) {
+      return c.json({ message: "Sem permissão" }, 403);
+    }
+    await db.delete(schema.listings).where(eq(schema.listings.id, id));
+    return c.json({ success: true, byAdmin: listing.userId !== user.id }, 200);
   });

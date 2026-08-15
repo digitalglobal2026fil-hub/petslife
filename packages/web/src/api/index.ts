@@ -20,6 +20,7 @@ import { businesses } from "./routes/businesses";
 import { promoCodes } from "./routes/promo-codes";
 import chat from "./routes/chat";
 import { lostPets } from "./routes/lost-pets";
+import { reports } from "./routes/reports";
 import { partners } from "./routes/partners";
 import { reminders } from "./routes/reminders";
 import { petScans } from "./routes/pet-scans";
@@ -115,7 +116,8 @@ const app = new Hono()
   .route("/partners", partners)
   .route("/reminders", reminders)
   .route("/pet-scans", petScans)
-  .route("/users", users);
+  .route("/users", users)
+  .route("/reports", reports);
 
 export type AppType = typeof app;
 export default app;

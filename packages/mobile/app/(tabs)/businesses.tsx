@@ -7,6 +7,9 @@ import { useState, useCallback } from "react";
 import { api } from "../../lib/api";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
+import { authClient } from "../../lib/auth";
+import { ModerationButton } from "../../components/ModerationButton";
+import { deleteContent } from "../../lib/moderation";
 
 const categories = ["Todos", "Clínica", "Petshop", "Tosquiador", "Hotel", "Treino", "Outro"];
 
@@ -44,7 +47,10 @@ export default function BusinessesScreen() {
   const [category, setCategory] = useState("Todos");
   const handleSearch = useCallback((v: string) => setSearch(v), []);
 
-  const { data, isLoading } = useQuery({
+  const { data: session } = authClient.useSession();
+  const myId = (session as any)?.user?.id;
+
+  const { data, isLoading, refetch: refetchBiz } = useQuery({
     queryKey: ["businesses"],
     queryFn: async () => (await (api as any).businesses.$get()).json(),
   });
@@ -121,6 +127,17 @@ export default function BusinessesScreen() {
                       <Text suppressHighlighting style={{ fontWeight: "700", fontSize: 12, color: "#FF6B35" }}>{b.averageRating.toFixed(1)}</Text>
                     </View>
                   )}
+                  <ModerationButton
+                    target="business"
+                    targetId={String(b.id)}
+                    preview={b.name}
+                    isOwner={!!myId && b.userId === myId}
+                    label={`"${b.name}"`}
+                    onDelete={async () => {
+                      const ok = await deleteContent("business", String(b.id));
+                      if (ok) refetchBiz();
+                    }}
+                  />
                 </View>
                 {b.description && (
                   <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 13, marginTop: 8 }} numberOfLines={2}>{b.description}</Text>
