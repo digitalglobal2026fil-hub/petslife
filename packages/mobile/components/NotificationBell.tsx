@@ -3,7 +3,7 @@ import { View, Text, Animated, Easing, TouchableOpacity } from "react-native";
 import { Bell } from "lucide-react-native";
 import { useQuery } from "@tanstack/react-query";
 import Constants from "expo-constants";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { kvGetIds } from "../lib/kv";
 import { authFetch } from "../lib/auth-fetch";
 
 const API_URL = (
@@ -33,14 +33,14 @@ export function NotificationBell({ onPress }: { onPress: () => void }) {
       if (!res.ok) return { unread: 0 };
       const json = await res.json();
       const scans: any[] = json?.scans ?? json?.petScans ?? [];
-      let read: string[] = [];
-      try {
-        const raw = await AsyncStorage.getItem(READ_KEY);
-        read = raw ? JSON.parse(raw) : [];
-      } catch {
-        read = [];
-      }
-      return { unread: scans.filter((s) => s?.id && !read.includes(s.id)).length };
+      const read = await kvGetIds(READ_KEY);
+      // avisos apagados manualmente também não contam para o sino
+      const dismissed = await kvGetIds("dg_dismissed_notifs");
+      return {
+        unread: scans.filter(
+          (s) => s?.id && !read.includes(s.id) && !dismissed.includes(`scan-${s.id}`),
+        ).length,
+      };
       } catch {
         return { unread: 0 };
       }

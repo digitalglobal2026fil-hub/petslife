@@ -10,9 +10,11 @@ import { useSubscriptionGate } from "../lib/useSubscriptionGate";
  */
 export function SubscriptionBanner() {
   const router = useRouter();
-  const { isLoading, isBlocked, daysLeft, isTrial } = useSubscriptionGate();
+  const { isLoading, isBlocked, daysLeft, isTrial, isTester } = useSubscriptionGate();
 
   if (isLoading) return null;
+  // Testadores têm acesso ilimitado: nunca mostrar avisos de trial.
+  if (isTester) return null;
   if (!isBlocked && daysLeft > 3) return null;
 
   if (isBlocked) {

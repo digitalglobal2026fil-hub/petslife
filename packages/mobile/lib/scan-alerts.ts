@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Alert, AppState, Linking, Vibration } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { kvGetIds, kvSetIds, kvHas } from "./kv";
 import Constants from "expo-constants";
 import { authFetch } from "./auth-fetch";
 
@@ -31,9 +31,9 @@ export function useScanAlerts(enabled: boolean) {
     const load = async () => {
       if (seen.current) return;
       try {
-        const raw = await AsyncStorage.getItem(SEEN_KEY);
-        seen.current = new Set<string>(raw ? JSON.parse(raw) : []);
-        primed.current = Boolean(raw);
+        const ids = await kvGetIds(SEEN_KEY);
+        seen.current = new Set<string>(ids);
+        primed.current = await kvHas(SEEN_KEY);
       } catch {
         seen.current = new Set<string>();
       }
@@ -78,10 +78,7 @@ export function useScanAlerts(enabled: boolean) {
         if (fresh.length && primed.current) announce(fresh[0]);
         for (const s of fresh) seen.current!.add(s.id);
         primed.current = true;
-        await AsyncStorage.setItem(
-          SEEN_KEY,
-          JSON.stringify([...seen.current!].slice(-200)),
-        );
+        await kvSetIds(SEEN_KEY, [...seen.current!]);
       } catch {
         /* offline — tenta outra vez mais tarde */
       }

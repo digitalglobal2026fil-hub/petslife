@@ -9,6 +9,7 @@ import { api } from "../lib/api";
 import { uploadImage } from "../lib/upload";
 import { netError } from "../lib/net-error";
 import { DateFieldPT } from "../components/DateFieldPT";
+import { pickImageWithChoice } from "../lib/pick-image";
 
 const SPECIES = [
   { key: "dog", label: "Cão", icon: Dog, emoji: "🐕" },
@@ -56,11 +57,12 @@ export default function AddPetScreen() {
 
   async function pickPhoto() {
     try {
-      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!perm.granted) { Alert.alert("Permissão necessária", "Permite o acesso à galeria nas definições."); return; }
-      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.8 });
-      if (result.canceled) return;
-      const asset = result.assets[0];
+      const asset = await pickImageWithChoice({
+        title: "Foto do animal",
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+      if (!asset) return;
       setPhoto(asset.uri);
       setUploadingPhoto(true);
       try {

@@ -368,26 +368,205 @@ const BREEDS = [
     ideal: "Quintais grandes, donos informados e pacientes",
     color: "#EC4899", bg: "#FDF2F8",
   },
+  // ---------- RAÇAS ACRESCENTADAS ----------
+  {
+    name: "Border Collie", species: "dog", emoji: "🐕", size: "Médio",
+    origin: "Reino Unido", life: "12–15 anos", weight: "14–20 kg",
+    personality: ["Muito inteligente", "Incansável", "Obediente", "Sensível"],
+    health: ["Displasia da anca", "Anomalia ocular do Collie", "Epilepsia"],
+    care: "É o cão mais inteligente que existe e isso dá trabalho: precisa de tarefas todos os dias. Sem ocupação começa a pastorear pessoas e a destruir a casa.",
+    ideal: "Pessoas activas, campo, desportos caninos",
+    color: "#1F2937", bg: "#F3F4F6",
+  },
+  {
+    name: "Beagle", species: "dog", emoji: "🐶", size: "Pequeno a médio",
+    origin: "Reino Unido", life: "12–15 anos", weight: "9–14 kg",
+    personality: ["Alegre", "Teimoso", "Sociável", "Guloso"],
+    health: ["Obesidade", "Otites", "Epilepsia", "Problemas de coluna"],
+    care: "Segue cheiros e desaparece — passeio sempre com trela e jardim bem vedado. Come tudo o que vê, controlar a ração.",
+    ideal: "Famílias com crianças e paciência para a teimosia",
+    color: "#B45309", bg: "#FEF3C7",
+  },
+  {
+    name: "Rafeiro / Cão sem raça", species: "dog", emoji: "🐕", size: "Variável",
+    origin: "Portugal e todo o mundo", life: "12–16 anos", weight: "Variável",
+    personality: ["Equilibrado", "Agradecido", "Adaptável", "Único"],
+    health: ["Geralmente mais saudável que os de raça", "Depende da origem"],
+    care: "Os cães sem raça definida costumam ser mais resistentes a doenças hereditárias. Nos abrigos portugueses estão milhares à espera de casa.",
+    ideal: "Toda a gente — adoptar em vez de comprar",
+    color: "#059669", bg: "#D1FAE5",
+  },
+  {
+    name: "Cocker Spaniel", species: "dog", emoji: "🐕", size: "Médio",
+    origin: "Reino Unido", life: "12–15 anos", weight: "12–16 kg",
+    personality: ["Meigo", "Alegre", "Apegado", "Sensível"],
+    health: ["Otites frequentes", "Cataratas", "Problemas de pele"],
+    care: "As orelhas compridas abafam e infectam com facilidade: limpar e verificar todas as semanas. Tosquia a cada 2 meses.",
+    ideal: "Famílias, apartamentos com passeios diários",
+    color: "#92400E", bg: "#FEF3C7",
+  },
+  {
+    name: "Ragdoll", species: "cat", emoji: "🐱", size: "Grande",
+    origin: "Estados Unidos", life: "12–17 anos", weight: "4,5–9 kg",
+    personality: ["Extremamente calmo", "Amoroso", "Fica mole ao colo", "Segue o dono"],
+    health: ["Cardiomiopatia hipertrófica", "Problemas renais", "Bolas de pelo"],
+    care: "Deve viver só dentro de casa — é confiante demais e não foge do perigo. Escovar 3 vezes por semana.",
+    ideal: "Casas calmas, quem quer um gato muito dócil",
+    color: "#6366F1", bg: "#E0E7FF",
+  },
+  {
+    name: "Bengal", species: "cat", emoji: "🐈", size: "Médio a grande",
+    origin: "Estados Unidos", life: "12–16 anos", weight: "4–8 kg",
+    personality: ["Muito activo", "Brincalhão", "Falador", "Gosta de água"],
+    health: ["Cardiomiopatia", "Atrofia da retina", "Problemas digestivos"],
+    care: "Não é gato de sofá: precisa de prateleiras altas, brinquedos e atenção. Aborrecido, destrói tudo.",
+    ideal: "Donos presentes e casas com espaço vertical",
+    color: "#EA580C", bg: "#FFEDD5",
+  },
+  {
+    name: "Ringneck (Periquito-de-colar)", species: "bird", emoji: "🦜", size: "Médio",
+    origin: "Índia e África", life: "25–30 anos", weight: "115–140 g",
+    personality: ["Muito inteligente", "Fala bem", "Independente", "Teimoso na adolescência"],
+    health: ["Arrancar penas por tédio", "Psitacose", "Problemas de fígado por má alimentação"],
+    care: "Vive 30 anos — é um compromisso para a vida. Gaiola grande (mínimo 90 cm) e várias horas fora dela. Aprende dezenas de palavras. Por volta de 1 ano passa por uma fase rebelde (bluffing) que passa com calma e sem gritos. Ração de qualidade, fruta e legumes; nada de abacate nem chocolate.",
+    ideal: "Donos experientes, com tempo e paciência",
+    color: "#16A34A", bg: "#DCFCE7",
+  },
+  {
+    name: "Caturra Ninfa", species: "bird", emoji: "🐦", size: "Pequeno",
+    origin: "Austrália", life: "15–20 anos", weight: "80–120 g",
+    personality: ["Carinhosa", "Assobia melodias", "Sociável", "Meiga"],
+    health: ["Pó das penas (alergias no dono)", "Terrores nocturnos", "Obesidade"],
+    care: "Deixar uma luz de presença — assustam-se no escuro e batem na gaiola. Adoram festas na crista.",
+    ideal: "Primeira ave, famílias",
+    color: "#F59E0B", bg: "#FEF3C7",
+  },
+  {
+    name: "Caldinho / Canário-da-terra", species: "bird", emoji: "🐤", size: "Muito pequeno",
+    origin: "América do Sul", life: "8–12 anos", weight: "20 g",
+    personality: ["Canta muito", "Activo", "Territorial entre machos"],
+    health: ["Ácaros", "Stress por barulho", "Falta de cálcio"],
+    care: "Machos separados. Banho de água todos os dias e osso de siba para o bico e o cálcio.",
+    ideal: "Quem gosta de canto em casa",
+    color: "#EAB308", bg: "#FEF9C3",
+  },
+  {
+    name: "Pombo Doméstico", species: "bird", emoji: "🕊️", size: "Médio",
+    origin: "Europa e Ásia", life: "10–15 anos", weight: "300–500 g",
+    personality: ["Muito calmo", "Fiel ao par", "Reconhece o dono"],
+    health: ["Tricomoníase", "Vermes", "Varíola aviária"],
+    care: "Vivem em casal para a vida. Pombal limpo e seco, grit para a digestão e vacinas próprias.",
+    ideal: "Quem tem pátio ou telhado disponível",
+    color: "#64748B", bg: "#F1F5F9",
+  },
+  {
+    name: "Coelho Belier (orelhudo)", species: "rodent", emoji: "🐰", size: "Médio",
+    origin: "Países Baixos", life: "7–12 anos", weight: "2–4 kg",
+    personality: ["Muito calmo", "Meigo", "Gosta de colo", "Curioso"],
+    health: ["Dentes crescidos", "Otites por causa das orelhas", "Estase intestinal"],
+    care: "Feno à vontade 24 horas por dia — é 80% da alimentação e gasta os dentes. Vacinas contra mixomatose e doença hemorrágica todos os anos.",
+    ideal: "Famílias com crianças mais velhas",
+    color: "#A855F7", bg: "#F3E8FF",
+  },
+  {
+    name: "Hamster Anão Russo", species: "rodent", emoji: "🐹", size: "Muito pequeno",
+    origin: "Rússia e Cazaquistão", life: "2–3 anos", weight: "30–50 g",
+    personality: ["Rápido", "Nocturno", "Curioso"],
+    health: ["Diabetes (muito comum)", "Tumores", "Problemas de pele"],
+    care: "Nada de fruta doce nem de guloseimas açucaradas — dão diabetes. Roda sem barras (fechada) para não partir as patas.",
+    ideal: "Casas pequenas, quem se deita tarde",
+    color: "#78716C", bg: "#F5F5F4",
+  },
+  {
+    name: "Furão", species: "rodent", emoji: "🦡", size: "Pequeno",
+    origin: "Europa", life: "6–10 anos", weight: "0,7–2 kg",
+    personality: ["Brincalhão", "Curioso", "Ladrão de objectos", "Dorme muitas horas"],
+    health: ["Doença adrenal", "Insulinoma", "Gripe humana (apanha de nós)"],
+    care: "É carnívoro: ração de furão ou de gato de alta qualidade, nunca comida de coelho. Vacina da esganana obrigatória. Esconde tudo o que apanha.",
+    ideal: "Donos atentos, casas à prova de fugas",
+    color: "#7C3AED", bg: "#EDE9FE",
+  },
+  {
+    name: "Camaleão-comum", species: "reptile", emoji: "🦎", size: "Médio",
+    origin: "Sul de Portugal e Mediterrâneo", life: "5–8 anos", weight: "100–200 g",
+    personality: ["Solitário", "Lento", "Muito sensível ao stress"],
+    health: ["Desidratação", "Falta de cálcio", "Infecções respiratórias"],
+    care: "Em Portugal é espécie protegida — não se apanha na natureza. Bebe gotas nas folhas, não em taça. Terrário alto com plantas e UVB.",
+    ideal: "Só para criadores experientes e com licença",
+    color: "#22C55E", bg: "#DCFCE7",
+  },
+  {
+    name: "Pogona / Tartaruga de água", species: "reptile", emoji: "🐢", size: "Médio",
+    origin: "Ásia e América", life: "20–40 anos", weight: "1–2 kg",
+    personality: ["Calma", "Activa de dia", "Come da mão"],
+    health: ["Casco mole por falta de UVB", "Infecções nos olhos", "Água suja"],
+    care: "Precisa de zona seca para apanhar calor e lâmpada UVB. Vive dezenas de anos: nunca largar num lago ou ribeira, é crime e destrói as espécies locais.",
+    ideal: "Quem quer um animal para décadas",
+    color: "#0D9488", bg: "#CCFBF1",
+  },
+  {
+    name: "Guppy", species: "aquatic", emoji: "🐠", size: "Muito pequeno",
+    origin: "América do Sul", life: "2–3 anos", weight: "1–2 g",
+    personality: ["Muito activo", "Pacífico", "Colorido", "Vive em grupo"],
+    health: ["Ponto branco", "Fungos na cauda", "Excesso de crias"],
+    care: "Um macho para duas ou três fêmeas. Reproduz-se muito depressa — cuidado com o aquário a encher. Água a 24-26°C.",
+    ideal: "Primeiro aquário, crianças",
+    color: "#06B6D4", bg: "#CFFAFE",
+  },
+  {
+    name: "Pato Real / Marreco", species: "aquatic", emoji: "🦆", size: "Médio",
+    origin: "Europa", life: "10–15 anos", weight: "1–1,5 kg",
+    personality: ["Sociável", "Bom guardião", "Barulhento"],
+    health: ["Patas feridas", "Parasitas", "Predadores"],
+    care: "Come lesmas e caracóis — ajuda na horta. Precisa de água para se limpar e de abrigo fechado à noite.",
+    ideal: "Quintais com horta",
+    color: "#0891B2", bg: "#E0F2FE",
+  },
+  {
+    name: "Codorniz", species: "farm", emoji: "🐣", size: "Muito pequeno",
+    origin: "Ásia", life: "2–4 anos", weight: "100–300 g",
+    personality: ["Discreta", "Nervosa", "Vive em grupo"],
+    health: ["Stress", "Bicagem", "Falta de proteína"],
+    care: "Ocupa pouco espaço e põe ovos quase todos os dias. Ração com muita proteína. Tecto no cercado — voam de repente.",
+    ideal: "Quintais pequenos, varandas grandes",
+    color: "#CA8A04", bg: "#FEF9C3",
+  },
+  {
+    name: "Burro / Jumento", species: "farm", emoji: "🫏", size: "Grande",
+    origin: "África", life: "30–40 anos", weight: "150–350 kg",
+    personality: ["Calmo", "Muito inteligente", "Prudente", "Fiel"],
+    health: ["Cascos crescidos", "Vermes", "Obesidade com erva rica"],
+    care: "Não é teimoso, é prudente: pára quando sente perigo. Nunca sozinho. Cascos aparados a cada 8 semanas. Em Portugal há raças protegidas, como o burro de Miranda.",
+    ideal: "Terrenos, companhia de cavalos, quintas pedagógicas",
+    color: "#6B7280", bg: "#F3F4F6",
+  },
 ];
 
-const FILTERS = ["Todos", "Cães 🐕", "Gatos 🐱", "Aves 🦜", "Roedores 🐹", "Répteis 🦎", "Aquáticos 🐠", "Quinta 🐔"];
-const filterMap: Record<string, string> = {
-  "Cães 🐕": "dog", "Gatos 🐱": "cat", "Aves 🦜": "bird",
-  // Roedores inclui os coelhos, como pedido
-  "Roedores 🐹": "rodent", "Répteis 🦎": "reptile",
-  "Aquáticos 🐠": "aquatic", "Quinta 🐔": "farm",
-};
+// Separadores: nome e ícone guardados à parte para o texto nunca sair cortado.
+// (Roedores inclui os coelhos, como pedido.)
+const FILTERS = [
+  { label: "Todos", icon: "🐾", species: null },
+  { label: "Cães", icon: "🐕", species: "dog" },
+  { label: "Gatos", icon: "🐱", species: "cat" },
+  { label: "Aves", icon: "🦜", species: "bird" },
+  { label: "Roedores", icon: "🐹", species: "rodent" },
+  { label: "Répteis", icon: "🦎", species: "reptile" },
+  { label: "Aquáticos", icon: "🐠", species: "aquatic" },
+  { label: "Quinta", icon: "🐔", species: "farm" },
+] as const;
+
+type BreedFilter = (typeof FILTERS)[number];
 
 export default function BreedGuideScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("Todos");
+  const [filter, setFilter] = useState<BreedFilter>(FILTERS[0]);
   const [selected, setSelected] = useState<typeof BREEDS[0] | null>(null);
 
   const filtered = BREEDS.filter(b => {
     const matchSearch = b.name.toLowerCase().includes(search.toLowerCase());
-    const matchFilter = filter === "Todos" || b.species === filterMap[filter];
+    const matchFilter = filter.species === null || b.species === filter.species;
     return matchSearch && matchFilter;
   });
 
@@ -485,20 +664,51 @@ export default function BreedGuideScreen() {
         </View>
       </View>
 
-      {/* Filtros */}
-      <View style={{ height: 68 }}>
+      {/* Filtros — separador com nome e ícone, sempre por inteiro */}
+      <View style={{ height: 78 }}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{ flexGrow: 0, flexShrink: 0 }}
-          contentContainerStyle={{ gap: 8, paddingHorizontal: 20, paddingVertical: 14, alignItems: "center" }}
+          contentContainerStyle={{ gap: 8, paddingHorizontal: 20, paddingVertical: 16, alignItems: "center" }}
         >
-          {FILTERS.map(f => (
-            <TouchableOpacity key={f} onPress={() => setFilter(f)}
-              style={{ height: 40, justifyContent: "center", paddingHorizontal: 16, borderRadius: 20, backgroundColor: filter === f ? PURPLE : CARD, borderWidth: 1.5, borderColor: filter === f ? PURPLE : "#E5E7EB" }}>
-              <Text suppressHighlighting numberOfLines={1} style={{ color: filter === f ? "#fff" : GRAY, fontWeight: "700", fontSize: 13, lineHeight: 18 }}>{f}</Text>
-            </TouchableOpacity>
-          ))}
+          {FILTERS.map(f => {
+            const active = filter === f;
+            return (
+              <TouchableOpacity
+                key={f.label}
+                onPress={() => setFilter(f)}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 6,
+                  minHeight: 44,
+                  paddingVertical: 10,
+                  paddingHorizontal: 16,
+                  borderRadius: 22,
+                  backgroundColor: active ? PURPLE : CARD,
+                  borderWidth: 1.5,
+                  borderColor: active ? PURPLE : "#E5E7EB",
+                }}
+              >
+                <Text suppressHighlighting style={{ fontSize: 15, lineHeight: 22 }}>{f.icon}</Text>
+                <Text
+                  suppressHighlighting
+                  numberOfLines={1}
+                  style={{
+                    color: active ? "#fff" : DARK,
+                    fontWeight: "700",
+                    fontSize: 13,
+                    lineHeight: 22,
+                    includeFontPadding: false,
+                    textAlignVertical: "center",
+                  }}
+                >
+                  {f.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </View>
 

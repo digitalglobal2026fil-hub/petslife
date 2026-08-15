@@ -10,6 +10,7 @@ import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
+import { pickImageWithChoice } from "../../../lib/pick-image";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -34,12 +35,10 @@ function Campo({ label, value, onChange, placeholder }: any) {
 
 async function escolherFoto(setter: (u: string) => void, setCarregando: (b: boolean) => void) {
   try {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (perm.status !== "granted") { Alert.alert("Permissão necessária", "Ative o acesso à galeria."); return; }
-    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8, allowsEditing: true });
-    if (res.canceled || !res.assets?.[0]) return;
+    const asset = await pickImageWithChoice({ title: "Foto do documento", allowCamera: false, quality: 0.8 });
+    if (!asset) return;
     setCarregando(true);
-    const url = await uploadImage(res.assets[0].uri, res.assets[0].mimeType ?? "image/jpeg");
+    const url = await uploadImage(asset.uri, asset.mimeType);
     setter(url);
   } catch (e: any) { Alert.alert("Erro no upload", e.message ?? "Tente novamente"); }
   finally { setCarregando(false); }

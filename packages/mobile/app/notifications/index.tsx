@@ -1,13 +1,15 @@
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Linking } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Linking, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft } from "lucide-react-native";
+import { ChevronLeft, X, Trash2 } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authFetch } from "../../lib/auth-fetch";
 import Constants from "expo-constants";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect } from "react";
+import { kvSetIds, kvGetIds } from "../../lib/kv";
+import { useEffect, useState, useCallback } from "react";
+
+const DISMISSED_KEY = "dg_dismissed_notifs";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -107,16 +109,33 @@ export default function NotificationsScreen() {
 
   const queryClient = useQueryClient();
 
+  // Avisos que a utilizadora já apagou. Ficam guardados no telemóvel para não
+  // voltarem a aparecer sempre que a lista é recalculada.
+  const [dismissed, setDismissed] = useState<string[]>([]);
+  const [dismissLoaded, setDismissLoaded] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      setDismissed(await kvGetIds(DISMISSED_KEY));
+      setDismissLoaded(true);
+    })();
+  }, []);
+
+  const dismissOne = useCallback(async (id: string) => {
+    setDismissed((prev) => {
+      const next = prev.includes(id) ? prev : [...prev, id];
+      kvSetIds(DISMISSED_KEY, next, 200);
+      return next;
+    });
+  }, []);
+
   // Ao abrir este ecrã os avisos passam a lidos, para o sino parar de tocar.
   useEffect(() => {
     const scans: any[] = (scansData as any)?.scans ?? (scansData as any)?.petScans ?? [];
     if (!scans.length) return;
     (async () => {
       try {
-        await AsyncStorage.setItem(
-          "dg_read_scan_ids",
-          JSON.stringify(scans.map((s) => s.id).slice(-200)),
-        );
+        await kvSetIds("dg_read_scan_ids", scans.map((s: any) => s.id));
         queryClient.invalidateQueries({ queryKey: ["scan-alerts-badge"] });
       } catch {
         /* ignora */
@@ -219,11 +238,35 @@ export default function NotificationsScreen() {
     });
   });
 
+  // Remove os avisos que a utilizadora já apagou
+  const visible = notifications.filter((n) => !dismissed.includes(n.id));
+
   // Sort: high first
-  notifications.sort((a, b) => {
+  visible.sort((a, b) => {
     const ord = { high: 0, medium: 1, low: 2 };
     return ord[a.urgency] - ord[b.urgency];
   });
+
+  const clearAll = () => {
+    if (!visible.length) return;
+    Alert.alert(
+      "Limpar notificações",
+      `Apagar as ${visible.length} notificações da lista? Os lembretes de vacinas e consultas continuam guardados na ficha de cada animal.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Limpar",
+          style: "destructive",
+          onPress: async () => {
+            const next = [...dismissed, ...visible.map((n) => n.id)];
+            setDismissed(next);
+            await kvSetIds(DISMISSED_KEY, next, 200);
+            queryClient.invalidateQueries({ queryKey: ["scan-alerts-badge"] });
+          },
+        },
+      ],
+    );
+  };
 
   const urgencyStyle = (u: "high" | "medium" | "low") => {
     if (u === "high") return { bg: "#FEF3C7", border: "#FDE68A", dot: "#F59E0B" };
@@ -239,14 +282,22 @@ export default function NotificationsScreen() {
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: BORDER, alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color={BROWN} />
         </TouchableOpacity>
-        <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: BROWN }}>Notificações 🔔</Text>
+        <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: BROWN, flex: 1 }}>Notificações 🔔</Text>
+        {visible.length > 0 && (
+          <TouchableOpacity
+            onPress={clearAll}
+            style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: BORDER }}>
+            <Trash2 size={15} color={BROWN} />
+            <Text suppressHighlighting style={{ color: BROWN, fontWeight: "800", fontSize: 12 }}>Limpar</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      {loading ? (
+      {loading || !dismissLoaded ? (
         <ActivityIndicator color="#E07A3A" size="large" style={{ marginTop: 60 }} />
       ) : (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, gap: 10 }}>
-          {notifications.length === 0 ? (
+          {visible.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 60 }}>
               <Text suppressHighlighting style={{ fontSize: 60, marginBottom: 16 }}>✅</Text>
               <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: BROWN, marginBottom: 8 }}>Tudo em dia!</Text>
@@ -255,7 +306,7 @@ export default function NotificationsScreen() {
               </Text>
             </View>
           ) : (
-            notifications.map((n) => {
+            visible.map((n) => {
               const style = urgencyStyle(n.urgency);
               return (
                 <TouchableOpacity key={n.id} activeOpacity={n.url ? 0.7 : 1}
@@ -272,6 +323,12 @@ export default function NotificationsScreen() {
                     <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, lineHeight: 18 }}>{n.body}</Text>
                     <Text suppressHighlighting style={{ color: GRAY, fontSize: 11, marginTop: 5, opacity: 0.7 }}>{n.time}</Text>
                   </View>
+                  <TouchableOpacity
+                    onPress={() => dismissOne(n.id)}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: "rgba(0,0,0,0.05)", alignItems: "center", justifyContent: "center" }}>
+                    <X size={15} color={GRAY} />
+                  </TouchableOpacity>
                 </TouchableOpacity>
               );
             })
