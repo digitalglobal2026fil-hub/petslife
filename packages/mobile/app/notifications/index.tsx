@@ -2,7 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Linking, A
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, X, Trash2 } from "lucide-react-native";
+import { ChevronLeft, X, Trash2, Check } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authFetch } from "../../lib/auth-fetch";
 import Constants from "expo-constants";
@@ -124,7 +124,7 @@ export default function NotificationsScreen() {
   const dismissOne = useCallback(async (id: string) => {
     setDismissed((prev) => {
       const next = prev.includes(id) ? prev : [...prev, id];
-      kvSetIds(DISMISSED_KEY, next, 200);
+      kvSetIds(DISMISSED_KEY, next, 40);
       return next;
     });
   }, []);
@@ -145,8 +145,45 @@ export default function NotificationsScreen() {
 
   const loading = loadPets || loadV || loadA || loadDw || loadScans;
 
+  // Apagar um aviso de QR code — guardado no SERVIDOR, para não voltar a
+  // aparecer quando a app é fechada e reaberta.
+  const dismissScan = useCallback(async (scanId: string) => {
+    try {
+      await authFetch(`${API_URL}/api/pet-scans/${scanId}/dismiss`, { method: "POST" });
+    } catch {
+      /* offline — fica escondido localmente e tenta na próxima vez */
+    }
+    queryClient.invalidateQueries({ queryKey: ["qr-scans-notif"] });
+    queryClient.invalidateQueries({ queryKey: ["scan-alerts-badge"] });
+  }, [queryClient]);
+
+  // "Já encontrei o meu animal" — fecha todos os avisos daquele animal.
+  const markFound = useCallback((petId: string, petName: string) => {
+    Alert.alert(
+      "Já encontrei!",
+      `Confirmar que ${petName || "o seu animal"} já está em casa? Os avisos deste animal deixam de aparecer.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Sim, já está em casa",
+          onPress: async () => {
+            try {
+              await authFetch(`${API_URL}/api/pet-scans/pet/${petId}/found`, { method: "POST" });
+            } catch {
+              Alert.alert("Sem ligação", "Não foi possível guardar. Tente outra vez com internet.");
+              return;
+            }
+            queryClient.invalidateQueries({ queryKey: ["qr-scans-notif"] });
+            queryClient.invalidateQueries({ queryKey: ["scan-alerts-badge"] });
+            Alert.alert("Que alívio!", "Os avisos deste animal foram encerrados. 🐾");
+          },
+        },
+      ],
+    );
+  }, [queryClient]);
+
   // Build notifications list
-  const notifications: { id: string; emoji: string; title: string; body: string; time: string; urgency: "high" | "medium" | "low"; url?: string }[] = [];
+  const notifications: { id: string; emoji: string; title: string; body: string; time: string; urgency: "high" | "medium" | "low"; url?: string; scanId?: string; petId?: string; petName?: string }[] = [];
 
   // Vaccines overdue / upcoming
   (allVaccines ?? []).forEach((v: any) => {
@@ -235,6 +272,9 @@ export default function NotificationsScreen() {
       time: when ? when.toLocaleString("pt-PT") : "",
       urgency: "high",
       url: hasCoords ? `https://www.google.com/maps?q=${sc.lat},${sc.lng}` : undefined,
+      scanId: sc.id,
+      petId: sc.petId,
+      petName: sc.petName,
     });
   });
 
@@ -260,7 +300,10 @@ export default function NotificationsScreen() {
           onPress: async () => {
             const next = [...dismissed, ...visible.map((n) => n.id)];
             setDismissed(next);
-            await kvSetIds(DISMISSED_KEY, next, 200);
+            await kvSetIds(DISMISSED_KEY, next, 40);
+            // Os avisos de QR code sao apagados tambem no servidor, senao
+            // voltavam a aparecer ao reabrir a app.
+            for (const n of visible) if (n.scanId) await dismissScan(n.scanId);
             queryClient.invalidateQueries({ queryKey: ["scan-alerts-badge"] });
           },
         },
@@ -322,9 +365,23 @@ export default function NotificationsScreen() {
                     </View>
                     <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, lineHeight: 18 }}>{n.body}</Text>
                     <Text suppressHighlighting style={{ color: GRAY, fontSize: 11, marginTop: 5, opacity: 0.7 }}>{n.time}</Text>
+                    {n.petId ? (
+                      <TouchableOpacity
+                        onPress={() => markFound(n.petId!, n.petName ?? "")}
+                        style={{
+                          marginTop: 10, alignSelf: "flex-start", flexDirection: "row",
+                          alignItems: "center", gap: 6, backgroundColor: "#16A34A",
+                          borderRadius: 12, paddingHorizontal: 14, paddingVertical: 9,
+                        }}>
+                        <Check size={15} color="#fff" />
+                        <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>
+                          Já encontrei {n.petName ? `o ${n.petName}` : "o meu animal"}
+                        </Text>
+                      </TouchableOpacity>
+                    ) : null}
                   </View>
                   <TouchableOpacity
-                    onPress={() => dismissOne(n.id)}
+                    onPress={() => { dismissOne(n.id); if (n.scanId) dismissScan(n.scanId); }}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: "rgba(0,0,0,0.05)", alignItems: "center", justifyContent: "center" }}>
                     <X size={15} color={GRAY} />

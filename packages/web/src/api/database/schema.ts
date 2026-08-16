@@ -361,6 +361,11 @@ export const petScans = sqliteTable("pet_scans", {
   finderPhone: text("finder_phone"),
   message: text("message"),
   userAgent: text("user_agent"),
+  // Quando o dono apaga o aviso. Fica guardado no servidor (e não só no
+  // telemóvel) para o aviso não voltar a aparecer ao reabrir a app.
+  dismissedAt: integer("dismissed_at", { mode: "timestamp" }),
+  // Quando o dono confirma "Já encontrei o meu animal".
+  foundAt: integer("found_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 

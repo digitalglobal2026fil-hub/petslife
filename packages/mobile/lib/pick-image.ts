@@ -26,6 +26,8 @@ type Options = {
   quality?: number;
   /** Incluir PDFs e outros ficheiros além de imagens. */
   allowAllMedia?: boolean;
+  /** Mostrar o passo "Usar esta foto?" no fim. Por omissão sim. */
+  confirm?: boolean;
 };
 
 function toPicked(result: ImagePicker.ImagePickerResult): PickedImage | null {
@@ -62,6 +64,40 @@ async function fromCamera(o: Options): Promise<PickedImage | null> {
 }
 
 /**
+ * Depois de escolher a foto pergunta se é para usar.
+ *
+ * O ecrã preto de recorte é do próprio Android e não dá para lhe acrescentar
+ * botões. Muita gente não percebia onde carregar para a foto seguir para o
+ * álbum ou para a foto de perfil — este passo resolve isso com um "Usar esta
+ * foto" bem claro, e ainda deixa escolher outra sem sair do sítio.
+ */
+function confirmPicked(img: PickedImage, o: Options): Promise<PickedImage | null> {
+  return new Promise((resolve) => {
+    Alert.alert(
+      "Usar esta foto?",
+      "Carregue em «Usar esta foto» para a guardar. Se não for esta, pode escolher outra.",
+      [
+        { text: "Escolher outra", onPress: () => pickImageWithChoice(o).then(resolve) },
+        { text: "Cancelar", style: "cancel", onPress: () => resolve(null) },
+        { text: "Usar esta foto", onPress: () => resolve(img) },
+      ],
+      { cancelable: true, onDismiss: () => resolve(null) },
+    );
+  });
+}
+
+/** Aplica o passo de confirmação, se estiver ligado. */
+function finish(
+  img: PickedImage | null,
+  o: Options,
+  resolve: (v: PickedImage | null) => void,
+) {
+  if (!img) return resolve(null);
+  if (o.confirm === false) return resolve(img);
+  confirmPicked(img, o).then(resolve);
+}
+
+/**
  * Mostra o menu e devolve a imagem escolhida (ou null se desistir).
  */
 export function pickImageWithChoice(o: Options = {}): Promise<PickedImage | null> {
@@ -71,18 +107,18 @@ export function pickImageWithChoice(o: Options = {}): Promise<PickedImage | null
     if (o.allowCamera !== false) {
       buttons.push({
         text: "Tirar foto agora",
-        onPress: () => fromCamera(o).then(resolve).catch(() => resolve(null)),
+        onPress: () => fromCamera(o).then((r) => finish(r, o, resolve)).catch(() => resolve(null)),
       });
     }
 
     buttons.push({
-      text: "Galeria — imagem inteira",
-      onPress: () => fromLibrary(false, o).then(resolve).catch(() => resolve(null)),
+      text: "Usar foto da galeria (sem cortar)",
+      onPress: () => fromLibrary(false, o).then((r) => finish(r, o, resolve)).catch(() => resolve(null)),
     });
 
     buttons.push({
-      text: "Galeria — recortar imagem",
-      onPress: () => fromLibrary(true, o).then(resolve).catch(() => resolve(null)),
+      text: "Cortar foto antes de usar",
+      onPress: () => fromLibrary(true, o).then((r) => finish(r, o, resolve)).catch(() => resolve(null)),
     });
 
     buttons.push({ text: "Cancelar", style: "cancel", onPress: () => resolve(null) });

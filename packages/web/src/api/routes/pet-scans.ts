@@ -1,10 +1,33 @@
 import { Hono } from "hono";
-import { db } from "../database";
+import { db, sqlClient } from "../database";
 import * as schema from "../database/schema";
-import { desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import * as authSchema from "../database/auth-schema";
 import { requireAuth } from "../middleware/auth";
 import { sendMail, sendSms } from "../notify";
+
+/**
+ * Colunas acrescentadas depois da tabela já existir em produção. O ALTER TABLE
+ * dá erro se a coluna já lá estiver — por isso ignoramos o erro de propósito.
+ */
+let columnsReady: Promise<void> | null = null;
+function ensureColumns() {
+  if (!columnsReady) {
+    columnsReady = (async () => {
+      for (const col of ["dismissed_at", "found_at"]) {
+        try {
+          await sqlClient.execute({
+            sql: `ALTER TABLE pet_scans ADD COLUMN ${col} INTEGER`,
+            args: [],
+          });
+        } catch {
+          /* a coluna já existe */
+        }
+      }
+    })();
+  }
+  return columnsReady;
+}
 
 export const petScans = new Hono()
 
@@ -74,16 +97,24 @@ export const petScans = new Hono()
 
   // DONO — todas as digitalizações dos seus animais (para o ecrã Notificações)
   .get("/mine", requireAuth, async (c) => {
+    await ensureColumns();
     const user = c.get("user")!;
     const myPets = await db
       .select({ id: schema.pets.id, name: schema.pets.name, species: schema.pets.species })
       .from(schema.pets)
       .where(eq(schema.pets.userId, user.id));
     if (myPets.length === 0) return c.json({ scans: [] });
+    // Só os avisos que o dono ainda não apagou nem marcou como resolvidos.
     const rows = await db
       .select()
       .from(schema.petScans)
-      .where(inArray(schema.petScans.petId, myPets.map((p) => p.id)))
+      .where(
+        and(
+          inArray(schema.petScans.petId, myPets.map((p) => p.id)),
+          isNull(schema.petScans.dismissedAt),
+          isNull(schema.petScans.foundAt),
+        ),
+      )
       .orderBy(desc(schema.petScans.createdAt))
       .limit(50);
     const byId = new Map(myPets.map((p) => [p.id, p]));
@@ -110,6 +141,45 @@ export const petScans = new Hono()
       .orderBy(desc(schema.petScans.createdAt))
       .limit(50);
     return c.json({ scans: rows });
+  })
+
+  // DONO — apagar um aviso. Fica guardado no servidor, por isso não volta a
+  // aparecer quando a app é fechada e reaberta.
+  .post("/:id/dismiss", requireAuth, async (c) => {
+    await ensureColumns();
+    const user = c.get("user")!;
+    const id = c.req.param("id");
+
+    const [scan] = await db.select().from(schema.petScans).where(eq(schema.petScans.id, id));
+    if (!scan) return c.json({ error: "Aviso não encontrado" }, 404);
+
+    const [pet] = await db.select().from(schema.pets).where(eq(schema.pets.id, scan.petId));
+    if (!pet || pet.userId !== user.id) return c.json({ error: "Sem permissão" }, 403);
+
+    await db
+      .update(schema.petScans)
+      .set({ dismissedAt: new Date() })
+      .where(eq(schema.petScans.id, id));
+
+    return c.json({ ok: true }, 200);
+  })
+
+  // DONO — "Já encontrei o meu animal": fecha todos os avisos deste animal de
+  // uma vez, para os avisos pararem.
+  .post("/pet/:petId/found", requireAuth, async (c) => {
+    await ensureColumns();
+    const user = c.get("user")!;
+    const petId = c.req.param("petId");
+
+    const [pet] = await db.select().from(schema.pets).where(eq(schema.pets.id, petId));
+    if (!pet || pet.userId !== user.id) return c.json({ error: "Sem permissão" }, 403);
+
+    await db
+      .update(schema.petScans)
+      .set({ foundAt: new Date() })
+      .where(and(eq(schema.petScans.petId, petId), isNull(schema.petScans.foundAt)));
+
+    return c.json({ ok: true, petName: pet.name }, 200);
   });
 
 /**
