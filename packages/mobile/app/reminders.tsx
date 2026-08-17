@@ -13,6 +13,7 @@ import { netError } from "../lib/net-error";
 import { AnimatedPetGroup } from "../components/AnimatedPet";
 import { authFetch } from "../lib/auth-fetch";
 import { DateFieldPT } from "../components/DateFieldPT";
+import { tr } from "../lib/i18n";
 
 const TEAL = "#4ECDC4";
 const BG = "#F2FBFA";
@@ -21,14 +22,14 @@ const KINDS = [
   { key: "medication", label: "Medicação", icon: Pill, color: "#EF4444" },
   { key: "treatment", label: "Tratamento", icon: Stethoscope, color: "#8B5CF6" },
   { key: "vaccine", label: "Vacina", icon: Syringe, color: "#10B981" },
-  { key: "appointment", label: "Consulta", icon: CalendarClock, color: "#3B82F6" },
+  { key: "appointment", label: tr("Consulta"), icon: CalendarClock, color: "#3B82F6" },
   { key: "other", label: "Outro", icon: Bell, color: "#6B7280" },
 ];
 
 const FREQS = [
   { key: "daily", label: "Todos os dias" },
   { key: "weekly", label: "Semanal" },
-  { key: "monthly", label: "Mensal" },
+  { key: "monthly", label: tr("Mensal") },
   { key: "interval", label: "A cada X dias" },
   { key: "once", label: "Uma só vez" },
 ];
@@ -76,7 +77,7 @@ export default function RemindersScreen() {
       setItems(d.reminders ?? []);
     } catch (e: any) {
       setItems([]);
-      Alert.alert("Erro", netError(e));
+      Alert.alert(tr("Erro"), netError(e));
     }
   }, []);
 
@@ -88,8 +89,8 @@ export default function RemindersScreen() {
   }
 
   async function save() {
-    if (!title.trim()) { Alert.alert("Atenção", "Escreve o nome da medicação ou tratamento."); return; }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) { Alert.alert("Atenção", "Indique a data de início no formato dia/mês/ano."); return; }
+    if (!title.trim()) { Alert.alert(tr("Atenção"), tr("Escreve o nome da medicação ou tratamento.")); return; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) { Alert.alert(tr("Atenção"), tr("Indique a data de início no formato dia/mês/ano.")); return; }
     setSaving(true);
     try {
       const res = await authFetch(`${BASE_URL}/api/reminders`, {
@@ -102,10 +103,10 @@ export default function RemindersScreen() {
         }),
       });
       const d = await res.json();
-      if (!res.ok) { Alert.alert("Erro", d.error || "Não foi possível guardar."); return; }
+      if (!res.ok) { Alert.alert(tr("Erro"), d.error || "Não foi possível guardar."); return; }
       setModal(false); resetForm(); await load();
     } catch (e: any) {
-      Alert.alert("Erro", netError(e));
+      Alert.alert(tr("Erro"), netError(e));
     } finally {
       setSaving(false);
     }
@@ -118,19 +119,19 @@ export default function RemindersScreen() {
       });
       Alert.alert("Registado", `Dose de "${r.title}" marcada como dada. ✓`);
     } catch (e: any) {
-      Alert.alert("Erro", netError(e));
+      Alert.alert(tr("Erro"), netError(e));
     }
   }
 
   async function remove(r: any) {
-    Alert.alert("Apagar lembrete", `Apagar "${r.title}"?`, [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(tr("Apagar lembrete"), `Apagar "${r.title}"?`, [
+      { text: tr("Cancelar"), style: "cancel" },
       {
-        text: "Apagar", style: "destructive", onPress: async () => {
+        text: tr("Apagar"), style: "destructive", onPress: async () => {
           try {
             await authFetch(`${BASE_URL}/api/reminders/${r.id}`, { method: "DELETE", headers: headers() });
             await load();
-          } catch (e: any) { Alert.alert("Erro", netError(e)); }
+          } catch (e: any) { Alert.alert(tr("Erro"), netError(e)); }
         },
       },
     ]);
@@ -151,7 +152,7 @@ export default function RemindersScreen() {
           <TouchableOpacity onPress={() => router.back()} style={{ padding: 4 }}>
             <ArrowLeft size={22} color="#fff" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#fff" }}>Lembretes</Text>
+          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#fff" }}>{tr("Lembretes")}</Text>
           <TouchableOpacity onPress={() => { resetForm(); setModal(true); }} style={{ padding: 4 }}>
             <Plus size={24} color="#fff" />
           </TouchableOpacity>
@@ -170,12 +171,12 @@ export default function RemindersScreen() {
         {items?.length === 0 && (
           <View style={{ alignItems: "center", paddingVertical: 40 }}>
             <AnimatedPetGroup size={80} />
-            <Text suppressHighlighting style={{ fontWeight: "800", fontSize: 16, color: "#1A1A2E", marginTop: 16 }}>Sem lembretes</Text>
+            <Text suppressHighlighting style={{ fontWeight: "800", fontSize: 16, color: "#1A1A2E", marginTop: 16 }}>{tr("Sem lembretes")}</Text>
             <Text suppressHighlighting style={{ color: "#9CA3AF", marginTop: 6, textAlign: "center", fontSize: 13.5, lineHeight: 20, paddingHorizontal: 30 }}>
               Cria lembretes para não te esqueceres de dar a medicação ou fazer um tratamento.
             </Text>
             <TouchableOpacity onPress={() => { resetForm(); setModal(true); }} style={{ backgroundColor: TEAL, borderRadius: 15, paddingVertical: 14, paddingHorizontal: 26, marginTop: 20 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14.5 }}>Criar primeiro lembrete</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14.5 }}>{tr("Criar primeiro lembrete")}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -219,7 +220,7 @@ export default function RemindersScreen() {
                 onPress={() => markDone(r)}
                 style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 7, backgroundColor: TEAL + "16", borderRadius: 13, padding: 12, marginTop: 13 }}>
                 <Check size={16} color={TEAL} />
-                <Text suppressHighlighting style={{ color: TEAL, fontWeight: "800", fontSize: 13 }}>Já dei / já fiz</Text>
+                <Text suppressHighlighting style={{ color: TEAL, fontWeight: "800", fontSize: 13 }}>{tr("Já dei / já fiz")}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -235,11 +236,11 @@ export default function RemindersScreen() {
               contentContainerStyle={{ padding: 22, paddingBottom: 40 }}
               keyboardShouldPersistTaps="handled">
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
-                <Text suppressHighlighting style={{ fontSize: 19, fontWeight: "800", color: "#1A1A2E" }}>Novo lembrete</Text>
+                <Text suppressHighlighting style={{ fontSize: 19, fontWeight: "800", color: "#1A1A2E" }}>{tr("Novo lembrete")}</Text>
                 <TouchableOpacity onPress={() => setModal(false)}><X size={22} color="#9CA3AF" /></TouchableOpacity>
               </View>
 
-              <Label>Tipo</Label>
+              <Label>{tr("Tipo")}</Label>
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginBottom: 16 }}>
                 {KINDS.map((k) => {
                   const sel = kind === k.key;
@@ -259,13 +260,13 @@ export default function RemindersScreen() {
                 })}
               </View>
 
-              <Label>Nome</Label>
-              <Input value={title} onChangeText={setTitle} placeholder="Ex: Amoxicilina, Pomada, Antipulgas" />
+              <Label>{tr("Nome")}</Label>
+              <Input value={title} onChangeText={setTitle} placeholder={tr("Ex: Amoxicilina, Pomada, Antipulgas")} />
 
               <Label>Dose (opcional)</Label>
-              <Input value={dosage} onChangeText={setDosage} placeholder="Ex: 1 comprimido, 5ml, 2 gotas" />
+              <Input value={dosage} onChangeText={setDosage} placeholder={tr("Ex: 1 comprimido, 5ml, 2 gotas")} />
 
-              <Label>Horas</Label>
+              <Label>{tr("Horas")}</Label>
               {times.map((t, i) => (
                 <View key={i} style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <TextInput
@@ -289,10 +290,10 @@ export default function RemindersScreen() {
               ))}
               <TouchableOpacity onPress={addTime} style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 10, marginBottom: 8 }}>
                 <Plus size={15} color={TEAL} />
-                <Text suppressHighlighting style={{ color: TEAL, fontWeight: "800", fontSize: 13 }}>Adicionar outra hora</Text>
+                <Text suppressHighlighting style={{ color: TEAL, fontWeight: "800", fontSize: 13 }}>{tr("Adicionar outra hora")}</Text>
               </TouchableOpacity>
 
-              <Label>Frequência</Label>
+              <Label>{tr("Frequência")}</Label>
               <View style={{ gap: 7, marginBottom: 16 }}>
                 {FREQS.map((f) => {
                   const sel = frequency === f.key;
@@ -312,25 +313,25 @@ export default function RemindersScreen() {
 
               {frequency === "interval" && (
                 <>
-                  <Label>A cada quantos dias?</Label>
+                  <Label>{tr("A cada quantos dias?")}</Label>
                   <Input value={intervalDays} onChangeText={setIntervalDays} placeholder="Ex: 3" keyboardType="number-pad" />
                 </>
               )}
 
-              <Label>Data de início</Label>
+              <Label>{tr("Data de início")}</Label>
               <DateFieldPT label="" value={startDate} onChange={setStartDate} />
 
-              <Label>Data de fim (opcional)</Label>
+              <Label>{tr("Data de fim (opcional)")}</Label>
               <DateFieldPT label="" value={endDate} onChange={setEndDate} showToday={false} />
 
               <Label>Notas (opcional)</Label>
-              <Input value={notes} onChangeText={setNotes} placeholder="Ex: dar com comida" />
+              <Input value={notes} onChangeText={setNotes} placeholder={tr("Ex: dar com comida")} />
 
               <TouchableOpacity
                 onPress={save}
                 disabled={saving}
                 style={{ backgroundColor: TEAL, borderRadius: 15, padding: 16, alignItems: "center", marginTop: 12, opacity: saving ? 0.7 : 1 }}>
-                {saving ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15.5 }}>Guardar lembrete</Text>}
+                {saving ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15.5 }}>{tr("Guardar lembrete")}</Text>}
               </TouchableOpacity>
             </ScrollView>
           </KeyboardAvoidingView>

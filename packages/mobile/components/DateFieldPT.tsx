@@ -1,6 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import { useState, useEffect } from "react";
 import { Calendar } from "lucide-react-native";
+import { tr } from "../lib/i18n";
 
 /**
  * Campo de data em português: o utilizador escreve e vê DD/MM/AAAA
@@ -50,7 +51,7 @@ type Props = {
   value: string;
   /** Recebe a data em AAAA-MM-DD, ou "" enquanto estiver incompleta. */
   onChange: (iso: string) => void;
-  /** Mostra o botão "Hoje". */
+  /** Mostra o botão Hoje. */
   showToday?: boolean;
   color?: string;
 };
@@ -90,14 +91,14 @@ export function DateFieldPT({ label, value, onChange, showToday = true, color = 
           style={styles.input}
           value={text}
           onChangeText={handle}
-          placeholder="DD/MM/AAAA"
+          placeholder={tr("DD/MM/AAAA")}
           placeholderTextColor="#9CA3AF"
           keyboardType="number-pad"
           maxLength={10}
         />
         {showToday && (
           <TouchableOpacity onPress={setToday} style={[styles.today, { backgroundColor: color + "1A" }]}>
-            <Text suppressHighlighting style={[styles.todayTxt, { color }]}>Hoje</Text>
+            <Text suppressHighlighting style={[styles.todayTxt, { color }]}>{tr("Hoje")}</Text>
           </TouchableOpacity>
         )}
       </View>

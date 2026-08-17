@@ -3,6 +3,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ShoppingCart, Search, ChevronLeft, Phone, Globe, Star } from "lucide-react-native";
+import { tr } from "../lib/i18n";
 
 const BG = "#F0F9FF";
 const DARK = "#1A1A2E";
@@ -29,7 +30,7 @@ const PRODUCTS = [
     name: "Frontline Combo Gato", brand: "Boehringer",
     description: "Pipeta antiparasitária para gatos. Pulgas, carraças e piolhos.",
     price: "9,90€", rating: 4.5, reviews: 215,
-    tags: ["Gatos", "Pulgas", "Mensal"],
+    tags: ["Gatos", "Pulgas", tr("Mensal")],
     color: "#F97316", bg: "#FFF7ED",
     where: [
       { name: "Zooplus PT", url: "https://www.zooplus.pt" },
@@ -84,7 +85,7 @@ const PRODUCTS = [
     name: "Royal Canin Urinary S/O", brand: "Royal Canin",
     description: "Ração veterinária para gatos com problemas urinários. Dissolve cristais.",
     price: "42,00€", rating: 4.7, reviews: 445,
-    tags: ["Urinário", "Veterinário", "Gato"],
+    tags: ["Urinário", tr("Veterinário"), "Gato"],
     color: "#FF6B35", bg: "#FFF0EB",
     where: [
       { name: "Zooplus PT", url: "https://www.zooplus.pt" },
@@ -95,7 +96,7 @@ const PRODUCTS = [
     name: "Hill's Prescription Diet z/d", brand: "Hill's",
     description: "Dieta hipoalergénica para cães com alergias alimentares diagnosticadas.",
     price: "55,00€", rating: 4.5, reviews: 89,
-    tags: ["Alergias", "Veterinário", "Cão"],
+    tags: ["Alergias", tr("Veterinário"), "Cão"],
     color: "#FF6B35", bg: "#FFF0EB",
     where: [
       { name: "Zooplus PT", url: "https://www.zooplus.pt" },
@@ -156,7 +157,7 @@ export default function PharmacyScreen() {
           <View style={{ backgroundColor: selected.color, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 28, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}>
             <TouchableOpacity onPress={() => setSelected(null)} style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 16 }}>
               <ChevronLeft size={20} color="#fff" />
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Voltar</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>{tr("Voltar")}</Text>
             </TouchableOpacity>
             <Text suppressHighlighting style={{ fontSize: 56, textAlign: "center" }}>{selected.emoji}</Text>
             <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{selected.name}</Text>
@@ -169,7 +170,7 @@ export default function PharmacyScreen() {
 
           <View style={{ padding: 20, gap: 16 }}>
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 10 }}>📋 Descrição</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 10 }}>{tr("📋 Descrição")}</Text>
               <Text suppressHighlighting style={{ color: "#374151", fontSize: 14, lineHeight: 22 }}>{selected.description}</Text>
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
                 {selected.tags.map(t => (
@@ -182,10 +183,10 @@ export default function PharmacyScreen() {
 
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
               <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK }}>💰 Preço indicativo</Text>
+                <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK }}>{tr("💰 Preço indicativo")}</Text>
                 <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: selected.color }}>~{selected.price}</Text>
               </View>
-              <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, marginBottom: 14 }}>Comprar online em lojas certificadas:</Text>
+              <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, marginBottom: 14 }}>{tr("Comprar online em lojas certificadas:")}</Text>
               {selected.where.map(w => (
                 <TouchableOpacity key={w.name} onPress={() => Linking.openURL(w.url)}
                   style={{ backgroundColor: BLUE_BG, borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8, borderWidth: 1.5, borderColor: BLUE + "30" }}>
@@ -193,7 +194,7 @@ export default function PharmacyScreen() {
                     <Globe size={18} color={BLUE} />
                     <Text suppressHighlighting style={{ color: BLUE, fontWeight: "700", fontSize: 14 }}>{w.name}</Text>
                   </View>
-                  <Text suppressHighlighting style={{ color: BLUE, fontWeight: "800", fontSize: 12 }}>Ver →</Text>
+                  <Text suppressHighlighting style={{ color: BLUE, fontWeight: "800", fontSize: 12 }}>{tr("Ver →")}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -217,8 +218,8 @@ export default function PharmacyScreen() {
             <ChevronLeft size={18} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>Farmácia Veterinária 💊</Text>
-            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>Produtos recomendados para o seu animal</Text>
+            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>{tr("Farmácia Veterinária 💊")}</Text>
+            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{tr("Produtos recomendados para o seu animal")}</Text>
           </View>
         </View>
         <View style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, flexDirection: "row", alignItems: "center", paddingHorizontal: 14, paddingVertical: 10, gap: 8 }}>
@@ -226,7 +227,7 @@ export default function PharmacyScreen() {
           <TextInput
             value={search}
             onChangeText={setSearch}
-            placeholder="Pesquisar produto..."
+            placeholder={tr("Pesquisar produto...")}
             placeholderTextColor="rgba(255,255,255,0.6)"
             style={{ flex: 1, color: "#fff", fontSize: 14 }}
           />

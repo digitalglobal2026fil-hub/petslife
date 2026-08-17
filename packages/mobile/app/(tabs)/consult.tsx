@@ -11,6 +11,7 @@ import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
 import { authFetch } from "../../lib/auth-fetch";
 import { DateFieldPT } from "../../components/DateFieldPT";
+import { tr } from "../../lib/i18n";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -111,17 +112,17 @@ export default function ConsultScreen() {
 
   const handleBook = async () => {
     if (!date || !time) {
-      Alert.alert("Atenção", "Por favor preencha a data e hora.");
+      Alert.alert(tr("Atenção"), tr("Por favor preencha a data e hora."));
       return;
     }
     // A data chega do DateFieldPT já como AAAA-MM-DD
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      Alert.alert("Atenção", "Escolha a data da consulta (dia/mês/ano).");
+      Alert.alert(tr("Atenção"), tr("Escolha a data da consulta (dia/mês/ano)."));
       return;
     }
     // Validar formato hora HH:MM
     if (!/^\d{2}:\d{2}$/.test(time)) {
-      Alert.alert("Atenção", "Hora inválida. Use o formato HH:MM (ex: 14:30).");
+      Alert.alert(tr("Atenção"), tr("Hora inválida. Use o formato HH:MM (ex: 14:30)."));
       return;
     }
     setSaving(true);
@@ -136,15 +137,15 @@ export default function ConsultScreen() {
       const roomUrl = result.roomUrl || `${API_URL}/call/petslife-${result.id}`;
       setBookedRoomUrl(roomUrl);
     } else {
-      Alert.alert("Erro", "Não foi possível agendar. Tente novamente.");
+      Alert.alert(tr("Erro"), tr("Não foi possível agendar. Tente novamente."));
     }
   };
 
   const handleCancel = (id: string) => {
-    Alert.alert("Cancelar consulta", "Tem a certeza?", [
-      { text: "Não", style: "cancel" },
+    Alert.alert("Cancelar consulta", tr("Tem a certeza?"), [
+      { text: tr("Não"), style: "cancel" },
       {
-        text: "Sim, cancelar", style: "destructive",
+        text: tr("Sim, cancelar"), style: "destructive",
         onPress: async () => { await cancelConsultation(id); load(); },
       },
     ]);
@@ -153,8 +154,8 @@ export default function ConsultScreen() {
   const handleJoin = (url: string | null, consultId?: string) => {
     // Sala na nossa página: abre directamente no browser, sem instalar apps
     const target = url || (consultId ? `${API_URL}/call/petslife-${consultId}` : null);
-    if (!target) { Alert.alert("Erro", "Link de videochamada não disponível."); return; }
-    Linking.openURL(target).catch(() => Alert.alert("Erro", "Não foi possível abrir a videochamada."));
+    if (!target) { Alert.alert(tr("Erro"), tr("Link de videochamada não disponível.")); return; }
+    Linking.openURL(target).catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir a videochamada.")));
   };
 
   const resetForm = () => {
@@ -172,7 +173,7 @@ export default function ConsultScreen() {
   const past = consultations.filter(c => ["done", "cancelled"].includes(c.status));
 
   if (!gateLoading && isBlocked) {
-    return <PaywallScreen featureName="Consulta Online" />;
+    return <PaywallScreen featureName={tr("Consulta Online")} />;
   }
 
   return (
@@ -180,8 +181,8 @@ export default function ConsultScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text suppressHighlighting style={styles.headerTitle}>Consulta Online</Text>
-          <Text suppressHighlighting style={styles.headerSub}>Fale com o seu vet por videochamada</Text>
+          <Text suppressHighlighting style={styles.headerTitle}>{tr("Consulta Online")}</Text>
+          <Text suppressHighlighting style={styles.headerSub}>{tr("Fale com o seu vet por videochamada")}</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowModal(true)}>
           <Plus size={20} color="#fff" />
@@ -192,14 +193,14 @@ export default function ConsultScreen() {
       <TouchableOpacity style={styles.infoCard} onPress={() => router.push("/video-call-guide" as never)} activeOpacity={0.85}>
         <Video size={22} color="#4ECDC4" />
         <View style={{ flex: 1, marginLeft: 12 }}>
-          <Text suppressHighlighting style={styles.infoTitle}>Como funciona?</Text>
+          <Text suppressHighlighting style={styles.infoTitle}>{tr("Como funciona?")}</Text>
           <Text suppressHighlighting style={styles.infoText}>
             Agende, receba o link, partilhe com o vet e entre directamente aqui. Sem instalações.
           </Text>
         </View>
         <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 8 }}>
           <HelpCircle size={20} color="#4ECDC4" />
-          <Text suppressHighlighting style={{ fontSize: 10, color: "#4ECDC4", fontWeight: "700", marginTop: 2 }}>Guia</Text>
+          <Text suppressHighlighting style={{ fontSize: 10, color: "#4ECDC4", fontWeight: "700", marginTop: 2 }}>{tr("Guia")}</Text>
         </View>
       </TouchableOpacity>
 
@@ -211,7 +212,7 @@ export default function ConsultScreen() {
             {/* Link de videochamada recém agendado */}
             {bookedRoomUrl && (
               <View style={{ backgroundColor: "#D1FAE5", borderRadius: 16, padding: 16, marginHorizontal: 20, marginBottom: 16, borderWidth: 1, borderColor: "#6EE7B7" }}>
-                <Text suppressHighlighting style={{ fontWeight: "800", color: "#047857", fontSize: 15, marginBottom: 6 }}>✅ Consulta agendada!</Text>
+                <Text suppressHighlighting style={{ fontWeight: "800", color: "#047857", fontSize: 15, marginBottom: 6 }}>{tr("✅ Consulta agendada!")}</Text>
                 <Text suppressHighlighting style={{ color: "#065F46", fontSize: 13, marginBottom: 10 }}>
                   Há só um link, e é este (a caixa verde). Partilhe-o com o veterinário — é por aqui que os dois entram na videochamada.
                 </Text>
@@ -227,26 +228,26 @@ export default function ConsultScreen() {
                   <TouchableOpacity
                     style={{ flex: 1, backgroundColor: "#047857", borderRadius: 10, padding: 10, alignItems: "center" }}
                     onPress={() => handleJoin(bookedRoomUrl, undefined)}>
-                    <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>Entrar agora</Text>
+                    <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>{tr("Entrar agora")}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: "center", borderWidth: 1, borderColor: "#6EE7B7" }}
                     onPress={() => setBookedRoomUrl(null)}>
-                    <Text suppressHighlighting style={{ color: "#047857", fontWeight: "600", fontSize: 13 }}>Fechar</Text>
+                    <Text suppressHighlighting style={{ color: "#047857", fontWeight: "600", fontSize: 13 }}>{tr("Fechar")}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             )}
 
             {/* Upcoming */}
-            <Text suppressHighlighting style={styles.sectionTitle}>Próximas consultas</Text>
+            <Text suppressHighlighting style={styles.sectionTitle}>{tr("Próximas consultas")}</Text>
             {upcoming.length === 0 ? (
               <View style={styles.emptyCard}>
                 <Text suppressHighlighting style={styles.emptyEmoji}>📅</Text>
-                <Text suppressHighlighting style={styles.emptyTitle}>Nenhuma consulta agendada</Text>
-                <Text suppressHighlighting style={styles.emptyText}>Agende a sua primeira consulta online com um veterinário.</Text>
+                <Text suppressHighlighting style={styles.emptyTitle}>{tr("Nenhuma consulta agendada")}</Text>
+                <Text suppressHighlighting style={styles.emptyText}>{tr("Agende a sua primeira consulta online com um veterinário.")}</Text>
                 <TouchableOpacity style={styles.emptyBtn} onPress={() => setShowModal(true)}>
-                  <Text suppressHighlighting style={styles.emptyBtnText}>Agendar consulta</Text>
+                  <Text suppressHighlighting style={styles.emptyBtnText}>{tr("Agendar consulta")}</Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -257,7 +258,7 @@ export default function ConsultScreen() {
                       <Video size={20} color="#FF6B35" />
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text suppressHighlighting style={styles.cardTitle}>{c.vetName || "Veterinário"}</Text>
+                      <Text suppressHighlighting style={styles.cardTitle}>{c.vetName || tr("Veterinário")}</Text>
                       <Text suppressHighlighting style={styles.cardSub}>{c.specialty} · {c.duration} min</Text>
                     </View>
                     <StatusBadge status={c.status} />
@@ -280,7 +281,7 @@ export default function ConsultScreen() {
                         </TouchableOpacity>
                       </View>
                       <Text suppressHighlighting style={{ color: "#065F46", fontSize: 11, marginTop: 6 }}>
-                        Partilhe este link com o veterinário. Os dois entram por ele — carregue no ícone para partilhar, ou em "Entrar na chamada" para entrar.
+                        Partilhe este link com o veterinário. Os dois entram por ele — carregue no ícone para partilhar, ou em tr("Entrar na chamada") para entrar.
                       </Text>
                     </View>
                   )}
@@ -288,13 +289,13 @@ export default function ConsultScreen() {
                     {(c.roomUrl || c.id) && (
                       <TouchableOpacity style={styles.joinBtn} onPress={() => handleJoin(c.roomUrl, c.id)}>
                         <Video size={16} color="#fff" />
-                        <Text suppressHighlighting style={styles.joinBtnText}>Entrar na chamada</Text>
+                        <Text suppressHighlighting style={styles.joinBtnText}>{tr("Entrar na chamada")}</Text>
                       </TouchableOpacity>
                     )}
                     {c.status !== "done" && c.status !== "cancelled" && (
                       <TouchableOpacity style={styles.cancelBtn} onPress={() => handleCancel(c.id)}>
                         <X size={14} color="#EF4444" />
-                        <Text suppressHighlighting style={styles.cancelBtnText}>Cancelar</Text>
+                        <Text suppressHighlighting style={styles.cancelBtnText}>{tr("Cancelar")}</Text>
                       </TouchableOpacity>
                     )}
                   </View>
@@ -305,7 +306,7 @@ export default function ConsultScreen() {
             {/* Past */}
             {past.length > 0 && (
               <>
-                <Text suppressHighlighting style={[styles.sectionTitle, { marginTop: 24 }]}>Histórico</Text>
+                <Text suppressHighlighting style={[styles.sectionTitle, { marginTop: 24 }]}>{tr("Histórico")}</Text>
                 {past.map(c => (
                   <View key={c.id} style={[styles.card, { opacity: 0.7 }]}>
                     <View style={styles.cardRow}>
@@ -313,7 +314,7 @@ export default function ConsultScreen() {
                         <Video size={20} color="#9CA3AF" />
                       </View>
                       <View style={{ flex: 1 }}>
-                        <Text suppressHighlighting style={styles.cardTitle}>{c.vetName || "Veterinário"}</Text>
+                        <Text suppressHighlighting style={styles.cardTitle}>{c.vetName || tr("Veterinário")}</Text>
                         <Text suppressHighlighting style={styles.cardSub}>{c.specialty} · {c.duration} min</Text>
                       </View>
                       <StatusBadge status={c.status} />
@@ -339,19 +340,19 @@ export default function ConsultScreen() {
         >
           <View style={styles.modal}>
             <View style={styles.modalHeader}>
-              <Text suppressHighlighting style={styles.modalTitle}>Agendar consulta</Text>
+              <Text suppressHighlighting style={styles.modalTitle}>{tr("Agendar consulta")}</Text>
               <TouchableOpacity onPress={() => { setShowModal(false); resetForm(); }}>
                 <X size={24} color="#6B7280" />
               </TouchableOpacity>
             </View>
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-              <Text suppressHighlighting style={styles.fieldLabel}>Nome do veterinário (opcional)</Text>
-              <TextInput style={styles.input} placeholder="Ex: Dr. António Silva" value={vetName} onChangeText={setVetName} />
+              <Text suppressHighlighting style={styles.fieldLabel}>{tr("Nome do veterinário (opcional)")}</Text>
+              <TextInput style={styles.input} placeholder={tr("Ex: Dr. António Silva")} value={vetName} onChangeText={setVetName} />
 
-              <Text suppressHighlighting style={styles.fieldLabel}>Email do vet (para partilhar o link)</Text>
+              <Text suppressHighlighting style={styles.fieldLabel}>{tr("Email do vet (para partilhar o link)")}</Text>
               <TextInput style={styles.input} placeholder="vet@clinica.pt" value={vetEmail} onChangeText={setVetEmail} keyboardType="email-address" autoCapitalize="none" />
 
-              <Text suppressHighlighting style={styles.fieldLabel}>Especialidade</Text>
+              <Text suppressHighlighting style={styles.fieldLabel}>{tr("Especialidade")}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
                 {SPECIALTIES.map(s => (
                   <TouchableOpacity
@@ -365,8 +366,8 @@ export default function ConsultScreen() {
               </ScrollView>
 
               {/* Data em DD/MM/AAAA (ordem portuguesa) e hora */}
-              <DateFieldPT label="Data da consulta" value={date} onChange={setDate} />
-              <Text suppressHighlighting style={styles.fieldLabel}>Hora</Text>
+              <DateFieldPT label={tr("Data da consulta")} value={date} onChange={setDate} />
+              <Text suppressHighlighting style={styles.fieldLabel}>{tr("Hora")}</Text>
               <TextInput
                 style={styles.input}
                 placeholder="14:30"
@@ -383,7 +384,7 @@ export default function ConsultScreen() {
                 Hora em formato 24h — ex: 14:30
               </Text>
 
-              <Text suppressHighlighting style={styles.fieldLabel}>Duração</Text>
+              <Text suppressHighlighting style={styles.fieldLabel}>{tr("Duração")}</Text>
               <View style={styles.durationRow}>
                 {DURATIONS.map(d => (
                   <TouchableOpacity
@@ -396,10 +397,10 @@ export default function ConsultScreen() {
                 ))}
               </View>
 
-              <Text suppressHighlighting style={styles.fieldLabel}>Motivo / Notas</Text>
+              <Text suppressHighlighting style={styles.fieldLabel}>{tr("Motivo / Notas")}</Text>
               <TextInput
                 style={[styles.input, { height: 80, textAlignVertical: "top" }]}
-                placeholder="Descreva o motivo da consulta..."
+                placeholder={tr("Descreva o motivo da consulta...")}
                 value={notes}
                 onChangeText={setNotes}
                 multiline
@@ -412,7 +413,7 @@ export default function ConsultScreen() {
               </View>
 
               <TouchableOpacity style={[styles.saveBtn, saving && { opacity: 0.6 }]} onPress={handleBook} disabled={saving}>
-                {saving ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={styles.saveBtnText}>Agendar consulta</Text>}
+                {saving ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={styles.saveBtnText}>{tr("Agendar consulta")}</Text>}
               </TouchableOpacity>
             </ScrollView>
           </View>

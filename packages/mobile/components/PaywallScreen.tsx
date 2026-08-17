@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Lock, Sparkles, Image as ImageIcon, ArrowRight } from "lucide-react-native";
 import { useSubscriptionGate } from "../lib/useSubscriptionGate";
+import { tr } from "../lib/i18n";
 
 const MASCOT_LOCK = require("../assets/mascot-lock_1784664046237.png");
 
@@ -17,7 +18,7 @@ const PERKS = [
 
 /**
  * Full-screen paywall shown instead of gated tab content when the trial
- * or subscription has expired. The "Álbum" tab remains accessible elsewhere.
+ * or subscription has expired. The Álbum tab remains accessible elsewhere.
  */
 export function PaywallScreen({ featureName }: { featureName?: string }) {
   const router = useRouter();
@@ -75,7 +76,7 @@ export function PaywallScreen({ featureName }: { featureName?: string }) {
             backgroundColor: "#FF6B35", borderRadius: 16, paddingVertical: 16, width: "100%",
           }}
         >
-          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>Ver planos e renovar</Text>
+          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("Ver planos e renovar")}</Text>
           <ArrowRight size={18} color="#fff" />
         </TouchableOpacity>
 

@@ -8,14 +8,15 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
+import { tr } from "../../lib/i18n";
 
 const sections = [
-  { icon: Syringe,     label: "Vacinas",         sublabel: "Registo e lembretes",      color: "#4ECDC4", bg: "#E8FAF9", route: "/add-vaccine" },
-  { icon: Calendar,    label: "Consultas",        sublabel: "Agenda e histórico",        color: "#FF6B35", bg: "#FFF0EB", route: "/add-appointment" },
-  { icon: Heart,       label: "Diário de Saúde",  sublabel: "Registo diário",            color: "#EF476F", bg: "#FFF0F3", route: "/add-diary" },
-  { icon: FileText,    label: "Documentos",       sublabel: "Receitas e exames",         color: "#8B5CF6", bg: "#F3EEFF", route: "/add-document" },
-  { icon: Pill,        label: "Desparasitação",   sublabel: "Controlo interno/externo",  color: "#F59E0B", bg: "#FEF3C7", route: "/add-deworming" },
-  { icon: Stethoscope, label: "Peso",             sublabel: "Gráfico de evolução",       color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
+  { icon: Syringe,     label: tr("Vacinas"),         sublabel: "Registo e lembretes",      color: "#4ECDC4", bg: "#E8FAF9", route: "/add-vaccine" },
+  { icon: Calendar,    label: tr("Consultas"),        sublabel: "Agenda e histórico",        color: "#FF6B35", bg: "#FFF0EB", route: "/add-appointment" },
+  { icon: Heart,       label: tr("Diário de Saúde"),  sublabel: "Registo diário",            color: "#EF476F", bg: "#FFF0F3", route: "/add-diary" },
+  { icon: FileText,    label: tr("Documentos"),       sublabel: "Receitas e exames",         color: "#8B5CF6", bg: "#F3EEFF", route: "/add-document" },
+  { icon: Pill,        label: tr("Desparasitação"),   sublabel: "Controlo interno/externo",  color: "#F59E0B", bg: "#FEF3C7", route: "/add-deworming" },
+  { icon: Stethoscope, label: tr("Peso"),             sublabel: "Gráfico de evolução",       color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
 ];
 
 function SectionCard({ s, index }: { s: any; index: number }) {
@@ -78,7 +79,7 @@ export default function HealthScreen() {
   const pets = (petsData as any)?.pets ?? [];
 
   if (!gateLoading && isBlocked) {
-    return <PaywallScreen featureName="Saúde" />;
+    return <PaywallScreen featureName={tr("Saúde")} />;
   }
 
   return (
@@ -97,15 +98,15 @@ export default function HealthScreen() {
           marginBottom: 8,
         }}>
           <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.1)" }} />
-          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>Saúde 🏥</Text>
-          <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.8)", marginTop: 4, fontSize: 14 }}>Gerencie a saúde dos seus animais</Text>
+          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Saúde 🏥")}</Text>
+          <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.8)", marginTop: 4, fontSize: 14 }}>{tr("Gerencie a saúde dos seus animais")}</Text>
         </Animated.View>
 
         <AnimalFact style={{ marginHorizontal: 20, marginBottom: 8 }} />
 
         {/* Grid de secções */}
         <View style={{ paddingHorizontal: 20, marginBottom: 28 }}>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>O que quer registar?</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>{tr("O que quer registar?")}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
             {sections.map((s, index) => (
               <SectionCard key={s.label} s={s} index={index} />
@@ -115,10 +116,10 @@ export default function HealthScreen() {
 
         {/* Ferramentas extra */}
         <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>Ferramentas</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>{tr("Ferramentas")}</Text>
           <View style={{ gap: 10 }}>
             {[
-              { icon: Video, label: "Consulta Online", sublabel: "Videochamada com o vet", color: "#FF6B35", bg: "#FFF0EB", route: "/consult" },
+              { icon: Video, label: tr("Consulta Online"), sublabel: "Videochamada com o vet", color: "#FF6B35", bg: "#FFF0EB", route: "/consult" },
               { icon: Siren, label: "Primeiros Socorros", sublabel: "Guia de emergências", color: "#FF4757", bg: "#FFF0F2", route: "/first-aid" },
               { icon: Pill, label: "Farmácia Pet", sublabel: "Medicamentos e produtos", color: "#4ECDC4", bg: "#E8FAF9", route: "/pharmacy" },
               { icon: Gauge, label: "Gráfico de Peso", sublabel: "Monitorize a evolução", color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
@@ -142,16 +143,16 @@ export default function HealthScreen() {
 
         {/* Per-pet quick access */}
         <View style={{ paddingHorizontal: 20 }}>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>Os meus animais</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>{tr("Os meus animais")}</Text>
           {isLoading ? (
             <ActivityIndicator color="#4ECDC4" />
           ) : pets.length === 0 ? (
             <View style={{ backgroundColor: "#fff", borderRadius: 24, padding: 24, alignItems: "center" }}>
               <Text suppressHighlighting style={{ fontSize: 40, marginBottom: 8 }}>🐾</Text>
-              <Text suppressHighlighting style={{ color: "#6B7280", textAlign: "center", marginBottom: 14 }}>Adicione um animal para gerir a sua saúde</Text>
+              <Text suppressHighlighting style={{ color: "#6B7280", textAlign: "center", marginBottom: 14 }}>{tr("Adicione um animal para gerir a sua saúde")}</Text>
               <TouchableOpacity onPress={() => router.push("/add-pet")}
                 style={{ backgroundColor: "#FF6B35", borderRadius: 16, paddingHorizontal: 22, paddingVertical: 12, shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 10, elevation: 0 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800" }}>+ Adicionar animal</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800" }}>{tr("+ Adicionar animal")}</Text>
               </TouchableOpacity>
             </View>
           ) : pets.map((pet: any, i: number) => {

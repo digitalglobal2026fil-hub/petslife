@@ -1,6 +1,7 @@
 /**
+import { tr } from "./i18n";
  * Converte erros técnicos em mensagens que a utilizadora entende.
- * Antes mostrava só "Erro" ou "Network request failed".
+ * Antes mostrava só Erro ou "Network request failed".
  */
 export function netError(e: any, fallback = "Algo não correu bem. Tenta outra vez."): string {
   const msg = String(e?.message ?? e ?? "").toLowerCase();

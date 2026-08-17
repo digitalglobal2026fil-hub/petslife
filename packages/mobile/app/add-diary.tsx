@@ -9,6 +9,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronDown, Heart } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
+import { tr } from "../lib/i18n";
 
 const ACCENT = "#EF476F";
 
@@ -19,7 +20,7 @@ const CATEGORIES: { key: Category; label: string; emoji: string }[] = [
   { key: "comportamento",  label: "Comportamento",  emoji: "🐾" },
   { key: "medicacao",      label: "Medicação",      emoji: "💊" },
   { key: "alimentacao",    label: "Alimentação",    emoji: "🍖" },
-  { key: "peso",           label: "Peso",           emoji: "⚖️" },
+  { key: "peso",           label: tr("Peso"),           emoji: "⚖️" },
   { key: "outro",          label: "Outro",          emoji: "📝" },
 ];
 
@@ -86,16 +87,16 @@ export default function AddDiaryScreen() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["health-logs"] });
-      Alert.alert("✅ Registo guardado!", "Entrada no diário adicionada.", [
-        { text: "OK", onPress: () => router.back() },
+      Alert.alert("✅ Registo guardado!", tr("Entrada no diário adicionada."), [
+        { text: tr("OK"), onPress: () => router.back() },
       ]);
     },
     onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const handleSave = () => {
-    if (!petId) { Alert.alert("Selecione um animal", "Escolha a qual animal pertence este registo."); return; }
-    if (!title.trim()) { Alert.alert("Campo obrigatório", "Insira um título para o registo."); return; }
+    if (!petId) { Alert.alert(tr("Selecione um animal"), tr("Escolha a qual animal pertence este registo.")); return; }
+    if (!title.trim()) { Alert.alert(tr("Campo obrigatório"), tr("Insira um título para o registo.")); return; }
     save.mutate();
   };
 
@@ -110,8 +111,8 @@ export default function AddDiaryScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Diário de Saúde ❤️</Text>
-          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>Registe sintomas, comportamentos e mais</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Diário de Saúde ❤️")}</Text>
+          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{tr("Registe sintomas, comportamentos e mais")}</Text>
         </View>
         <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#FFF0F3", alignItems: "center", justifyContent: "center" }}>
           <Heart size={22} color={ACCENT} />
@@ -122,7 +123,7 @@ export default function AddDiaryScreen() {
 
         {/* Pet picker */}
         <View style={{ marginBottom: 20 }}>
-          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>{tr("Animal *")}</Text>
           {loadPets ? <ActivityIndicator color={ACCENT} /> : (
             <TouchableOpacity
               onPress={() => setPetPickerOpen(!petPickerOpen)}
@@ -140,7 +141,7 @@ export default function AddDiaryScreen() {
             <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
               {pets.length === 0 ? (
                 <TouchableOpacity onPress={() => router.replace("/add-pet")} style={{ padding: 14, alignItems: "center" }}>
-                  <Text suppressHighlighting style={{ color: ACCENT, fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
+                  <Text suppressHighlighting style={{ color: ACCENT, fontWeight: "600" }}>{tr("+ Adicionar animal primeiro")}</Text>
                 </TouchableOpacity>
               ) : pets.map((p: any) => (
                 <TouchableOpacity
@@ -161,7 +162,7 @@ export default function AddDiaryScreen() {
 
         {/* Category chips */}
         <View style={{ marginBottom: 20 }}>
-          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 10 }}>Categoria *</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 10 }}>{tr("Categoria *")}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
             {CATEGORIES.map((c) => {
               const active = category === c.key;
@@ -187,9 +188,9 @@ export default function AddDiaryScreen() {
         </View>
 
         {/* Fields */}
-        <Field label="Título *" value={title} onChange={setTitle} placeholder="Ex: Tosse persistente" />
-        <Field label="Data (DD/MM/AAAA)" value={date} onChange={setDate} placeholder="DD/MM/AAAA" />
-        <Field label="Descrição" value={description} onChange={setDescription} placeholder="Descreve o que observaste..." multiline />
+        <Field label={tr("Título *")} value={title} onChange={setTitle} placeholder={tr("Ex: Tosse persistente")} />
+        <Field label="Data (DD/MM/AAAA)" value={date} onChange={setDate} placeholder={tr("DD/MM/AAAA")} />
+        <Field label={tr("Descrição")} value={description} onChange={setDescription} placeholder={tr("Descreve o que observaste...")} multiline />
 
         {/* Save */}
         <TouchableOpacity
@@ -204,7 +205,7 @@ export default function AddDiaryScreen() {
         >
           {save.isPending
             ? <ActivityIndicator color="#fff" />
-            : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Registo</Text>
+            : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>{tr("💾 Guardar Registo")}</Text>
           }
         </TouchableOpacity>
       </ScrollView>

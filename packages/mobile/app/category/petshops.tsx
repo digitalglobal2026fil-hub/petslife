@@ -7,6 +7,7 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { CategoryHeader } from "../../components/CategoryHeader";
 import { useState, useCallback } from "react";
+import { tr } from "../../lib/i18n";
 
 function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
   return (
@@ -62,7 +63,7 @@ export default function PetshopsScreen() {
     queryKey: ["businesses"],
     queryFn: async () => {
       const res = await (api as any).businesses.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
   });
@@ -75,15 +76,15 @@ export default function PetshopsScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <CategoryHeader
         emoji="🐾"
-        title="Petshops"
-        subtitle="Tudo o que o seu animal precisa"
+        title={tr("Petshops")}
+        subtitle={tr("Tudo o que o seu animal precisa")}
         bgColor="#F0FFF4"
         accentColor="#10B981"
       />
 
       <View style={{ marginHorizontal: 20, marginBottom: 14, flexDirection: "row", alignItems: "center", backgroundColor: "#fff", borderRadius: 14, paddingHorizontal: 14, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
         <Search size={18} color="#9CA3AF" />
-        <TextInput onChangeText={handleSearch} placeholder="Pesquisar petshops..." placeholderTextColor="#9CA3AF" style={{ flex: 1, padding: 12, fontSize: 14, color: "#1A1A2E" }} />
+        <TextInput onChangeText={handleSearch} placeholder={tr("Pesquisar petshops...")} placeholderTextColor="#9CA3AF" style={{ flex: 1, padding: 12, fontSize: 14, color: "#1A1A2E" }} />
       </View>
 
       <AnimalFact seed={3} compact style={{ marginHorizontal: 20, marginBottom: 14 }} />
@@ -95,8 +96,8 @@ export default function PetshopsScreen() {
         ) : businesses.length === 0 ? (
           <View style={{ alignItems: "center", paddingVertical: 40 }}>
             <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🐾</Text>
-            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Sem petshops encontradas</Text>
-            <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>Seja o primeiro a registar uma petshop!</Text>
+            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Sem petshops encontradas")}</Text>
+            <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>{tr("Seja o primeiro a registar uma petshop!")}</Text>
           </View>
         ) : businesses.map((b: any) => (
           <BusinessCard key={b.id} b={b} onPress={() => router.push(`/business/${b.id}` as any)} />

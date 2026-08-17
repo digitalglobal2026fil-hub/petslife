@@ -2,13 +2,15 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, Image, Animated, Linki
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { useRef, useEffect } from "react";
-import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill, ShieldAlert } from "lucide-react-native";
+import { useRef, useEffect, useState } from "react";
+import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill, ShieldAlert, Globe } from "lucide-react-native";
 import { authClient, clearToken } from "../../lib/auth";
 import { api } from "../../lib/api";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { authFetch } from "../../lib/auth-fetch";
+import { LanguageModal } from "../../components/LanguagePicker";
+import { useLang, LANGUAGES, tr } from "../../lib/i18n";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -108,8 +110,8 @@ export default function ProfileScreen() {
   const userEmail = (meData as any)?.user?.email ?? session?.user?.email ?? "";
 
   async function handleSignOut() {
-    Alert.alert("Sair", "Tem a certeza que quer sair?", [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert("Sair", tr("Tem a certeza que quer sair?"), [
+      { text: tr("Cancelar"), style: "cancel" },
       {
         text: "Sair", style: "destructive", onPress: async () => {
           // Limpar o token PRIMEIRO: garante que a sessão local termina
@@ -128,20 +130,25 @@ export default function ProfileScreen() {
     ]);
   }
 
+  const [langOpen, setLangOpen] = useState(false);
+  const { lang, t } = useLang();
+  const currentLang = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
+
   const menuItems = [
+    { icon: Globe, label: t("Idioma"), sublabel: `${currentLang.flag}  ${currentLang.name}`, color: "#3B82F6", onPress: () => setLangOpen(true) },
     { icon: CreditCard, label: "Subscrição", sublabel: isTrial ? "Trial ativo" : isActive ? "Premium ativo" : "Inativo", color: "#FF6B35", onPress: () => router.push("/subscription") },
     { icon: Gift, label: "Código Promocional", sublabel: "Tens um código especial?", color: "#10B981", onPress: () => router.push("/promo-code" as any) },
-    { icon: Pill, label: "Lembretes", sublabel: "Medicação, tratamentos e vacinas", color: "#4ECDC4", onPress: () => router.push("/reminders" as any) },
-    { icon: MapPin, label: "Vets e Outros", sublabel: "Clínicas, lojas e serviços", color: "#06D6A0", onPress: () => router.push("/find-vets") },
-    { icon: Shield, label: "Privacidade", sublabel: "Política de privacidade", color: "#8B5CF6", onPress: () => Linking.openURL(`${API_URL}/privacy`).catch(() => Alert.alert("Erro", "Não foi possível abrir a política de privacidade.")) },
-    { icon: HelpCircle, label: "Ajuda e Suporte", sublabel: "Contacte-nos por email", color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert("Erro", "Não foi possível abrir o email.")) },
+    { icon: Pill, label: tr("Lembretes"), sublabel: "Medicação, tratamentos e vacinas", color: "#4ECDC4", onPress: () => router.push("/reminders" as any) },
+    { icon: MapPin, label: tr("Vets e Outros"), sublabel: "Clínicas, lojas e serviços", color: "#06D6A0", onPress: () => router.push("/find-vets") },
+    { icon: Shield, label: "Privacidade", sublabel: "Política de privacidade", color: "#8B5CF6", onPress: () => Linking.openURL(`${API_URL}/privacy`).catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir a política de privacidade."))) },
+    { icon: HelpCircle, label: "Ajuda e Suporte", sublabel: "Contacte-nos por email", color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir o email."))) },
   ];
 
   // Área de administração — só aparece nas contas de administração
   const ADMIN_EMAILS = ["digitalglobal2026fil@gmail.com", "aleclikes@outlook.pt"];
   if (session?.user?.email && ADMIN_EMAILS.includes(session.user.email.toLowerCase())) {
     menuItems.push({
-      icon: ShieldAlert, label: "Denúncias",
+      icon: ShieldAlert, label: tr("Denúncias"),
       sublabel: reportCount > 0
         ? `${reportCount} ${reportCount === 1 ? "denúncia por ver" : "denúncias por ver"}`
         : "Conteúdo assinalado pelos utilizadores",
@@ -159,6 +166,7 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F6FF" }} edges={["top", "left", "right"]}>
+      <LanguageModal visible={langOpen} onClose={() => setLangOpen(false)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30 }}>
 
         {/* Header com gradiente */}
@@ -172,7 +180,7 @@ export default function ProfileScreen() {
           borderBottomRightRadius: 36,
         }}>
           <View style={{ position: "absolute", top: -30, right: -30, width: 150, height: 150, borderRadius: 75, backgroundColor: "rgba(255,255,255,0.08)" }} />
-          <Text suppressHighlighting style={{ fontSize: 24, fontWeight: "800", color: "#fff", textAlign: "center" }}>Perfil</Text>
+          <Text suppressHighlighting style={{ fontSize: 24, fontWeight: "800", color: "#fff", textAlign: "center" }}>{tr("Perfil")}</Text>
         </Animated.View>
 
         {/* Avatar flutuante sobre o header */}
@@ -224,7 +232,7 @@ export default function ProfileScreen() {
             style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 12, backgroundColor: "#F5F3FF", borderRadius: 14, paddingHorizontal: 16, paddingVertical: 8 }}
           >
             <Edit2 size={14} color="#8B5CF6" />
-            <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#8B5CF6" }}>Editar perfil</Text>
+            <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#8B5CF6" }}>{tr("Editar perfil")}</Text>
           </TouchableOpacity>
         </Animated.View>
 
@@ -248,7 +256,7 @@ export default function ProfileScreen() {
             <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#EF476F20", alignItems: "center", justifyContent: "center", marginRight: 14 }}>
               <LogOut size={20} color="#EF476F" />
             </View>
-            <Text suppressHighlighting style={{ fontWeight: "700", color: "#EF476F", fontSize: 14, flex: 1 }}>Sair da conta</Text>
+            <Text suppressHighlighting style={{ fontWeight: "700", color: "#EF476F", fontSize: 14, flex: 1 }}>{tr("Sair da conta")}</Text>
           </TouchableOpacity>
 
           {/* Aviso honesto sobre a origem dos conteúdos. Não afirma que a app

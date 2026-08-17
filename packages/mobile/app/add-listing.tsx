@@ -6,12 +6,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Tag, Package } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
+import { tr } from "../lib/i18n";
 
 const CATEGORIES = [
-  { key: "adoption", label: "Adoção", emoji: "🏠" },
+  { key: "adoption", label: tr("Adoção"), emoji: "🏠" },
   { key: "products", label: "Produtos", emoji: "🛍️" },
-  { key: "services", label: "Serviços", emoji: "✂️" },
-  { key: "lost", label: "Animal Perdido", emoji: "🔍" },
+  { key: "services", label: tr("Serviços"), emoji: "✂️" },
+  { key: "lost", label: tr("Animal Perdido"), emoji: "🔍" },
 ];
 
 // Fora do componente para evitar que o teclado feche a cada keystroke
@@ -76,14 +77,14 @@ export default function AddListingScreen() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["marketplace"] });
-      Alert.alert("Sucesso!", "O seu anúncio foi publicado.", [{ text: "OK", onPress: () => router.back() }]);
+      Alert.alert("Sucesso!", tr("O seu anúncio foi publicado."), [{ text: tr("OK"), onPress: () => router.back() }]);
     },
     onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível publicar o anúncio.")),
   });
 
   function handleSubmit() {
-    if (!title.trim()) return Alert.alert("Erro", "O título é obrigatório.");
-    if (!description.trim()) return Alert.alert("Erro", "A descrição é obrigatória.");
+    if (!title.trim()) return Alert.alert(tr("Erro"), tr("O título é obrigatório."));
+    if (!description.trim()) return Alert.alert(tr("Erro"), tr("A descrição é obrigatória."));
     mutation.mutate();
   }
 
@@ -99,7 +100,7 @@ export default function AddListingScreen() {
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center", marginRight: 12 }}>
             <ChevronLeft size={20} color="#1A1A2E" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Novo Anúncio</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Novo Anúncio")}</Text>
         </View>
 
         <ScrollView
@@ -109,7 +110,7 @@ export default function AddListingScreen() {
         >
           {/* Category selector */}
           <View style={{ marginBottom: 18 }}>
-            <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 8 }}>Categoria *</Text>
+            <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 8 }}>{tr("Categoria *")}</Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
               {CATEGORIES.map((c) => (
                 <TouchableOpacity key={c.key} onPress={() => setCategory(c.key)}
@@ -121,12 +122,12 @@ export default function AddListingScreen() {
             </View>
           </View>
 
-          <Field label="Título *" value={title} onChangeText={setTitle} placeholder="Ex: Cachorro Labrador para adopção" />
-          <Field label="Descrição *" value={description} onChangeText={setDescription} placeholder="Descreva o animal, produto ou serviço com detalhe..." multiline />
+          <Field label={tr("Título *")} value={title} onChangeText={setTitle} placeholder={tr("Ex: Cachorro Labrador para adopção")} />
+          <Field label={tr("Descrição *")} value={description} onChangeText={setDescription} placeholder={tr("Descreva o animal, produto ou serviço com detalhe...")} multiline />
 
           <View style={{ flexDirection: "row", gap: 12, marginBottom: 14 }}>
             <View style={{ flex: 1 }}>
-              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Preço (€)</Text>
+              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{tr("Preço (€)")}</Text>
               <TextInput
                 value={price}
                 onChangeText={setPrice}
@@ -137,18 +138,18 @@ export default function AddListingScreen() {
               />
             </View>
             <View style={{ flex: 1 }}>
-              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Localização</Text>
+              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{tr("Localização")}</Text>
               <TextInput
                 value={location}
                 onChangeText={setLocation}
-                placeholder="Ex: Lisboa"
+                placeholder={tr("Ex: Lisboa")}
                 placeholderTextColor="#9CA3AF"
                 style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 16, padding: 14, fontSize: 15, color: "#1A1A2E" }}
               />
             </View>
           </View>
 
-          <Field label="Contacto" value={contact} onChangeText={setContact} placeholder="Email ou telefone" />
+          <Field label={tr("Contacto")} value={contact} onChangeText={setContact} placeholder={tr("Email ou telefone")} />
 
           {/* Info banner */}
           <View style={{ backgroundColor: "#E8FAF9", borderRadius: 16, padding: 14, marginBottom: 20, flexDirection: "row", gap: 10, alignItems: "flex-start" }}>
@@ -165,7 +166,7 @@ export default function AddListingScreen() {
             {mutation.isPending ? <ActivityIndicator color="#fff" /> : (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <Tag size={18} color="#fff" />
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Publicar Anúncio</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{tr("Publicar Anúncio")}</Text>
               </View>
             )}
           </TouchableOpacity>

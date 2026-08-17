@@ -2,6 +2,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import Constants from "expo-constants";
 import { Platform, Alert } from "react-native";
 import { authFetch } from "./auth-fetch";
+import { tr } from "./i18n";
 
 const API_URL = (
   (Constants.expoConfig?.extra?.apiUrl as string) ??
@@ -131,7 +132,7 @@ export async function uploadImage(
     });
   } catch (netErr: any) {
     console.error("[upload] Network error:", netErr?.message);
-    throw new Error("Sem ligação ao servidor. Verifica o teu WiFi.");
+    throw new Error(tr("Sem ligação ao servidor. Verifica o teu WiFi."));
   }
 
   const rawText = await res.text().catch(() => "");
@@ -165,8 +166,8 @@ export async function pickFromGallery() {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (status !== "granted") {
     Alert.alert(
-      "Permissão necessária 📷",
-      "Precisamos de acesso à galeria para escolher uma foto."
+      tr("Permissão necessária 📷"),
+      tr("Precisamos de acesso à galeria para escolher uma foto.")
     );
     return null;
   }
@@ -189,8 +190,8 @@ export async function takePhoto(aspect: [number, number] = [1, 1]) {
   const { status } = await ImagePicker.requestCameraPermissionsAsync();
   if (status !== "granted") {
     Alert.alert(
-      "Permissão necessária 📷",
-      "Precisamos de acesso à câmara para tirar uma foto."
+      tr("Permissão necessária 📷"),
+      tr("Precisamos de acesso à câmara para tirar uma foto.")
     );
     return null;
   }

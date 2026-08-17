@@ -7,6 +7,7 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { CategoryHeader } from "../../components/CategoryHeader";
 import { useState, useCallback } from "react";
+import { tr } from "../../lib/i18n";
 
 function AdoptionCard({ item, onPress }: { item: any; onPress: () => void }) {
   return (
@@ -62,7 +63,7 @@ export default function AdocaoScreen() {
     queryKey: ["marketplace"],
     queryFn: async () => {
       const res = await (api as any).marketplace.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
   });
@@ -86,8 +87,8 @@ export default function AdocaoScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF5F5" }}>
       <CategoryHeader
         emoji="❤️"
-        title="Adoção"
-        subtitle="Animais à espera de um lar amoroso"
+        title={tr("Adoção")}
+        subtitle={tr("Animais à espera de um lar amoroso")}
         bgColor="#FFF1F2"
         accentColor="#EF4444"
       />
@@ -98,7 +99,7 @@ export default function AdocaoScreen() {
         <TextInput
           value={search}
           onChangeText={setSearch}
-          placeholder="Pesquisar animais..."
+          placeholder={tr("Pesquisar animais...")}
           placeholderTextColor="#B0B0C0"
           style={{ flex: 1, marginLeft: 10, fontSize: 15, color: "#1A1A2E" }}
         />
@@ -112,8 +113,8 @@ export default function AdocaoScreen() {
         ) : filtered.length === 0 ? (
           <View style={{ alignItems: "center", marginTop: 60 }}>
             <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🐾</Text>
-            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Sem animais para adoção</Text>
-            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>Nenhum animal disponível para adoção neste momento.</Text>
+            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Sem animais para adoção")}</Text>
+            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>{tr("Nenhum animal disponível para adoção neste momento.")}</Text>
           </View>
         ) : (
           filtered.map((item: any) => (

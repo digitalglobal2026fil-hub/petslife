@@ -12,6 +12,7 @@ import { deleteContent } from "../lib/moderation";
 
 import { Platform } from 'react-native';
 import { authFetch } from "../lib/auth-fetch";
+import { tr } from "../lib/i18n";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -64,12 +65,12 @@ export default function LostPetsScreen() {
 
   const handleOpenMaps = (lat: number, lng: number, name: string) => {
     const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-    Linking.openURL(url).catch(() => Alert.alert('Erro', 'Não foi possível abrir o Google Maps'));
+    Linking.openURL(url).catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir o Google Maps")));
   };
 
   const handleSubmit = async () => {
     if (!form.petName || !form.location || !form.contact) {
-      Alert.alert('Campos obrigatórios', 'Preenche o nome, localização e contacto');
+      Alert.alert(tr("Campos obrigatórios"), tr("Preenche o nome, localização e contacto"));
       return;
     }
     try {
@@ -79,12 +80,12 @@ export default function LostPetsScreen() {
         body: JSON.stringify({ ...form, type: tab }),
       });
       if (res.ok) {
-        Alert.alert('✅ Publicado!', 'O anúncio foi publicado com sucesso.');
+        Alert.alert('✅ Publicado!', tr("O anúncio foi publicado com sucesso."));
         setShowModal(false);
         fetchPosts();
       }
     } catch (e) {
-      Alert.alert('Publicado localmente', 'Anúncio guardado. Será sincronizado em breve.');
+      Alert.alert('Publicado localmente', tr("Anúncio guardado. Será sincronizado em breve."));
       setShowModal(false);
     }
   };
@@ -97,7 +98,7 @@ export default function LostPetsScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color={COLORS.dark} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>🔍 Animais Perdidos</Text>
+        <Text style={styles.headerTitle}>{tr("🔍 Animais Perdidos")}</Text>
         <TouchableOpacity onPress={() => setShowModal(true)} style={styles.addBtn}>
           <Ionicons name="add" size={22} color="#fff" />
         </TouchableOpacity>
@@ -106,10 +107,10 @@ export default function LostPetsScreen() {
       {/* Tabs */}
       <View style={styles.tabRow}>
         <TouchableOpacity style={[styles.tabBtn, tab === 'lost' && styles.tabActive]} onPress={() => setTab('lost')}>
-          <Text style={[styles.tabText, tab === 'lost' && styles.tabTextActive]}>😢 Perdidos</Text>
+          <Text style={[styles.tabText, tab === 'lost' && styles.tabTextActive]}>{tr("😢 Perdidos")}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.tabBtn, tab === 'found' && styles.tabActiveGreen]} onPress={() => setTab('found')}>
-          <Text style={[styles.tabText, tab === 'found' && styles.tabTextActive]}>🎉 Encontrados</Text>
+          <Text style={[styles.tabText, tab === 'found' && styles.tabTextActive]}>{tr("🎉 Encontrados")}</Text>
         </TouchableOpacity>
       </View>
 
@@ -131,8 +132,8 @@ export default function LostPetsScreen() {
           {filtered.length === 0 && (
             <View style={styles.empty}>
               <Text style={styles.emptyIcon}>🐾</Text>
-              <Text style={styles.emptyText}>Nenhum anúncio encontrado</Text>
-              <Text style={styles.emptySubtext}>Publica um anúncio para ajudar!</Text>
+              <Text style={styles.emptyText}>{tr("Nenhum anúncio encontrado")}</Text>
+              <Text style={styles.emptySubtext}>{tr("Publica um anúncio para ajudar!")}</Text>
             </View>
           )}
           {filtered.map((post, i) => (
@@ -154,8 +155,8 @@ export default function LostPetsScreen() {
         <SafeAreaView style={[styles.container, { backgroundColor: '#fff' }]}>
           <View style={styles.modalHeader}>
             <TouchableOpacity onPress={() => setShowModal(false)}><Ionicons name="close" size={24} color={COLORS.dark} /></TouchableOpacity>
-            <Text style={styles.modalTitle}>Novo Anúncio</Text>
-            <TouchableOpacity onPress={handleSubmit} style={styles.saveBtn}><Text style={styles.saveTxt}>Publicar</Text></TouchableOpacity>
+            <Text style={styles.modalTitle}>{tr("Novo Anúncio")}</Text>
+            <TouchableOpacity onPress={handleSubmit} style={styles.saveBtn}><Text style={styles.saveTxt}>{tr("Publicar")}</Text></TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, gap: 14 }}>
             <View style={styles.typeRow}>
@@ -167,10 +168,10 @@ export default function LostPetsScreen() {
             </View>
             {[
               { key: 'petName', label: 'Nome do animal', placeholder: 'ex: Rex' },
-              { key: 'breed', label: 'Raça', placeholder: 'ex: Labrador' },
+              { key: 'breed', label: tr("Raça"), placeholder: 'ex: Labrador' },
               { key: 'color', label: 'Cor / markings', placeholder: 'ex: Castanho com manchas brancas' },
               { key: 'location', label: '📍 Localização', placeholder: 'ex: Parque Eduardo VII, Lisboa' },
-              { key: 'description', label: 'Descrição', placeholder: 'Mais detalhes...' },
+              { key: 'description', label: tr("Descrição"), placeholder: 'Mais detalhes...' },
               { key: 'contact', label: '📞 Contacto', placeholder: 'Telemóvel ou email' },
             ].map(field => (
               <View key={field.key}>
@@ -185,7 +186,7 @@ export default function LostPetsScreen() {
               </View>
             ))}
             <View>
-              <Text style={styles.fieldLabel}>Espécie</Text>
+              <Text style={styles.fieldLabel}>{tr("Espécie")}</Text>
               <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
                 {['dog', 'cat', 'bird', 'other'].map(s => (
                   <TouchableOpacity key={s} onPress={() => setForm(f => ({ ...f, species: s }))} style={[styles.filterChip, form.species === s && styles.filterChipActive]}>
@@ -220,7 +221,7 @@ function PostCard({ post, onMaps, onDelete }: { post: any; onMaps: (lat: number,
           target="lost_pet"
           targetId={String(post.id)}
           preview={post.petName || ''}
-          label="este anúncio"
+          label={tr("este anúncio")}
           onDelete={onDelete}
         />
       </View>
@@ -237,7 +238,7 @@ function PostCard({ post, onMaps, onDelete }: { post: any; onMaps: (lat: number,
             {post.lat && post.lng && (
               <TouchableOpacity style={styles.actionBtn} onPress={() => onMaps(post.lat, post.lng, post.petName)}>
                 <Ionicons name="map-outline" size={16} color={COLORS.teal} />
-                <Text style={[styles.actionTxt, { color: COLORS.teal }]}>Ver no Mapa</Text>
+                <Text style={[styles.actionTxt, { color: COLORS.teal }]}>{tr("Ver no Mapa")}</Text>
               </TouchableOpacity>
             )}
             {post.contact && (

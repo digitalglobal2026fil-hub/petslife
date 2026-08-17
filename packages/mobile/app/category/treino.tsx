@@ -7,6 +7,7 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { CategoryHeader } from "../../components/CategoryHeader";
 import { useState, useCallback } from "react";
+import { tr } from "../../lib/i18n";
 
 function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
   return (
@@ -62,7 +63,7 @@ export default function TreinoScreen() {
     queryKey: ["businesses"],
     queryFn: async () => {
       const res = await (api as any).businesses.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
   });
@@ -83,8 +84,8 @@ export default function TreinoScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F0FDF4" }}>
       <CategoryHeader
         emoji="🎯"
-        title="Treino & Adestramento"
-        subtitle="Treinadores profissionais para o seu pet"
+        title={tr("Treino & Adestramento")}
+        subtitle={tr("Treinadores profissionais para o seu pet")}
         bgColor="#ECFDF5"
         accentColor="#059669"
       />
@@ -95,7 +96,7 @@ export default function TreinoScreen() {
         <TextInput
           value={search}
           onChangeText={setSearch}
-          placeholder="Pesquisar treinadores..."
+          placeholder={tr("Pesquisar treinadores...")}
           placeholderTextColor="#B0B0C0"
           style={{ flex: 1, marginLeft: 10, fontSize: 15, color: "#1A1A2E" }}
         />
@@ -109,8 +110,8 @@ export default function TreinoScreen() {
         ) : filtered.length === 0 ? (
           <View style={{ alignItems: "center", marginTop: 60 }}>
             <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🎯</Text>
-            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Sem treinadores disponíveis</Text>
-            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>Ainda não há treinadores registados nesta área.</Text>
+            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Sem treinadores disponíveis")}</Text>
+            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>{tr("Ainda não há treinadores registados nesta área.")}</Text>
           </View>
         ) : (
           filtered.map((b: any) => (

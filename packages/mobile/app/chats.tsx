@@ -6,6 +6,7 @@ import { ChevronLeft, MessageCircle, Users } from "lucide-react-native";
 import { authClient } from "../lib/auth";
 import { netError } from "../lib/net-error";
 import { authFetch } from "../lib/auth-fetch";
+import { tr } from "../lib/i18n";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -66,8 +67,8 @@ export default function ChatsListScreen() {
           <ChevronLeft size={20} color="#fff" />
         </TouchableOpacity>
         <View>
-          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#fff" }}>Mensagens</Text>
-          <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, marginTop: 2 }}>As tuas conversas com outros donos</Text>
+          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#fff" }}>{tr("Mensagens")}</Text>
+          <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, marginTop: 2 }}>{tr("As tuas conversas com outros donos")}</Text>
         </View>
       </View>
 
@@ -77,7 +78,7 @@ export default function ChatsListScreen() {
         <View style={{ alignItems: "center", padding: 30 }}>
           <Text suppressHighlighting style={{ color: "#6B7280", textAlign: "center" }}>{error}</Text>
           <TouchableOpacity onPress={() => { setLoading(true); load(); }} style={{ marginTop: 14, backgroundColor: "#8B7FD6", borderRadius: 12, paddingHorizontal: 20, paddingVertical: 10 }}>
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>Tentar outra vez</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Tentar outra vez")}</Text>
           </TouchableOpacity>
         </View>
       ) : chats.length === 0 ? (
@@ -85,14 +86,14 @@ export default function ChatsListScreen() {
           <View style={{ backgroundColor: "#EFEBFF", borderRadius: 32, padding: 18 }}>
             <MessageCircle size={44} color="#8B7FD6" />
           </View>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginTop: 14 }}>Ainda não tens conversas</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginTop: 14 }}>{tr("Ainda não tens conversas")}</Text>
           <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 6, textAlign: "center", lineHeight: 20 }}>
             Fala com outros donos a partir da Comunidade, do Marketplace ou dos anúncios de animais perdidos.
           </Text>
           <TouchableOpacity onPress={() => router.push("/(tabs)/social")}
             style={{ marginTop: 18, backgroundColor: "#8B7FD6", borderRadius: 14, paddingHorizontal: 22, paddingVertical: 12, flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Users size={16} color="#fff" />
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>Ir para a Comunidade</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Ir para a Comunidade")}</Text>
           </TouchableOpacity>
         </View>
       ) : (

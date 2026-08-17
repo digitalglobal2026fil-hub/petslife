@@ -3,6 +3,7 @@ import { Alert, AppState, Linking, Vibration } from "react-native";
 import { kvGetIds, kvSetIds, kvHas } from "./kv";
 import Constants from "expo-constants";
 import { authFetch } from "./auth-fetch";
+import { tr } from "./i18n";
 
 const API_URL = (
   (Constants.expoConfig?.extra?.apiUrl as string) ??
@@ -49,7 +50,7 @@ export function useScanAlerts(enabled: boolean) {
       const quem = scan?.finderName ? `\n\nEncontrado por: ${scan.finderName}` : "";
       const tel = scan?.finderPhone ? `\nTelefone: ${scan.finderPhone}` : "";
       const temMapa = scan?.lat && scan?.lng;
-      const botoes: any[] = [{ text: "Fechar", style: "cancel" }];
+      const botoes: any[] = [{ text: tr("Fechar"), style: "cancel" }];
       if (temMapa) {
         botoes.push({
           text: "Ver no mapa",

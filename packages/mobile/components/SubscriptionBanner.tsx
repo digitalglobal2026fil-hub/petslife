@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { AlertTriangle, Sparkles } from "lucide-react-native";
 import { useSubscriptionGate } from "../lib/useSubscriptionGate";
+import { tr } from "../lib/i18n";
 
 /**
  * Shows a warning banner when the trial/subscription is about to expire (<=3 days)
@@ -37,7 +38,7 @@ export function SubscriptionBanner() {
             Renove agora para desbloquear todas as funcionalidades
           </Text>
         </View>
-        <Text suppressHighlighting style={{ color: "#DC2626", fontWeight: "800", fontSize: 12 }}>Renovar</Text>
+        <Text suppressHighlighting style={{ color: "#DC2626", fontWeight: "800", fontSize: 12 }}>{tr("Renovar")}</Text>
       </TouchableOpacity>
     );
   }
@@ -61,7 +62,7 @@ export function SubscriptionBanner() {
           {isTrial ? "Escolha um plano para continuar sem interrupções" : "Renove para não perder o acesso"}
         </Text>
       </View>
-      <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "800", fontSize: 12 }}>Ver planos</Text>
+      <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "800", fontSize: 12 }}>{tr("Ver planos")}</Text>
     </TouchableOpacity>
   );
 }

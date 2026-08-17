@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ChevronLeft, AlertTriangle, ChevronRight, Phone } from "lucide-react-native";
 import { Linking } from "react-native";
+import { tr } from "../lib/i18n";
 
 const BG = "#FFF9F9";
 const DARK = "#1A1A2E";
@@ -144,7 +145,7 @@ export default function FirstAidScreen() {
           <View style={{ backgroundColor: selected.color, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 28, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}>
             <TouchableOpacity onPress={() => setSelected(null)} style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 14 }}>
               <ChevronLeft size={20} color="#fff" />
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Voltar</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>{tr("Voltar")}</Text>
             </TouchableOpacity>
             <Text suppressHighlighting style={{ fontSize: 56, textAlign: "center" }}>{selected.emoji}</Text>
             <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{selected.title}</Text>
@@ -156,7 +157,7 @@ export default function FirstAidScreen() {
           <View style={{ padding: 20, gap: 16 }}>
             {/* Passos */}
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 14 }}>✅ O que fazer</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 14 }}>{tr("✅ O que fazer")}</Text>
               {selected.steps.map((s, i) => (
                 <View key={i} style={{ flexDirection: "row", gap: 12, marginBottom: 12 }}>
                   <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: selected.color, alignItems: "center", justifyContent: "center", marginTop: 2 }}>
@@ -169,7 +170,7 @@ export default function FirstAidScreen() {
 
             {/* Não fazer */}
             <View style={{ backgroundColor: "#FEF2F2", borderRadius: 20, padding: 18, borderWidth: 1.5, borderColor: "#FCA5A5" }}>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: RED, marginBottom: 12 }}>❌ Não fazer</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: RED, marginBottom: 12 }}>{tr("❌ Não fazer")}</Text>
               {selected.doNot.map((d, i) => (
                 <View key={i} style={{ flexDirection: "row", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
                   <Text suppressHighlighting style={{ fontSize: 16, marginTop: 1 }}>🚫</Text>
@@ -183,7 +184,7 @@ export default function FirstAidScreen() {
               style={{ backgroundColor: RED, borderRadius: 18, padding: 16, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 }}>
               <Phone size={20} color="#fff" />
               <View>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>Ligar ao Veterinário</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("Ligar ao Veterinário")}</Text>
                 <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.8)", fontSize: 11 }}>213 420 000 — Linha Vet 24h</Text>
               </View>
             </TouchableOpacity>
@@ -205,8 +206,8 @@ export default function FirstAidScreen() {
             <ChevronLeft size={18} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>Primeiros Socorros 🩺</Text>
-            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>Guia de emergência para animais</Text>
+            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>{tr("Primeiros Socorros 🩺")}</Text>
+            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{tr("Guia de emergência para animais")}</Text>
           </View>
         </View>
         <View style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, padding: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -222,7 +223,7 @@ export default function FirstAidScreen() {
         <TouchableOpacity onPress={() => Linking.openURL("tel:213420000")}
           style={{ backgroundColor: RED, borderRadius: 16, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 8 }}>
           <Phone size={18} color="#fff" />
-          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>🚨 Ligar Vet Emergência 24h</Text>
+          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{tr("🚨 Ligar Vet Emergência 24h")}</Text>
         </TouchableOpacity>
 
         {[

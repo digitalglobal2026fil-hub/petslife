@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "./api";
+import { tr } from "./i18n";
 
 export interface SubscriptionGate {
   isLoading: boolean;
@@ -17,7 +18,7 @@ export interface SubscriptionGate {
  * Central hook to check subscription/trial status across the app.
  * - Trial: 3 days free, then blocked unless subscribed.
  * - Paid (monthly/annual): blocked if not renewed after currentPeriodEnd.
- * - When blocked, only the "Álbum" tab + Profile/Subscription screens remain usable.
+ * - When blocked, only the Álbum tab + Profile/Subscription screens remain usable.
  */
 export function useSubscriptionGate(): SubscriptionGate {
   const { data, isLoading } = useQuery({

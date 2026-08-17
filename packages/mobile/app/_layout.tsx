@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { Slot, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -10,6 +11,7 @@ import { onSessionExpired } from "../lib/session-expired";
 import { ensureToken } from "../lib/auth-fetch";
 import { useScanAlerts } from "../lib/scan-alerts";
 import { ErrorCatcher } from "../components/ErrorCatcher";
+import { LangProvider, useLang, tr } from "../lib/i18n";
 
 const queryClient = new QueryClient();
 
@@ -40,10 +42,16 @@ function AuthGuard() {
   }, [session, isPending]);
 
   if (isPending) {
-    return <AppLoading message="Só um instante, quase lá..." />;
+    return <AppLoading message={tr("Só um instante, quase lá...")} />;
   }
 
   return <Slot />;
+}
+
+/** Quando se muda de idioma, remonta a árvore para o texto ser todo relido. */
+function LangKeyed({ children }: { children: React.ReactNode }) {
+  const { lang } = useLang();
+  return <React.Fragment key={lang}>{children}</React.Fragment>;
 }
 
 export default function RootLayout() {
@@ -53,12 +61,16 @@ export default function RootLayout() {
 
   return (
     <ErrorCatcher>
+      <LangProvider>
       <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <StatusBar style={introDone ? "auto" : "light"} />
-        {introDone ? <AuthGuard /> : <BrandIntro onDone={() => setIntroDone(true)} />}
+        <LangKeyed>
+          {introDone ? <AuthGuard /> : <BrandIntro onDone={() => setIntroDone(true)} />}
+        </LangKeyed>
       </QueryClientProvider>
       </SafeAreaProvider>
+      </LangProvider>
     </ErrorCatcher>
   );
 }

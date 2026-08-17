@@ -10,6 +10,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 
 import { Platform } from 'react-native';
 import { authFetch } from "../lib/auth-fetch";
+import { tr } from "../lib/i18n";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -92,7 +93,7 @@ export default function WeightChartScreen() {
 
   const addWeight = async () => {
     if (!newWeight || isNaN(parseFloat(newWeight))) {
-      Alert.alert('Erro', 'Insere um peso válido em kg');
+      Alert.alert(tr("Erro"), tr("Insere um peso válido em kg"));
       return;
     }
     try {
@@ -109,7 +110,7 @@ export default function WeightChartScreen() {
         fetchLogs(selectedPet.id);
       }
     } catch (e) {
-      Alert.alert('Erro', 'Não foi possível guardar');
+      Alert.alert(tr("Erro"), tr("Não foi possível guardar"));
     }
   };
 
@@ -138,7 +139,7 @@ export default function WeightChartScreen() {
         </TouchableOpacity>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <Gauge size={20} color={COLORS.dark} />
-          <Text style={styles.headerTitle}>Peso</Text>
+          <Text style={styles.headerTitle}>{tr("Peso")}</Text>
         </View>
         <TouchableOpacity onPress={() => setShowAddModal(true)} style={styles.addBtn}>
           <Ionicons name="add" size={22} color="#fff" />
@@ -165,15 +166,15 @@ export default function WeightChartScreen() {
               {/* Stats cards */}
               <View style={styles.statsRow}>
                 <View style={[styles.statCard, { borderTopColor: COLORS.orange }]}>
-                  <Text style={styles.statLabel}>Atual</Text>
+                  <Text style={styles.statLabel}>{tr("Atual")}</Text>
                   <Text style={styles.statValue}>{latestWeight ? `${latestWeight}kg` : '—'}</Text>
                 </View>
                 <View style={[styles.statCard, { borderTopColor: COLORS.teal }]}>
-                  <Text style={styles.statLabel}>Mínimo</Text>
+                  <Text style={styles.statLabel}>{tr("Mínimo")}</Text>
                   <Text style={styles.statValue}>{filteredLogs.length > 0 ? `${Math.min(...filteredLogs.map(l => l.weight))}kg` : '—'}</Text>
                 </View>
                 <View style={[styles.statCard, { borderTopColor: diff && parseFloat(diff) < 0 ? COLORS.green : COLORS.red }]}>
-                  <Text style={styles.statLabel}>Variação</Text>
+                  <Text style={styles.statLabel}>{tr("Variação")}</Text>
                   <Text style={[styles.statValue, { color: diff && parseFloat(diff) < 0 ? COLORS.green : COLORS.red }]}>
                     {diff ? `${parseFloat(diff) > 0 ? '+' : ''}${diff}kg` : '—'}
                   </Text>
@@ -193,12 +194,12 @@ export default function WeightChartScreen() {
 
               {/* Chart */}
               <View style={styles.chartCard}>
-                <Text style={styles.chartTitle}>Evolução do Peso</Text>
+                <Text style={styles.chartTitle}>{tr("Evolução do Peso")}</Text>
                 {chartLogs.length === 0 ? (
                   <View style={{ alignItems: 'center', padding: 30 }}>
                     <Gauge size={40} color={COLORS.orange} style={{ marginBottom: 8 }} />
-                    <Text style={{ color: COLORS.gray, fontSize: 14 }}>Nenhum registo ainda</Text>
-                    <Text style={{ color: COLORS.gray, fontSize: 12, marginTop: 4 }}>Clica no + para adicionar o primeiro peso</Text>
+                    <Text style={{ color: COLORS.gray, fontSize: 14 }}>{tr("Nenhum registo ainda")}</Text>
+                    <Text style={{ color: COLORS.gray, fontSize: 12, marginTop: 4 }}>{tr("Clica no + para adicionar o primeiro peso")}</Text>
                   </View>
                 ) : (
                   <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingTop: 8 }}>
@@ -222,9 +223,9 @@ export default function WeightChartScreen() {
               </View>
 
               {/* History list */}
-              <Text style={styles.sectionTitle}>Histórico</Text>
+              <Text style={styles.sectionTitle}>{tr("Histórico")}</Text>
               {filteredLogs.length === 0 ? (
-                <View style={styles.emptySmall}><Text style={styles.emptySmallTxt}>Sem registos neste período</Text></View>
+                <View style={styles.emptySmall}><Text style={styles.emptySmallTxt}>{tr("Sem registos neste período")}</Text></View>
               ) : (
                 [...filteredLogs].reverse().map((log, i) => {
                   const prev = filteredLogs[filteredLogs.length - 2 - i];
@@ -254,9 +255,9 @@ export default function WeightChartScreen() {
           {pets.length === 0 && (
             <View style={styles.empty}>
               <Text style={styles.emptyIcon}>🐾</Text>
-              <Text style={styles.emptyText}>Sem animais registados</Text>
+              <Text style={styles.emptyText}>{tr("Sem animais registados")}</Text>
               <TouchableOpacity style={styles.emptyBtn} onPress={() => router.push('/add-pet')}>
-                <Text style={styles.emptyBtnTxt}>Adicionar Animal</Text>
+                <Text style={styles.emptyBtnTxt}>{tr("Adicionar Animal")}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -268,7 +269,7 @@ export default function WeightChartScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Registar Peso</Text>
+              <Text style={styles.modalTitle}>{tr("Registar Peso")}</Text>
               <TouchableOpacity onPress={() => setShowAddModal(false)}><Ionicons name="close" size={22} color={COLORS.dark} /></TouchableOpacity>
             </View>
             <Text style={styles.modalPetName}>{selectedPet?.name}</Text>
@@ -286,11 +287,11 @@ export default function WeightChartScreen() {
               style={[styles.input, { height: 70 }]}
               value={newNote}
               onChangeText={setNewNote}
-              placeholder="ex: Após consulta veterinária"
+              placeholder={tr("ex: Após consulta veterinária")}
               multiline
             />
             <TouchableOpacity style={styles.saveBtn} onPress={addWeight}>
-              <Text style={styles.saveTxt}>Guardar</Text>
+              <Text style={styles.saveTxt}>{tr("Guardar")}</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -12,6 +12,7 @@ import { PaywallScreen } from "../../components/PaywallScreen";
 import { netError } from "../../lib/net-error";
 import { ModerationButton } from "../../components/ModerationButton";
 import { deleteContent } from "../../lib/moderation";
+import { tr } from "../../lib/i18n";
 
 export default function SocialScreen() {
   const queryClient = useQueryClient();
@@ -50,7 +51,7 @@ export default function SocialScreen() {
   const posts = (data as any)?.posts ?? [];
 
   if (!gateLoading && isBlocked) {
-    return <PaywallScreen featureName="Comunidade" />;
+    return <PaywallScreen featureName={tr("Comunidade")} />;
   }
 
   return (
@@ -62,8 +63,8 @@ export default function SocialScreen() {
       }}>
         <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.1)" }} />
         <View>
-          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>Comunidade</Text>
-          <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", marginTop: 2, fontSize: 13 }}>Partilhe momentos dos seus animais</Text>
+          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Comunidade")}</Text>
+          <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", marginTop: 2, fontSize: 13 }}>{tr("Partilhe momentos dos seus animais")}</Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <TouchableOpacity onPress={() => router.push("/chats" as any)}
@@ -82,7 +83,7 @@ export default function SocialScreen() {
           <TextInput
             value={newPost}
             onChangeText={setNewPost}
-            placeholder="Partilhe um momento com o seu animal... 🐾"
+            placeholder={tr("Partilhe um momento com o seu animal... 🐾")}
             multiline
             style={{ fontSize: 14, color: "#1A1A2E", minHeight: 60 }}
           />
@@ -90,7 +91,7 @@ export default function SocialScreen() {
             disabled={createPost.isPending || !newPost.trim()}
             style={{ backgroundColor: "#FF6B35", borderRadius: 12, padding: 10, alignItems: "center", marginTop: 10, opacity: createPost.isPending ? 0.7 : 1, flexDirection: "row", justifyContent: "center", gap: 8 }}>
             {createPost.isPending ? <ActivityIndicator color="#fff" size="small" /> : <Send size={16} color="#fff" />}
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", backgroundColor: "transparent" }}>Publicar</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", backgroundColor: "transparent" }}>{tr("Publicar")}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -103,8 +104,8 @@ export default function SocialScreen() {
               <View style={{ backgroundColor: "#F5EDE4", borderRadius: 28, padding: 14, alignSelf: "center" }}>
                 <PawPrint size={44} color="#8B5E3C" />
               </View>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Seja o primeiro a partilhar!</Text>
-              <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>Partilhe um momento especial do seu animal</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Seja o primeiro a partilhar!")}</Text>
+              <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>{tr("Partilhe um momento especial do seu animal")}</Text>
             </View>
           ) : posts.map((post: any) => (
             <View key={post.id} style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
@@ -113,7 +114,7 @@ export default function SocialScreen() {
                   <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14, backgroundColor: "transparent" }}>{(post.userId ?? "?")[0]?.toUpperCase()}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text suppressHighlighting style={{ fontWeight: "600", color: "#1A1A2E", fontSize: 13 }}>Utilizador</Text>
+                  <Text suppressHighlighting style={{ fontWeight: "600", color: "#1A1A2E", fontSize: 13 }}>{tr("Utilizador")}</Text>
                   <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 11 }}>{new Date(post.createdAt).toLocaleDateString("pt-PT")}</Text>
                 </View>
                 <ModerationButton
@@ -121,7 +122,7 @@ export default function SocialScreen() {
                   targetId={String(post.id)}
                   preview={String(post.content ?? "").slice(0, 120)}
                   isOwner={!!myId && post.userId === myId}
-                  label="esta publicação"
+                  label={tr("esta publicação")}
                   onDelete={async () => {
                     const ok = await deleteContent("post", String(post.id));
                     if (ok) queryClient.invalidateQueries({ queryKey: ["posts"] });

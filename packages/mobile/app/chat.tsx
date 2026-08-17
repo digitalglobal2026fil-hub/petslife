@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { authClient } from '../lib/auth';
 import { authFetch } from "../lib/auth-fetch";
+import { tr } from "../lib/i18n";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -73,7 +74,7 @@ export default function ChatScreen() {
       if (!res.ok) {
         // Remove optimistic
         setMessages(prev => prev.filter(m => m.id !== optimistic.id));
-        Alert.alert('Erro', 'Não foi possível enviar a mensagem');
+        Alert.alert(tr("Erro"), tr("Não foi possível enviar a mensagem"));
       }
     } catch (e) {
       setMessages(prev => prev.filter(m => m.id !== optimistic.id));
@@ -97,7 +98,7 @@ export default function ChatScreen() {
         )}
         <View style={[styles.bubble, isMine ? styles.bubbleMine : styles.bubbleOther]}>
           {showSenderName && !isMine && (
-            <Text style={styles.senderName}>{item.senderName || otherUserName || 'Utilizador'}</Text>
+            <Text style={styles.senderName}>{item.senderName || otherUserName || tr("Utilizador")}</Text>
           )}
           <Text style={[styles.msgText, isMine && styles.msgTextMine]}>{item.content}</Text>
           <Text style={[styles.msgTime, isMine && styles.msgTimeMine]}>{time}</Text>
@@ -118,7 +119,7 @@ export default function ChatScreen() {
         </View>
         <View style={styles.headerInfo}>
           <Text style={styles.headerName}>{otherUserName || 'Chat'}</Text>
-          <Text style={styles.headerStatus}>● Online</Text>
+          <Text style={styles.headerStatus}>{tr("● Online")}</Text>
         </View>
         <TouchableOpacity style={styles.headerAction}>
           <Ionicons name="ellipsis-vertical" size={20} color={COLORS.dark} />
@@ -139,8 +140,8 @@ export default function ChatScreen() {
             ListEmptyComponent={
               <View style={styles.emptyChat}>
                 <Text style={styles.emptyChatIcon}>💬</Text>
-                <Text style={styles.emptyChatText}>Ainda sem mensagens</Text>
-                <Text style={styles.emptyChatSub}>Envia a primeira mensagem!</Text>
+                <Text style={styles.emptyChatText}>{tr("Ainda sem mensagens")}</Text>
+                <Text style={styles.emptyChatSub}>{tr("Envia a primeira mensagem!")}</Text>
               </View>
             }
           />
@@ -152,7 +153,7 @@ export default function ChatScreen() {
             style={styles.input}
             value={input}
             onChangeText={setInput}
-            placeholder="Escreve uma mensagem..."
+            placeholder={tr("Escreve uma mensagem...")}
             placeholderTextColor={COLORS.gray}
             multiline
             maxLength={1000}

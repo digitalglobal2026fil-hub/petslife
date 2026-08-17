@@ -7,6 +7,7 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { CategoryHeader } from "../../components/CategoryHeader";
 import { useState, useCallback } from "react";
+import { tr } from "../../lib/i18n";
 
 function LostCard({ item, onPress }: { item: any; onPress: () => void }) {
   return (
@@ -62,7 +63,7 @@ export default function PerdidosScreen() {
     queryKey: ["marketplace"],
     queryFn: async () => {
       const res = await (api as any).marketplace.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
   });
@@ -86,8 +87,8 @@ export default function PerdidosScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFDF0" }}>
       <CategoryHeader
         emoji="🔍"
-        title="Animal Perdido"
-        subtitle="Ajuda a encontrar animais perdidos"
+        title={tr("Animal Perdido")}
+        subtitle={tr("Ajuda a encontrar animais perdidos")}
         bgColor="#FFFBEB"
         accentColor="#D97706"
       />
@@ -98,7 +99,7 @@ export default function PerdidosScreen() {
         <TextInput
           value={search}
           onChangeText={setSearch}
-          placeholder="Pesquisar animais perdidos..."
+          placeholder={tr("Pesquisar animais perdidos...")}
           placeholderTextColor="#B0B0C0"
           style={{ flex: 1, marginLeft: 10, fontSize: 15, color: "#1A1A2E" }}
         />
@@ -112,8 +113,8 @@ export default function PerdidosScreen() {
         ) : filtered.length === 0 ? (
           <View style={{ alignItems: "center", marginTop: 60 }}>
             <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🔍</Text>
-            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Nenhum animal perdido</Text>
-            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>Ótimo! Nenhum relato de animal perdido por aqui.</Text>
+            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Nenhum animal perdido")}</Text>
+            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>{tr("Ótimo! Nenhum relato de animal perdido por aqui.")}</Text>
           </View>
         ) : (
           filtered.map((item: any) => (

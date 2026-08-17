@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
+import { tr } from "../lib/i18n";
 
 const types = [
   { value: "clinica",     label: "🏥 Clínica Veterinária" },
@@ -80,7 +81,7 @@ export default function AddBusinessScreen() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["businesses"] });
-      Alert.alert("✅ Negócio registado!", "O teu negócio já está visível para todos os utilizadores.");
+      Alert.alert(tr("✅ Negócio registado!"), tr("O teu negócio já está visível para todos os utilizadores."));
       router.back();
     },
     onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível registar o negócio.")),
@@ -97,7 +98,7 @@ export default function AddBusinessScreen() {
           <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
             <ChevronLeft size={24} color="#1A1A2E" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>Registar Negócio</Text>
+          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>{tr("Registar Negócio")}</Text>
         </View>
 
         <ScrollView
@@ -105,11 +106,11 @@ export default function AddBusinessScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <Input label="Nome do negócio *" value={name} onChangeText={setName} placeholder="Ex: Clínica Veterinária Central" />
+          <Input label={tr("Nome do negócio *")} value={name} onChangeText={setName} placeholder={tr("Ex: Clínica Veterinária Central")} />
 
           {/* Tipo */}
           <View style={{ marginBottom: 16 }}>
-            <Text suppressHighlighting style={{ fontWeight: "600", color: "#374151", marginBottom: 8, fontSize: 14 }}>Tipo *</Text>
+            <Text suppressHighlighting style={{ fontWeight: "600", color: "#374151", marginBottom: 8, fontSize: 14 }}>{tr("Tipo *")}</Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
               {types.map(t => (
                 <TouchableOpacity key={t.value} onPress={() => setType(t.value)}
@@ -124,15 +125,15 @@ export default function AddBusinessScreen() {
             </View>
           </View>
 
-          <Input label="Descrição" value={description} onChangeText={setDescription} placeholder="Descreve os serviços e especialidades..." multiline />
-          <Input label="Telefone" value={phone} onChangeText={setPhone} placeholder="+351 912 345 678" keyboardType="phone-pad" />
-          <Input label="Website" value={website} onChangeText={setWebsite} placeholder="https://..." keyboardType="url" />
-          <Input label="Morada" value={address} onChangeText={setAddress} placeholder="Rua, número, código postal" />
-          <Input label="Cidade" value={city} onChangeText={setCity} placeholder="Ex: Lisboa, Porto, Setúbal..." />
-          <Input label="Link para marcar consulta" value={bookingUrl} onChangeText={setBookingUrl} placeholder="https://... (opcional)" keyboardType="url" />
-          <Input label="Telefone para marcações" value={bookingPhone} onChangeText={setBookingPhone} placeholder="+351 912 345 678 (opcional)" keyboardType="phone-pad" />
-          <Input label="Horário" value={schedule} onChangeText={setSchedule} placeholder="Ex: Seg-Sex 9h-18h, Sáb 9h-13h" />
-          <Input label="Serviços e preços" value={services} onChangeText={setServices} placeholder="Ex: Consulta geral €25, Vacina €15, Tosquia €30..." multiline />
+          <Input label={tr("Descrição")} value={description} onChangeText={setDescription} placeholder={tr("Descreve os serviços e especialidades...")} multiline />
+          <Input label={tr("Telefone")} value={phone} onChangeText={setPhone} placeholder="+351 912 345 678" keyboardType="phone-pad" />
+          <Input label={tr("Website")} value={website} onChangeText={setWebsite} placeholder="https://..." keyboardType="url" />
+          <Input label={tr("Morada")} value={address} onChangeText={setAddress} placeholder={tr("Rua, número, código postal")} />
+          <Input label={tr("Cidade")} value={city} onChangeText={setCity} placeholder={tr("Ex: Lisboa, Porto, Setúbal...")} />
+          <Input label={tr("Link para marcar consulta")} value={bookingUrl} onChangeText={setBookingUrl} placeholder="https://... (opcional)" keyboardType="url" />
+          <Input label={tr("Telefone para marcações")} value={bookingPhone} onChangeText={setBookingPhone} placeholder="+351 912 345 678 (opcional)" keyboardType="phone-pad" />
+          <Input label={tr("Horário")} value={schedule} onChangeText={setSchedule} placeholder={tr("Ex: Seg-Sex 9h-18h, Sáb 9h-13h")} />
+          <Input label={tr("Serviços e preços")} value={services} onChangeText={setServices} placeholder={tr("Ex: Consulta geral €25, Vacina €15, Tosquia €30...")} multiline />
 
           <TouchableOpacity
             onPress={() => mutate()}
@@ -144,7 +145,7 @@ export default function AddBusinessScreen() {
             }}>
             {isPending
               ? <ActivityIndicator color="#fff" />
-              : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Registar Negócio</Text>}
+              : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{tr("Registar Negócio")}</Text>}
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -9,6 +9,7 @@ import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
 import { confirmUsePhoto } from "../../../lib/pick-image";
+import { tr } from "../../../lib/i18n";
 
 const COLS = 3;
 const SIZE = (Dimensions.get("window").width - 40 - (COLS - 1) * 4) / COLS;
@@ -52,7 +53,7 @@ export default function PetPhotosScreen() {
       }
       qc.invalidateQueries({ queryKey: ["photos", id] });
     } catch (e: any) {
-      Alert.alert("Erro no upload", e.message ?? "Não foi possível carregar a foto.");
+      Alert.alert(tr("Erro no upload"), e.message ?? "Não foi possível carregar a foto.");
     } finally {
       setUploading(false);
     }
@@ -66,11 +67,11 @@ export default function PetPhotosScreen() {
       let result: any;
       if (mode === "camera") {
         const perm = await ImagePicker.requestCameraPermissionsAsync();
-        if (!perm.granted) return Alert.alert("Permissão necessária", "Ative o acesso à câmara.");
+        if (!perm.granted) return Alert.alert(tr("Permissão necessária"), tr("Ative o acesso à câmara."));
         result = await ImagePicker.launchCameraAsync({ quality: 0.85 });
       } else {
         const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!perm.granted) return Alert.alert("Permissão necessária", "Ative o acesso à galeria.");
+        if (!perm.granted) return Alert.alert(tr("Permissão necessária"), tr("Ative o acesso à galeria."));
         result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
           quality: 0.85,
@@ -92,10 +93,10 @@ export default function PetPhotosScreen() {
 
   const addPhoto = async (fromCamera: boolean) => {
     if (fromCamera) return pickAndUpload("camera");
-    Alert.alert("Adicionar fotos ao álbum 📸", "Como quer escolher?", [
-      { text: "Escolher fotos da galeria", onPress: () => pickAndUpload("gallery") },
-      { text: "Cortar uma foto antes de guardar", onPress: () => pickAndUpload("crop") },
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(tr("Adicionar fotos ao álbum 📸"), "Como quer escolher?", [
+      { text: tr("Escolher fotos da galeria"), onPress: () => pickAndUpload("gallery") },
+      { text: tr("Cortar uma foto antes de guardar"), onPress: () => pickAndUpload("crop") },
+      { text: tr("Cancelar"), style: "cancel" },
     ]);
   };
 
@@ -108,7 +109,7 @@ export default function PetPhotosScreen() {
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={20} color="#1A1A2E" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Álbum de Fotos 📸</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Álbum de Fotos 📸")}</Text>
         </View>
         <View style={{ flexDirection: "row", gap: 8 }}>
           <TouchableOpacity onPress={() => addPhoto(true)} disabled={uploading}
@@ -125,7 +126,7 @@ export default function PetPhotosScreen() {
       {uploading && (
         <View style={{ backgroundColor: "#FFF0EB", padding: 12, marginHorizontal: 20, borderRadius: 12, flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 8 }}>
           <ActivityIndicator color="#FF6B35" size="small" />
-          <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>A carregar foto...</Text>
+          <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>{tr("A carregar foto...")}</Text>
         </View>
       )}
 
@@ -134,7 +135,7 @@ export default function PetPhotosScreen() {
       ) : photos.length === 0 ? (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 40 }}>
           <Text suppressHighlighting style={{ fontSize: 60, marginBottom: 16 }}>📷</Text>
-          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Álbum vazio</Text>
+          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("Álbum vazio")}</Text>
           <Text suppressHighlighting style={{ color: "#9CA3AF", textAlign: "center", lineHeight: 22, marginBottom: 24 }}>
             Adicione fotos do seu animal para criar memórias especiais.
           </Text>
@@ -142,12 +143,12 @@ export default function PetPhotosScreen() {
             <TouchableOpacity onPress={() => addPhoto(true)}
               style={{ flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#FF6B35", borderRadius: 14, paddingHorizontal: 18, paddingVertical: 12 }}>
               <Camera size={18} color="#fff" />
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>Câmara</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Câmara")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => addPhoto(false)}
               style={{ flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#fff", borderRadius: 14, paddingHorizontal: 18, paddingVertical: 12, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
               <Upload size={18} color="#4ECDC4" />
-              <Text suppressHighlighting style={{ color: "#1A1A2E", fontWeight: "700" }}>Galeria</Text>
+              <Text suppressHighlighting style={{ color: "#1A1A2E", fontWeight: "700" }}>{tr("Galeria")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -178,16 +179,16 @@ export default function PetPhotosScreen() {
           <View style={{ flexDirection: "row", gap: 16, marginTop: 24 }}>
             <TouchableOpacity onPress={() => setSelectedPhoto(null)}
               style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, paddingHorizontal: 24, paddingVertical: 12 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>Fechar</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Fechar")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => Alert.alert("Eliminar foto?", "Esta ação não pode ser desfeita.", [
-                { text: "Cancelar", style: "cancel" },
-                { text: "Eliminar", style: "destructive", onPress: () => deleteMutation.mutate(selectedPhoto.id) },
+              onPress={() => Alert.alert(tr("Eliminar foto?"), tr("Esta ação não pode ser desfeita."), [
+                { text: tr("Cancelar"), style: "cancel" },
+                { text: tr("Eliminar"), style: "destructive", onPress: () => deleteMutation.mutate(selectedPhoto.id) },
               ])}
               style={{ backgroundColor: "#EF4444", borderRadius: 14, paddingHorizontal: 24, paddingVertical: 12, flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Trash2 size={16} color="#fff" />
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>Eliminar</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Eliminar")}</Text>
             </TouchableOpacity>
           </View>
         </View>

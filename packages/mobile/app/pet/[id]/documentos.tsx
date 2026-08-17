@@ -11,6 +11,7 @@ import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
 import { pickImageWithChoice } from "../../../lib/pick-image";
+import { tr } from "../../../lib/i18n";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -40,20 +41,20 @@ async function escolherFoto(setter: (u: string) => void, setCarregando: (b: bool
     setCarregando(true);
     const url = await uploadImage(asset.uri, asset.mimeType);
     setter(url);
-  } catch (e: any) { Alert.alert("Erro no upload", e.message ?? "Tente novamente"); }
+  } catch (e: any) { Alert.alert(tr("Erro no upload"), e.message ?? "Tente novamente"); }
   finally { setCarregando(false); }
 }
 
 async function tirarFoto(setter: (u: string) => void, setCarregando: (b: boolean) => void) {
   try {
     const perm = await ImagePicker.requestCameraPermissionsAsync();
-    if (perm.status !== "granted") { Alert.alert("Permissão necessária", "Ative o acesso à câmara."); return; }
+    if (perm.status !== "granted") { Alert.alert(tr("Permissão necessária"), tr("Ative o acesso à câmara.")); return; }
     const res = await ImagePicker.launchCameraAsync({ quality: 0.8 });
     if (res.canceled || !res.assets?.[0]) return;
     setCarregando(true);
     const url = await uploadImage(res.assets[0].uri, res.assets[0].mimeType ?? "image/jpeg");
     setter(url);
-  } catch (e: any) { Alert.alert("Erro no upload", e.message ?? "Tente novamente"); }
+  } catch (e: any) { Alert.alert(tr("Erro no upload"), e.message ?? "Tente novamente"); }
   finally { setCarregando(false); }
 }
 
@@ -100,8 +101,8 @@ export default function DocumentosPage() {
   });
 
   const eliminar = (did: string) => Alert.alert("Eliminar documento?", "", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => {
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => {
       await (api as any).documents[":id"].$delete({ param: { id: did } });
       qc.invalidateQueries({ queryKey: ["documents", id] });
     }},
@@ -116,7 +117,7 @@ export default function DocumentosPage() {
         </TouchableOpacity>
         <View style={{ alignItems: "center" }}>
           <Text suppressHighlighting style={{ fontSize: 24 }}>📄</Text>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>Documentos</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>{tr("Documentos")}</Text>
         </View>
         <TouchableOpacity onPress={() => setModal(true)}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -135,13 +136,13 @@ export default function DocumentosPage() {
           documentos.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
               <Text suppressHighlighting style={{ fontSize: 60 }}>📄</Text>
-              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>Sem documentos</Text>
+              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>{tr("Sem documentos")}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, textAlign: "center", marginTop: 8, paddingHorizontal: 30, lineHeight: 20 }}>
                 Guarde o passaporte, seguros, exames e mais do seu animal! Tudo organizado 📂✨
               </Text>
               <TouchableOpacity onPress={() => setModal(true)}
                 style={{ backgroundColor: COLOR, borderRadius: 18, paddingHorizontal: 28, paddingVertical: 14, marginTop: 24 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>+ Adicionar documento</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("+ Adicionar documento")}</Text>
               </TouchableOpacity>
             </View>
           ) : documentos.map((d: any) => (
@@ -173,19 +174,19 @@ export default function DocumentosPage() {
         <SafeAreaView style={{ flex: 1, backgroundColor: BG }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 16 }}>
             <TouchableOpacity onPress={() => setModal(false)}>
-              <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "700", fontSize: 15 }}>Cancelar</Text>
+              <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "700", fontSize: 15 }}>{tr("Cancelar")}</Text>
             </TouchableOpacity>
-            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>📄 Novo Documento</Text>
+            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>{tr("📄 Novo Documento")}</Text>
             <TouchableOpacity onPress={() => adicionar.mutate()} disabled={adicionar.isPending}>
               {adicionar.isPending ? <ActivityIndicator color={COLOR} /> :
-                <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>Guardar</Text>}
+                <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>{tr("Guardar")}</Text>}
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-            <Campo label="Título *" value={titulo} onChange={setTitulo} placeholder="Ex: Passaporte Europeu..." />
-            <Campo label="Notas" value={notas} onChange={setNotas} placeholder="Observações..." />
+            <Campo label={tr("Título *")} value={titulo} onChange={setTitulo} placeholder={tr("Ex: Passaporte Europeu...")} />
+            <Campo label={tr("Notas")} value={notas} onChange={setNotas} placeholder={tr("Observações...")} />
 
-            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>Tipo</Text>
+            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>{tr("Tipo")}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
               {TIPOS_DOC.map((t) => (
                 <TouchableOpacity key={t} onPress={() => setTipo(t)}
@@ -196,30 +197,30 @@ export default function DocumentosPage() {
               ))}
             </ScrollView>
 
-            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>📷 Foto / Scan do documento</Text>
+            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>{tr("📷 Foto / Scan do documento")}</Text>
             {fotoUrl ? (
               <View>
                 <Image source={{ uri: fotoUrl }} style={{ width: "100%", height: 200, borderRadius: 14, resizeMode: "cover" }} />
                 <TouchableOpacity onPress={() => setFotoUrl(null)} style={{ marginTop: 8, alignItems: "center" }}>
-                  <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "600", fontSize: 13 }}>Remover foto</Text>
+                  <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "600", fontSize: 13 }}>{tr("Remover foto")}</Text>
                 </TouchableOpacity>
               </View>
             ) : carregando ? (
               <View style={{ alignItems: "center", padding: 30 }}>
                 <ActivityIndicator color={COLOR} size="large" />
-                <Text suppressHighlighting style={{ color: GRAY, marginTop: 10, fontSize: 13 }}>A carregar... 📤</Text>
+                <Text suppressHighlighting style={{ color: GRAY, marginTop: 10, fontSize: 13 }}>{tr("A carregar... 📤")}</Text>
               </View>
             ) : (
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <TouchableOpacity onPress={() => escolherFoto(setFotoUrl, setCarregando)}
                   style={{ flex: 1, borderWidth: 2, borderColor: COLOR, borderRadius: 16, borderStyle: "dashed", padding: 20, alignItems: "center", gap: 8, backgroundColor: COLOR_BG }}>
                   <Text suppressHighlighting style={{ fontSize: 30 }}>🖼️</Text>
-                  <Text suppressHighlighting style={{ fontSize: 13, color: COLOR, fontWeight: "700" }}>Galeria</Text>
+                  <Text suppressHighlighting style={{ fontSize: 13, color: COLOR, fontWeight: "700" }}>{tr("Galeria")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => tirarFoto(setFotoUrl, setCarregando)}
                   style={{ flex: 1, borderWidth: 2, borderColor: COLOR, borderRadius: 16, borderStyle: "dashed", padding: 20, alignItems: "center", gap: 8, backgroundColor: COLOR_BG }}>
                   <Text suppressHighlighting style={{ fontSize: 30 }}>📷</Text>
-                  <Text suppressHighlighting style={{ fontSize: 13, color: COLOR, fontWeight: "700" }}>Câmara</Text>
+                  <Text suppressHighlighting style={{ fontSize: 13, color: COLOR, fontWeight: "700" }}>{tr("Câmara")}</Text>
                 </TouchableOpacity>
               </View>
             )}

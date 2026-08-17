@@ -7,6 +7,7 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { CategoryHeader } from "../../components/CategoryHeader";
 import { useState, useCallback } from "react";
+import { tr } from "../../lib/i18n";
 
 function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
   return (
@@ -62,7 +63,7 @@ export default function ClinicasScreen() {
     queryKey: ["businesses"],
     queryFn: async () => {
       const res = await (api as any).businesses.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
   });
@@ -75,15 +76,15 @@ export default function ClinicasScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <CategoryHeader
         emoji="🏥"
-        title="Clínicas Veterinárias"
-        subtitle="Cuide da saúde do seu animal"
+        title={tr("Clínicas Veterinárias")}
+        subtitle={tr("Cuide da saúde do seu animal")}
         bgColor="#FFF0EB"
         accentColor="#FF6B35"
       />
 
       <View style={{ marginHorizontal: 20, marginBottom: 14, flexDirection: "row", alignItems: "center", backgroundColor: "#fff", borderRadius: 14, paddingHorizontal: 14, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
         <Search size={18} color="#9CA3AF" />
-        <TextInput onChangeText={handleSearch} placeholder="Pesquisar clínicas..." placeholderTextColor="#9CA3AF" style={{ flex: 1, padding: 12, fontSize: 14, color: "#1A1A2E" }} />
+        <TextInput onChangeText={handleSearch} placeholder={tr("Pesquisar clínicas...")} placeholderTextColor="#9CA3AF" style={{ flex: 1, padding: 12, fontSize: 14, color: "#1A1A2E" }} />
       </View>
 
       <AnimalFact seed={1} compact style={{ marginHorizontal: 20, marginBottom: 14 }} />
@@ -95,8 +96,8 @@ export default function ClinicasScreen() {
         ) : businesses.length === 0 ? (
           <View style={{ alignItems: "center", paddingVertical: 40 }}>
             <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🏥</Text>
-            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Sem clínicas encontradas</Text>
-            <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>Seja o primeiro a registar uma clínica!</Text>
+            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Sem clínicas encontradas")}</Text>
+            <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>{tr("Seja o primeiro a registar uma clínica!")}</Text>
           </View>
         ) : businesses.map((b: any) => (
           <BusinessCard key={b.id} b={b} onPress={() => router.push(`/business/${b.id}` as any)} />

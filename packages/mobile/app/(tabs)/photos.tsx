@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { Camera, ChevronRight, Image as ImageIcon } from "lucide-react-native";
 import { api } from "../../lib/api";
-import { useLang } from "../../lib/i18n";
+import { useLang, tr } from "../../lib/i18n";
 import { AnimalFact } from "../../components/AnimalFact";
 import { PetIllustration } from "../../components/PetIllustration";
 
@@ -61,7 +61,7 @@ function PetAlbumCard({ pet }: { pet: any }) {
         {preview.length === 0 ? (
           <View style={{ flex: 1, backgroundColor: ICON_BG, alignItems: "center", justifyContent: "center" }}>
             <Camera size={32} color={ORANGE} style={{ marginBottom: 4 }} />
-            <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, fontWeight: "600" }}>Sem fotos ainda</Text>
+            <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, fontWeight: "600" }}>{tr("Sem fotos ainda")}</Text>
           </View>
         ) : (
           preview.map((p: any, i: number) => (
@@ -115,8 +115,8 @@ export default function PhotosTabScreen() {
         borderBottomLeftRadius: 32, borderBottomRightRadius: 32, marginBottom: 8,
       }}>
         <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.1)" }} />
-        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "900", color: "#fff" }}>Álbum</Text>
-        <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 2 }}>As memórias dos teus animais</Text>
+        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "900", color: "#fff" }}>{tr("Álbum")}</Text>
+        <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 2 }}>{tr("As memórias dos teus animais")}</Text>
       </View>
 
       {/* Curiosidade animal */}
@@ -127,7 +127,7 @@ export default function PhotosTabScreen() {
       ) : pets.length === 0 ? (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 40 }}>
           <Image source={MASCOT_HAPPY} style={{ width: 180, height: 180, marginBottom: 8 }} resizeMode="contain" />
-          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: BROWN, marginBottom: 8 }}>Sem animais</Text>
+          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: BROWN, marginBottom: 8 }}>{tr("Sem animais")}</Text>
           <Text suppressHighlighting style={{ color: GRAY, fontSize: 14, textAlign: "center", lineHeight: 22 }}>
             Adiciona o teu primeiro animal para começar a criar memórias!
           </Text>
@@ -135,7 +135,7 @@ export default function PhotosTabScreen() {
             onPress={() => router.push("/add-pet" as any)}
             style={{ marginTop: 24, backgroundColor: BROWN, borderRadius: 16, paddingHorizontal: 24, paddingVertical: 14 }}
           >
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>Adicionar animal</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("Adicionar animal")}</Text>
           </TouchableOpacity>
         </View>
       ) : (

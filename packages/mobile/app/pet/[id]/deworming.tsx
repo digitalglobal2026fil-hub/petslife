@@ -12,6 +12,7 @@ import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
 import { pickImageWithChoice } from "../../../lib/pick-image";
+import { tr } from "../../../lib/i18n";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -39,20 +40,20 @@ async function pickAndUpload(setter: (u: string) => void, setLoading: (b: boolea
     setLoading(true);
     const url = await uploadImage(asset.uri, asset.mimeType);
     setter(url);
-  } catch (e: any) { Alert.alert("Erro no upload", e.message ?? "Tente novamente"); }
+  } catch (e: any) { Alert.alert(tr("Erro no upload"), e.message ?? "Tente novamente"); }
   finally { setLoading(false); }
 }
 
 async function cameraAndUpload(setter: (u: string) => void, setLoading: (b: boolean) => void) {
   try {
     const perm = await ImagePicker.requestCameraPermissionsAsync();
-    if (perm.status !== "granted") { Alert.alert("Permissão necessária", "Ative o acesso à câmara."); return; }
+    if (perm.status !== "granted") { Alert.alert(tr("Permissão necessária"), tr("Ative o acesso à câmara.")); return; }
     const res = await ImagePicker.launchCameraAsync({ quality: 0.8 });
     if (res.canceled || !res.assets?.[0]) return;
     setLoading(true);
     const url = await uploadImage(res.assets[0].uri, res.assets[0].mimeType ?? "image/jpeg");
     setter(url);
-  } catch (e: any) { Alert.alert("Erro no upload", e.message ?? "Tente novamente"); }
+  } catch (e: any) { Alert.alert(tr("Erro no upload"), e.message ?? "Tente novamente"); }
   finally { setLoading(false); }
 }
 
@@ -97,8 +98,8 @@ export default function DewormingPage() {
   });
 
   const del = (did: string) => Alert.alert("Eliminar?", "", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => {
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => {
       await (api as any).dewormings[":id"].$delete({ param: { id: did } });
       qc.invalidateQueries({ queryKey: ["dewormings", id] });
     }},
@@ -113,7 +114,7 @@ export default function DewormingPage() {
         </TouchableOpacity>
         <View style={{ alignItems: "center" }}>
           <Text suppressHighlighting style={{ fontSize: 24 }}>🪱</Text>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>Desparasitação</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>{tr("Desparasitação")}</Text>
         </View>
         <TouchableOpacity onPress={() => setModal(true)}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -132,13 +133,13 @@ export default function DewormingPage() {
           dewormings.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
               <Text suppressHighlighting style={{ fontSize: 60 }}>🪱</Text>
-              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>Sem registos</Text>
+              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>{tr("Sem registos")}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, textAlign: "center", marginTop: 8, paddingHorizontal: 30, lineHeight: 20 }}>
                 Registe as desparasitações internas e externas do seu animal! 🛡️
               </Text>
               <TouchableOpacity onPress={() => setModal(true)}
                 style={{ backgroundColor: COLOR, borderRadius: 18, paddingHorizontal: 28, paddingVertical: 14, marginTop: 24 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>+ Adicionar registo</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("+ Adicionar registo")}</Text>
               </TouchableOpacity>
             </View>
           ) : dewormings.map((d: any) => (
@@ -170,20 +171,20 @@ export default function DewormingPage() {
         <SafeAreaView style={{ flex: 1, backgroundColor: BG }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 16 }}>
             <TouchableOpacity onPress={() => setModal(false)}>
-              <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "700", fontSize: 15 }}>Cancelar</Text>
+              <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "700", fontSize: 15 }}>{tr("Cancelar")}</Text>
             </TouchableOpacity>
-            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>🪱 Nova Desparasitação</Text>
+            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>{tr("🪱 Nova Desparasitação")}</Text>
             <TouchableOpacity onPress={() => add.mutate()} disabled={add.isPending}>
               {add.isPending ? <ActivityIndicator color={COLOR} /> :
-                <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>Guardar</Text>}
+                <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>{tr("Guardar")}</Text>}
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-            <Field label="Produto *" value={product} onChange={setProduct} placeholder="Ex: Stronghold, Advantage..." />
-            <DateFieldPT label="Data de aplicação" value={date} onChange={setDate} />
-            <DateFieldPT label="Próxima aplicação" value={nextDate} onChange={setNextDate} />
+            <Field label={tr("Produto *")} value={product} onChange={setProduct} placeholder={tr("Ex: Stronghold, Advantage...")} />
+            <DateFieldPT label={tr("Data de aplicação")} value={date} onChange={setDate} />
+            <DateFieldPT label={tr("Próxima aplicação")} value={nextDate} onChange={setNextDate} />
 
-            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>Tipo</Text>
+            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>{tr("Tipo")}</Text>
             <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
               {["internal", "external", "both"].map((t) => (
                 <TouchableOpacity key={t} onPress={() => setType(t)}
@@ -195,32 +196,32 @@ export default function DewormingPage() {
               ))}
             </View>
 
-            <Field label="Notas" value={notes} onChange={setNotes} placeholder="Observações..." />
+            <Field label={tr("Notas")} value={notes} onChange={setNotes} placeholder={tr("Observações...")} />
 
-            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>📎 Comprovativo</Text>
+            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>{tr("📎 Comprovativo")}</Text>
             {docUrl ? (
               <View>
                 <Image source={{ uri: docUrl }} style={{ width: "100%", height: 150, borderRadius: 14, resizeMode: "cover" }} />
                 <TouchableOpacity onPress={() => setDocUrl(null)} style={{ marginTop: 6, alignItems: "center" }}>
-                  <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "600", fontSize: 13 }}>Remover</Text>
+                  <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "600", fontSize: 13 }}>{tr("Remover")}</Text>
                 </TouchableOpacity>
               </View>
             ) : uploading ? (
               <View style={{ alignItems: "center", padding: 20 }}>
                 <ActivityIndicator color={COLOR} />
-                <Text suppressHighlighting style={{ color: GRAY, marginTop: 8, fontSize: 12 }}>A carregar...</Text>
+                <Text suppressHighlighting style={{ color: GRAY, marginTop: 8, fontSize: 12 }}>{tr("A carregar...")}</Text>
               </View>
             ) : (
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <TouchableOpacity onPress={() => pickAndUpload(setDocUrl, setUploading)}
                   style={{ flex: 1, borderWidth: 2, borderColor: BORDER, borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: CARD }}>
                   <Text suppressHighlighting style={{ fontSize: 24 }}>🖼️</Text>
-                  <Text suppressHighlighting style={{ fontSize: 12, color: ORANGE, fontWeight: "700" }}>Galeria</Text>
+                  <Text suppressHighlighting style={{ fontSize: 12, color: ORANGE, fontWeight: "700" }}>{tr("Galeria")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => cameraAndUpload(setDocUrl, setUploading)}
                   style={{ flex: 1, borderWidth: 2, borderColor: BORDER, borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: CARD }}>
                   <Text suppressHighlighting style={{ fontSize: 24 }}>📷</Text>
-                  <Text suppressHighlighting style={{ fontSize: 12, color: ORANGE, fontWeight: "700" }}>Câmara</Text>
+                  <Text suppressHighlighting style={{ fontSize: 12, color: ORANGE, fontWeight: "700" }}>{tr("Câmara")}</Text>
                 </TouchableOpacity>
               </View>
             )}

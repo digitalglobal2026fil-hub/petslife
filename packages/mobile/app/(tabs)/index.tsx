@@ -12,6 +12,7 @@ import { PaywallScreen } from "../../components/PaywallScreen";
 import { SubscriptionBanner } from "../../components/SubscriptionBanner";
 import { PetIllustration } from "../../components/PetIllustration";
 import { NotificationBell } from "../../components/NotificationBell";
+import { tr } from "../../lib/i18n";
 
 function PetCard({ pet, index, onPress }: { pet: any; index: number; onPress: () => void }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -127,14 +128,14 @@ export default function HomeScreen() {
   const firstName = session?.user?.name?.split(" ")[0];
 
   const quickActions = [
-    { icon: Syringe, label: "Vacinas", color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/health" as any) },
+    { icon: Syringe, label: tr("Vacinas"), color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/health" as any) },
     { icon: Calendar, label: "Agenda", color: "#FF6B35", bg: "#FFF0EB", onPress: () => router.push("/health" as any) },
-    { icon: MapPin, label: "Vets e Outros", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/find-vets" as any) },
+    { icon: MapPin, label: tr("Vets e Outros"), color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/find-vets" as any) },
     {
       icon: QrCode, label: "QR Code", color: "#8B5CF6", bg: "#F3EEFF", onPress: () => {
-        if (pets.length === 0) { Alert.alert("QR Code", "Adicione um animal primeiro."); return; }
+        if (pets.length === 0) { Alert.alert("QR Code", tr("Adicione um animal primeiro.")); return; }
         const qr = pets[0]?.qrCode;
-        if (qr) { router.push(`/qr/${qr}` as any); } else { Alert.alert("QR Code", "QR Code não gerado ainda."); }
+        if (qr) { router.push(`/qr/${qr}` as any); } else { Alert.alert("QR Code", tr("QR Code não gerado ainda.")); }
       }
     },
   ];
@@ -145,8 +146,8 @@ export default function HomeScreen() {
     { icon: Dumbbell, label: "Treino", color: "#FF6B35", bg: "#FFF0EB", onPress: () => router.push("/training-guide" as any) },
     { icon: Pill, label: "Farmácia", color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/pharmacy" as any) },
     { icon: SearchIcon, label: "Perdidos", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/lost-pets" as any) },
-    { icon: Gauge, label: "Peso", color: "#F59E0B", bg: "#FEF3C7", onPress: () => router.push("/weight-chart" as any) },
-    { icon: HeartHandshake, label: "Nossas Missões", color: "#EC4899", bg: "#FDF2F8", onPress: () => router.push("/missions" as any) },
+    { icon: Gauge, label: tr("Peso"), color: "#F59E0B", bg: "#FEF3C7", onPress: () => router.push("/weight-chart" as any) },
+    { icon: HeartHandshake, label: tr("Nossas Missões"), color: "#EC4899", bg: "#FDF2F8", onPress: () => router.push("/missions" as any) },
   ];
 
   if (!gateLoading && isBlocked) {
@@ -176,7 +177,7 @@ export default function HomeScreen() {
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <View>
               <Text suppressHighlighting style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: "500" }}>Olá, {firstName} 👋</Text>
-              <Text suppressHighlighting style={{ fontSize: 24, fontWeight: "800", color: "#fff", marginTop: 2 }}>Os meus animais</Text>
+              <Text suppressHighlighting style={{ fontSize: 24, fontWeight: "800", color: "#fff", marginTop: 2 }}>{tr("Os meus animais")}</Text>
             </View>
             <NotificationBell onPress={() => router.push("/notifications" as any)} />
           </View>
@@ -189,7 +190,7 @@ export default function HomeScreen() {
 
         {/* Pets list */}
         <View style={{ marginTop: 28, paddingHorizontal: 20, marginBottom: 8 }}>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>Os meus pets</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>{tr("Os meus pets")}</Text>
         </View>
         {isLoading ? (
           <ActivityIndicator color="#FF6B35" style={{ marginTop: 20 }} />
@@ -198,11 +199,11 @@ export default function HomeScreen() {
             <View style={{ backgroundColor: "#FFF0EB", borderRadius: 40, padding: 22, marginBottom: 4 }}>
               <Text suppressHighlighting style={{ fontSize: 56 }}>🐾</Text>
             </View>
-            <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E", marginTop: 14 }}>Adicione o seu primeiro animal</Text>
-            <Text suppressHighlighting style={{ color: "#9CA3AF", marginTop: 6, textAlign: "center", lineHeight: 20 }}>Crie o perfil do seu pet e comece a organizar a sua saúde.</Text>
+            <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E", marginTop: 14 }}>{tr("Adicione o seu primeiro animal")}</Text>
+            <Text suppressHighlighting style={{ color: "#9CA3AF", marginTop: 6, textAlign: "center", lineHeight: 20 }}>{tr("Crie o perfil do seu pet e comece a organizar a sua saúde.")}</Text>
             <TouchableOpacity onPress={() => router.push("/add-pet")}
               style={{ backgroundColor: "#FF6B35", borderRadius: 20, paddingHorizontal: 28, paddingVertical: 15, marginTop: 20, shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 0 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>+ Adicionar animal</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("+ Adicionar animal")}</Text>
             </TouchableOpacity>
             <AnimalFact seed={factSeed} style={{ marginTop: 24, width: "100%" }} />
           </View>
@@ -216,14 +217,14 @@ export default function HomeScreen() {
               <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
                 <Plus size={24} color="#FF6B35" />
               </View>
-              <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "700", fontSize: 12, textAlign: "center" }}>Adicionar</Text>
+              <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "700", fontSize: 12, textAlign: "center" }}>{tr("Adicionar")}</Text>
             </TouchableOpacity>
           </ScrollView>
         )}
 
         {/* Quick actions */}
         <View style={{ padding: 20, paddingTop: 24 }}>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>Acesso rápido</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>{tr("Acesso rápido")}</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {quickActions.map((item, index) => (
               <QuickActionCard key={item.label} item={item} index={index} />
@@ -233,7 +234,7 @@ export default function HomeScreen() {
 
         {/* Extra quick actions row */}
         <View style={{ paddingHorizontal: 20, paddingBottom: 8 }}>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>Explorar</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>{tr("Explorar")}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
             {extraActions.map(item => (
               <TouchableOpacity key={item.label} onPress={item.onPress}
@@ -253,7 +254,7 @@ export default function HomeScreen() {
         {/* Upcoming appointments */}
         {appointments.length > 0 ? (
           <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-            <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>Próximas consultas</Text>
+            <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>{tr("Próximas consultas")}</Text>
             {appointments.map((apt: any) => (
               <View key={apt.id} style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, marginBottom: 10, flexDirection: "row", alignItems: "center", gap: 12, shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 0 }}>
                 <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
@@ -264,7 +265,7 @@ export default function HomeScreen() {
                   <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 12, marginTop: 2 }}>{apt.date} {apt.time ? `• ${apt.time}` : ""}</Text>
                 </View>
                 <View style={{ backgroundColor: "#FFF0EB", borderRadius: 10, paddingHorizontal: 10, paddingVertical: 4 }}>
-                  <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 11, fontWeight: "700" }}>Em breve</Text>
+                  <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 11, fontWeight: "700" }}>{tr("Em breve")}</Text>
                 </View>
               </View>
             ))}

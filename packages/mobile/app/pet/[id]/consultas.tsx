@@ -9,6 +9,7 @@ import { useState } from "react";
 import { api } from "../../../lib/api";
 import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
+import { tr } from "../../../lib/i18n";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -81,7 +82,7 @@ export default function ConsultasPage() {
         </TouchableOpacity>
         <View style={{ alignItems: "center" }}>
           <Text suppressHighlighting style={{ fontSize: 24 }}>📅</Text>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>Consultas</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>{tr("Consultas")}</Text>
         </View>
         <TouchableOpacity onPress={() => setModal(true)}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: ORANGE, alignItems: "center", justifyContent: "center" }}>
@@ -100,13 +101,13 @@ export default function ConsultasPage() {
           consultas.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
               <Text suppressHighlighting style={{ fontSize: 60 }}>📅</Text>
-              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>Sem consultas</Text>
+              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>{tr("Sem consultas")}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, textAlign: "center", marginTop: 8, paddingHorizontal: 30, lineHeight: 20 }}>
                 Registe as consultas do seu bichinho aqui! Cada visita ao veterinário é um ato de amor 🩺
               </Text>
               <TouchableOpacity onPress={() => setModal(true)}
                 style={{ backgroundColor: ORANGE, borderRadius: 18, paddingHorizontal: 28, paddingVertical: 14, marginTop: 24 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>+ Adicionar consulta</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("+ Adicionar consulta")}</Text>
               </TouchableOpacity>
             </View>
           ) : consultas.map((c: any) => (
@@ -136,23 +137,23 @@ export default function ConsultasPage() {
         <SafeAreaView style={{ flex: 1, backgroundColor: BG }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 16 }}>
             <TouchableOpacity onPress={() => setModal(false)}>
-              <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "700", fontSize: 15 }}>Cancelar</Text>
+              <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "700", fontSize: 15 }}>{tr("Cancelar")}</Text>
             </TouchableOpacity>
-            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>📅 Nova Consulta</Text>
+            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>{tr("📅 Nova Consulta")}</Text>
             <TouchableOpacity onPress={() => adicionar.mutate()} disabled={adicionar.isPending}>
               {adicionar.isPending ? <ActivityIndicator color={ORANGE} /> :
-                <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "800", fontSize: 15 }}>Guardar</Text>}
+                <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "800", fontSize: 15 }}>{tr("Guardar")}</Text>}
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-            <Campo label="Título *" value={titulo} onChange={setTitulo} placeholder="Ex: Consulta de rotina..." />
-            <DateFieldPT label="Data *" value={data} onChange={setData} />
-            <Campo label="Hora" value={hora} onChange={setHora} placeholder="Ex: 14:30" />
-            <Campo label="Veterinário" value={vet} onChange={setVet} placeholder="Nome do veterinário" />
-            <Campo label="Clínica" value={clinica} onChange={setClinica} placeholder="Nome da clínica" />
-            <Campo label="Notas" value={notas} onChange={setNotas} placeholder="Observações..." />
+            <Campo label={tr("Título *")} value={titulo} onChange={setTitulo} placeholder={tr("Ex: Consulta de rotina...")} />
+            <DateFieldPT label={tr("Data *")} value={data} onChange={setData} />
+            <Campo label={tr("Hora")} value={hora} onChange={setHora} placeholder="Ex: 14:30" />
+            <Campo label={tr("Veterinário")} value={vet} onChange={setVet} placeholder={tr("Nome do veterinário")} />
+            <Campo label={tr("Clínica")} value={clinica} onChange={setClinica} placeholder={tr("Nome da clínica")} />
+            <Campo label={tr("Notas")} value={notas} onChange={setNotas} placeholder={tr("Observações...")} />
 
-            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>Tipo</Text>
+            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>{tr("Tipo")}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 14 , paddingBottom: Math.max(insets.bottom, 24) }}>
               {TIPOS.map((t) => (
                 <TouchableOpacity key={t} onPress={() => setTipo(t)}

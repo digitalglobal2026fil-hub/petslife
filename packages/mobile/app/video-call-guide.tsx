@@ -9,6 +9,7 @@ import {
   AlertCircle, Wifi, Mic, Camera, Smartphone, HelpCircle
 } from "lucide-react-native";
 import Constants from "expo-constants";
+import { tr } from "../lib/i18n";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "https://petslife.onrender.com").replace(/\/$/, "");
 
@@ -96,7 +97,7 @@ export default function VideoCallGuideScreen() {
   function openJitsiTest() {
     // Sala de teste na nossa própria página: abre no browser, sem instalações
     Linking.openURL(`${API_URL}/call/petslife-sala-de-teste`).catch(() =>
-      Alert.alert("Erro", "Não foi possível abrir o browser.")
+      Alert.alert(tr("Erro"), tr("Não foi possível abrir o browser."))
     );
   }
 
@@ -111,8 +112,8 @@ export default function VideoCallGuideScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text suppressHighlighting style={styles.headerTitle}>Guia de Videochamada</Text>
-          <Text suppressHighlighting style={styles.headerSub}>Como consultar o vet online</Text>
+          <Text suppressHighlighting style={styles.headerTitle}>{tr("Guia de Videochamada")}</Text>
+          <Text suppressHighlighting style={styles.headerSub}>{tr("Como consultar o vet online")}</Text>
         </View>
         <View style={styles.headerIcon}>
           <Video size={22} color="#FF6B35" />
@@ -123,18 +124,18 @@ export default function VideoCallGuideScreen() {
         {/* Hero card */}
         <View style={styles.heroCard}>
           <Text suppressHighlighting style={styles.heroEmoji}>🎥</Text>
-          <Text suppressHighlighting style={styles.heroTitle}>Consulta online com o seu vet</Text>
+          <Text suppressHighlighting style={styles.heroTitle}>{tr("Consulta online com o seu vet")}</Text>
           <Text suppressHighlighting style={styles.heroText}>
             Sem deslocações. Sem esperas. Fale com o veterinário em directo por videochamada, directamente aqui na app — gratuito e sem instalações.
           </Text>
           <TouchableOpacity style={styles.testBtn} onPress={openJitsiTest}>
             <Video size={16} color="#fff" />
-            <Text suppressHighlighting style={styles.testBtnText}>Testar videochamada agora</Text>
+            <Text suppressHighlighting style={styles.testBtnText}>{tr("Testar videochamada agora")}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Requisitos */}
-        <Text suppressHighlighting style={styles.sectionTitle}>O que precisa</Text>
+        <Text suppressHighlighting style={styles.sectionTitle}>{tr("O que precisa")}</Text>
         <View style={styles.requirementsCard}>
           {REQUIREMENTS.map((r, i) => (
             <View key={i} style={[styles.requirementRow, i < REQUIREMENTS.length - 1 && styles.requirementBorder]}>
@@ -148,7 +149,7 @@ export default function VideoCallGuideScreen() {
         </View>
 
         {/* Passos */}
-        <Text suppressHighlighting style={styles.sectionTitle}>Passo a passo</Text>
+        <Text suppressHighlighting style={styles.sectionTitle}>{tr("Passo a passo")}</Text>
         {STEPS.map((step, i) => (
           <View key={i} style={[styles.stepCard, { borderLeftColor: step.color }]}>
             <View style={[styles.stepIconBadge, { backgroundColor: step.bg }]}>
@@ -169,7 +170,7 @@ export default function VideoCallGuideScreen() {
         <View style={styles.permissionsCard}>
           <View style={styles.permissionsHeader}>
             <Camera size={20} color="#8B5CF6" />
-            <Text suppressHighlighting style={styles.permissionsTitle}>Permissões do browser</Text>
+            <Text suppressHighlighting style={styles.permissionsTitle}>{tr("Permissões do browser")}</Text>
           </View>
           <Text suppressHighlighting style={styles.permissionsText}>
             Quando entrar na chamada pela primeira vez, o browser vai pedir permissão para aceder à câmara e ao microfone.
@@ -194,7 +195,7 @@ export default function VideoCallGuideScreen() {
         </View>
 
         {/* FAQ */}
-        <Text suppressHighlighting style={styles.sectionTitle}>Perguntas frequentes</Text>
+        <Text suppressHighlighting style={styles.sectionTitle}>{tr("Perguntas frequentes")}</Text>
         {FAQS.map((faq, i) => (
           <TouchableOpacity
             key={i}
@@ -217,7 +218,7 @@ export default function VideoCallGuideScreen() {
 
         {/* CTA final */}
         <View style={styles.ctaCard}>
-          <Text suppressHighlighting style={styles.ctaTitle}>Pronta para agendar?</Text>
+          <Text suppressHighlighting style={styles.ctaTitle}>{tr("Pronta para agendar?")}</Text>
           <Text suppressHighlighting style={styles.ctaText}>
             Vá ao separador de consultas e carregue no + para marcar a sua primeira consulta online.
           </Text>
@@ -226,7 +227,7 @@ export default function VideoCallGuideScreen() {
             onPress={() => router.push("/(tabs)/consult" as never)}
           >
             <PhoneCall size={16} color="#fff" />
-            <Text suppressHighlighting style={styles.ctaBtnText}>Ir para consultas</Text>
+            <Text suppressHighlighting style={styles.ctaBtnText}>{tr("Ir para consultas")}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

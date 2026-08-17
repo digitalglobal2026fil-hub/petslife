@@ -8,6 +8,7 @@ import Constants from "expo-constants";
 import { authClient } from "../../lib/auth";
 import { authFetch } from "../../lib/auth-fetch";
 import { DateFieldPT } from "../../components/DateFieldPT";
+import { tr } from "../../lib/i18n";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -102,9 +103,9 @@ export default function AppointmentDetailScreen() {
       setApt(data.appointment);
       queryClient.invalidateQueries({ queryKey: ["appointments-upcoming"] });
       setEditing(false);
-      Alert.alert("Guardado", "Consulta actualizada com sucesso.");
+      Alert.alert("Guardado", tr("Consulta actualizada com sucesso."));
     },
-    onError: () => Alert.alert("Erro", "Não foi possível guardar as alterações."),
+    onError: () => Alert.alert(tr("Erro"), tr("Não foi possível guardar as alterações.")),
   });
 
   const deleteMutation = useMutation({
@@ -119,16 +120,16 @@ export default function AppointmentDetailScreen() {
       queryClient.invalidateQueries({ queryKey: ["appointments-upcoming"] });
       router.back();
     },
-    onError: () => Alert.alert("Erro", "Não foi possível eliminar a consulta."),
+    onError: () => Alert.alert(tr("Erro"), tr("Não foi possível eliminar a consulta.")),
   });
 
   const handleDelete = () => {
     Alert.alert(
-      "Eliminar consulta",
-      "Tem a certeza que quer eliminar esta consulta?",
+      tr("Eliminar consulta"),
+      tr("Tem a certeza que quer eliminar esta consulta?"),
       [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => deleteMutation.mutate() },
+        { text: tr("Cancelar"), style: "cancel" },
+        { text: tr("Eliminar"), style: "destructive", onPress: () => deleteMutation.mutate() },
       ]
     );
   };
@@ -142,7 +143,7 @@ export default function AppointmentDetailScreen() {
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#E8D5B7", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={20} color="#6B3A2A" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#6B3A2A" }}>Consulta</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#6B3A2A" }}>{tr("Consulta")}</Text>
         </View>
         {apt && (
           <View style={{ flexDirection: "row", gap: 8 }}>
@@ -162,9 +163,9 @@ export default function AppointmentDetailScreen() {
         <ActivityIndicator color="#E07A3A" size="large" style={{ marginTop: 60 }} />
       ) : !apt ? (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 20 }}>
-          <Text suppressHighlighting style={{ fontSize: 16, color: "#A08060", textAlign: "center" }}>Consulta não encontrada.</Text>
+          <Text suppressHighlighting style={{ fontSize: 16, color: "#A08060", textAlign: "center" }}>{tr("Consulta não encontrada.")}</Text>
           <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 16, backgroundColor: "#E07A3A", borderRadius: 12, paddingHorizontal: 24, paddingVertical: 12 }}>
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>Voltar</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Voltar")}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -205,13 +206,13 @@ export default function AppointmentDetailScreen() {
           <TouchableOpacity onPress={() => setEditing(true)}
             style={{ backgroundColor: "#E07A3A", borderRadius: 14, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}>
             <Edit2 size={18} color="#fff" />
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Editar consulta</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{tr("Editar consulta")}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleDelete}
             style={{ borderWidth: 1.5, borderColor: "#FCA5A5", borderRadius: 14, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}>
             <Trash2 size={18} color="#EF4444" />
-            <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "700", fontSize: 16 }}>Eliminar consulta</Text>
+            <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "700", fontSize: 16 }}>{tr("Eliminar consulta")}</Text>
           </TouchableOpacity>
         </ScrollView>
       )}
@@ -220,17 +221,17 @@ export default function AppointmentDetailScreen() {
       <Modal visible={editing} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setEditing(false)}>
         <View style={{ flex: 1, backgroundColor: "#F5ECD7", padding: 20 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 24, paddingTop: Platform.OS === "android" ? 20 : 8 }}>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#6B3A2A" }}>Editar consulta</Text>
+            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#6B3A2A" }}>{tr("Editar consulta")}</Text>
             <TouchableOpacity onPress={() => setEditing(false)}>
               <X size={24} color="#A08060" />
             </TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-            <Field label="Título" value={title} onChange={setTitle} placeholder="Ex: Consulta anual" />
-            <DateFieldPT label="Data" value={date} onChange={setDate} />
+            <Field label={tr("Título")} value={title} onChange={setTitle} placeholder={tr("Ex: Consulta anual")} />
+            <DateFieldPT label={tr("Data")} value={date} onChange={setDate} />
             <Field label="Hora (HH:MM)" value={time} onChange={setTime} placeholder="10:30" />
-            <Field label="Local / Clínica" value={location} onChange={setLocation} placeholder="Ex: Clínica Vet Lisboa" />
-            <Field label="Notas / Motivo" value={notes} onChange={setNotes} placeholder="Descreva o motivo..." multiline />
+            <Field label={tr("Local / Clínica")} value={location} onChange={setLocation} placeholder={tr("Ex: Clínica Vet Lisboa")} />
+            <Field label={tr("Notas / Motivo")} value={notes} onChange={setNotes} placeholder={tr("Descreva o motivo...")} multiline />
 
             <TouchableOpacity
               onPress={() => updateMutation.mutate()}
@@ -242,7 +243,7 @@ export default function AppointmentDetailScreen() {
                 opacity: updateMutation.isPending ? 0.7 : 1,
               }}>
               {updateMutation.isPending ? <ActivityIndicator color="#fff" /> : <Save size={18} color="#fff" />}
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Guardar alterações</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{tr("Guardar alterações")}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

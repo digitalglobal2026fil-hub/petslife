@@ -1,13 +1,14 @@
 import { TouchableOpacity, Alert } from "react-native";
 import { MoreVertical } from "lucide-react-native";
 import { useIsAdmin, confirmDelete, reportContent, type ReportTarget } from "../lib/moderation";
+import { tr } from "../lib/i18n";
 
 /**
  * Botão de três pontos que aparece nos conteúdos da comunidade, marketplace,
  * negócios e animais perdidos.
  *
  * - Qualquer pessoa vê "Denunciar".
- * - A opção "Apagar" só aparece a quem é dono do conteúdo ou às contas de
+ * - A opção Apagar só aparece a quem é dono do conteúdo ou às contas de
  *   administração (a utilizadora). Mais ninguém a vê.
  */
 export function ModerationButton({
@@ -29,7 +30,7 @@ export function ModerationButton({
   onDelete: () => void | Promise<void>;
   color?: string;
   size?: number;
-  /** Nome do que vai ser apagado, ex.: "este anúncio". */
+  /** Nome do que vai ser apagado, ex.: este anúncio. */
   label?: string;
 }) {
   const isAdmin = useIsAdmin();
@@ -45,7 +46,7 @@ export function ModerationButton({
 
     if (canDelete) {
       buttons.unshift({
-        text: isAdmin && !isOwner ? "Apagar (administração)" : "Apagar",
+        text: isAdmin && !isOwner ? "Apagar (administração)" : tr("Apagar"),
         style: "destructive",
         onPress: async () => {
           const ok = await confirmDelete(label ?? "este conteúdo");
@@ -54,7 +55,7 @@ export function ModerationButton({
       });
     }
 
-    buttons.push({ text: "Cancelar", style: "cancel" });
+    buttons.push({ text: tr("Cancelar"), style: "cancel" });
 
     Alert.alert("Opções", undefined, buttons, { cancelable: true });
   };

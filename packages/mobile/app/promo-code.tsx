@@ -9,6 +9,7 @@ import { api, BASE_URL } from "../lib/api";
 import { AnimatedPet } from "../components/AnimatedPet";
 import { netError } from "../lib/net-error";
 import { authFetch } from "../lib/auth-fetch";
+import { tr } from "../lib/i18n";
 
 const BENEFIT_INFO: Record<string, { title: string; desc: string; icon: any; color: string }> = {
   lifetime: { title: "Acesso vitalício", desc: "Acesso completo para sempre. Nunca pagas nada.", icon: InfinityIcon, color: "#8B5CF6" },
@@ -44,9 +45,9 @@ export default function PromoCodeScreen() {
       const res = await authFetch(`${BASE_URL}/api/partners/check/${encodeURIComponent(c)}`);
       const data = await res.json();
       if (data.valid) setPreview(data);
-      else Alert.alert("Código inválido", data.error || "Este código não existe.");
+      else Alert.alert(tr("Código inválido"), data.error || "Este código não existe.");
     } catch (e: any) {
-      Alert.alert("Sem ligação", netError(e));
+      Alert.alert(tr("Sem ligação"), netError(e));
     } finally {
       setChecking(false);
     }
@@ -55,7 +56,7 @@ export default function PromoCodeScreen() {
   async function redeem() {
     const c = code.trim().toUpperCase();
     if (!c) {
-      Alert.alert("Atenção", "Introduz um código primeiro.");
+      Alert.alert(tr("Atenção"), tr("Introduz um código primeiro."));
       return;
     }
     setLoading(true);
@@ -68,12 +69,12 @@ export default function PromoCodeScreen() {
       });
       const data = await res.json();
       if (!res.ok || data.error) {
-        Alert.alert("Erro", data.error || "Não foi possível aplicar o código.");
+        Alert.alert(tr("Erro"), data.error || "Não foi possível aplicar o código.");
       } else {
         setSuccess({ benefit: data.benefit, message: data.message });
       }
     } catch (e: any) {
-      Alert.alert("Sem ligação", netError(e));
+      Alert.alert(tr("Sem ligação"), netError(e));
     } finally {
       setLoading(false);
     }
@@ -88,7 +89,7 @@ export default function PromoCodeScreen() {
         <Text suppressHighlighting style={styles.successTitle}>{info.title}</Text>
         <Text suppressHighlighting style={styles.successText}>{success.message}</Text>
         <TouchableOpacity style={[styles.btn, { backgroundColor: info.color }]} onPress={() => router.replace("/(tabs)")}>
-          <Text suppressHighlighting style={styles.btnText}>Ir para a app</Text>
+          <Text suppressHighlighting style={styles.btnText}>{tr("Ir para a app")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -103,14 +104,14 @@ export default function PromoCodeScreen() {
 
         <AnimatedPet species="cat" size={110} />
 
-        <Text suppressHighlighting style={styles.title}>Código de Parceiro</Text>
+        <Text suppressHighlighting style={styles.title}>{tr("Código de Parceiro")}</Text>
         <Text suppressHighlighting style={styles.subtitle}>
           Recebeste um código de um parceiro ou influencer? Introduz aqui para activar o teu benefício.
         </Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Ex: JOAO10"
+          placeholder={tr("Ex: JOAO10")}
           placeholderTextColor="#9CA3AF"
           value={code}
           onChangeText={t => { setCode(t.toUpperCase()); setPreview(null); }}
@@ -142,7 +143,7 @@ export default function PromoCodeScreen() {
         <TouchableOpacity style={styles.btn} onPress={redeem} disabled={loading}>
           {loading
             ? <ActivityIndicator color="#fff" />
-            : <Text suppressHighlighting style={styles.btnText}>Activar código</Text>
+            : <Text suppressHighlighting style={styles.btnText}>{tr("Activar código")}</Text>
           }
         </TouchableOpacity>
       </ScrollView>

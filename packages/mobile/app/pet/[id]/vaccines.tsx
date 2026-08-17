@@ -12,6 +12,7 @@ import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
 import { pickImageWithChoice } from "../../../lib/pick-image";
+import { tr } from "../../../lib/i18n";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -49,7 +50,7 @@ async function pickAndUpload(setter: (u: string) => void, setLoading: (b: boolea
     const url = await uploadImage(asset.uri, asset.mimeType);
     setter(url);
   } catch (e: any) {
-    Alert.alert("Erro no upload", e.message ?? "Tente novamente");
+    Alert.alert(tr("Erro no upload"), e.message ?? "Tente novamente");
   } finally {
     setLoading(false);
   }
@@ -59,7 +60,7 @@ async function cameraAndUpload(setter: (u: string) => void, setLoading: (b: bool
   try {
     const perm = await ImagePicker.requestCameraPermissionsAsync();
     if (perm.status !== "granted") {
-      Alert.alert("Permissão necessária", "Ative o acesso à câmara nas definições.");
+      Alert.alert(tr("Permissão necessária"), tr("Ative o acesso à câmara nas definições."));
       return;
     }
     const res = await ImagePicker.launchCameraAsync({ quality: 0.8 });
@@ -68,7 +69,7 @@ async function cameraAndUpload(setter: (u: string) => void, setLoading: (b: bool
     const url = await uploadImage(res.assets[0].uri, res.assets[0].mimeType ?? "image/jpeg");
     setter(url);
   } catch (e: any) {
-    Alert.alert("Erro no upload", e.message ?? "Tente novamente");
+    Alert.alert(tr("Erro no upload"), e.message ?? "Tente novamente");
   } finally {
     setLoading(false);
   }
@@ -119,9 +120,9 @@ export default function VaccinesPage() {
     onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
-  const del = (vid: string) => Alert.alert("Eliminar vacina?", "Esta ação não pode ser desfeita.", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => {
+  const del = (vid: string) => Alert.alert("Eliminar vacina?", tr("Esta ação não pode ser desfeita."), [
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => {
       await (api as any).vaccines[":id"].$delete({ param: { id: vid } });
       qc.invalidateQueries({ queryKey: ["vaccines", id] });
     }},
@@ -139,7 +140,7 @@ export default function VaccinesPage() {
         </TouchableOpacity>
         <View style={{ alignItems: "center" }}>
           <Text suppressHighlighting style={{ fontSize: 24 }}>💉</Text>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>Vacinas</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>{tr("Vacinas")}</Text>
         </View>
         <TouchableOpacity onPress={() => setModal(true)}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: GREEN, alignItems: "center", justifyContent: "center" }}>
@@ -158,13 +159,13 @@ export default function VaccinesPage() {
         ) : vaccines.length === 0 ? (
           <View style={{ alignItems: "center", paddingVertical: 50 }}>
             <Text suppressHighlighting style={{ fontSize: 60 }}>💉</Text>
-            <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16, textAlign: "center" }}>Sem vacinas ainda</Text>
+            <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16, textAlign: "center" }}>{tr("Sem vacinas ainda")}</Text>
             <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, textAlign: "center", marginTop: 8, paddingHorizontal: 30, lineHeight: 20 }}>
               Registe a caderneta de vacinação do seu bichinho! Cada vacina é um ato de amor 🐾
             </Text>
             <TouchableOpacity onPress={() => setModal(true)}
               style={{ backgroundColor: GREEN, borderRadius: 18, paddingHorizontal: 28, paddingVertical: 14, marginTop: 24 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>+ Adicionar vacina</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("+ Adicionar vacina")}</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -203,47 +204,47 @@ export default function VaccinesPage() {
         <SafeAreaView style={{ flex: 1, backgroundColor: BG }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 16 }}>
             <TouchableOpacity onPress={() => setModal(false)}>
-              <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "700", fontSize: 15 }}>Cancelar</Text>
+              <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "700", fontSize: 15 }}>{tr("Cancelar")}</Text>
             </TouchableOpacity>
-            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>💉 Nova Vacina</Text>
+            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>{tr("💉 Nova Vacina")}</Text>
             <TouchableOpacity onPress={() => add.mutate()} disabled={add.isPending}>
               {add.isPending ? <ActivityIndicator color={GREEN} /> :
-                <Text suppressHighlighting style={{ color: GREEN, fontWeight: "800", fontSize: 15 }}>Guardar</Text>}
+                <Text suppressHighlighting style={{ color: GREEN, fontWeight: "800", fontSize: 15 }}>{tr("Guardar")}</Text>}
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-            <Field label="Nome da vacina *" value={name} onChange={setName} placeholder="Ex: Raiva, Parvovírus..." />
-            <DateFieldPT label="Data de administração" value={date} onChange={setDate} />
-            <DateFieldPT label="Próxima dose" value={nextDate} onChange={setNextDate} />
-            <Field label="Veterinário" value={vet} onChange={setVet} placeholder="Nome do veterinário" />
-            <Field label="Clínica" value={clinic} onChange={setClinic} placeholder="Nome da clínica" />
-            <Field label="Número de lote" value={batch} onChange={setBatch} placeholder="Lote da vacina" />
-            <Field label="Notas" value={notes} onChange={setNotes} placeholder="Observações..." />
+            <Field label={tr("Nome da vacina *")} value={name} onChange={setName} placeholder={tr("Ex: Raiva, Parvovírus...")} />
+            <DateFieldPT label={tr("Data de administração")} value={date} onChange={setDate} />
+            <DateFieldPT label={tr("Próxima dose")} value={nextDate} onChange={setNextDate} />
+            <Field label={tr("Veterinário")} value={vet} onChange={setVet} placeholder={tr("Nome do veterinário")} />
+            <Field label={tr("Clínica")} value={clinic} onChange={setClinic} placeholder={tr("Nome da clínica")} />
+            <Field label={tr("Número de lote")} value={batch} onChange={setBatch} placeholder={tr("Lote da vacina")} />
+            <Field label={tr("Notas")} value={notes} onChange={setNotes} placeholder={tr("Observações...")} />
 
             <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>📎 Comprovativo (opcional)</Text>
             {docUrl ? (
               <View>
                 <Image source={{ uri: docUrl }} style={{ width: "100%", height: 150, borderRadius: 14, resizeMode: "cover" }} />
                 <TouchableOpacity onPress={() => setDocUrl(null)} style={{ marginTop: 6, alignItems: "center" }}>
-                  <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "600", fontSize: 13 }}>Remover</Text>
+                  <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "600", fontSize: 13 }}>{tr("Remover")}</Text>
                 </TouchableOpacity>
               </View>
             ) : uploading ? (
               <View style={{ alignItems: "center", padding: 20 }}>
                 <ActivityIndicator color={GREEN} />
-                <Text suppressHighlighting style={{ color: GRAY, marginTop: 8, fontSize: 12 }}>A carregar...</Text>
+                <Text suppressHighlighting style={{ color: GRAY, marginTop: 8, fontSize: 12 }}>{tr("A carregar...")}</Text>
               </View>
             ) : (
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <TouchableOpacity onPress={() => pickAndUpload(setDocUrl, setUploading)}
                   style={{ flex: 1, borderWidth: 2, borderColor: BORDER, borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: CARD }}>
                   <Text suppressHighlighting style={{ fontSize: 24 }}>🖼️</Text>
-                  <Text suppressHighlighting style={{ fontSize: 12, color: ORANGE, fontWeight: "700" }}>Galeria</Text>
+                  <Text suppressHighlighting style={{ fontSize: 12, color: ORANGE, fontWeight: "700" }}>{tr("Galeria")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => cameraAndUpload(setDocUrl, setUploading)}
                   style={{ flex: 1, borderWidth: 2, borderColor: BORDER, borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: CARD }}>
                   <Text suppressHighlighting style={{ fontSize: 24 }}>📷</Text>
-                  <Text suppressHighlighting style={{ fontSize: 12, color: ORANGE, fontWeight: "700" }}>Câmara</Text>
+                  <Text suppressHighlighting style={{ fontSize: 12, color: ORANGE, fontWeight: "700" }}>{tr("Câmara")}</Text>
                 </TouchableOpacity>
               </View>
             )}

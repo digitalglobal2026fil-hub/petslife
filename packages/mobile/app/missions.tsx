@@ -11,6 +11,7 @@ import Constants from "expo-constants";
 import { authFetch } from "../lib/auth-fetch";
 import { pickImageWithChoice } from "../lib/pick-image";
 import { uploadImage } from "../lib/upload";
+import { tr } from "../lib/i18n";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -73,14 +74,14 @@ export default function MissionsScreen() {
       const url = await uploadImage(picked.uri, picked.mimeType);
       setImageUrl(url);
     } catch (e: any) {
-      Alert.alert("Erro ao carregar foto", e?.message ?? "Tente novamente.");
+      Alert.alert(tr("Erro ao carregar foto"), e?.message ?? "Tente novamente.");
     } finally {
       setUploading(false);
     }
   }
 
   async function publish() {
-    if (!title.trim()) return Alert.alert("Falta o título", "Escreva um título para a missão.");
+    if (!title.trim()) return Alert.alert(tr("Falta o título"), tr("Escreva um título para a missão."));
     setSaving(true);
     try {
       const res = await authFetch(`${API_URL}/api/missions`, {
@@ -108,10 +109,10 @@ export default function MissionsScreen() {
   }
 
   function removeMission(m: Mission) {
-    Alert.alert("Apagar missão", `Apagar "${m.title}" e todos os comentários?`, [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(tr("Apagar missão"), `Apagar "${m.title}" e todos os comentários?`, [
+      { text: tr("Cancelar"), style: "cancel" },
       {
-        text: "Apagar", style: "destructive",
+        text: tr("Apagar"), style: "destructive",
         onPress: async () => {
           try {
             const res = await authFetch(`${API_URL}/api/missions/${m.id}`, { method: "DELETE" });
@@ -135,7 +136,7 @@ export default function MissionsScreen() {
             <ChevronLeft size={20} color={PINK} />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: DARK }}>Nossas Missões</Text>
+            <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: DARK }}>{tr("Nossas Missões")}</Text>
             <Text suppressHighlighting style={{ fontSize: 12, color: "#9D174D", marginTop: 2 }}>
               Trabalho social da PetsLife 🐾
             </Text>
@@ -144,7 +145,7 @@ export default function MissionsScreen() {
             <TouchableOpacity onPress={() => setComposer(true)}
               style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: PINK, borderRadius: 19, height: 38, paddingHorizontal: 14 }}>
               <Plus size={16} color="#fff" />
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>Publicar</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>{tr("Publicar")}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -218,7 +219,7 @@ export default function MissionsScreen() {
                 style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
                 <X size={19} color={DARK} />
               </TouchableOpacity>
-              <Text suppressHighlighting style={{ fontSize: 19, fontWeight: "800", color: DARK }}>Nova missão</Text>
+              <Text suppressHighlighting style={{ fontSize: 19, fontWeight: "800", color: DARK }}>{tr("Nova missão")}</Text>
             </View>
 
             <ScrollView contentContainerStyle={{ padding: 20, paddingTop: 0, gap: 14 }}>
@@ -231,12 +232,12 @@ export default function MissionsScreen() {
                 ) : (
                   <>
                     <Camera size={30} color={PINK} />
-                    <Text suppressHighlighting style={{ color: PINK, fontWeight: "800", marginTop: 8 }}>Adicionar foto</Text>
+                    <Text suppressHighlighting style={{ color: PINK, fontWeight: "800", marginTop: 8 }}>{tr("Adicionar foto")}</Text>
                   </>
                 )}
               </TouchableOpacity>
 
-              <TextInput value={title} onChangeText={setTitle} placeholder="Título da missão"
+              <TextInput value={title} onChangeText={setTitle} placeholder={tr("Título da missão")}
                 placeholderTextColor={GRAY}
                 style={{ backgroundColor: "#fff", borderRadius: 14, borderWidth: 1.5, borderColor: "#F0E8E0", padding: 14, fontSize: 15, color: DARK }} />
 
@@ -244,7 +245,7 @@ export default function MissionsScreen() {
                 placeholderTextColor={GRAY}
                 style={{ backgroundColor: "#fff", borderRadius: 14, borderWidth: 1.5, borderColor: "#F0E8E0", padding: 14, fontSize: 15, color: DARK }} />
 
-              <TextInput value={content} onChangeText={setContent} placeholder="Conte a história desta missão..."
+              <TextInput value={content} onChangeText={setContent} placeholder={tr("Conte a história desta missão...")}
                 placeholderTextColor={GRAY} multiline
                 style={{ backgroundColor: "#fff", borderRadius: 14, borderWidth: 1.5, borderColor: "#F0E8E0", padding: 14, fontSize: 15, color: DARK, minHeight: 130, textAlignVertical: "top" }} />
 
@@ -304,10 +305,10 @@ function CommentsModal({ mission, onClose, canModerate }: { mission: Mission | n
   }
 
   function removeComment(c: any) {
-    Alert.alert("Apagar comentário", "Tem a certeza?", [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(tr("Apagar comentário"), tr("Tem a certeza?"), [
+      { text: tr("Cancelar"), style: "cancel" },
       {
-        text: "Apagar", style: "destructive",
+        text: tr("Apagar"), style: "destructive",
         onPress: async () => {
           try {
             const res = await authFetch(`${API_URL}/api/missions/${missionId}/comments/${c.id}`, { method: "DELETE" });
@@ -346,7 +347,7 @@ function CommentsModal({ mission, onClose, canModerate }: { mission: Mission | n
               ) : comments.map((c) => (
                 <View key={c.id} style={{ backgroundColor: "#fff", borderRadius: 14, borderWidth: 1.5, borderColor: "#F0E8E0", padding: 14 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                    <Text suppressHighlighting style={{ fontWeight: "800", color: DARK, fontSize: 13 }}>{c.userName ?? "Utilizador"}</Text>
+                    <Text suppressHighlighting style={{ fontWeight: "800", color: DARK, fontSize: 13 }}>{c.userName ?? tr("Utilizador")}</Text>
                     <TouchableOpacity onPress={() => removeComment(c)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                       <Trash2 size={14} color={canModerate ? "#EF4444" : GRAY} />
                     </TouchableOpacity>
@@ -359,7 +360,7 @@ function CommentsModal({ mission, onClose, canModerate }: { mission: Mission | n
           )}
 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: 16, borderTopWidth: 1.5, borderTopColor: "#F0E8E0", backgroundColor: "#fff" }}>
-            <TextInput value={text} onChangeText={setText} placeholder="Escreva um comentário..."
+            <TextInput value={text} onChangeText={setText} placeholder={tr("Escreva um comentário...")}
               placeholderTextColor={GRAY}
               style={{ flex: 1, backgroundColor: BG, borderRadius: 14, borderWidth: 1.5, borderColor: "#F0E8E0", paddingHorizontal: 14, paddingVertical: 11, fontSize: 14, color: DARK }} />
             <TouchableOpacity onPress={send} disabled={sending || !text.trim()}

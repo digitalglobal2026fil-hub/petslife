@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { ChevronLeft, MapPin, Navigation, Phone, ExternalLink } from "lucide-react-native";
 import * as Location from "expo-location";
+import { tr } from "../lib/i18n";
 
 // We keep it simple: use geolocation to get coords, then open Google Maps with a nearby vets search
 // No paid API needed
@@ -57,7 +58,7 @@ export default function FindVetsScreen() {
   }
 
   const SEARCHES = [
-    { emoji: "🏥", label: "Clínicas Veterinárias", query: "veterinário clínica veterinária perto de mim" },
+    { emoji: "🏥", label: tr("Clínicas Veterinárias"), query: "veterinário clínica veterinária perto de mim" },
     { emoji: "🚑", label: "Urgências 24h", query: "clínica veterinária urgência 24 horas" },
     { emoji: "💊", label: "Pet Shops", query: "pet shop loja animais perto de mim" },
     { emoji: "✂️", label: "Grooming / Tosquia", query: "grooming banho tosquia cão gato perto de mim" },
@@ -80,8 +81,8 @@ export default function FindVetsScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Vets e Outros</Text>
-          <Text suppressHighlighting style={{ fontSize: 12, color: "#6B7280" }}>Clínicas, lojas e serviços perto de si</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Vets e Outros")}</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, color: "#6B7280" }}>{tr("Clínicas, lojas e serviços perto de si")}</Text>
         </View>
       </View>
 
@@ -103,13 +104,13 @@ export default function FindVetsScreen() {
           {!loading && !coords && (
             <TouchableOpacity onPress={getLocation}
               style={{ backgroundColor: "#FF6B35", borderRadius: 12, paddingHorizontal: 14, paddingVertical: 8 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>Tentar</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{tr("Tentar")}</Text>
             </TouchableOpacity>
           )}
         </View>
 
         {/* Search categories */}
-        <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginBottom: 12 }}>Pesquisar perto de si</Text>
+        <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginBottom: 12 }}>{tr("Pesquisar perto de si")}</Text>
         <View style={{ gap: 10 }}>
           {SEARCHES.map((s) => (
             <TouchableOpacity key={s.label}
@@ -118,7 +119,7 @@ export default function FindVetsScreen() {
               <Text suppressHighlighting style={{ fontSize: 28 }}>{s.emoji}</Text>
               <View style={{ flex: 1 }}>
                 <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E", fontSize: 15 }}>{s.label}</Text>
-                <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12, marginTop: 2 }}>Abrir no Google Maps</Text>
+                <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12, marginTop: 2 }}>{tr("Abrir no Google Maps")}</Text>
               </View>
               <ExternalLink size={18} color="#9CA3AF" />
             </TouchableOpacity>
@@ -127,20 +128,20 @@ export default function FindVetsScreen() {
 
         {/* Emergency info */}
         <View style={{ backgroundColor: "#FFF0EB", borderRadius: 20, padding: 18, marginTop: 24, borderWidth: 1.5, borderColor: "#FFD5C2" }}>
-          <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "700", color: "#FF6B35", marginBottom: 10 }}>🚨 Urgência Veterinária</Text>
+          <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "700", color: "#FF6B35", marginBottom: 10 }}>{tr("🚨 Urgência Veterinária")}</Text>
           <Text suppressHighlighting style={{ color: "#1A1A2E", fontSize: 13, lineHeight: 20, marginBottom: 14 }}>
-            Em Portugal, o número de emergência é o <Text suppressHighlighting style={{ fontWeight: "700" }}>112</Text>. Para urgências veterinárias, ligue para a clínica mais próxima ou dirija-se a uma clínica 24h.
+            Em Portugal, o número de emergência é o <Text suppressHighlighting style={{ fontWeight: "700" }}>112</Text>{tr(". Para urgências veterinárias, ligue para a clínica mais próxima ou dirija-se a uma clínica 24h.")}
           </Text>
           <TouchableOpacity onPress={() => Linking.openURL("tel:112")}
             style={{ backgroundColor: "#FF6B35", borderRadius: 14, padding: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Phone size={18} color="#fff" />
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14 }}>Ligar 112</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14 }}>{tr("Ligar 112")}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Tips */}
         <View style={{ backgroundColor: "#E8FAF9", borderRadius: 20, padding: 18, marginTop: 16, marginBottom: 24 }}>
-          <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>💡 Dicas úteis</Text>
+          <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("💡 Dicas úteis")}</Text>
           {[
             "Guarde o contacto do seu veterinário nos favoritos",
             "Procure clínicas 24h perto de casa com antecedência",

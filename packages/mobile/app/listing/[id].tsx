@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, MapPin, Phone, Tag, PawPrint, Trash2 } from "lucide-react-native";
 import { api } from "../../lib/api";
+import { tr } from "../../lib/i18n";
 
 const catEmoji: Record<string, string> = {
   adoption: "🏠", products: "🛍️", services: "✂️", lost: "🔎",
@@ -64,7 +65,7 @@ export default function ListingDetailScreen() {
         {/* Description */}
         {l.description ? (
           <View style={{ backgroundColor: "#fff", borderRadius: 16, padding: 16, marginBottom: 14, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
-            <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Descrição</Text>
+            <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("Descrição")}</Text>
             <Text suppressHighlighting style={{ color: "#374151", lineHeight: 22, fontSize: 14 }}>{l.description}</Text>
           </View>
         ) : null}
@@ -91,7 +92,7 @@ export default function ListingDetailScreen() {
           </TouchableOpacity>
         ) : (
           <View style={{ backgroundColor: "#F0E8E0", borderRadius: 16, padding: 16, alignItems: "center" }}>
-            <Text suppressHighlighting style={{ color: "#6B7280" }}>Sem contacto disponível</Text>
+            <Text suppressHighlighting style={{ color: "#6B7280" }}>{tr("Sem contacto disponível")}</Text>
           </View>
         )}
       </ScrollView>

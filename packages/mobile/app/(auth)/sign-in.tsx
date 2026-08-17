@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { authClient, captureToken } from "../../lib/auth";
 import { Eye, EyeOff, ArrowRight } from "lucide-react-native";
+import { tr } from "../../lib/i18n";
 
 export default function SignInScreen() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function SignInScreen() {
   }, []);
 
   async function handleSignIn() {
-    if (!email || !password) return Alert.alert("Erro", "Preencha todos os campos.");
+    if (!email || !password) return Alert.alert(tr("Erro"), tr("Preencha todos os campos."));
     setLoading(true);
     try {
       const res = await authClient.signIn.email({ email, password }, { onSuccess: captureToken });
@@ -46,7 +47,7 @@ export default function SignInScreen() {
       router.replace("/(tabs)");
     } catch (e: any) {
       const msg = e.message && e.message !== "undefined" ? e.message : "Email ou password incorretos.";
-      Alert.alert("Erro ao entrar", msg);
+      Alert.alert(tr("Erro ao entrar"), msg);
     } finally {
       setLoading(false);
     }
@@ -104,7 +105,7 @@ export default function SignInScreen() {
               <TextInput
                 value={email}
                 onChangeText={setEmail}
-                placeholder="o.seu@email.com"
+                placeholder={tr("o.seu@email.com")}
                 placeholderTextColor="#C4B5A0"
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -128,7 +129,7 @@ export default function SignInScreen() {
 
             {/* Password */}
             <View>
-              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#1A1A2E", marginBottom: 8, marginLeft: 4 }}>Password</Text>
+              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#1A1A2E", marginBottom: 8, marginLeft: 4 }}>{tr("Password")}</Text>
               <View style={{
                 backgroundColor: "#fff",
                 borderWidth: 2,
@@ -189,7 +190,7 @@ export default function SignInScreen() {
               {loading
                 ? <ActivityIndicator color="#fff" />
                 : <>
-                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>Entrar</Text>
+                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>{tr("Entrar")}</Text>
                   <ArrowRight size={18} color="#fff" />
                 </>
               }

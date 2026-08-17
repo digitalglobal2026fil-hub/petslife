@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView, TouchableOpacity, Platform } from "react-native";
+import { tr } from "../lib/i18n";
 
 /**
  * Apanha qualquer erro de JavaScript (render ou global) e mostra-o no ecrã em
@@ -79,7 +80,7 @@ export class ErrorCatcher extends React.Component<{ children: React.ReactNode },
             marginBottom: 30,
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>Tentar continuar</Text>
+          <Text style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("Tentar continuar")}</Text>
         </TouchableOpacity>
       </View>
     );

@@ -14,6 +14,7 @@ import { deleteContent } from "../../lib/moderation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
+import { tr } from "../../lib/i18n";
 
 // ─── Search input isolated so focus is never lost ───────────────────────────
 function SearchInput({ onSearch, placeholder }: { onSearch: (v: string) => void; placeholder: string }) {
@@ -43,7 +44,7 @@ const typeEmoji: Record<string, string> = {
   hotel: "🏠", treino: "🎾", outro: "📦",
 };
 const typeLabel: Record<string, string> = {
-  clinica: "Clínica", petshop: "Petshop", tosquiador: "Tosquiador",
+  clinica: tr("Clínica"), petshop: "Petshop", tosquiador: "Tosquiador",
   hotel: "Hotel Animal", treino: "Treino", outro: "Outro",
 };
 
@@ -169,9 +170,9 @@ function ListingCard({ l, onPress, isOwner, onDelete }: { l: any; onPress: () =>
 const BIZ_CATS = [
   { key: "todos",      label: "Todos",       emoji: "🔍", route: null },
   { key: "clinica",    label: "Clínicas",    emoji: "🏥", route: "/category/clinicas" },
-  { key: "petshop",    label: "Petshops",    emoji: "🐾", route: "/category/petshops" },
+  { key: "petshop",    label: tr("Petshops"),    emoji: "🐾", route: "/category/petshops" },
   { key: "hotel",      label: "Hotéis",      emoji: "🏨", route: "/category/hoteis" },
-  { key: "tosquiador", label: "Tosquiadores",emoji: "✂️", route: "/category/tosquiadores" },
+  { key: "tosquiador", label: tr("Tosquiadores"),emoji: "✂️", route: "/category/tosquiadores" },
   { key: "treino",     label: "Treino",      emoji: "🎯", route: "/category/treino" },
   { key: "outro",      label: "Outro",       emoji: "📦", route: null },
 ];
@@ -179,10 +180,10 @@ const BIZ_CATS = [
 // ─── Listing categories ────────────────────────────────────────────────────────
 const LIST_CATS = [
   { key: "todos",     label: "Todos",          emoji: "🔍", route: null },
-  { key: "adoption",  label: "Adoção",         emoji: "❤️", route: "/category/adocao" },
+  { key: "adoption",  label: tr("Adoção"),         emoji: "❤️", route: "/category/adocao" },
   { key: "products",  label: "Produtos",       emoji: "🛍️", route: null },
-  { key: "services",  label: "Serviços",       emoji: "🛠️", route: "/category/servicos" },
-  { key: "lost",      label: "Animal Perdido", emoji: "🔍", route: "/category/perdidos" },
+  { key: "services",  label: tr("Serviços"),       emoji: "🛠️", route: "/category/servicos" },
+  { key: "lost",      label: tr("Animal Perdido"), emoji: "🔍", route: "/category/perdidos" },
 ];
 
 // ─── Main screen ──────────────────────────────────────────────────────────────
@@ -250,7 +251,7 @@ export default function MarketplaceScreen() {
         flexDirection: "row", alignItems: "center", justifyContent: "space-between",
       }}>
         <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.12)" }} />
-        <Text style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>Marketplace</Text>
+        <Text style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Marketplace")}</Text>
         <TouchableOpacity
           onPress={() => router.push(tab === "businesses" ? "/add-business" : "/add-listing")}
           style={{
@@ -277,7 +278,7 @@ export default function MarketplaceScreen() {
             shadowOpacity: 0, shadowRadius: 0, elevation: 0,
           }}>
           <Building2 size={16} color={tab === "businesses" ? "#8B5E3C" : "#9CA3AF"} />
-          <Text style={{ fontWeight: "700", fontSize: 14, color: tab === "businesses" ? "#8B5E3C" : "#9CA3AF" }}>Negócios</Text>
+          <Text style={{ fontWeight: "700", fontSize: 14, color: tab === "businesses" ? "#8B5E3C" : "#9CA3AF" }}>{tr("Negócios")}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -290,7 +291,7 @@ export default function MarketplaceScreen() {
             shadowOpacity: 0, shadowRadius: 0, elevation: 0,
           }}>
           <Tag size={16} color={tab === "listings" ? "#FF6B35" : "#9CA3AF"} />
-          <Text style={{ fontWeight: "700", fontSize: 14, color: tab === "listings" ? "#FF6B35" : "#9CA3AF" }}>Anúncios</Text>
+          <Text style={{ fontWeight: "700", fontSize: 14, color: tab === "listings" ? "#FF6B35" : "#9CA3AF" }}>{tr("Anúncios")}</Text>
         </TouchableOpacity>
       </View>
 
@@ -354,7 +355,7 @@ export default function MarketplaceScreen() {
               {businesses.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-business")}
                   style={{ backgroundColor: "#8B5E3C", borderRadius: 14, paddingHorizontal: 20, paddingVertical: 12, marginTop: 16 }}>
-                  <Text style={{ color: "#fff", fontWeight: "700" }}>+ Registar Negócio</Text>
+                  <Text style={{ color: "#fff", fontWeight: "700" }}>{tr("+ Registar Negócio")}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -387,7 +388,7 @@ export default function MarketplaceScreen() {
               {listings.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-listing")}
                   style={{ backgroundColor: "#FF6B35", borderRadius: 14, paddingHorizontal: 20, paddingVertical: 12, marginTop: 16 }}>
-                  <Text style={{ color: "#fff", fontWeight: "700" }}>+ Publicar Anúncio</Text>
+                  <Text style={{ color: "#fff", fontWeight: "700" }}>{tr("+ Publicar Anúncio")}</Text>
                 </TouchableOpacity>
               )}
             </View>

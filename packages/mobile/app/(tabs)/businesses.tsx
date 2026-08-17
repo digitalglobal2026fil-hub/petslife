@@ -10,8 +10,9 @@ import { PaywallScreen } from "../../components/PaywallScreen";
 import { authClient } from "../../lib/auth";
 import { ModerationButton } from "../../components/ModerationButton";
 import { deleteContent } from "../../lib/moderation";
+import { tr } from "../../lib/i18n";
 
-const categories = ["Todos", "Clínica", "Petshop", "Tosquiador", "Hotel", "Treino", "Outro"];
+const categories = ["Todos", tr("Clínica"), "Petshop", "Tosquiador", "Hotel", "Treino", "Outro"];
 
 const typeIcon = (type: string) => {
   switch (type) {
@@ -30,7 +31,7 @@ function SearchInput({ onSearch }: { onSearch: (v: string) => void }) {
       <Search size={18} color="#9CA3AF" />
       <TextInput
         onChangeText={onSearch}
-        placeholder="Pesquisar negócios..."
+        placeholder={tr("Pesquisar negócios...")}
         placeholderTextColor="#9CA3AF"
         autoCorrect={false}
         autoCapitalize="none"
@@ -62,7 +63,7 @@ export default function BusinessesScreen() {
   });
 
   if (!gateLoading && isBlocked) {
-    return <PaywallScreen featureName="Negócios" />;
+    return <PaywallScreen featureName={tr("Negócios")} />;
   }
 
   return (
@@ -73,7 +74,7 @@ export default function BusinessesScreen() {
         flexDirection: "row", alignItems: "center", justifyContent: "space-between",
       }}>
         <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.12)" }} />
-        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>Negócios</Text>
+        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Negócios")}</Text>
         <TouchableOpacity onPress={() => router.push("/add-business")}
           style={{ backgroundColor: "rgba(255,255,255,0.25)", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
           <Plus size={20} color="#fff" />
@@ -96,11 +97,11 @@ export default function BusinessesScreen() {
           businesses.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 40 }}>
               <Text suppressHighlighting style={{ fontSize: 48 }}>🏪</Text>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Sem negócios ainda</Text>
-              <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>Regista a tua clínica ou petshop!</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Sem negócios ainda")}</Text>
+              <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>{tr("Regista a tua clínica ou petshop!")}</Text>
               <TouchableOpacity onPress={() => router.push("/add-business")}
                 style={{ backgroundColor: "#8B5E3C", borderRadius: 14, paddingHorizontal: 20, paddingVertical: 12, marginTop: 16 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>+ Registar Negócio</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("+ Registar Negócio")}</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -147,20 +148,20 @@ export default function BusinessesScreen() {
                     <TouchableOpacity onPress={() => Linking.openURL(`tel:${b.phone}`)}
                       style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#F0FFF4", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 }}>
                       <Phone size={14} color="#22C55E" />
-                      <Text suppressHighlighting style={{ color: "#22C55E", fontWeight: "600", fontSize: 13 }}>Ligar</Text>
+                      <Text suppressHighlighting style={{ color: "#22C55E", fontWeight: "600", fontSize: 13 }}>{tr("Ligar")}</Text>
                     </TouchableOpacity>
                   )}
                   {b.website && (
                     <TouchableOpacity onPress={() => Linking.openURL(b.website)}
                       style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#EFF6FF", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 }}>
                       <Globe size={14} color="#3B82F6" />
-                      <Text suppressHighlighting style={{ color: "#3B82F6", fontWeight: "600", fontSize: 13 }}>Website</Text>
+                      <Text suppressHighlighting style={{ color: "#3B82F6", fontWeight: "600", fontSize: 13 }}>{tr("Website")}</Text>
                     </TouchableOpacity>
                   )}
                   {(b.bookingUrl || b.bookingPhone) && (
                     <TouchableOpacity onPress={() => b.bookingUrl ? Linking.openURL(b.bookingUrl) : Linking.openURL(`tel:${b.bookingPhone}`)}
                       style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#8B5E3C", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 }}>
-                      <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>Marcar Consulta</Text>
+                      <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>{tr("Marcar Consulta")}</Text>
                     </TouchableOpacity>
                   )}
                 </View>

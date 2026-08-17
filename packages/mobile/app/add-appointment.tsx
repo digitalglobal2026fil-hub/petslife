@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronDown, Calendar } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
 import { DateFieldPT } from "../components/DateFieldPT";
+import { tr } from "../lib/i18n";
 
 function Field({ label, value, onChange, placeholder, keyboardType, multiline }: any) {
   return (
@@ -65,15 +66,15 @@ export default function AddAppointmentScreen() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["appointments"] });
       qc.invalidateQueries({ queryKey: ["appointments-upcoming"] });
-      Alert.alert("✅ Consulta guardada!", "Consulta adicionada com sucesso.", [{ text: "OK", onPress: () => router.back() }]);
+      Alert.alert("✅ Consulta guardada!", tr("Consulta adicionada com sucesso."), [{ text: tr("OK"), onPress: () => router.back() }]);
     },
     onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
   const handleSave = () => {
-    if (!petId) { Alert.alert("Selecione um animal", "Escolha a qual animal pertence esta consulta."); return; }
-    if (!title.trim()) { Alert.alert("Campo obrigatório", "Insira o motivo da consulta."); return; }
-    if (!date.trim()) { Alert.alert("Campo obrigatório", "Insira a data da consulta."); return; }
+    if (!petId) { Alert.alert(tr("Selecione um animal"), tr("Escolha a qual animal pertence esta consulta.")); return; }
+    if (!title.trim()) { Alert.alert(tr("Campo obrigatório"), tr("Insira o motivo da consulta.")); return; }
+    if (!date.trim()) { Alert.alert(tr("Campo obrigatório"), tr("Insira a data da consulta.")); return; }
     save.mutate();
   };
 
@@ -86,8 +87,8 @@ export default function AddAppointmentScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Nova Consulta 📅</Text>
-          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>Agende ou registe uma consulta</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Nova Consulta 📅")}</Text>
+          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{tr("Agende ou registe uma consulta")}</Text>
         </View>
         <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
           <Calendar size={22} color="#FF6B35" />
@@ -98,7 +99,7 @@ export default function AddAppointmentScreen() {
 
         {/* Pet picker */}
         <View style={{ marginBottom: 20 }}>
-          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>Animal *</Text>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>{tr("Animal *")}</Text>
           {loadPets ? <ActivityIndicator color="#FF6B35" /> : (
             <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
               style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? "#FF6B35" : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -112,7 +113,7 @@ export default function AddAppointmentScreen() {
             <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
               {pets.length === 0 ? (
                 <TouchableOpacity onPress={() => router.replace("/add-pet")} style={{ padding: 14, alignItems: "center" }}>
-                  <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>+ Adicionar animal primeiro</Text>
+                  <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>{tr("+ Adicionar animal primeiro")}</Text>
                 </TouchableOpacity>
               ) : pets.map((p: any) => (
                 <TouchableOpacity key={p.id} onPress={() => { setPetId(p.id); setPetPickerOpen(false); }}
@@ -129,7 +130,7 @@ export default function AddAppointmentScreen() {
         </View>
 
         {/* Type selector */}
-        <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>Tipo de consulta</Text>
+        <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("Tipo de consulta")}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
           {TYPES.map((t) => (
             <TouchableOpacity key={t.k} onPress={() => setType(t.k)}
@@ -139,25 +140,25 @@ export default function AddAppointmentScreen() {
           ))}
         </ScrollView>
 
-        <Field label="Motivo / Título *" value={title} onChange={setTitle} placeholder="Ex: Check-up anual, Vacinação anual..." />
+        <Field label={tr("Motivo / Título *")} value={title} onChange={setTitle} placeholder={tr("Ex: Check-up anual, Vacinação anual...")} />
 
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View style={{ flex: 1 }}>
-            <DateFieldPT label="Data *" value={date} onChange={setDate} />
+            <DateFieldPT label={tr("Data *")} value={date} onChange={setDate} />
           </View>
           <View style={{ flex: 1 }}>
-            <Field label="Hora" value={time} onChange={setTime} placeholder="HH:MM" />
+            <Field label={tr("Hora")} value={time} onChange={setTime} placeholder="HH:MM" />
           </View>
         </View>
 
-        <Field label="Médico veterinário" value={vet} onChange={setVet} placeholder="Nome do veterinário" />
-        <Field label="Clínica / Hospital" value={clinic} onChange={setClinic} placeholder="Nome da clínica" />
-        <Field label="Notas / Resultados" value={notes} onChange={setNotes} placeholder="Observações, diagnóstico, tratamento..." multiline />
+        <Field label={tr("Médico veterinário")} value={vet} onChange={setVet} placeholder={tr("Nome do veterinário")} />
+        <Field label={tr("Clínica / Hospital")} value={clinic} onChange={setClinic} placeholder={tr("Nome da clínica")} />
+        <Field label={tr("Notas / Resultados")} value={notes} onChange={setNotes} placeholder={tr("Observações, diagnóstico, tratamento...")} multiline />
 
         <TouchableOpacity onPress={handleSave} disabled={save.isPending}
           style={{ backgroundColor: "#FF6B35", borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: "#FF6B35", shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
           {save.isPending ? <ActivityIndicator color="#fff" /> : (
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>💾 Guardar Consulta</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>{tr("💾 Guardar Consulta")}</Text>
           )}
         </TouchableOpacity>
       </ScrollView>

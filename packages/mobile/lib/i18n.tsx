@@ -1,101 +1,214 @@
-import React, { createContext, useContext, useState } from "react";
-import { Platform } from "react-native";
+import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import { NativeModules, Platform } from "react-native";
+import { T, ORDER } from "./locales/catalog";
 
-// ─── Idiomas disponíveis ───────────────────────────────────────────────────
+/**
+ * Tradução da PetsLife.
+ *
+ * REGRA IMPORTANTE: a chave de tradução é a própria frase em português.
+ *   t("Adicionar animal")  ->  "Add pet" / "Añadir mascota" / ...
+ *
+ * Isto tem duas vantagens grandes:
+ *  1. Traduzir um ecrã é só embrulhar as frases em t(), sem inventar nomes.
+ *  2. Se faltar uma tradução, aparece o português — nunca um código estranho
+ *     tipo "home_title" à frente do utilizador.
+ *
+ * O idioma é detetado a partir do telemóvel na primeira abertura e pode ser
+ * mudado no Perfil. Não usamos nenhuma biblioteca nativa nova de propósito:
+ * módulos nativos mal ligados já fizeram a app rebentar no arranque.
+ */
+
 export const LANGUAGES = [
-  { code: "pt", label: "Português", flag: "🇵🇹", name: "Português" },
+  { code: "pt", label: "Português", flag: "🇵🇹", name: "Português (Portugal)" },
+  { code: "br", label: "Português (BR)", flag: "🇧🇷", name: "Português (Brasil)" },
   { code: "en", label: "English", flag: "🇬🇧", name: "English" },
   { code: "es", label: "Español", flag: "🇪🇸", name: "Español" },
   { code: "fr", label: "Français", flag: "🇫🇷", name: "Français" },
-  { code: "it", label: "Italiano", flag: "🇮🇹", name: "Italiano" },
   { code: "de", label: "Deutsch", flag: "🇩🇪", name: "Deutsch" },
-  { code: "nl", label: "Nederlands", flag: "🇳🇱", name: "Nederlands" },
-  { code: "zh", label: "中文", flag: "🇨🇳", name: "中文" },
-  { code: "ja", label: "日本語", flag: "🇯🇵", name: "日本語" },
-  { code: "ru", label: "Русский", flag: "🇷🇺", name: "Русский" },
-  { code: "he", label: "עברית", flag: "🇮🇱", name: "עברית" },
-  { code: "ar", label: "العربية", flag: "🇸🇦", name: "العربية" },
-  { code: "ko", label: "한국어", flag: "🇰🇷", name: "한국어" },
-  { code: "hi", label: "हिन्दी", flag: "🇮🇳", name: "हिन्दी" },
 ];
 
-// ─── Traduções ─────────────────────────────────────────────────────────────
-const translations: Record<string, Record<string, string>> = {
-  // Tabs
-  tab_home:        { pt: "Início",      en: "Home",        es: "Inicio",      fr: "Accueil",    it: "Home",       de: "Start",      nl: "Start",      zh: "主页",   ja: "ホーム",  ru: "Главная",    he: "בית",      ar: "الرئيسية",  ko: "홈",      hi: "होम" },
-  tab_health:      { pt: "Saúde",       en: "Health",      es: "Salud",       fr: "Santé",      it: "Salute",     de: "Gesundheit", nl: "Gezondheid", zh: "健康",   ja: "健康",    ru: "Здоровье",   he: "בריאות",   ar: "الصحة",     ko: "건강",    hi: "स्वास्थ्य" },
-  tab_consult:     { pt: "Consulta",    en: "Consult",     es: "Consulta",    fr: "Consultation",it: "Consulta",  de: "Beratung",   nl: "Consult",    zh: "咨询",   ja: "相談",    ru: "Консультация",he: "ייעוץ",   ar: "استشارة",   ko: "상담",    hi: "परामर्श" },
-  tab_community:   { pt: "Comunidade",  en: "Community",   es: "Comunidad",   fr: "Communauté", it: "Comunità",  de: "Community",  nl: "Gemeenschap",zh: "社区",  ja: "コミュニティ",ru: "Сообщество",he: "קהילה",   ar: "المجتمع",  ko: "커뮤니티", hi: "समुदाय" },
-  tab_market:      { pt: "Loja",        en: "Shop",        es: "Tienda",      fr: "Boutique",   it: "Negozio",    de: "Shop",       nl: "Winkel",     zh: "商城",   ja: "ショップ", ru: "Магазин",    he: "חנות",     ar: "المتجر",    ko: "쇼핑",    hi: "दुकान" },
-  tab_profile:     { pt: "Perfil",      en: "Profile",     es: "Perfil",      fr: "Profil",     it: "Profilo",    de: "Profil",     nl: "Profiel",    zh: "个人",   ja: "プロフィール",ru: "Профиль",  he: "פרופיל",   ar: "الملف",     ko: "프로필",  hi: "प्रोफाइल" },
+export type LangCode = "pt" | "br" | "en" | "es" | "fr" | "de";
 
-  // Saúde - secções
-  health_vaccines:    { pt: "Vacinas",        en: "Vaccines",      es: "Vacunas",      fr: "Vaccins",       it: "Vaccini",       de: "Impfungen",     nl: "Vaccins",      zh: "疫苗",    ja: "ワクチン",   ru: "Вакцины",       he: "חיסונים",    ar: "اللقاحات",    ko: "백신",      hi: "टीके" },
-  health_consults:    { pt: "Consultas",      en: "Appointments",  es: "Consultas",    fr: "Rendez-vous",   it: "Visite",        de: "Termine",       nl: "Afspraken",    zh: "预约",    ja: "診察",       ru: "Приёмы",        he: "תורים",      ar: "المواعيد",    ko: "진료",      hi: "नियुक्तियाँ" },
-  health_prescripts:  { pt: "Receitas",       en: "Prescriptions", es: "Recetas",      fr: "Ordonnances",   it: "Ricette",       de: "Rezepte",       nl: "Recepten",     zh: "处方",    ja: "処方箋",     ru: "Рецепты",       he: "מרשמים",     ar: "الوصفات",     ko: "처방전",    hi: "नुस्खे" },
-  health_deworming:   { pt: "Desparasit.",    en: "Deworming",     es: "Desparasit.",  fr: "Déparasitage",  it: "Antiparassit.", de: "Entwurmung",    nl: "Ontworming",   zh: "驱虫",    ja: "駆虫",       ru: "Дегельм.",      he: "הדברה",      ar: "التطهير",     ko: "구충",      hi: "कृमि मुक्ति" },
-  health_weight:      { pt: "Peso",           en: "Weight",        es: "Peso",         fr: "Poids",         it: "Peso",          de: "Gewicht",       nl: "Gewicht",      zh: "体重",    ja: "体重",       ru: "Вес",           he: "משקל",       ar: "الوزن",       ko: "체중",      hi: "वजन" },
-  health_diary:       { pt: "Diário",         en: "Diary",         es: "Diario",       fr: "Journal",       it: "Diario",        de: "Tagebuch",      nl: "Dagboek",      zh: "日记",    ja: "日記",       ru: "Дневник",       he: "יומן",       ar: "اليوميات",    ko: "일기",      hi: "डायरी" },
-  health_docs:        { pt: "Documentos",     en: "Documents",     es: "Documentos",   fr: "Documents",     it: "Documenti",     de: "Dokumente",     nl: "Documenten",   zh: "文件",    ja: "書類",       ru: "Документы",     he: "מסמכים",     ar: "الوثائق",     ko: "서류",      hi: "दस्तावेज़" },
+// Índice de cada idioma dentro do array de traduções ([en, es, de, fr, br]).
+const INDEX: Record<string, number> = {};
+ORDER.forEach((code, i) => {
+  INDEX[code] = i;
+});
 
-  // Início
-  home_hello:         { pt: "Olá",            en: "Hello",         es: "Hola",         fr: "Bonjour",       it: "Ciao",          de: "Hallo",         nl: "Hallo",        zh: "你好",    ja: "こんにちは",  ru: "Привет",       he: "שלום",       ar: "مرحباً",      ko: "안녕하세요", hi: "नमस्ते" },
-  home_subtitle:      { pt: "Aqui os teus animais são bem cuidados! 🐾", en: "Your pets are well taken care of here! 🐾", es: "¡Aquí tus mascotas están bien cuidadas! 🐾", fr: "Ici vos animaux sont bien soignés! 🐾", it: "Qui i tuoi animali sono ben curati! 🐾", de: "Hier werden Ihre Haustiere gut betreut! 🐾", nl: "Hier worden uw huisdieren goed verzorgd! 🐾", zh: "在这里，您的宠物得到精心照顾！🐾", ja: "ここであなたのペットは大切にされています！🐾", ru: "Здесь ваши питомцы в хороших руках! 🐾", he: "כאן חיות המחמד שלך מטופלות היטב! 🐾", ar: "هنا يتم الاعتناء بحيواناتك الأليفة! 🐾", ko: "여기서 당신의 반려동물이 잘 돌봐집니다! 🐾", hi: "यहाँ आपके पालतू जानवरों की अच्छी देखभाल होती है! 🐾" },
+const STORE_KEY = "app_lang";
 
-  // Geral
-  add:                { pt: "Adicionar",      en: "Add",           es: "Añadir",       fr: "Ajouter",       it: "Aggiungi",      de: "Hinzufügen",    nl: "Toevoegen",    zh: "添加",    ja: "追加",       ru: "Добавить",      he: "הוסף",       ar: "إضافة",       ko: "추가",      hi: "जोड़ें" },
-  save:               { pt: "Guardar",        en: "Save",          es: "Guardar",      fr: "Enregistrer",   it: "Salva",         de: "Speichern",     nl: "Opslaan",      zh: "保存",    ja: "保存",       ru: "Сохранить",     he: "שמור",       ar: "حفظ",         ko: "저장",      hi: "सहेजें" },
-  cancel:             { pt: "Cancelar",       en: "Cancel",        es: "Cancelar",     fr: "Annuler",       it: "Annulla",       de: "Abbrechen",     nl: "Annuleren",    zh: "取消",    ja: "キャンセル",  ru: "Отмена",       he: "בטל",        ar: "إلغاء",       ko: "취소",      hi: "रद्द करें" },
-  delete:             { pt: "Eliminar",       en: "Delete",        es: "Eliminar",     fr: "Supprimer",     it: "Elimina",       de: "Löschen",       nl: "Verwijderen",  zh: "删除",    ja: "削除",       ru: "Удалить",       he: "מחק",        ar: "حذف",         ko: "삭제",      hi: "हटाएं" },
-  gallery:            { pt: "Galeria",        en: "Gallery",       es: "Galería",      fr: "Galerie",       it: "Galleria",      de: "Galerie",       nl: "Galerij",      zh: "相册",    ja: "ギャラリー",  ru: "Галерея",      he: "גלריה",      ar: "المعرض",      ko: "갤러리",    hi: "गैलरी" },
-  camera:             { pt: "Câmara",         en: "Camera",        es: "Cámara",       fr: "Appareil photo",it: "Fotocamera",   de: "Kamera",        nl: "Camera",       zh: "相机",    ja: "カメラ",     ru: "Камера",       he: "מצלמה",      ar: "الكاميرا",    ko: "카메라",    hi: "कैमरा" },
-  my_pets:            { pt: "Os meus animais",en: "My Pets",       es: "Mis mascotas", fr: "Mes animaux",   it: "I miei animali",de: "Meine Tiere",   nl: "Mijn dieren",  zh: "我的宠物", ja: "私のペット",  ru: "Мои питомцы",  he: "החיות שלי",  ar: "حيواناتي",    ko: "내 반려동물", hi: "मेरे पालतू" },
-  no_pets:            { pt: "Adicione um animal para começar", en: "Add a pet to get started", es: "Añade una mascota para comenzar", fr: "Ajoutez un animal pour commencer", it: "Aggiungi un animale per iniziare", de: "Fügen Sie ein Tier hinzu", nl: "Voeg een dier toe om te beginnen", zh: "添加宠物开始", ja: "ペットを追加して始めましょう", ru: "Добавьте питомца, чтобы начать", he: "הוסף חיה כדי להתחיל", ar: "أضف حيوانًا للبدء", ko: "반려동물을 추가하여 시작하세요", hi: "शुरू करने के लिए पालतू जोड़ें" },
-  choose_language:    { pt: "Idioma",         en: "Language",      es: "Idioma",       fr: "Langue",        it: "Lingua",        de: "Sprache",       nl: "Taal",         zh: "语言",    ja: "言語",       ru: "Язык",          he: "שפה",        ar: "اللغة",       ko: "언어",      hi: "भाषा" },
-};
+/**
+ * Idioma do telemóvel, sem módulos nativos extra.
+ * Tenta o Intl (existe no Hermes), depois as definições do Android/iOS.
+ */
+function detectDeviceLang(): LangCode {
+  let raw = "";
+  try {
+    raw = Intl.DateTimeFormat().resolvedOptions().locale ?? "";
+  } catch {
+    /* segue para o plano B */
+  }
+  if (!raw) {
+    try {
+      if (Platform.OS === "android") {
+        raw = (NativeModules as any)?.I18nManager?.localeIdentifier ?? "";
+      } else {
+        const s = (NativeModules as any)?.SettingsManager?.settings;
+        raw = s?.AppleLocale ?? s?.AppleLanguages?.[0] ?? "";
+      }
+    } catch {
+      /* fica vazio */
+    }
+  }
 
-// ─── Contexto ──────────────────────────────────────────────────────────────
+  const loc = String(raw).toLowerCase().replace("_", "-");
+  if (!loc) return "pt";
+  if (loc.startsWith("pt")) return loc.includes("br") ? "br" : "pt";
+  if (loc.startsWith("es")) return "es";
+  if (loc.startsWith("fr")) return "fr";
+  if (loc.startsWith("de")) return "de";
+  if (loc.startsWith("en")) return "en";
+  // Qualquer outro idioma do mundo cai no inglês, que é o mais provável de
+  // ser entendido — nunca em português, que só confundiria.
+  return "en";
+}
+
+function readStored(): string | null {
+  try {
+    if (Platform.OS === "web") return localStorage.getItem(STORE_KEY);
+  } catch {
+    /* ignora */
+  }
+  return null;
+}
+
+async function readStoredAsync(): Promise<string | null> {
+  if (Platform.OS === "web") return readStored();
+  try {
+    const SecureStore = require("expo-secure-store");
+    return await SecureStore.getItemAsync(STORE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeStored(l: string) {
+  try {
+    if (Platform.OS === "web") {
+      localStorage.setItem(STORE_KEY, l);
+      return;
+    }
+    const SecureStore = require("expo-secure-store");
+    SecureStore.setItemAsync(STORE_KEY, l).catch(() => {});
+  } catch {
+    /* ignora */
+  }
+}
+
+/** Traduz uma frase para um idioma concreto. */
+export function translate(pt: string, lang: string): string {
+  if (!pt) return pt;
+  if (lang === "pt") return pt;
+  const i = INDEX[lang];
+  if (i === undefined) return pt;
+  const row = T[pt];
+  if (!row) return pt;
+  return row[i] || pt;
+}
+
+// Idioma actual guardado ao nível do módulo, para as funções fora de
+// componentes React (alertas em lib/, mensagens de erro, etc.).
+// É definido logo no arranque para que qualquer constante criada no topo de
+// um ficheiro (listas de categorias, etc.) já apanhe o idioma certo.
+function initialLang(): LangCode {
+  try {
+    if (Platform.OS === "web") {
+      const w = readStored();
+      if (w && LANGUAGES.some((l) => l.code === w)) return w as LangCode;
+    } else {
+      const SecureStore = require("expo-secure-store");
+      const saved = SecureStore.getItem?.(STORE_KEY);
+      if (saved && LANGUAGES.some((l) => l.code === saved)) return saved as LangCode;
+    }
+  } catch {
+    /* segue para a detecção automática */
+  }
+  try {
+    return detectDeviceLang();
+  } catch {
+    return "pt";
+  }
+}
+
+let currentLang: LangCode = initialLang();
+
+/** Traduzir fora de um componente React. */
+export function tr(pt: string): string {
+  return translate(pt, currentLang);
+}
+
+/** Idioma actual, para quem precisar (formatar datas, por exemplo). */
+export function getLang(): LangCode {
+  return currentLang;
+}
+
+/** Locale para datas e números: pt -> pt-PT, br -> pt-BR, en -> en-GB... */
+export function getLocale(): string {
+  const map: Record<string, string> = {
+    pt: "pt-PT", br: "pt-BR", en: "en-GB", es: "es-ES", fr: "fr-FR", de: "de-DE",
+  };
+  return map[currentLang] ?? "pt-PT";
+}
+
 type LangContextType = {
-  lang: string;
-  setLang: (l: string) => void;
-  t: (key: string) => string;
+  lang: LangCode;
+  setLang: (l: LangCode) => void;
+  t: (pt: string) => string;
+  ready: boolean;
 };
 
 const LangContext = createContext<LangContextType>({
   lang: "pt",
   setLang: () => {},
-  t: (key) => key,
+  t: (pt) => pt,
+  ready: true,
 });
 
 export function LangProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState("pt");
+  // Começa já no idioma do telemóvel para não haver um piscar em português.
+  const [lang, setLangState] = useState<LangCode>(() => currentLang);
+  const [ready, setReady] = useState(false);
 
-  const setLang = (l: string) => {
-    setLangState(l);
-    // Persistir
-    try {
-      if (Platform.OS === "web") {
-        localStorage.setItem("app_lang", l);
-      } else {
-        const SecureStore = require("expo-secure-store");
-        SecureStore.setItemAsync("app_lang", l).catch(() => {});
+  // Se a pessoa já escolheu um idioma no Perfil, essa escolha manda.
+  useEffect(() => {
+    (async () => {
+      const saved = await readStoredAsync();
+      if (saved && LANGUAGES.some((l) => l.code === saved)) {
+        currentLang = saved as LangCode;
+        setLangState(saved as LangCode);
       }
-    } catch {}
-  };
+      setReady(true);
+    })();
+  }, []);
 
-  const t = (key: string): string => {
-    const row = translations[key];
-    if (!row) return key;
-    return row[lang] ?? row["pt"] ?? key;
-  };
+  const setLang = useCallback((l: LangCode) => {
+    currentLang = l;
+    setLangState(l);
+    writeStored(l);
+  }, []);
 
-  return (
-    <LangContext.Provider value={{ lang, setLang, t }}>
-      {children}
-    </LangContext.Provider>
-  );
+  const t = useCallback((pt: string) => translate(pt, lang), [lang]);
+
+  const value = useMemo(() => ({ lang, setLang, t, ready }), [lang, setLang, t, ready]);
+
+  return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
 }
 
 export function useLang() {
   return useContext(LangContext);
+}
+
+/** Atalho mais curto para os ecrãs: const t = useT(); */
+export function useT() {
+  return useContext(LangContext).t;
 }

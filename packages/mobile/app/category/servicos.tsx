@@ -7,6 +7,7 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { CategoryHeader } from "../../components/CategoryHeader";
 import { useState, useCallback } from "react";
+import { tr } from "../../lib/i18n";
 
 function ServiceCard({ item, onPress }: { item: any; onPress: () => void }) {
   return (
@@ -58,7 +59,7 @@ export default function ServicosScreen() {
     queryKey: ["marketplace"],
     queryFn: async () => {
       const res = await (api as any).marketplace.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
   });
@@ -81,8 +82,8 @@ export default function ServicosScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F3FF" }}>
       <CategoryHeader
         emoji="🛠️"
-        title="Serviços"
-        subtitle="Serviços especializados para o seu pet"
+        title={tr("Serviços")}
+        subtitle={tr("Serviços especializados para o seu pet")}
         bgColor="#EEF2FF"
         accentColor="#6366F1"
       />
@@ -93,7 +94,7 @@ export default function ServicosScreen() {
         <TextInput
           value={search}
           onChangeText={setSearch}
-          placeholder="Pesquisar serviços..."
+          placeholder={tr("Pesquisar serviços...")}
           placeholderTextColor="#B0B0C0"
           style={{ flex: 1, marginLeft: 10, fontSize: 15, color: "#1A1A2E" }}
         />
@@ -107,8 +108,8 @@ export default function ServicosScreen() {
         ) : filtered.length === 0 ? (
           <View style={{ alignItems: "center", marginTop: 60 }}>
             <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🛠️</Text>
-            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Sem serviços disponíveis</Text>
-            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>Ainda não há serviços publicados nesta categoria.</Text>
+            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Sem serviços disponíveis")}</Text>
+            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>{tr("Ainda não há serviços publicados nesta categoria.")}</Text>
           </View>
         ) : (
           filtered.map((item: any) => (

@@ -3,6 +3,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react-native";
+import { tr } from "../lib/i18n";
 
 const BG = "#F8F6FF";
 const PURPLE = "#8B5CF6";
@@ -578,7 +579,7 @@ export default function BreedGuideScreen() {
           <View style={{ backgroundColor: selected.color, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 32, borderBottomLeftRadius: 32, borderBottomRightRadius: 32 }}>
             <TouchableOpacity onPress={() => setSelected(null)} style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 16 }}>
               <ChevronLeft size={20} color="#fff" />
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Voltar</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>{tr("Voltar")}</Text>
             </TouchableOpacity>
             <Text suppressHighlighting style={{ fontSize: 64, textAlign: "center" }}>{selected.emoji}</Text>
             <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{selected.name}</Text>
@@ -601,7 +602,7 @@ export default function BreedGuideScreen() {
           <View style={{ padding: 20, gap: 16 }}>
             {/* Personalidade */}
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 12 }}>✨ Personalidade</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 12 }}>{tr("✨ Personalidade")}</Text>
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
                 {selected.personality.map(p => (
                   <View key={p} style={{ backgroundColor: selected.bg, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, borderWidth: 1.5, borderColor: selected.color + "40" }}>
@@ -613,13 +614,13 @@ export default function BreedGuideScreen() {
 
             {/* Cuidados */}
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 10 }}>🛁 Cuidados</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 10 }}>{tr("🛁 Cuidados")}</Text>
               <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 14, lineHeight: 22 }}>{selected.care}</Text>
             </View>
 
             {/* Saúde */}
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 12 }}>⚕️ Atenção à Saúde</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 12 }}>{tr("⚕️ Atenção à Saúde")}</Text>
               {selected.health.map(h => (
                 <View key={h} style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 8 }}>
                   <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: "#EF4444" }} />
@@ -630,7 +631,7 @@ export default function BreedGuideScreen() {
 
             {/* Ideal para */}
             <View style={{ backgroundColor: selected.bg, borderRadius: 20, padding: 18, borderWidth: 1.5, borderColor: selected.color + "30" }}>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 8 }}>🏠 Ideal para</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 8 }}>{tr("🏠 Ideal para")}</Text>
               <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 14, lineHeight: 20 }}>{selected.ideal}</Text>
             </View>
           </View>
@@ -648,7 +649,7 @@ export default function BreedGuideScreen() {
             <ChevronLeft size={18} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>Guia de Raças 📖</Text>
+            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>{tr("Guia de Raças 📖")}</Text>
             <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{BREEDS.length} raças disponíveis</Text>
           </View>
         </View>
@@ -657,7 +658,7 @@ export default function BreedGuideScreen() {
           <TextInput
             value={search}
             onChangeText={setSearch}
-            placeholder="Pesquisar raça..."
+            placeholder={tr("Pesquisar raça...")}
             placeholderTextColor="rgba(255,255,255,0.6)"
             style={{ flex: 1, color: "#fff", fontSize: 14 }}
           />
@@ -736,7 +737,7 @@ export default function BreedGuideScreen() {
         {filtered.length === 0 && (
           <View style={{ alignItems: "center", paddingVertical: 40 }}>
             <Text suppressHighlighting style={{ fontSize: 48 }}>🔍</Text>
-            <Text suppressHighlighting style={{ color: DARK, fontWeight: "700", fontSize: 16, marginTop: 12 }}>Nenhuma raça encontrada</Text>
+            <Text suppressHighlighting style={{ color: DARK, fontWeight: "700", fontSize: 16, marginTop: 12 }}>{tr("Nenhuma raça encontrada")}</Text>
           </View>
         )}
       </ScrollView>

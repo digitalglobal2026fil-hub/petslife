@@ -10,6 +10,7 @@ import { uploadImage } from "../lib/upload";
 import { netError } from "../lib/net-error";
 import { DateFieldPT } from "../components/DateFieldPT";
 import { pickImageWithChoice } from "../lib/pick-image";
+import { tr } from "../lib/i18n";
 
 const SPECIES = [
   { key: "dog", label: "Cão", icon: Dog, emoji: "🐕" },
@@ -69,14 +70,14 @@ export default function AddPetScreen() {
         const publicUrl = await uploadImage(asset.uri, asset.mimeType ?? "image/jpeg");
         setPhotoUrl(publicUrl);
       } catch {
-        Alert.alert("Erro", "Não foi possível fazer upload da foto.");
+        Alert.alert(tr("Erro"), tr("Não foi possível fazer upload da foto."));
         setPhoto(null);
       } finally {
         setUploadingPhoto(false);
       }
     } catch (e: any) {
       setUploadingPhoto(false);
-      Alert.alert("Erro ao escolher foto", e?.message ?? "Tenta novamente ou escolhe outra imagem.");
+      Alert.alert(tr("Erro ao escolher foto"), e?.message ?? "Tenta novamente ou escolhe outra imagem.");
     }
   }
 
@@ -95,7 +96,7 @@ export default function AddPetScreen() {
   });
 
   function handleSubmit() {
-    if (!name.trim()) return Alert.alert("Erro", "O nome é obrigatório.");
+    if (!name.trim()) return Alert.alert(tr("Erro"), tr("O nome é obrigatório."));
     mutation.mutate();
   }
 
@@ -107,7 +108,7 @@ export default function AddPetScreen() {
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center", marginRight: 12 }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
-        <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>Adicionar Animal</Text>
+        <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Adicionar Animal")}</Text>
       </View>
 
       <KeyboardAvoidingView
@@ -130,16 +131,16 @@ export default function AddPetScreen() {
           ) : (
             <>
               <Camera size={28} color="#FF6B35" />
-              <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 11, fontWeight: "600", marginTop: 4 }}>Adicionar foto</Text>
+              <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 11, fontWeight: "600", marginTop: 4 }}>{tr("Adicionar foto")}</Text>
             </>
           )}
         </TouchableOpacity>
 
-        <Input label="Nome *" value={name} onChangeText={setName} placeholder="Ex: Bola, Luna..." />
+        <Input label={tr("Nome *")} value={name} onChangeText={setName} placeholder={tr("Ex: Bola, Luna...")} />
 
         {/* Species selector */}
         <View style={{ marginBottom: 14 }}>
-          <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 8 }}>Espécie *</Text>
+          <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 8 }}>{tr("Espécie *")}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 , paddingBottom: Math.max(insets.bottom, 24) }}>
             {SPECIES.map((s) => (
               <TouchableOpacity key={s.key} onPress={() => setSpecies(s.key)}
@@ -153,7 +154,7 @@ export default function AddPetScreen() {
 
         {/* Gender */}
         <View style={{ marginBottom: 14 }}>
-          <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 8 }}>Sexo</Text>
+          <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 8 }}>{tr("Sexo")}</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {GENDERS.map((g) => (
               <TouchableOpacity key={g.key} onPress={() => setGender(g.key)}
@@ -164,16 +165,16 @@ export default function AddPetScreen() {
           </View>
         </View>
 
-        <Input label="Raça" value={breed} onChangeText={setBreed} placeholder="Ex: Labrador, Siamês..." />
-        <DateFieldPT label="Data de nascimento" value={birthDate} onChange={setBirthDate} />
-        <Input label="Nº Microchip" value={microchip} onChangeText={setMicrochip} placeholder="Ex: 620098123456789" keyboardType="numeric" maxLength={20} />
+        <Input label={tr("Raça")} value={breed} onChangeText={setBreed} placeholder={tr("Ex: Labrador, Siamês...")} />
+        <DateFieldPT label={tr("Data de nascimento")} value={birthDate} onChange={setBirthDate} />
+        <Input label={tr("Nº Microchip")} value={microchip} onChangeText={setMicrochip} placeholder="Ex: 620098123456789" keyboardType="numeric" maxLength={20} />
 
         <View style={{ marginBottom: 14 }}>
-          <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Notas</Text>
+          <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{tr("Notas")}</Text>
           <TextInput
             value={notes}
             onChangeText={setNotes}
-            placeholder="Alergias, condições especiais..."
+            placeholder={tr("Alergias, condições especiais...")}
             placeholderTextColor="#9CA3AF"
             multiline
             numberOfLines={3}
@@ -185,7 +186,7 @@ export default function AddPetScreen() {
           onPress={handleSubmit}
           disabled={mutation.isPending}
           style={{ backgroundColor: "#FF6B35", borderRadius: 18, padding: 17, alignItems: "center", marginTop: 8, opacity: mutation.isPending ? 0.7 : 1 }}>
-          {mutation.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>Guardar Animal</Text>}
+          {mutation.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{tr("Guardar Animal")}</Text>}
         </TouchableOpacity>
       </ScrollView>
       </KeyboardAvoidingView>

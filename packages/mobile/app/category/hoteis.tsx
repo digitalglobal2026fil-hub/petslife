@@ -7,6 +7,7 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { CategoryHeader } from "../../components/CategoryHeader";
 import { useState, useCallback } from "react";
+import { tr } from "../../lib/i18n";
 
 function BusinessCard({ b, onPress }: { b: any; onPress: () => void }) {
   return (
@@ -62,7 +63,7 @@ export default function HoteisScreen() {
     queryKey: ["businesses"],
     queryFn: async () => {
       const res = await (api as any).businesses.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
   });
@@ -83,8 +84,8 @@ export default function HoteisScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F6FF" }}>
       <CategoryHeader
         emoji="🏨"
-        title="Hotéis para Animais"
-        subtitle="Hospedagem confortável para o seu pet"
+        title={tr("Hotéis para Animais")}
+        subtitle={tr("Hospedagem confortável para o seu pet")}
         bgColor="#EEF2FF"
         accentColor="#4F46E5"
       />
@@ -95,7 +96,7 @@ export default function HoteisScreen() {
         <TextInput
           value={search}
           onChangeText={setSearch}
-          placeholder="Pesquisar hotéis..."
+          placeholder={tr("Pesquisar hotéis...")}
           placeholderTextColor="#B0B0C0"
           style={{ flex: 1, marginLeft: 10, fontSize: 15, color: "#1A1A2E" }}
         />
@@ -109,8 +110,8 @@ export default function HoteisScreen() {
         ) : filtered.length === 0 ? (
           <View style={{ alignItems: "center", marginTop: 60 }}>
             <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🏨</Text>
-            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>Sem hotéis disponíveis</Text>
-            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>Ainda não há hotéis registados nesta área.</Text>
+            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Sem hotéis disponíveis")}</Text>
+            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>{tr("Ainda não há hotéis registados nesta área.")}</Text>
           </View>
         ) : (
           filtered.map((b: any) => (

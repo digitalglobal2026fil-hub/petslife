@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import { confirmUsePhoto } from "../lib/pick-image";
 import { uploadImage } from "../lib/upload";
 import { authFetch } from "../lib/auth-fetch";
+import { tr } from "../lib/i18n";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -90,21 +91,21 @@ export default function EditProfileScreen() {
       }
     } catch (e: any) {
       console.error("[edit-profile] Erro upload:", e?.message);
-      Alert.alert("Erro ao carregar foto 😿", e?.message ?? "Tente novamente.");
+      Alert.alert(tr("Erro ao carregar foto 😿"), e?.message ?? "Tente novamente.");
     } finally {
       setUploadingPhoto(false);
     }
   }
 
   async function pickPhoto() {
-    Alert.alert("Alterar foto 📸", "Escolhe uma opção:", [
+    Alert.alert(tr("Alterar foto 📸"), tr("Escolhe uma opção:"), [
       {
-        text: "📷 Tirar foto",
+        text: tr("📷 Tirar foto"),
         onPress: async () => {
           try {
             const { status } = await ImagePicker.requestCameraPermissionsAsync();
             if (status !== "granted") {
-              Alert.alert("Permissão necessária", "Precisamos de acesso à câmara.");
+              Alert.alert(tr("Permissão necessária"), tr("Precisamos de acesso à câmara."));
               return;
             }
             const result = await ImagePicker.launchCameraAsync({
@@ -119,17 +120,17 @@ export default function EditProfileScreen() {
             await doUploadPhoto(result.assets[0]);
           } catch (e: any) {
             console.error("[edit-profile] Camera err:", e?.message);
-            Alert.alert("Erro", "Não foi possível abrir a câmara.");
+            Alert.alert(tr("Erro"), tr("Não foi possível abrir a câmara."));
           }
         },
       },
       {
-        text: "🖼️ Escolher da galeria",
+        text: tr("🖼️ Escolher da galeria"),
         onPress: async () => {
           try {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (status !== "granted") {
-              Alert.alert("Permissão necessária", "Precisamos de acesso à galeria.");
+              Alert.alert(tr("Permissão necessária"), tr("Precisamos de acesso à galeria."));
               return;
             }
             const result = await ImagePicker.launchImageLibraryAsync({
@@ -143,16 +144,16 @@ export default function EditProfileScreen() {
             await doUploadPhoto(result.assets[0]);
           } catch (e: any) {
             console.error("[edit-profile] Gallery err:", e?.message);
-            Alert.alert("Erro", "Não foi possível abrir a galeria.");
+            Alert.alert(tr("Erro"), tr("Não foi possível abrir a galeria."));
           }
         },
       },
-      { text: "Cancelar", style: "cancel" },
+      { text: tr("Cancelar"), style: "cancel" },
     ]);
   }
 
   async function save() {
-    if (!name.trim()) return Alert.alert("Erro", "O nome é obrigatório.");
+    if (!name.trim()) return Alert.alert(tr("Erro"), tr("O nome é obrigatório."));
     setSaving(true);
     try {
       const token = getToken();
@@ -167,9 +168,9 @@ export default function EditProfileScreen() {
         }),
       });
       if (!res.ok) throw new Error("Erro ao guardar");
-      Alert.alert("✅ Guardado", "Perfil atualizado com sucesso!", [{ text: "OK", onPress: () => router.back() }]);
+      Alert.alert("✅ Guardado", tr("Perfil atualizado com sucesso!"), [{ text: tr("OK"), onPress: () => router.back() }]);
     } catch {
-      Alert.alert("Erro", "Não foi possível guardar o perfil.");
+      Alert.alert(tr("Erro"), tr("Não foi possível guardar o perfil."));
     } finally {
       setSaving(false);
     }
@@ -184,11 +185,11 @@ export default function EditProfileScreen() {
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#E8D5B7", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={20} color="#6B3A2A" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#6B3A2A" }}>Editar Perfil</Text>
+          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#6B3A2A" }}>{tr("Editar Perfil")}</Text>
           <TouchableOpacity onPress={save} disabled={saving}
             style={{ backgroundColor: "#E07A3A", borderRadius: 14, paddingHorizontal: 16, paddingVertical: 8, flexDirection: "row", alignItems: "center", gap: 6 }}>
             {saving ? <ActivityIndicator color="#fff" size="small" /> : <Save size={16} color="#fff" />}
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14 }}>Guardar</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14 }}>{tr("Guardar")}</Text>
           </TouchableOpacity>
         </View>
 
@@ -227,12 +228,12 @@ export default function EditProfileScreen() {
               </Text>
             </View>
 
-            <Field label="Nome completo" icon={User} value={name} onChangeText={setName} placeholder="O seu nome" />
-            <Field label="Email" icon={Mail} value={email} onChangeText={() => {}} placeholder="email@exemplo.com" keyboardType="email-address" autoCapitalize="none" />
-            <Text suppressHighlighting style={{ fontSize: 11, color: "#A08060", marginTop: -10, marginBottom: 16, marginLeft: 2 }}>O email não pode ser alterado aqui</Text>
-            <Field label="Telefone" icon={Phone} value={phone} onChangeText={setPhone} placeholder="+351 912 345 678" keyboardType="phone-pad" autoCapitalize="none" />
-            <Field label="Morada" icon={MapPin} value={address} onChangeText={setAddress} placeholder="Rua, número, andar" />
-            <Field label="Cidade" icon={MapPin} value={city} onChangeText={setCity} placeholder="Lisboa, Porto..." />
+            <Field label={tr("Nome completo")} icon={User} value={name} onChangeText={setName} placeholder={tr("O seu nome")} />
+            <Field label="Email" icon={Mail} value={email} onChangeText={() => {}} placeholder={tr("email@exemplo.com")} keyboardType="email-address" autoCapitalize="none" />
+            <Text suppressHighlighting style={{ fontSize: 11, color: "#A08060", marginTop: -10, marginBottom: 16, marginLeft: 2 }}>{tr("O email não pode ser alterado aqui")}</Text>
+            <Field label={tr("Telefone")} icon={Phone} value={phone} onChangeText={setPhone} placeholder="+351 912 345 678" keyboardType="phone-pad" autoCapitalize="none" />
+            <Field label={tr("Morada")} icon={MapPin} value={address} onChangeText={setAddress} placeholder={tr("Rua, número, andar")} />
+            <Field label={tr("Cidade")} icon={MapPin} value={city} onChangeText={setCity} placeholder="Lisboa, Porto..." />
           </ScrollView>
         )}
       </KeyboardAvoidingView>

@@ -1,5 +1,6 @@
 import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { tr } from "./i18n";
 
 /**
  * Escolha de imagem com opção clara entre "foto inteira" e "recortar".
@@ -26,7 +27,7 @@ type Options = {
   quality?: number;
   /** Incluir PDFs e outros ficheiros além de imagens. */
   allowAllMedia?: boolean;
-  /** Mostrar o passo "Usar esta foto?" no fim. Por omissão sim. */
+  /** Mostrar o passo Usar esta foto? no fim. Por omissão sim. */
   confirm?: boolean;
 };
 
@@ -39,7 +40,7 @@ function toPicked(result: ImagePicker.ImagePickerResult): PickedImage | null {
 async function fromLibrary(edit: boolean, o: Options): Promise<PickedImage | null> {
   const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!perm.granted) {
-    Alert.alert("Permissão necessária", "Permita o acesso à galeria nas definições do telemóvel.");
+    Alert.alert(tr("Permissão necessária"), "Permita o acesso à galeria nas definições do telemóvel.");
     return null;
   }
   const result = await ImagePicker.launchImageLibraryAsync({
@@ -56,7 +57,7 @@ async function fromLibrary(edit: boolean, o: Options): Promise<PickedImage | nul
 async function fromCamera(o: Options): Promise<PickedImage | null> {
   const perm = await ImagePicker.requestCameraPermissionsAsync();
   if (!perm.granted) {
-    Alert.alert("Permissão necessária", "Permita o acesso à câmara nas definições do telemóvel.");
+    Alert.alert(tr("Permissão necessária"), "Permita o acesso à câmara nas definições do telemóvel.");
     return null;
   }
   const result = await ImagePicker.launchCameraAsync({ quality: o.quality ?? 0.85 });
@@ -74,11 +75,11 @@ async function fromCamera(o: Options): Promise<PickedImage | null> {
 function confirmPicked(img: PickedImage, o: Options): Promise<PickedImage | null> {
   return new Promise((resolve) => {
     Alert.alert(
-      "Usar esta foto?",
-      "Carregue em «Usar esta foto» para a guardar. Se não for esta, pode escolher outra.",
+      tr("Usar esta foto?"),
+      tr("Carregue em «Usar esta foto» para a guardar. Se não for esta, pode escolher outra."),
       [
         { text: "Escolher outra", onPress: () => pickImageWithChoice(o).then(resolve) },
-        { text: "Cancelar", style: "cancel", onPress: () => resolve(null) },
+        { text: tr("Cancelar"), style: "cancel", onPress: () => resolve(null) },
         { text: "Usar esta foto", onPress: () => resolve(img) },
       ],
       { cancelable: true, onDismiss: () => resolve(null) },
@@ -87,17 +88,17 @@ function confirmPicked(img: PickedImage, o: Options): Promise<PickedImage | null
 }
 
 /**
- * Passo "Usar esta foto?" para ecrãs que escolhem a imagem à sua maneira
+ * Passo Usar esta foto? para ecrãs que escolhem a imagem à sua maneira
  * (por exemplo o álbum, que deixa escolher várias de uma vez).
  * Devolve true se for para usar, false se for para desistir.
  */
 export function confirmUsePhoto(): Promise<boolean> {
   return new Promise((resolve) => {
     Alert.alert(
-      "Usar esta foto?",
-      "Carregue em «Usar esta foto» para a guardar.",
+      tr("Usar esta foto?"),
+      tr("Carregue em «Usar esta foto» para a guardar."),
       [
-        { text: "Cancelar", style: "cancel", onPress: () => resolve(false) },
+        { text: tr("Cancelar"), style: "cancel", onPress: () => resolve(false) },
         { text: "Usar esta foto", onPress: () => resolve(true) },
       ],
       { cancelable: true, onDismiss: () => resolve(false) },
@@ -140,7 +141,7 @@ export function pickImageWithChoice(o: Options = {}): Promise<PickedImage | null
       onPress: () => fromLibrary(true, o).then((r) => finish(r, o, resolve)).catch(() => resolve(null)),
     });
 
-    buttons.push({ text: "Cancelar", style: "cancel", onPress: () => resolve(null) });
+    buttons.push({ text: tr("Cancelar"), style: "cancel", onPress: () => resolve(null) });
 
     Alert.alert(
       o.title ?? "Adicionar imagem",

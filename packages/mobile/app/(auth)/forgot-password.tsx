@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { baseURL } from "../../lib/auth";
+import { tr } from "../../lib/i18n";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -19,7 +20,7 @@ export default function ForgotPasswordScreen() {
   const [sent, setSent] = useState(false);
 
   async function handleSubmit() {
-    if (!email) return Alert.alert("Erro", "Introduz o teu email.");
+    if (!email) return Alert.alert(tr("Erro"), tr("Introduz o teu email."));
     setLoading(true);
     try {
       const res = await fetch(`${baseURL}/api/auth/request-password-reset`, {
@@ -33,7 +34,7 @@ export default function ForgotPasswordScreen() {
       // Sempre mostra sucesso (segurança — não revelamos se o email existe)
       setSent(true);
     } catch (e: any) {
-      Alert.alert("Erro", "Sem ligação ao servidor. Verifica o teu WiFi.");
+      Alert.alert(tr("Erro"), tr("Sem ligação ao servidor. Verifica o teu WiFi."));
     } finally {
       setLoading(false);
     }
@@ -48,7 +49,7 @@ export default function ForgotPasswordScreen() {
             <View style={{ backgroundColor: BROWN, borderRadius: 36, width: 90, height: 90, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
               <Text suppressHighlighting style={{ fontSize: 48 }}>🔑</Text>
             </View>
-            <Text suppressHighlighting style={{ fontSize: 28, fontWeight: "900", color: BROWN }}>Recuperar password</Text>
+            <Text suppressHighlighting style={{ fontSize: 28, fontWeight: "900", color: BROWN }}>{tr("Recuperar password")}</Text>
             <Text suppressHighlighting style={{ color: GRAY, marginTop: 6, fontSize: 13, textAlign: "center", fontWeight: "600" }}>
               Enviamos um link para o teu email.
             </Text>
@@ -57,13 +58,13 @@ export default function ForgotPasswordScreen() {
           {sent ? (
             <View style={{ backgroundColor: "#F0FFF4", borderRadius: 20, padding: 28, borderWidth: 1.5, borderColor: "#9AE6B4", alignItems: "center" }}>
               <Text suppressHighlighting style={{ fontSize: 40, marginBottom: 12 }}>✉️</Text>
-              <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: "#276749", textAlign: "center" }}>Email enviado!</Text>
+              <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: "#276749", textAlign: "center" }}>{tr("Email enviado!")}</Text>
               <Text suppressHighlighting style={{ color: "#276749", marginTop: 8, fontSize: 13, textAlign: "center", fontWeight: "600" }}>
                 Verifica a tua caixa de entrada e segue as instruções para redefinir a tua password.
               </Text>
               <TouchableOpacity onPress={() => router.replace("/(auth)/sign-in")}
                 style={{ marginTop: 24, backgroundColor: BROWN, borderRadius: 14, paddingHorizontal: 28, paddingVertical: 14 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "900", fontSize: 15 }}>Voltar ao login</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "900", fontSize: 15 }}>{tr("Voltar ao login")}</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -74,7 +75,7 @@ export default function ForgotPasswordScreen() {
                   <TextInput
                     value={email}
                     onChangeText={setEmail}
-                    placeholder="o.teu@email.com"
+                    placeholder={tr("o.teu@email.com")}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     placeholderTextColor="#C4A882"
@@ -83,7 +84,7 @@ export default function ForgotPasswordScreen() {
                 </View>
                 <TouchableOpacity onPress={handleSubmit} disabled={loading}
                   style={{ backgroundColor: BROWN, borderRadius: 18, padding: 18, alignItems: "center", marginTop: 8 }}>
-                  {loading ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "900", fontSize: 16 }}>Enviar link</Text>}
+                  {loading ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "900", fontSize: 16 }}>{tr("Enviar link")}</Text>}
                 </TouchableOpacity>
               </View>
             </View>
@@ -91,7 +92,7 @@ export default function ForgotPasswordScreen() {
 
           <TouchableOpacity onPress={() => router.back()} style={{ alignItems: "center", marginTop: 20, paddingVertical: 8 }}>
             <Text suppressHighlighting style={{ color: GRAY, fontSize: 14, fontWeight: "600" }}>
-              ← <Text suppressHighlighting style={{ color: BROWN, fontWeight: "900" }}>Voltar ao login</Text>
+              ← <Text suppressHighlighting style={{ color: BROWN, fontWeight: "900" }}>{tr("Voltar ao login")}</Text>
             </Text>
           </TouchableOpacity>
 

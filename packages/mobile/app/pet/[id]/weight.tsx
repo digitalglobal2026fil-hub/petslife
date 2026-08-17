@@ -9,6 +9,7 @@ import { useState } from "react";
 import { api } from "../../../lib/api";
 import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
+import { tr } from "../../../lib/i18n";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -68,8 +69,8 @@ export default function WeightPage() {
   });
 
   const del = (wid: string) => Alert.alert("Eliminar registo?", "", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => {
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => {
       await (api as any)["weight-logs"][":id"].$delete({ param: { id: wid } });
       qc.invalidateQueries({ queryKey: ["weight-logs", id] });
     }},
@@ -87,7 +88,7 @@ export default function WeightPage() {
         </TouchableOpacity>
         <View style={{ alignItems: "center" }}>
           <Text suppressHighlighting style={{ fontSize: 24 }}>⚖️</Text>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>Peso</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>{tr("Peso")}</Text>
         </View>
         <TouchableOpacity onPress={() => setModal(true)}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -104,7 +105,7 @@ export default function WeightPage() {
       {/* Latest weight card */}
       {logs.length > 0 && (
         <View style={{ marginHorizontal: 20, marginBottom: 16, backgroundColor: CARD, borderRadius: 20, padding: 20, borderWidth: 1.5, borderColor: COLOR, alignItems: "center" }}>
-          <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, fontWeight: "600" }}>Peso atual</Text>
+          <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, fontWeight: "600" }}>{tr("Peso atual")}</Text>
           <View style={{ flexDirection: "row", alignItems: "baseline", gap: 4, marginTop: 4 }}>
             <Text suppressHighlighting style={{ color: COLOR, fontSize: 42, fontWeight: "900" }}>{logs[0].weight}</Text>
             <Text suppressHighlighting style={{ color: GRAY, fontSize: 18, fontWeight: "700" }}>kg</Text>
@@ -119,18 +120,18 @@ export default function WeightPage() {
           logs.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
               <Text suppressHighlighting style={{ fontSize: 60 }}>⚖️</Text>
-              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>Sem registos de peso</Text>
+              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>{tr("Sem registos de peso")}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, textAlign: "center", marginTop: 8, paddingHorizontal: 30, lineHeight: 20 }}>
                 Registe o peso regularmente para acompanhar o crescimento saudável do seu bichinho! 📏
               </Text>
               <TouchableOpacity onPress={() => setModal(true)}
                 style={{ backgroundColor: COLOR, borderRadius: 18, paddingHorizontal: 28, paddingVertical: 14, marginTop: 24 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>+ Registar peso</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("+ Registar peso")}</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <>
-              <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "800", color: BROWN, marginBottom: 12 }}>Histórico</Text>
+              <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "800", color: BROWN, marginBottom: 12 }}>{tr("Histórico")}</Text>
               {logs.map((l: any, i: number) => (
                 <View key={l.id} style={{ backgroundColor: CARD, borderRadius: 16, padding: 16, marginBottom: 10, borderWidth: 1.5, borderColor: BORDER, flexDirection: "row", alignItems: "center" }}>
                   <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: COLOR_BG, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
@@ -161,18 +162,18 @@ export default function WeightPage() {
         <SafeAreaView style={{ flex: 1, backgroundColor: BG }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 16 }}>
             <TouchableOpacity onPress={() => setModal(false)}>
-              <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "700", fontSize: 15 }}>Cancelar</Text>
+              <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "700", fontSize: 15 }}>{tr("Cancelar")}</Text>
             </TouchableOpacity>
-            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>⚖️ Registar Peso</Text>
+            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>{tr("⚖️ Registar Peso")}</Text>
             <TouchableOpacity onPress={() => add.mutate()} disabled={add.isPending}>
               {add.isPending ? <ActivityIndicator color={COLOR} /> :
-                <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>Guardar</Text>}
+                <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>{tr("Guardar")}</Text>}
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
             <Field label="Peso (kg) *" value={weight} onChange={setWeight} placeholder="Ex: 4.5" keyboardType="decimal-pad" />
-            <DateFieldPT label="Data" value={date} onChange={setDate} />
-            <Field label="Notas" value={notes} onChange={setNotes} placeholder="Observações..." />
+            <DateFieldPT label={tr("Data")} value={date} onChange={setDate} />
+            <Field label={tr("Notas")} value={notes} onChange={setNotes} placeholder={tr("Observações...")} />
           </ScrollView>
         </SafeAreaView>
       </Modal>

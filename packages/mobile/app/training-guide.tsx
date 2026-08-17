@@ -3,6 +3,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ChevronLeft, Play, ChevronRight, BookOpen } from "lucide-react-native";
+import { tr } from "../lib/i18n";
 
 const BG = "#F0FFF4";
 const DARK = "#1A1A2E";
@@ -274,7 +275,7 @@ export default function TrainingGuideScreen() {
           <View style={{ backgroundColor: catColor, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 28, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}>
             <TouchableOpacity onPress={() => setSelected(null)} style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 14 }}>
               <ChevronLeft size={20} color="#fff" />
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Voltar</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>{tr("Voltar")}</Text>
             </TouchableOpacity>
             <Text suppressHighlighting style={{ fontSize: 52, textAlign: "center" }}>{selected.emoji}</Text>
             <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{selected.title}</Text>
@@ -285,7 +286,7 @@ export default function TrainingGuideScreen() {
 
           <View style={{ padding: 20, gap: 16 }}>
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 14 }}>📋 Passos</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 14 }}>{tr("📋 Passos")}</Text>
               {selected.steps.map((s: string, i: number) => (
                 <View key={i} style={{ flexDirection: "row", gap: 12, marginBottom: 12 }}>
                   <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: catColor, alignItems: "center", justifyContent: "center" }}>
@@ -297,7 +298,7 @@ export default function TrainingGuideScreen() {
             </View>
 
             <View style={{ backgroundColor: "#FFFBEB", borderRadius: 20, padding: 18, borderWidth: 1.5, borderColor: "#FDE68A" }}>
-              <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "800", color: "#92400E", marginBottom: 8 }}>💡 Dica Importante</Text>
+              <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "800", color: "#92400E", marginBottom: 8 }}>{tr("💡 Dica Importante")}</Text>
               <Text suppressHighlighting style={{ color: "#78350F", fontSize: 14, lineHeight: 22 }}>{selected.tip}</Text>
             </View>
 
@@ -305,7 +306,7 @@ export default function TrainingGuideScreen() {
               style={{ backgroundColor: "#FF0000", borderRadius: 18, padding: 16, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 }}>
               <Play size={20} color="#fff" fill="#fff" />
               <View>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>Ver vídeo no YouTube</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{tr("Ver vídeo no YouTube")}</Text>
                 <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 11 }}>{selected.videoTitle}</Text>
               </View>
             </TouchableOpacity>
@@ -323,8 +324,8 @@ export default function TrainingGuideScreen() {
             <ChevronLeft size={18} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>Treino & Comportamento 🎯</Text>
-            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>Guias com vídeo incluído</Text>
+            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>{tr("Treino & Comportamento 🎯")}</Text>
+            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{tr("Guias com vídeo incluído")}</Text>
           </View>
         </View>
       </View>
@@ -346,7 +347,7 @@ export default function TrainingGuideScreen() {
                       <Text suppressHighlighting style={{ color: cat.color, fontSize: 11, fontWeight: "700" }}>📊 {g.difficulty}</Text>
                     </View>
                     <View style={{ backgroundColor: "#FEF2F2", borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 }}>
-                      <Text suppressHighlighting style={{ color: "#DC2626", fontSize: 11, fontWeight: "700" }}>▶ Vídeo</Text>
+                      <Text suppressHighlighting style={{ color: "#DC2626", fontSize: 11, fontWeight: "700" }}>{tr("▶ Vídeo")}</Text>
                     </View>
                   </View>
                 </View>

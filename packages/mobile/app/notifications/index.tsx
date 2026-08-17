@@ -8,6 +8,7 @@ import { authFetch } from "../../lib/auth-fetch";
 import Constants from "expo-constants";
 import { kvSetIds, kvGetIds } from "../../lib/kv";
 import { useEffect, useState, useCallback } from "react";
+import { tr } from "../../lib/i18n";
 
 const DISMISSED_KEY = "dg_dismissed_notifs";
 
@@ -160,22 +161,22 @@ export default function NotificationsScreen() {
   // "Já encontrei o meu animal" — fecha todos os avisos daquele animal.
   const markFound = useCallback((petId: string, petName: string) => {
     Alert.alert(
-      "Já encontrei!",
+      tr("Já encontrei!"),
       `Confirmar que ${petName || "o seu animal"} já está em casa? Os avisos deste animal deixam de aparecer.`,
       [
-        { text: "Cancelar", style: "cancel" },
+        { text: tr("Cancelar"), style: "cancel" },
         {
-          text: "Sim, já está em casa",
+          text: tr("Sim, já está em casa"),
           onPress: async () => {
             try {
               await authFetch(`${API_URL}/api/pet-scans/pet/${petId}/found`, { method: "POST" });
             } catch {
-              Alert.alert("Sem ligação", "Não foi possível guardar. Tente outra vez com internet.");
+              Alert.alert(tr("Sem ligação"), tr("Não foi possível guardar. Tente outra vez com internet."));
               return;
             }
             queryClient.invalidateQueries({ queryKey: ["qr-scans-notif"] });
             queryClient.invalidateQueries({ queryKey: ["scan-alerts-badge"] });
-            Alert.alert("Que alívio!", "Os avisos deste animal foram encerrados. 🐾");
+            Alert.alert(tr("Que alívio!"), tr("Os avisos deste animal foram encerrados. 🐾"));
           },
         },
       ],
@@ -290,12 +291,12 @@ export default function NotificationsScreen() {
   const clearAll = () => {
     if (!visible.length) return;
     Alert.alert(
-      "Limpar notificações",
+      tr("Limpar notificações"),
       `Apagar as ${visible.length} notificações da lista? Os lembretes de vacinas e consultas continuam guardados na ficha de cada animal.`,
       [
-        { text: "Cancelar", style: "cancel" },
+        { text: tr("Cancelar"), style: "cancel" },
         {
-          text: "Limpar",
+          text: tr("Limpar"),
           style: "destructive",
           onPress: async () => {
             const next = [...dismissed, ...visible.map((n) => n.id)];
@@ -325,13 +326,13 @@ export default function NotificationsScreen() {
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: BORDER, alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color={BROWN} />
         </TouchableOpacity>
-        <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: BROWN, flex: 1 }}>Notificações 🔔</Text>
+        <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: BROWN, flex: 1 }}>{tr("Notificações 🔔")}</Text>
         {visible.length > 0 && (
           <TouchableOpacity
             onPress={clearAll}
             style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: BORDER }}>
             <Trash2 size={15} color={BROWN} />
-            <Text suppressHighlighting style={{ color: BROWN, fontWeight: "800", fontSize: 12 }}>Limpar</Text>
+            <Text suppressHighlighting style={{ color: BROWN, fontWeight: "800", fontSize: 12 }}>{tr("Limpar")}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -372,7 +373,7 @@ export default function NotificationsScreen() {
           {visible.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 60 }}>
               <Text suppressHighlighting style={{ fontSize: 60, marginBottom: 16 }}>✅</Text>
-              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: BROWN, marginBottom: 8 }}>Tudo em dia!</Text>
+              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: BROWN, marginBottom: 8 }}>{tr("Tudo em dia!")}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 14, textAlign: "center", lineHeight: 22 }}>
                 Os teus animais estão com as vacinas e desparasitações em dia. Continua assim! 🐾
               </Text>

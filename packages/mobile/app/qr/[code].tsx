@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ChevronLeft, Share2, Globe } from "lucide-react-native";
 import Constants from "expo-constants";
+import { tr } from "../../lib/i18n";
 
 // URL do servidor real
 const PET_BASE_URL = "https://petslife.onrender.com/pet";
@@ -22,7 +23,7 @@ export default function QRCodeScreen() {
         url: petProfileUrl,
       });
     } catch {
-      Alert.alert("Erro ao partilhar");
+      Alert.alert(tr("Erro ao partilhar"));
     }
   }
 
@@ -33,7 +34,7 @@ export default function QRCodeScreen() {
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center", marginRight: 12 }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
-        <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>QR Code do Animal</Text>
+        <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("QR Code do Animal")}</Text>
       </View>
 
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 24 }}>
@@ -48,7 +49,7 @@ export default function QRCodeScreen() {
 
           <View style={{ width: 220, height: 2, backgroundColor: "#F0E8E0", marginVertical: 20 }} />
 
-          <Text suppressHighlighting style={{ fontSize: 13, color: "#6B7280", textAlign: "center", marginBottom: 4 }}>Código de identificação</Text>
+          <Text suppressHighlighting style={{ fontSize: 13, color: "#6B7280", textAlign: "center", marginBottom: 4 }}>{tr("Código de identificação")}</Text>
           <Text suppressHighlighting style={{ fontSize: 11, color: "#9CA3AF", fontFamily: "monospace", textAlign: "center", letterSpacing: 1 }}>{code?.slice(0, 8).toUpperCase()}...</Text>
         </View>
 
@@ -60,12 +61,12 @@ export default function QRCodeScreen() {
           <TouchableOpacity onPress={handleShare}
             style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: "#FF6B35", borderRadius: 18, paddingVertical: 15 }}>
             <Share2 size={18} color="#fff" />
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Partilhar</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Partilhar")}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => Linking.openURL(petProfileUrl)}
             style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: "#fff", borderRadius: 18, paddingVertical: 15, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
             <Globe size={18} color="#4ECDC4" />
-            <Text suppressHighlighting style={{ color: "#1A1A2E", fontWeight: "700", fontSize: 15 }}>Ver Online</Text>
+            <Text suppressHighlighting style={{ color: "#1A1A2E", fontWeight: "700", fontSize: 15 }}>{tr("Ver Online")}</Text>
           </TouchableOpacity>
         </View>
 

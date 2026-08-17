@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Phone, Globe, MapPin, Clock, Star, MessageSquare } from "lucide-react-native";
 import { useState } from "react";
 import { api } from "../../lib/api";
+import { tr } from "../../lib/i18n";
 
 export default function BusinessDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,7 +27,7 @@ export default function BusinessDetailScreen() {
       queryClient.invalidateQueries({ queryKey: ["business", id] });
       queryClient.invalidateQueries({ queryKey: ["businesses"] });
       setComment(""); setShowReview(false);
-      Alert.alert("✅ Avaliação enviada!", "Obrigado pelo teu feedback.");
+      Alert.alert(tr("✅ Avaliação enviada!"), "Obrigado pelo teu feedback.");
     },
   });
 
@@ -67,7 +68,7 @@ export default function BusinessDetailScreen() {
 
         {/* Contactos */}
         <View style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, marginBottom: 16, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
-          <Text suppressHighlighting style={{ fontWeight: "700", fontSize: 15, color: "#1A1A2E", marginBottom: 12 }}>Contactos</Text>
+          <Text suppressHighlighting style={{ fontWeight: "700", fontSize: 15, color: "#1A1A2E", marginBottom: 12 }}>{tr("Contactos")}</Text>
           {b.address && <View style={{ flexDirection: "row", gap: 8, marginBottom: 8 }}><MapPin size={16} color="#8B5E3C" /><Text suppressHighlighting style={{ color: "#374151", fontSize: 14, flex: 1 }}>{b.address}{b.city ? `, ${b.city}` : ""}</Text></View>}
           {b.schedule && <View style={{ flexDirection: "row", gap: 8, marginBottom: 8 }}><Clock size={16} color="#8B5E3C" /><Text suppressHighlighting style={{ color: "#374151", fontSize: 14, flex: 1 }}>{b.schedule}</Text></View>}
 
@@ -76,14 +77,14 @@ export default function BusinessDetailScreen() {
               <TouchableOpacity onPress={() => Linking.openURL(`tel:${b.phone}`)}
                 style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#F0FFF4", borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10 }}>
                 <Phone size={15} color="#22C55E" />
-                <Text suppressHighlighting style={{ color: "#22C55E", fontWeight: "700" }}>Ligar</Text>
+                <Text suppressHighlighting style={{ color: "#22C55E", fontWeight: "700" }}>{tr("Ligar")}</Text>
               </TouchableOpacity>
             )}
             {b.website && (
               <TouchableOpacity onPress={() => Linking.openURL(b.website)}
                 style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#EFF6FF", borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10 }}>
                 <Globe size={15} color="#3B82F6" />
-                <Text suppressHighlighting style={{ color: "#3B82F6", fontWeight: "700" }}>Website</Text>
+                <Text suppressHighlighting style={{ color: "#3B82F6", fontWeight: "700" }}>{tr("Website")}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -93,14 +94,14 @@ export default function BusinessDetailScreen() {
         {(b.bookingUrl || b.bookingPhone) && (
           <TouchableOpacity onPress={() => b.bookingUrl ? Linking.openURL(b.bookingUrl) : Linking.openURL(`tel:${b.bookingPhone}`)}
             style={{ backgroundColor: "#8B5E3C", borderRadius: 16, padding: 16, alignItems: "center", marginBottom: 16 }}>
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>📅 Marcar Consulta</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{tr("📅 Marcar Consulta")}</Text>
           </TouchableOpacity>
         )}
 
         {/* Serviços */}
         {(services.length > 0 || b.services) && (
           <View style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, marginBottom: 16, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
-            <Text suppressHighlighting style={{ fontWeight: "700", fontSize: 15, color: "#1A1A2E", marginBottom: 12 }}>Serviços</Text>
+            <Text suppressHighlighting style={{ fontWeight: "700", fontSize: 15, color: "#1A1A2E", marginBottom: 12 }}>{tr("Serviços")}</Text>
             {services.length > 0 ? services.map((s: any, i: number) => (
               <View key={i} style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 8, borderBottomWidth: i < services.length - 1 ? 1 : 0, borderColor: "#F0E8E0" }}>
                 <Text suppressHighlighting style={{ color: "#374151", fontSize: 14 }}>{s.name || s}</Text>
@@ -119,13 +120,13 @@ export default function BusinessDetailScreen() {
             <TouchableOpacity onPress={() => setShowReview(!showReview)}
               style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "#FFF0EB", borderRadius: 10, paddingHorizontal: 10, paddingVertical: 6 }}>
               <MessageSquare size={14} color="#8B5E3C" />
-              <Text suppressHighlighting style={{ color: "#8B5E3C", fontWeight: "600", fontSize: 13 }}>Avaliar</Text>
+              <Text suppressHighlighting style={{ color: "#8B5E3C", fontWeight: "600", fontSize: 13 }}>{tr("Avaliar")}</Text>
             </TouchableOpacity>
           </View>
 
           {showReview && (
             <View style={{ backgroundColor: "#FFF9F5", borderRadius: 14, padding: 14, marginBottom: 12 }}>
-              <Text suppressHighlighting style={{ fontWeight: "600", color: "#374151", marginBottom: 8 }}>A tua avaliação</Text>
+              <Text suppressHighlighting style={{ fontWeight: "600", color: "#374151", marginBottom: 8 }}>{tr("A tua avaliação")}</Text>
               <View style={{ flexDirection: "row", gap: 8, marginBottom: 12 }}>
                 {[1,2,3,4,5].map(s => (
                   <TouchableOpacity key={s} onPress={() => setRating(s)}>
@@ -133,17 +134,17 @@ export default function BusinessDetailScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
-              <TextInput value={comment} onChangeText={setComment} placeholder="Escreve um comentário..." placeholderTextColor="#9CA3AF" multiline
+              <TextInput value={comment} onChangeText={setComment} placeholder={tr("Escreve um comentário...")} placeholderTextColor="#9CA3AF" multiline
                 style={{ backgroundColor: "#fff", borderRadius: 12, padding: 12, borderWidth: 1.5, borderColor: "#F0E8E0", color: "#1A1A2E", minHeight: 70 }} />
               <TouchableOpacity onPress={() => submitReview()} disabled={isPending}
                 style={{ backgroundColor: "#8B5E3C", borderRadius: 12, padding: 12, alignItems: "center", marginTop: 10 }}>
-                {isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>Enviar Avaliação</Text>}
+                {isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Enviar Avaliação")}</Text>}
               </TouchableOpacity>
             </View>
           )}
 
           {reviews.length === 0 ? (
-            <Text suppressHighlighting style={{ color: "#9CA3AF", textAlign: "center", paddingVertical: 12 }}>Ainda sem avaliações. Sê o primeiro!</Text>
+            <Text suppressHighlighting style={{ color: "#9CA3AF", textAlign: "center", paddingVertical: 12 }}>{tr("Ainda sem avaliações. Sê o primeiro!")}</Text>
           ) : (
             reviews.map((r: any) => (
               <View key={r.id} style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: "#F0E8E0" }}>

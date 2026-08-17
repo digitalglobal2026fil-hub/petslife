@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { authClient, captureToken } from "../../lib/auth";
 import { Eye, EyeOff, Sparkles, ArrowRight } from "lucide-react-native";
 import { netError } from "../../lib/net-error";
+import { tr } from "../../lib/i18n";
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -27,8 +28,8 @@ export default function SignUpScreen() {
   }, []);
 
   async function handleSignUp() {
-    if (!name || !email || !password) return Alert.alert("Erro", "Preencha todos os campos.");
-    if (password.length < 8) return Alert.alert("Erro", "A password deve ter pelo menos 8 caracteres.");
+    if (!name || !email || !password) return Alert.alert(tr("Erro"), tr("Preencha todos os campos."));
+    if (password.length < 8) return Alert.alert(tr("Erro"), tr("A password deve ter pelo menos 8 caracteres."));
     setLoading(true);
     try {
       const res = await authClient.signUp.email({ name, email, password }, { onSuccess: captureToken });
@@ -87,7 +88,7 @@ export default function SignUpScreen() {
             {/* Badge trial */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#FFF0EB", borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, marginTop: 10 }}>
               <Sparkles size={14} color="#FF6B35" />
-              <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 13, fontWeight: "700" }}>3 dias grátis • Sem cartão</Text>
+              <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 13, fontWeight: "700" }}>{tr("3 dias grátis • Sem cartão")}</Text>
             </View>
           </Animated.View>
 
@@ -97,9 +98,9 @@ export default function SignUpScreen() {
             gap: 14,
           }}>
             <View>
-              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#1A1A2E", marginBottom: 8, marginLeft: 4 }}>Nome</Text>
+              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#1A1A2E", marginBottom: 8, marginLeft: 4 }}>{tr("Nome")}</Text>
               <TextInput
-                value={name} onChangeText={setName} placeholder="O seu nome"
+                value={name} onChangeText={setName} placeholder={tr("O seu nome")}
                 placeholderTextColor="#C4B5A0"
                 onFocus={() => setFocusedField("name")}
                 onBlur={() => setFocusedField(null)}
@@ -109,7 +110,7 @@ export default function SignUpScreen() {
             <View>
               <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#1A1A2E", marginBottom: 8, marginLeft: 4 }}>Email</Text>
               <TextInput
-                value={email} onChangeText={setEmail} placeholder="o.seu@email.com"
+                value={email} onChangeText={setEmail} placeholder={tr("o.seu@email.com")}
                 placeholderTextColor="#C4B5A0"
                 keyboardType="email-address" autoCapitalize="none"
                 onFocus={() => setFocusedField("email")}
@@ -118,7 +119,7 @@ export default function SignUpScreen() {
               />
             </View>
             <View>
-              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#1A1A2E", marginBottom: 8, marginLeft: 4 }}>Password</Text>
+              <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: "#1A1A2E", marginBottom: 8, marginLeft: 4 }}>{tr("Password")}</Text>
               <View style={{
                 backgroundColor: "#fff",
                 borderWidth: 2,
@@ -130,7 +131,7 @@ export default function SignUpScreen() {
                 <TextInput
                   value={password}
                   onChangeText={setPassword}
-                  placeholder="Mínimo 8 caracteres"
+                  placeholder={tr("Mínimo 8 caracteres")}
                   placeholderTextColor="#C4B5A0"
                   secureTextEntry={!showPassword}
                   onFocus={() => setFocusedField("password")}
@@ -167,7 +168,7 @@ export default function SignUpScreen() {
               {loading
                 ? <ActivityIndicator color="#fff" />
                 : <>
-                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>Começar grátis</Text>
+                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>{tr("Começar grátis")}</Text>
                   <ArrowRight size={18} color="#fff" />
                 </>
               }

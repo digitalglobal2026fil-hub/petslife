@@ -9,6 +9,7 @@ import { useState } from "react";
 import { api } from "../../../lib/api";
 import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
+import { tr } from "../../../lib/i18n";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -78,8 +79,8 @@ export default function DiarioPage() {
   });
 
   const eliminar = (lid: string) => Alert.alert("Eliminar entrada?", "", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => {
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => {
       await (api as any)["health-logs"][":id"].$delete({ param: { id: lid } });
       qc.invalidateQueries({ queryKey: ["health-logs", id] });
     }},
@@ -96,7 +97,7 @@ export default function DiarioPage() {
         </TouchableOpacity>
         <View style={{ alignItems: "center" }}>
           <Text suppressHighlighting style={{ fontSize: 24 }}>📓</Text>
-          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>Diário de Saúde</Text>
+          <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "900", color: BROWN }}>{tr("Diário de Saúde")}</Text>
         </View>
         <TouchableOpacity onPress={() => setModal(true)}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -115,13 +116,13 @@ export default function DiarioPage() {
           entradas.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
               <Text suppressHighlighting style={{ fontSize: 60 }}>📓</Text>
-              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>Diário vazio</Text>
+              <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>{tr("Diário vazio")}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, textAlign: "center", marginTop: 8, paddingHorizontal: 30, lineHeight: 20 }}>
                 Registe os momentos, sintomas e aventuras do seu bichinho! Cada entrada é uma memória 🐾💕
               </Text>
               <TouchableOpacity onPress={() => setModal(true)}
                 style={{ backgroundColor: COLOR, borderRadius: 18, paddingHorizontal: 28, paddingVertical: 14, marginTop: 24 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>+ Primeira entrada</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("+ Primeira entrada")}</Text>
               </TouchableOpacity>
             </View>
           ) : entradas.map((e: any) => {
@@ -154,16 +155,16 @@ export default function DiarioPage() {
         <SafeAreaView style={{ flex: 1, backgroundColor: BG }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 16 }}>
             <TouchableOpacity onPress={() => setModal(false)}>
-              <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "700", fontSize: 15 }}>Cancelar</Text>
+              <Text suppressHighlighting style={{ color: "#EF4444", fontWeight: "700", fontSize: 15 }}>{tr("Cancelar")}</Text>
             </TouchableOpacity>
-            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>📓 Nova Entrada</Text>
+            <Text suppressHighlighting style={{ fontWeight: "900", color: BROWN, fontSize: 16 }}>{tr("📓 Nova Entrada")}</Text>
             <TouchableOpacity onPress={() => adicionar.mutate()} disabled={adicionar.isPending}>
               {adicionar.isPending ? <ActivityIndicator color={COLOR} /> :
-                <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>Guardar</Text>}
+                <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>{tr("Guardar")}</Text>}
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>Tipo</Text>
+            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>{tr("Tipo")}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
               {TIPOS.map((t) => (
                 <TouchableOpacity key={t.key} onPress={() => setTipo(t.key)}
@@ -173,9 +174,9 @@ export default function DiarioPage() {
                 </TouchableOpacity>
               ))}
             </ScrollView>
-            <Campo label="Título *" value={titulo} onChange={setTitulo} placeholder="Ex: Brincou muito hoje! 🎉" />
-            <DateFieldPT label="Data" value={data} onChange={setData} />
-            <Campo label="Descrição" value={descricao} onChange={setDescricao} placeholder="Conta tudo sobre o teu bichinho... 🐾" multiline />
+            <Campo label={tr("Título *")} value={titulo} onChange={setTitulo} placeholder={tr("Ex: Brincou muito hoje! 🎉")} />
+            <DateFieldPT label={tr("Data")} value={data} onChange={setData} />
+            <Campo label={tr("Descrição")} value={descricao} onChange={setDescricao} placeholder={tr("Conta tudo sobre o teu bichinho... 🐾")} multiline />
           </ScrollView>
         </SafeAreaView>
       </Modal>

@@ -8,6 +8,7 @@ import { uploadImage, pickFromGallery, takePhoto } from "../../../lib/upload";
 import { api } from "../../../lib/api";
 import { PetIllustration } from "../../../components/PetIllustration";
 import { netError } from "../../../lib/net-error";
+import { tr } from "../../../lib/i18n";
 
 export default function PetDetailScreen() {
   const router = useRouter();
@@ -33,12 +34,12 @@ export default function PetDetailScreen() {
 
   function changePhoto() {
     const opts: any[] = [
-      { text: "Tirar foto", onPress: async () => { const r = await takePhoto([1, 1]); if (r?.uri) savePhoto(r.uri); } },
-      { text: "Escolher da galeria", onPress: async () => { const r = await pickFromGallery(); if (r?.uri) savePhoto(r.uri); } },
+      { text: tr("Tirar foto"), onPress: async () => { const r = await takePhoto([1, 1]); if (r?.uri) savePhoto(r.uri); } },
+      { text: tr("Escolher da galeria"), onPress: async () => { const r = await pickFromGallery(); if (r?.uri) savePhoto(r.uri); } },
     ];
-    if (pet?.photoUrl) opts.push({ text: "Remover foto", style: "destructive", onPress: () => savePhoto(null) });
-    opts.push({ text: "Cancelar", style: "cancel" });
-    Alert.alert("Foto de perfil", "Escolha a foto do " + (pet?.name ?? "animal") + ":", opts);
+    if (pet?.photoUrl) opts.push({ text: tr("Remover foto"), style: "destructive", onPress: () => savePhoto(null) });
+    opts.push({ text: tr("Cancelar"), style: "cancel" });
+    Alert.alert(tr("Foto de perfil"), "Escolha a foto do " + (pet?.name ?? "animal") + ":", opts);
   }
 
   const { data, isLoading } = useQuery({
@@ -57,9 +58,9 @@ export default function PetDetailScreen() {
   });
 
   function confirmDelete() {
-    Alert.alert("Eliminar animal", "Tem a certeza? Esta ação não pode ser desfeita.", [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Eliminar", style: "destructive", onPress: () => deleteMutation.mutate() },
+    Alert.alert(tr("Eliminar animal"), tr("Tem a certeza? Esta ação não pode ser desfeita."), [
+      { text: tr("Cancelar"), style: "cancel" },
+      { text: tr("Eliminar"), style: "destructive", onPress: () => deleteMutation.mutate() },
     ]);
   }
 
@@ -97,9 +98,9 @@ export default function PetDetailScreen() {
         <View style={{ backgroundColor: "#F5EDE4", borderRadius: 24, padding: 12 }}>
           <PawPrint size={36} color="#8B5E3C" />
         </View>
-        <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 8 }}>Animal não encontrado</Text>
+        <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 8 }}>{tr("Animal não encontrado")}</Text>
         <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 16 }}>
-          <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>Voltar</Text>
+          <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>{tr("Voltar")}</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -116,20 +117,20 @@ export default function PetDetailScreen() {
         if (pet.qrCode) {
           router.push(`/qr/${pet.qrCode}`);
         } else {
-          Alert.alert("QR Code", "Este animal ainda não tem QR Code gerado. Tente novamente em breve.");
+          Alert.alert("QR Code", tr("Este animal ainda não tem QR Code gerado. Tente novamente em breve."));
         }
       },
     },
     {
-      icon: Syringe, label: "Saúde", color: "#4ECDC4", bg: "#E8FAF9",
+      icon: Syringe, label: tr("Saúde"), color: "#4ECDC4", bg: "#E8FAF9",
       onPress: () => router.push(`/pet/${id}/health`),
     },
     {
-      icon: Camera, label: "Álbum", color: "#FF6B35", bg: "#FFF0EB",
+      icon: Camera, label: tr("Álbum"), color: "#FF6B35", bg: "#FFF0EB",
       onPress: () => router.push(`/pet/${id}/photos` as any),
     },
     {
-      icon: MapPin, label: "Vets e Outros", color: "#06D6A0", bg: "#E6FAF5",
+      icon: MapPin, label: tr("Vets e Outros"), color: "#06D6A0", bg: "#E6FAF5",
       onPress: () => router.push("/find-vets"),
     },
   ];
@@ -200,11 +201,11 @@ export default function PetDetailScreen() {
 
         {/* Info card */}
         <View style={{ marginHorizontal: 20, backgroundColor: "#fff", borderRadius: 20, padding: 18, borderWidth: 1.5, borderColor: "#F0E8E0", marginBottom: 20 }}>
-          <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "700", color: "#1A1A2E", marginBottom: 14 }}>Informações</Text>
+          <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "700", color: "#1A1A2E", marginBottom: 14 }}>{tr("Informações")}</Text>
           {[
-            { label: "Espécie", value: pet.species },
-            { label: "Raça", value: pet.breed },
-            { label: "Sexo", value: pet.gender === "male" ? "Macho" : pet.gender === "female" ? "Fêmea" : pet.gender },
+            { label: tr("Espécie"), value: pet.species },
+            { label: tr("Raça"), value: pet.breed },
+            { label: tr("Sexo"), value: pet.gender === "male" ? "Macho" : pet.gender === "female" ? "Fêmea" : pet.gender },
             { label: "Nascimento", value: pet.birthDate ? new Date(pet.birthDate).toLocaleDateString("pt-PT") : null },
             { label: "Microchip", value: pet.microchip },
           ].filter((r) => r.value).map((row) => (
@@ -220,7 +221,7 @@ export default function PetDetailScreen() {
           <View style={{ marginHorizontal: 20, backgroundColor: "#FFF9F5", borderRadius: 20, padding: 18, borderWidth: 1.5, borderColor: "#F0E8E0", marginBottom: 30 }}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <FileText size={16} color="#FF6B35" />
-              <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "700", color: "#1A1A2E" }}>Notas</Text>
+              <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "700", color: "#1A1A2E" }}>{tr("Notas")}</Text>
             </View>
             <Text suppressHighlighting style={{ color: "#6B7280", lineHeight: 22 }}>{pet.notes}</Text>
           </View>

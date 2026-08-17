@@ -12,6 +12,7 @@ import {
 import { BASE_URL } from "../lib/api";
 import { netError } from "../lib/net-error";
 import { authFetch } from "../lib/auth-fetch";
+import { tr } from "../lib/i18n";
 
 const PURPLE = "#8B5CF6";
 const BG = "#F8F6FF";
@@ -78,7 +79,7 @@ export default function AdminScreen() {
       setAuthed(true);
       await load();
     } catch (e: any) {
-      Alert.alert("Erro", netError(e));
+      Alert.alert(tr("Erro"), netError(e));
     } finally {
       setLoading(false);
     }
@@ -89,14 +90,14 @@ export default function AdminScreen() {
       const res = await authFetch(`${BASE_URL}/api/partners/admin/dashboard`, { headers: authHeaders() });
       const d = await res.json();
       if (res.ok) setData(d);
-      else Alert.alert("Erro", d.error || "Não foi possível carregar.");
+      else Alert.alert(tr("Erro"), d.error || "Não foi possível carregar.");
     } catch (e: any) {
-      Alert.alert("Erro", netError(e));
+      Alert.alert(tr("Erro"), netError(e));
     }
   }, [pin]);
 
   async function createPartner() {
-    if (!pName.trim()) { Alert.alert("Atenção", "Escreve o nome do parceiro."); return; }
+    if (!pName.trim()) { Alert.alert(tr("Atenção"), tr("Escreve o nome do parceiro.")); return; }
     try {
       const res = await authFetch(`${BASE_URL}/api/partners/admin/partners`, {
         method: "POST",
@@ -104,12 +105,12 @@ export default function AdminScreen() {
         body: JSON.stringify({ name: pName.trim(), mainCode: pCode.trim() || undefined, partnerBenefit: pBenefit, notes: pNotes || undefined }),
       });
       const d = await res.json();
-      if (!res.ok) { Alert.alert("Erro", d.error || "Falhou."); return; }
+      if (!res.ok) { Alert.alert(tr("Erro"), d.error || "Falhou."); return; }
       setNewPartner(false); setPName(""); setPCode(""); setPNotes(""); setPBenefit("lifetime");
       await load();
       Alert.alert("Parceiro criado", `Código do parceiro: ${d.partner.mainCode}\n\nEle usa este código para ter o acesso dele.`);
     } catch (e: any) {
-      Alert.alert("Erro", netError(e));
+      Alert.alert(tr("Erro"), netError(e));
     }
   }
 
@@ -122,38 +123,38 @@ export default function AdminScreen() {
         body: JSON.stringify({ code: cCode.trim() || undefined, benefit: cBenefit, label: cLabel || undefined }),
       });
       const d = await res.json();
-      if (!res.ok) { Alert.alert("Erro", d.error || "Falhou."); return; }
+      if (!res.ok) { Alert.alert(tr("Erro"), d.error || "Falhou."); return; }
       setNewCodeFor(null); setCCode(""); setCLabel(""); setCBenefit("discount");
       await load();
-      Alert.alert("Código criado", `${d.code.code}\n\nO parceiro dá este código aos seguidores dele.`);
+      Alert.alert(tr("Código criado"), `${d.code.code}\n\nO parceiro dá este código aos seguidores dele.`);
     } catch (e: any) {
-      Alert.alert("Erro", netError(e));
+      Alert.alert(tr("Erro"), netError(e));
     }
   }
 
   async function deleteCode(id: string, code: string) {
-    Alert.alert("Apagar código", `Apagar o código ${code}? Os resgates já feitos mantêm-se.`, [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(tr("Apagar código"), `Apagar o código ${code}? Os resgates já feitos mantêm-se.`, [
+      { text: tr("Cancelar"), style: "cancel" },
       {
-        text: "Apagar", style: "destructive", onPress: async () => {
+        text: tr("Apagar"), style: "destructive", onPress: async () => {
           try {
             await authFetch(`${BASE_URL}/api/partners/admin/codes/${id}`, { method: "DELETE", headers: authHeaders() });
             await load();
-          } catch (e: any) { Alert.alert("Erro", netError(e)); }
+          } catch (e: any) { Alert.alert(tr("Erro"), netError(e)); }
         },
       },
     ]);
   }
 
   async function deletePartner(id: string, name: string) {
-    Alert.alert("Apagar parceiro", `Apagar ${name} e todos os códigos dele?`, [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(tr("Apagar parceiro"), `Apagar ${name} e todos os códigos dele?`, [
+      { text: tr("Cancelar"), style: "cancel" },
       {
-        text: "Apagar", style: "destructive", onPress: async () => {
+        text: tr("Apagar"), style: "destructive", onPress: async () => {
           try {
             await authFetch(`${BASE_URL}/api/partners/admin/partners/${id}`, { method: "DELETE", headers: authHeaders() });
             await load();
-          } catch (e: any) { Alert.alert("Erro", netError(e)); }
+          } catch (e: any) { Alert.alert(tr("Erro"), netError(e)); }
         },
       },
     ]);
@@ -171,7 +172,7 @@ export default function AdminScreen() {
             <View style={{ width: 84, height: 84, borderRadius: 42, backgroundColor: "rgba(139,92,246,0.2)", alignItems: "center", justifyContent: "center", marginBottom: 22 }}>
               <Lock size={34} color={PURPLE} />
             </View>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#fff", marginBottom: 8 }}>Área reservada</Text>
+            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#fff", marginBottom: 8 }}>{tr("Área reservada")}</Text>
             <Text suppressHighlighting style={{ fontSize: 14, color: "#9CA3AF", textAlign: "center", marginBottom: 28, lineHeight: 20 }}>
               Introduz o teu PIN para ver os parceiros e o desempenho de cada um.
             </Text>
@@ -193,7 +194,7 @@ export default function AdminScreen() {
               onPress={login}
               disabled={loading}
               style={{ width: "100%", backgroundColor: PURPLE, borderRadius: 16, padding: 17, alignItems: "center", opacity: loading ? 0.7 : 1 }}>
-              {loading ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>Entrar</Text>}
+              {loading ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>{tr("Entrar")}</Text>}
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -211,7 +212,7 @@ export default function AdminScreen() {
           <TouchableOpacity onPress={() => router.back()} style={{ padding: 4 }}>
             <ArrowLeft size={22} color="#fff" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#fff" }}>Parceiros</Text>
+          <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#fff" }}>{tr("Parceiros")}</Text>
           <TouchableOpacity onPress={() => setNewPartner(true)} style={{ padding: 4 }}>
             <Plus size={24} color="#fff" />
           </TouchableOpacity>
@@ -220,7 +221,7 @@ export default function AdminScreen() {
         {/* Totais */}
         <View style={{ flexDirection: "row", gap: 8, marginTop: 18 }}>
           {[
-            { icon: Users, label: "Parceiros", value: totals.partners },
+            { icon: Users, label: tr("Parceiros"), value: totals.partners },
             { icon: Ticket, label: "Códigos", value: totals.codes },
             { icon: TrendingUp, label: "Resgates", value: totals.redemptions },
             { icon: Trophy, label: "30 dias", value: totals.last30Days },
@@ -309,11 +310,11 @@ export default function AdminScreen() {
                     onPress={() => { setNewCodeFor(p); setCCode(""); setCBenefit("discount"); setCLabel(""); }}
                     style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: PURPLE + "14", borderRadius: 13, padding: 12, marginTop: 4 }}>
                     <Plus size={16} color={PURPLE} />
-                    <Text suppressHighlighting style={{ color: PURPLE, fontWeight: "800", fontSize: 13 }}>Novo código para dar aos seguidores</Text>
+                    <Text suppressHighlighting style={{ color: PURPLE, fontWeight: "800", fontSize: 13 }}>{tr("Novo código para dar aos seguidores")}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity onPress={() => deletePartner(p.id, p.name)} style={{ alignItems: "center", paddingTop: 12 }}>
-                    <Text suppressHighlighting style={{ color: "#EF4444", fontSize: 12, fontWeight: "700" }}>Apagar parceiro</Text>
+                    <Text suppressHighlighting style={{ color: "#EF4444", fontSize: 12, fontWeight: "700" }}>{tr("Apagar parceiro")}</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -324,7 +325,7 @@ export default function AdminScreen() {
         {/* Resgates recentes */}
         {data?.recent?.length > 0 && (
           <View style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, marginTop: 6 }}>
-            <Text suppressHighlighting style={{ fontWeight: "800", fontSize: 14.5, color: "#1A1A2E", marginBottom: 12 }}>Resgates recentes</Text>
+            <Text suppressHighlighting style={{ fontWeight: "800", fontSize: 14.5, color: "#1A1A2E", marginBottom: 12 }}>{tr("Resgates recentes")}</Text>
             {data.recent.slice(0, 15).map((r: any) => (
               <View key={r.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: "#F6F6FA" }}>
                 <View style={{ flex: 1 }}>
@@ -348,18 +349,18 @@ export default function AdminScreen() {
           <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
             <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 26, borderTopRightRadius: 26, maxHeight: 620 }} contentContainerStyle={{ padding: 22, paddingBottom: 40 }}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
-                <Text suppressHighlighting style={{ fontSize: 19, fontWeight: "800", color: "#1A1A2E" }}>Novo parceiro</Text>
+                <Text suppressHighlighting style={{ fontSize: 19, fontWeight: "800", color: "#1A1A2E" }}>{tr("Novo parceiro")}</Text>
                 <TouchableOpacity onPress={() => setNewPartner(false)}><X size={22} color="#9CA3AF" /></TouchableOpacity>
               </View>
 
-              <Field label="Nome do parceiro" value={pName} onChange={setPName} placeholder="Ex: Influencer João" />
-              <Field label="Código dele (opcional)" value={pCode} onChange={(t: string) => setPCode(t.toUpperCase())} placeholder="Ex: JOAO — deixa vazio para gerar" upper />
-              <Text suppressHighlighting style={{ fontSize: 12.5, fontWeight: "700", color: "#6B7280", marginBottom: 8, marginTop: 4 }}>O que o PARCEIRO recebe</Text>
+              <Field label={tr("Nome do parceiro")} value={pName} onChange={setPName} placeholder={tr("Ex: Influencer João")} />
+              <Field label={tr("Código dele (opcional)")} value={pCode} onChange={(t: string) => setPCode(t.toUpperCase())} placeholder={tr("Ex: JOAO — deixa vazio para gerar")} upper />
+              <Text suppressHighlighting style={{ fontSize: 12.5, fontWeight: "700", color: "#6B7280", marginBottom: 8, marginTop: 4 }}>{tr("O que o PARCEIRO recebe")}</Text>
               <BenefitPicker value={pBenefit} onChange={setPBenefit} />
-              <Field label="Notas (opcional)" value={pNotes} onChange={setPNotes} placeholder="Ex: 40k seguidores Instagram" />
+              <Field label="Notas (opcional)" value={pNotes} onChange={setPNotes} placeholder={tr("Ex: 40k seguidores Instagram")} />
 
               <TouchableOpacity onPress={createPartner} style={{ backgroundColor: PURPLE, borderRadius: 15, padding: 16, alignItems: "center", marginTop: 10 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15.5 }}>Criar parceiro</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15.5 }}>{tr("Criar parceiro")}</Text>
               </TouchableOpacity>
             </ScrollView>
           </KeyboardAvoidingView>
@@ -372,20 +373,20 @@ export default function AdminScreen() {
           <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
             <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 26, borderTopRightRadius: 26, maxHeight: 600 }} contentContainerStyle={{ padding: 22, paddingBottom: 40 }}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                <Text suppressHighlighting style={{ fontSize: 19, fontWeight: "800", color: "#1A1A2E" }}>Novo código</Text>
+                <Text suppressHighlighting style={{ fontSize: 19, fontWeight: "800", color: "#1A1A2E" }}>{tr("Novo código")}</Text>
                 <TouchableOpacity onPress={() => setNewCodeFor(null)}><X size={22} color="#9CA3AF" /></TouchableOpacity>
               </View>
               <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 13, marginBottom: 18 }}>
                 Para {newCodeFor?.name} distribuir aos seguidores dele.
               </Text>
 
-              <Field label="Código (opcional)" value={cCode} onChange={(t: string) => setCCode(t.toUpperCase())} placeholder="Ex: JOAO10 — vazio para gerar" upper />
-              <Text suppressHighlighting style={{ fontSize: 12.5, fontWeight: "700", color: "#6B7280", marginBottom: 8, marginTop: 4 }}>O que QUEM USA recebe</Text>
+              <Field label={tr("Código (opcional)")} value={cCode} onChange={(t: string) => setCCode(t.toUpperCase())} placeholder={tr("Ex: JOAO10 — vazio para gerar")} upper />
+              <Text suppressHighlighting style={{ fontSize: 12.5, fontWeight: "700", color: "#6B7280", marginBottom: 8, marginTop: 4 }}>{tr("O que QUEM USA recebe")}</Text>
               <BenefitPicker value={cBenefit} onChange={setCBenefit} />
-              <Field label="Nota (opcional)" value={cLabel} onChange={setCLabel} placeholder="Ex: story de Agosto" />
+              <Field label="Nota (opcional)" value={cLabel} onChange={setCLabel} placeholder={tr("Ex: story de Agosto")} />
 
               <TouchableOpacity onPress={createCode} style={{ backgroundColor: PURPLE, borderRadius: 15, padding: 16, alignItems: "center", marginTop: 10 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15.5 }}>Criar código</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15.5 }}>{tr("Criar código")}</Text>
               </TouchableOpacity>
             </ScrollView>
           </KeyboardAvoidingView>

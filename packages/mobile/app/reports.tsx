@@ -8,6 +8,7 @@ import { useRouter, useFocusEffect } from "expo-router";
 import { ArrowLeft, ShieldAlert, Trash2, Check, Inbox } from "lucide-react-native";
 import { authFetch } from "../lib/auth-fetch";
 import { API_URL, useIsAdmin, confirmDelete } from "../lib/moderation";
+import { tr } from "../lib/i18n";
 
 /**
  * Painel de denúncias — só visível à administração.
@@ -58,7 +59,7 @@ export default function ReportsScreen() {
       if (!res.ok) throw new Error();
       setReports((prev) => prev.filter((x) => x.id !== r.id));
     } catch {
-      Alert.alert("Erro", "Não foi possível apagar. Tente outra vez.");
+      Alert.alert(tr("Erro"), tr("Não foi possível apagar. Tente outra vez."));
     } finally {
       setBusy(null);
     }
@@ -71,7 +72,7 @@ export default function ReportsScreen() {
       if (!res.ok) throw new Error();
       setReports((prev) => prev.filter((x) => x.id !== r.id));
     } catch {
-      Alert.alert("Erro", "Não foi possível arquivar. Tente outra vez.");
+      Alert.alert(tr("Erro"), tr("Não foi possível arquivar. Tente outra vez."));
     } finally {
       setBusy(null);
     }
@@ -90,7 +91,7 @@ export default function ReportsScreen() {
           </Text>
           <TouchableOpacity onPress={() => router.back()}
             style={{ marginTop: 18, backgroundColor: RED, borderRadius: 14, paddingHorizontal: 22, paddingVertical: 12 }}>
-            <Text style={{ color: "#fff", fontWeight: "700" }}>Voltar</Text>
+            <Text style={{ color: "#fff", fontWeight: "700" }}>{tr("Voltar")}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -108,7 +109,7 @@ export default function ReportsScreen() {
           <ArrowLeft size={22} color="#fff" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 22, fontWeight: "800", color: "#fff" }}>Denúncias</Text>
+          <Text style={{ fontSize: 22, fontWeight: "800", color: "#fff" }}>{tr("Denúncias")}</Text>
           <Text style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, marginTop: 2 }}>
             Conteúdo que os utilizadores assinalaram
           </Text>
@@ -172,7 +173,7 @@ export default function ReportsScreen() {
                       backgroundColor: RED, borderRadius: 12, paddingVertical: 11, opacity: busy === r.id ? 0.5 : 1,
                     }}>
                     <Trash2 size={15} color="#fff" />
-                    <Text style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>Apagar conteúdo</Text>
+                    <Text style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>{tr("Apagar conteúdo")}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -183,7 +184,7 @@ export default function ReportsScreen() {
                       backgroundColor: "#F3F4F6", borderRadius: 12, paddingVertical: 11, opacity: busy === r.id ? 0.5 : 1,
                     }}>
                     <Check size={15} color="#374151" />
-                    <Text style={{ color: "#374151", fontWeight: "700", fontSize: 13 }}>Está tudo bem</Text>
+                    <Text style={{ color: "#374151", fontWeight: "700", fontSize: 13 }}>{tr("Está tudo bem")}</Text>
                   </TouchableOpacity>
                 </View>
               </View>

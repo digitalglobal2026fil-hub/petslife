@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRef, useEffect } from "react";
 import { Animated, View } from "react-native";
 import { Home, Heart, ShoppingBag, Users, User, Image as ImageIcon } from "lucide-react-native";
+import { tr } from "../../lib/i18n";
 
 function AnimatedTabIcon({ Icon, color, focused }: { Icon: any; color: string; focused: boolean }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -78,28 +79,28 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Início",
+          title: tr("Início"),
           tabBarIcon: ({ color, focused }) => <AnimatedTabIcon Icon={Home} color={color} focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="health"
         options={{
-          title: "Saúde",
+          title: tr("Saúde"),
           tabBarIcon: ({ color, focused }) => <AnimatedTabIcon Icon={Heart} color={color} focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="photos"
         options={{
-          title: "Álbum",
+          title: tr("Álbum"),
           tabBarIcon: ({ color, focused }) => <AnimatedTabIcon Icon={ImageIcon} color={color} focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="social"
         options={{
-          title: "Comunidade",
+          title: tr("Comunidade"),
           tabBarIcon: ({ color, focused }) => <AnimatedTabIcon Icon={Users} color={color} focused={focused} />,
         }}
       />
@@ -113,7 +114,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Perfil",
+          title: tr("Perfil"),
           tabBarIcon: ({ color, focused }) => <AnimatedTabIcon Icon={User} color={color} focused={focused} />,
         }}
       />

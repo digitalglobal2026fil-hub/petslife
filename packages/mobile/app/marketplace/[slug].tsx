@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Search, MapPin, Phone, Star, Tag, PawPrint, ChevronLeft } from "lucide-react-native";
 import { useState, useCallback } from "react";
 import { api } from "../../lib/api";
+import { tr } from "../../lib/i18n";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -36,15 +37,15 @@ const CAT_PHRASES: Record<string, string[]> = {
 
 const CAT_INFO: Record<string, { label: string; emoji: string; color: string }> = {
   "biz-clinica":    { label: "Clínicas",     emoji: "🏥", color: "#FEE2E2" },
-  "biz-petshop":    { label: "Petshops",     emoji: "🐾", color: "#D1FAE5" },
+  "biz-petshop":    { label: tr("Petshops"),     emoji: "🐾", color: "#D1FAE5" },
   "biz-hotel":      { label: "Hotéis",       emoji: "🏠", color: "#DBEAFE" },
-  "biz-tosquiador": { label: "Tosquiadores", emoji: "✂️", color: "#F3E8FF" },
+  "biz-tosquiador": { label: tr("Tosquiadores"), emoji: "✂️", color: "#F3E8FF" },
   "biz-treino":     { label: "Treino",       emoji: "🎾", color: "#FEF3C7" },
   "biz-outro":      { label: "Outros",       emoji: "📦", color: ICON_BG },
   "biz-todos":      { label: "Todos os Negócios", emoji: "🏪", color: ICON_BG },
-  "list-adoption":  { label: "Adoção",       emoji: "🏠", color: "#D1FAE5" },
+  "list-adoption":  { label: tr("Adoção"),       emoji: "🏠", color: "#D1FAE5" },
   "list-products":  { label: "Produtos",     emoji: "🛍️", color: "#DBEAFE" },
-  "list-services":  { label: "Serviços",     emoji: "✂️", color: "#F3E8FF" },
+  "list-services":  { label: tr("Serviços"),     emoji: "✂️", color: "#F3E8FF" },
   "list-lost":      { label: "Perdidos",     emoji: "🔎", color: "#FEE2E2" },
   "list-todos":     { label: "Todos os Anúncios", emoji: "📋", color: ICON_BG },
 };
@@ -154,7 +155,7 @@ export default function MarketplaceCategory() {
     queryKey: ["businesses"],
     queryFn: async () => {
       const res = await (api as any).businesses.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
     enabled: isBiz,
@@ -164,7 +165,7 @@ export default function MarketplaceCategory() {
     queryKey: ["marketplace"],
     queryFn: async () => {
       const res = await api.marketplace.$get();
-      if (!res.ok) throw new Error("Erro");
+      if (!res.ok) throw new Error(tr("Erro"));
       return res.json();
     },
     enabled: !isBiz,
@@ -209,7 +210,7 @@ export default function MarketplaceCategory() {
         </View>
         <TouchableOpacity onPress={() => router.push(isBiz ? "/add-business" : "/add-listing")}
           style={{ backgroundColor: isBiz ? BROWN2 : ORANGE, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 8 }}>
-          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>+ Adicionar</Text>
+          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>{tr("+ Adicionar")}</Text>
         </TouchableOpacity>
       </View>
 
@@ -230,7 +231,7 @@ export default function MarketplaceCategory() {
         {isLoading ? (
           <View style={{ alignItems: "center", paddingVertical: 60 }}>
             <ActivityIndicator color={ORANGE} size="large" />
-            <Text suppressHighlighting style={{ color: GRAY, marginTop: 12, fontSize: 13 }}>🐾 A carregar...</Text>
+            <Text suppressHighlighting style={{ color: GRAY, marginTop: 12, fontSize: 13 }}>{tr("🐾 A carregar...")}</Text>
           </View>
         ) : isBiz ? (
           filteredBiz.length === 0 ? (
@@ -243,7 +244,7 @@ export default function MarketplaceCategory() {
               {businesses.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-business")}
                   style={{ backgroundColor: BROWN2, borderRadius: 14, paddingHorizontal: 20, paddingVertical: 12, marginTop: 16 }}>
-                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>+ Registar Negócio</Text>
+                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("+ Registar Negócio")}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -261,7 +262,7 @@ export default function MarketplaceCategory() {
               {listings.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-listing")}
                   style={{ backgroundColor: ORANGE, borderRadius: 14, paddingHorizontal: 20, paddingVertical: 12, marginTop: 16 }}>
-                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>+ Publicar Anúncio</Text>
+                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("+ Publicar Anúncio")}</Text>
                 </TouchableOpacity>
               )}
             </View>

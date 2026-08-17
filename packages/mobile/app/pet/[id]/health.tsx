@@ -15,17 +15,18 @@ import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
+import { tr } from "../../../lib/i18n";
 
 type Tab = "vaccines" | "appointments" | "documents" | "diary" | "deworming" | "weight" | "prescriptions";
 
 const TABS: { key: Tab; label: string; icon: any; color: string }[] = [
-  { key: "vaccines",      label: "Vacinas",     icon: Syringe,   color: "#4ECDC4" },
-  { key: "appointments",  label: "Consultas",   icon: Calendar,  color: "#FF6B35" },
-  { key: "prescriptions", label: "Receitas",    icon: FileText,  color: "#8B5CF6" },
-  { key: "documents",     label: "Documentos",  icon: FileText,  color: "#06D6A0" },
+  { key: "vaccines",      label: tr("Vacinas"),     icon: Syringe,   color: "#4ECDC4" },
+  { key: "appointments",  label: tr("Consultas"),   icon: Calendar,  color: "#FF6B35" },
+  { key: "prescriptions", label: tr("Receitas"),    icon: FileText,  color: "#8B5CF6" },
+  { key: "documents",     label: tr("Documentos"),  icon: FileText,  color: "#06D6A0" },
   { key: "diary",         label: "Diário",      icon: Heart,     color: "#EF476F" },
   { key: "deworming",     label: "Desparasit.", icon: Bug,       color: "#F59E0B" },
-  { key: "weight",        label: "Peso",        icon: Weight,    color: "#3B82F6" },
+  { key: "weight",        label: tr("Peso"),        icon: Weight,    color: "#3B82F6" },
 ];
 
 // ─── Upload helper ──────────────────────────────────────────────────────────
@@ -60,7 +61,7 @@ function UploadButton({ label, url, onUpload, loading }: { label: string; url: s
   };
   const camera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") { Alert.alert("Permissão necessária", "Ative o acesso à câmara nas definições."); return; }
+    if (status !== "granted") { Alert.alert(tr("Permissão necessária"), tr("Ative o acesso à câmara nas definições.")); return; }
     const res = await ImagePicker.launchCameraAsync({ quality: 0.8 });
     if (!res.canceled && res.assets[0]) {
       const a = res.assets[0];
@@ -76,7 +77,7 @@ function UploadButton({ label, url, onUpload, loading }: { label: string; url: s
         <View style={{ alignItems: "center" }}>
           <Image source={{ uri: url }} style={{ width: "100%", height: 120, borderRadius: 12, resizeMode: "cover" }} />
           <TouchableOpacity onPress={pick} style={{ marginTop: 6 }}>
-            <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 12, fontWeight: "600" }}>Trocar ficheiro</Text>
+            <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 12, fontWeight: "600" }}>{tr("Trocar ficheiro")}</Text>
           </TouchableOpacity>
         </View>
       ) : loading ? (
@@ -86,12 +87,12 @@ function UploadButton({ label, url, onUpload, loading }: { label: string; url: s
           <TouchableOpacity onPress={pick}
             style={{ flex: 1, borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, borderStyle: "dashed", padding: 12, alignItems: "center", gap: 4 }}>
             <Upload size={18} color="#FF6B35" />
-            <Text suppressHighlighting style={{ fontSize: 11, color: "#FF6B35", fontWeight: "600" }}>Escolher ficheiro</Text>
+            <Text suppressHighlighting style={{ fontSize: 11, color: "#FF6B35", fontWeight: "600" }}>{tr("Escolher ficheiro")}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={camera}
             style={{ flex: 1, borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, borderStyle: "dashed", padding: 12, alignItems: "center", gap: 4 }}>
             <Camera size={18} color="#FF6B35" />
-            <Text suppressHighlighting style={{ fontSize: 11, color: "#FF6B35", fontWeight: "600" }}>Tirar foto</Text>
+            <Text suppressHighlighting style={{ fontSize: 11, color: "#FF6B35", fontWeight: "600" }}>{tr("Tirar foto")}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -107,7 +108,7 @@ function EmptyState({ emoji, text, onAdd }: { emoji: string; text: string; onAdd
       <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 8, textAlign: "center", paddingHorizontal: 20 }}>{text}</Text>
       <TouchableOpacity onPress={onAdd}
         style={{ backgroundColor: "#FF6B35", borderRadius: 14, paddingHorizontal: 20, paddingVertical: 10, marginTop: 16 }}>
-        <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>+ Adicionar</Text>
+        <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("+ Adicionar")}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -266,25 +267,25 @@ export default function PetHealthScreen() {
     onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
-  const deleteVaccine = (vid: string) => Alert.alert("Eliminar vacina?", "Esta ação não pode ser desfeita.", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => { await (api as any).vaccines[":id"].$delete({ param: { id: vid } }); qc.invalidateQueries({ queryKey: ["vaccines", id] }); } },
+  const deleteVaccine = (vid: string) => Alert.alert("Eliminar vacina?", tr("Esta ação não pode ser desfeita."), [
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => { await (api as any).vaccines[":id"].$delete({ param: { id: vid } }); qc.invalidateQueries({ queryKey: ["vaccines", id] }); } },
   ]);
   const deleteDoc = (did: string) => Alert.alert("Eliminar?", "", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => { await (api as any).documents[":id"].$delete({ param: { id: did } }); qc.invalidateQueries({ queryKey: ["documents", id] }); } },
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => { await (api as any).documents[":id"].$delete({ param: { id: did } }); qc.invalidateQueries({ queryKey: ["documents", id] }); } },
   ]);
   const deleteDiary = (lid: string) => Alert.alert("Eliminar entrada?", "", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => { await (api as any)["health-logs"][":id"].$delete({ param: { id: lid } }); qc.invalidateQueries({ queryKey: ["health-logs", id] }); } },
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => { await (api as any)["health-logs"][":id"].$delete({ param: { id: lid } }); qc.invalidateQueries({ queryKey: ["health-logs", id] }); } },
   ]);
   const deleteDeworming = (did: string) => Alert.alert("Eliminar?", "", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => { await (api as any).dewormings[":id"].$delete({ param: { id: did } }); qc.invalidateQueries({ queryKey: ["dewormings", id] }); } },
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => { await (api as any).dewormings[":id"].$delete({ param: { id: did } }); qc.invalidateQueries({ queryKey: ["dewormings", id] }); } },
   ]);
   const deleteWeight = (wid: string) => Alert.alert("Eliminar?", "", [
-    { text: "Cancelar", style: "cancel" },
-    { text: "Eliminar", style: "destructive", onPress: async () => { await (api as any)["weight-logs"][":id"].$delete({ param: { id: wid } }); qc.invalidateQueries({ queryKey: ["weight-logs", id] }); } },
+    { text: tr("Cancelar"), style: "cancel" },
+    { text: tr("Eliminar"), style: "destructive", onPress: async () => { await (api as any)["weight-logs"][":id"].$delete({ param: { id: wid } }); qc.invalidateQueries({ queryKey: ["weight-logs", id] }); } },
   ]);
 
   const handleUpload = async (setter: (u: string) => void, uri: string, name: string, mime: string) => {
@@ -293,7 +294,7 @@ export default function PetHealthScreen() {
       const url = await uploadFile(uri, name, mime);
       setter(url);
     } catch (e: any) {
-      Alert.alert("Erro no upload", e.message);
+      Alert.alert(tr("Erro no upload"), e.message);
     } finally {
       setUploadingDoc(false);
     }
@@ -309,7 +310,7 @@ export default function PetHealthScreen() {
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
-        <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Saúde</Text>
+        <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>{tr("Saúde")}</Text>
         <TouchableOpacity onPress={() => setModal(tab)}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center" }}>
           <Plus size={20} color="#fff" />
@@ -332,7 +333,7 @@ export default function PetHealthScreen() {
         {/* ── VACCINES ── */}
         {tab === "vaccines" && (
           loadV ? <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} /> :
-          vaccines.length === 0 ? <EmptyState emoji="💉" text="Nenhuma vacina registada. Adicione a caderneta de vacinação do seu animal." onAdd={() => setModal("vaccines")} /> :
+          vaccines.length === 0 ? <EmptyState emoji="💉" text={tr("Nenhuma vacina registada. Adicione a caderneta de vacinação do seu animal.")} onAdd={() => setModal("vaccines")} /> :
           vaccines.map((v: any) => (
             <View key={v.id} style={{ backgroundColor: "#fff", borderRadius: 16, padding: 16, marginBottom: 10, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
@@ -365,7 +366,7 @@ export default function PetHealthScreen() {
         {/* ── APPOINTMENTS ── */}
         {tab === "appointments" && (
           loadA ? <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} /> :
-          appointments.length === 0 ? <EmptyState emoji="📅" text="Nenhuma consulta registada." onAdd={() => setModal("appointments")} /> :
+          appointments.length === 0 ? <EmptyState emoji="📅" text={tr("Nenhuma consulta registada.")} onAdd={() => setModal("appointments")} /> :
           appointments.map((a: any) => (
             <View key={a.id} style={{ backgroundColor: "#fff", borderRadius: 16, padding: 16, marginBottom: 10, borderWidth: 1.5, borderColor: "#F0E8E0", flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
               <View style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
@@ -387,7 +388,7 @@ export default function PetHealthScreen() {
         {/* ── PRESCRIPTIONS ── */}
         {tab === "prescriptions" && (
           loadD ? <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} /> :
-          prescriptions.length === 0 ? <EmptyState emoji="💊" text="Nenhuma receita médica. Tire uma foto ou faça upload da receita." onAdd={() => setModal("prescriptions")} /> :
+          prescriptions.length === 0 ? <EmptyState emoji="💊" text={tr("Nenhuma receita médica. Tire uma foto ou faça upload da receita.")} onAdd={() => setModal("prescriptions")} /> :
           prescriptions.map((d: any) => (
             <View key={d.id} style={{ backgroundColor: "#fff", borderRadius: 16, padding: 16, marginBottom: 10, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
@@ -412,7 +413,7 @@ export default function PetHealthScreen() {
         {/* ── DOCUMENTS ── */}
         {tab === "documents" && (
           loadD ? <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} /> :
-          docs.length === 0 ? <EmptyState emoji="📄" text="Nenhum documento. Adicione passaporte, licenças, exames ou outros documentos." onAdd={() => setModal("documents")} /> :
+          docs.length === 0 ? <EmptyState emoji="📄" text={tr("Nenhum documento. Adicione passaporte, licenças, exames ou outros documentos.")} onAdd={() => setModal("documents")} /> :
           docs.map((d: any) => (
             <View key={d.id} style={{ backgroundColor: "#fff", borderRadius: 16, padding: 16, marginBottom: 10, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
@@ -438,7 +439,7 @@ export default function PetHealthScreen() {
         {/* ── DIARY ── */}
         {tab === "diary" && (
           loadL ? <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} /> :
-          diaryLogs.length === 0 ? <EmptyState emoji="📓" text="Nenhuma entrada no diário de saúde. Registe sintomas, comportamentos, medicações e mais." onAdd={() => setModal("diary")} /> :
+          diaryLogs.length === 0 ? <EmptyState emoji="📓" text={tr("Nenhuma entrada no diário de saúde. Registe sintomas, comportamentos, medicações e mais.")} onAdd={() => setModal("diary")} /> :
           diaryLogs.map((l: any) => (
             <View key={l.id} style={{ backgroundColor: "#fff", borderRadius: 16, padding: 16, marginBottom: 10, borderWidth: 1.5, borderColor: "#F0E8E0", flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
               <View style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: "#FFF0F3", alignItems: "center", justifyContent: "center" }}>
@@ -459,7 +460,7 @@ export default function PetHealthScreen() {
         {/* ── DEWORMING ── */}
         {tab === "deworming" && (
           loadDw ? <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} /> :
-          dewormings.length === 0 ? <EmptyState emoji="🐛" text="Nenhuma desparasitação registada." onAdd={() => setModal("deworming")} /> :
+          dewormings.length === 0 ? <EmptyState emoji="🐛" text={tr("Nenhuma desparasitação registada.")} onAdd={() => setModal("deworming")} /> :
           dewormings.map((d: any) => (
             <View key={d.id} style={{ backgroundColor: "#fff", borderRadius: 16, padding: 16, marginBottom: 10, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
@@ -490,12 +491,12 @@ export default function PetHealthScreen() {
         {/* ── WEIGHT ── */}
         {tab === "weight" && (
           loadW ? <ActivityIndicator color="#FF6B35" style={{ marginTop: 40 }} /> :
-          weightLogs.length === 0 ? <EmptyState emoji="⚖️" text="Nenhum peso registado. Acompanhe o crescimento do seu animal." onAdd={() => setModal("weight")} /> : (
+          weightLogs.length === 0 ? <EmptyState emoji="⚖️" text={tr("Nenhum peso registado. Acompanhe o crescimento do seu animal.")} onAdd={() => setModal("weight")} /> : (
             <>
               {/* Latest weight highlight */}
               {weightLogs.length > 0 && (
                 <View style={{ backgroundColor: "#EFF6FF", borderRadius: 20, padding: 20, marginBottom: 16, alignItems: "center" }}>
-                  <Text suppressHighlighting style={{ color: "#3B82F6", fontSize: 13, fontWeight: "600" }}>Peso atual</Text>
+                  <Text suppressHighlighting style={{ color: "#3B82F6", fontSize: 13, fontWeight: "600" }}>{tr("Peso atual")}</Text>
                   <Text suppressHighlighting style={{ color: "#1A1A2E", fontSize: 36, fontWeight: "800", marginTop: 4 }}>{weightLogs[weightLogs.length - 1].weight} kg</Text>
                   <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{weightLogs[weightLogs.length - 1].date}</Text>
                 </View>
@@ -528,22 +529,22 @@ export default function PetHealthScreen() {
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Nova Vacina</Text>
+              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>{tr("Nova Vacina")}</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
-            <Field label="Nome da vacina *" value={vName} onChange={setVName} placeholder="Ex: Raiva, Parvovírus, Esgana..." />
-            <DateFieldPT label="Data de administração" value={vDate} onChange={setVDate} />
-            <DateFieldPT label="Próxima dose" value={vNext} onChange={setVNext} />
-            <Field label="Veterinário" value={vVet} onChange={setVVet} placeholder="Nome do médico veterinário" />
-            <Field label="Clínica" value={vClinic} onChange={setVClinic} placeholder="Nome da clínica" />
-            <Field label="Número de lote" value={vBatch} onChange={setVBatch} placeholder="Ex: AB12345" />
-            <Field label="Notas" value={vNotes} onChange={setVNotes} placeholder="Observações..." />
-            <UploadButton label="Caderneta / Comprovativo (foto ou PDF)" url={vDocUrl} loading={uploadingDoc}
+            <Field label={tr("Nome da vacina *")} value={vName} onChange={setVName} placeholder={tr("Ex: Raiva, Parvovírus, Esgana...")} />
+            <DateFieldPT label={tr("Data de administração")} value={vDate} onChange={setVDate} />
+            <DateFieldPT label={tr("Próxima dose")} value={vNext} onChange={setVNext} />
+            <Field label={tr("Veterinário")} value={vVet} onChange={setVVet} placeholder={tr("Nome do médico veterinário")} />
+            <Field label={tr("Clínica")} value={vClinic} onChange={setVClinic} placeholder={tr("Nome da clínica")} />
+            <Field label={tr("Número de lote")} value={vBatch} onChange={setVBatch} placeholder="Ex: AB12345" />
+            <Field label={tr("Notas")} value={vNotes} onChange={setVNotes} placeholder={tr("Observações...")} />
+            <UploadButton label={tr("Caderneta / Comprovativo (foto ou PDF)")} url={vDocUrl} loading={uploadingDoc}
               onUpload={(uri, name, mime) => handleUpload(setVDocUrl, uri, name, mime)} />
-            <TouchableOpacity onPress={() => { if (!vName.trim()) { Alert.alert("Erro", "Nome é obrigatório"); return; } addVaccine.mutate(); }}
+            <TouchableOpacity onPress={() => { if (!vName.trim()) { Alert.alert(tr("Erro"), tr("Nome é obrigatório")); return; } addVaccine.mutate(); }}
               disabled={addVaccine.isPending}
               style={{ backgroundColor: "#4ECDC4", borderRadius: 16, padding: 15, alignItems: "center", marginTop: 8, opacity: addVaccine.isPending ? 0.7 : 1 }}>
-              {addVaccine.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Guardar Vacina</Text>}
+              {addVaccine.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Guardar Vacina")}</Text>}
             </TouchableOpacity>
             <View style={{ height: 30 }} />
           </ScrollView>
@@ -555,11 +556,11 @@ export default function PetHealthScreen() {
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Nova Consulta</Text>
+              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>{tr("Nova Consulta")}</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <View style={{ marginBottom: 12 }}>
-              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Tipo</Text>
+              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{tr("Tipo")}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 , paddingBottom: Math.max(insets.bottom, 24) }}>
                 {["consulta", "vacina", "exame", "cirurgia", "outro"].map((t) => (
                   <TouchableOpacity key={t} onPress={() => setAType(t)}
@@ -569,16 +570,16 @@ export default function PetHealthScreen() {
                 ))}
               </ScrollView>
             </View>
-            <Field label="Motivo *" value={aTitle} onChange={setATitle} placeholder="Ex: Check-up anual, Vacinação..." />
-            <DateFieldPT label="Data" value={aDate} onChange={setADate} />
-            <Field label="Hora" value={aTime} onChange={setATime} placeholder="HH:MM" />
-            <Field label="Veterinário" value={aVet} onChange={setAVet} placeholder="Nome do médico veterinário" />
-            <Field label="Clínica / Hospital" value={aClinic} onChange={setAClinic} placeholder="Nome da clínica" />
-            <Field label="Notas" value={aNotes} onChange={setANotes} placeholder="Observações..." />
-            <TouchableOpacity onPress={() => { if (!aTitle.trim()) { Alert.alert("Erro", "Motivo é obrigatório"); return; } addAppt.mutate(); }}
+            <Field label={tr("Motivo *")} value={aTitle} onChange={setATitle} placeholder={tr("Ex: Check-up anual, Vacinação...")} />
+            <DateFieldPT label={tr("Data")} value={aDate} onChange={setADate} />
+            <Field label={tr("Hora")} value={aTime} onChange={setATime} placeholder="HH:MM" />
+            <Field label={tr("Veterinário")} value={aVet} onChange={setAVet} placeholder={tr("Nome do médico veterinário")} />
+            <Field label={tr("Clínica / Hospital")} value={aClinic} onChange={setAClinic} placeholder={tr("Nome da clínica")} />
+            <Field label={tr("Notas")} value={aNotes} onChange={setANotes} placeholder={tr("Observações...")} />
+            <TouchableOpacity onPress={() => { if (!aTitle.trim()) { Alert.alert(tr("Erro"), tr("Motivo é obrigatório")); return; } addAppt.mutate(); }}
               disabled={addAppt.isPending}
               style={{ backgroundColor: "#FF6B35", borderRadius: 16, padding: 15, alignItems: "center", marginTop: 8, opacity: addAppt.isPending ? 0.7 : 1 }}>
-              {addAppt.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Guardar Consulta</Text>}
+              {addAppt.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Guardar Consulta")}</Text>}
             </TouchableOpacity>
             <View style={{ height: 30 }} />
           </ScrollView>
@@ -590,17 +591,17 @@ export default function PetHealthScreen() {
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Nova Receita Médica</Text>
+              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>{tr("Nova Receita Médica")}</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
-            <Field label="Título / Medicamento *" value={pTitle} onChange={setPTitle} placeholder="Ex: Antibiótico, Anti-inflamatório..." />
-            <Field label="Notas / Posologia" value={pNotes} onChange={setPNotes} placeholder="Ex: 1 comprimido de manhã e à noite..." />
-            <UploadButton label="Foto / Scan da receita" url={pUrl} loading={uploadingDoc}
+            <Field label={tr("Título / Medicamento *")} value={pTitle} onChange={setPTitle} placeholder={tr("Ex: Antibiótico, Anti-inflamatório...")} />
+            <Field label={tr("Notas / Posologia")} value={pNotes} onChange={setPNotes} placeholder={tr("Ex: 1 comprimido de manhã e à noite...")} />
+            <UploadButton label={tr("Foto / Scan da receita")} url={pUrl} loading={uploadingDoc}
               onUpload={(uri, name, mime) => handleUpload(setPUrl, uri, name, mime)} />
-            <TouchableOpacity onPress={() => { if (!pTitle.trim()) { Alert.alert("Erro", "Título é obrigatório"); return; } if (!pUrl) { Alert.alert("Erro", "Por favor adicione uma foto ou ficheiro da receita"); return; } addDoc.mutate("receita"); }}
+            <TouchableOpacity onPress={() => { if (!pTitle.trim()) { Alert.alert(tr("Erro"), tr("Título é obrigatório")); return; } if (!pUrl) { Alert.alert(tr("Erro"), tr("Por favor adicione uma foto ou ficheiro da receita")); return; } addDoc.mutate("receita"); }}
               disabled={addDoc.isPending}
               style={{ backgroundColor: "#8B5CF6", borderRadius: 16, padding: 15, alignItems: "center", marginTop: 8, opacity: addDoc.isPending ? 0.7 : 1 }}>
-              {addDoc.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Guardar Receita</Text>}
+              {addDoc.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Guardar Receita")}</Text>}
             </TouchableOpacity>
             <View style={{ height: 30 }} />
           </ScrollView>
@@ -612,11 +613,11 @@ export default function PetHealthScreen() {
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Novo Documento</Text>
+              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>{tr("Novo Documento")}</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <View style={{ marginBottom: 12 }}>
-              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Tipo de documento</Text>
+              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{tr("Tipo de documento")}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 , paddingBottom: Math.max(insets.bottom, 24) }}>
                 {["passaporte", "licença", "exame", "seguro", "caderneta", "outro"].map((t) => (
                   <TouchableOpacity key={t} onPress={() => setDType(t)}
@@ -626,14 +627,14 @@ export default function PetHealthScreen() {
                 ))}
               </ScrollView>
             </View>
-            <Field label="Título / Nome *" value={dTitle} onChange={setDTitle} placeholder="Ex: Passaporte Europeu, Licença Municipal..." />
-            <Field label="Notas" value={dNotes} onChange={setDNotes} placeholder="Observações..." />
-            <UploadButton label="Foto / Scan do documento" url={dUrl} loading={uploadingDoc}
+            <Field label={tr("Título / Nome *")} value={dTitle} onChange={setDTitle} placeholder={tr("Ex: Passaporte Europeu, Licença Municipal...")} />
+            <Field label={tr("Notas")} value={dNotes} onChange={setDNotes} placeholder={tr("Observações...")} />
+            <UploadButton label={tr("Foto / Scan do documento")} url={dUrl} loading={uploadingDoc}
               onUpload={(uri, name, mime) => handleUpload(setDUrl, uri, name, mime)} />
-            <TouchableOpacity onPress={() => { if (!dTitle.trim()) { Alert.alert("Erro", "Título é obrigatório"); return; } if (!dUrl) { Alert.alert("Erro", "Por favor adicione uma foto ou ficheiro"); return; } addDoc.mutate(dType); }}
+            <TouchableOpacity onPress={() => { if (!dTitle.trim()) { Alert.alert(tr("Erro"), tr("Título é obrigatório")); return; } if (!dUrl) { Alert.alert(tr("Erro"), tr("Por favor adicione uma foto ou ficheiro")); return; } addDoc.mutate(dType); }}
               disabled={addDoc.isPending}
               style={{ backgroundColor: "#06D6A0", borderRadius: 16, padding: 15, alignItems: "center", marginTop: 8, opacity: addDoc.isPending ? 0.7 : 1 }}>
-              {addDoc.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Guardar Documento</Text>}
+              {addDoc.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Guardar Documento")}</Text>}
             </TouchableOpacity>
             <View style={{ height: 30 }} />
           </ScrollView>
@@ -645,11 +646,11 @@ export default function PetHealthScreen() {
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Entrada no Diário</Text>
+              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>{tr("Entrada no Diário")}</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <View style={{ marginBottom: 12 }}>
-              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Categoria</Text>
+              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{tr("Categoria")}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 , paddingBottom: Math.max(insets.bottom, 24) }}>
                 {["sintoma", "comportamento", "medicacao", "alimentacao", "peso", "outro"].map((t) => (
                   <TouchableOpacity key={t} onPress={() => setDiaryType(t)}
@@ -659,17 +660,17 @@ export default function PetHealthScreen() {
                 ))}
               </ScrollView>
             </View>
-            <Field label="Título *" value={diaryTitle} onChange={setDiaryTitle} placeholder="Ex: Vómito após refeição, Letargia..." />
-            <DateFieldPT label="Data" value={diaryDate} onChange={setDiaryDate} />
+            <Field label={tr("Título *")} value={diaryTitle} onChange={setDiaryTitle} placeholder={tr("Ex: Vómito após refeição, Letargia...")} />
+            <DateFieldPT label={tr("Data")} value={diaryDate} onChange={setDiaryDate} />
             <View style={{ marginBottom: 12 }}>
-              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 5 }}>Descrição</Text>
-              <TextInput value={diaryDesc} onChangeText={setDiaryDesc} placeholder="Descreva em detalhe o que observou..." placeholderTextColor="#9CA3AF" multiline numberOfLines={4}
+              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 5 }}>{tr("Descrição")}</Text>
+              <TextInput value={diaryDesc} onChangeText={setDiaryDesc} placeholder={tr("Descreva em detalhe o que observou...")} placeholderTextColor="#9CA3AF" multiline numberOfLines={4}
                 style={{ backgroundColor: "#FFF9F5", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, padding: 12, fontSize: 14, color: "#1A1A2E", minHeight: 100, textAlignVertical: "top" }} />
             </View>
-            <TouchableOpacity onPress={() => { if (!diaryTitle.trim()) { Alert.alert("Erro", "Título é obrigatório"); return; } addDiary.mutate(); }}
+            <TouchableOpacity onPress={() => { if (!diaryTitle.trim()) { Alert.alert(tr("Erro"), tr("Título é obrigatório")); return; } addDiary.mutate(); }}
               disabled={addDiary.isPending}
               style={{ backgroundColor: "#EF476F", borderRadius: 16, padding: 15, alignItems: "center", marginTop: 8, opacity: addDiary.isPending ? 0.7 : 1 }}>
-              {addDiary.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Guardar Entrada</Text>}
+              {addDiary.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Guardar Entrada")}</Text>}
             </TouchableOpacity>
             <View style={{ height: 30 }} />
           </ScrollView>
@@ -681,11 +682,11 @@ export default function PetHealthScreen() {
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Nova Desparasitação</Text>
+              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>{tr("Nova Desparasitação")}</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <View style={{ marginBottom: 12 }}>
-              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>Tipo</Text>
+              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{tr("Tipo")}</Text>
               <View style={{ flexDirection: "row", gap: 8 }}>
                 {[{ k: "internal", l: "Interna" }, { k: "external", l: "Externa" }, { k: "both", l: "Ambas" }].map((t) => (
                   <TouchableOpacity key={t.k} onPress={() => setDwType(t.k)}
@@ -695,16 +696,16 @@ export default function PetHealthScreen() {
                 ))}
               </View>
             </View>
-            <Field label="Produto *" value={dwProduct} onChange={setDwProduct} placeholder="Ex: Frontline, Milbemax, Advocate..." />
-            <DateFieldPT label="Data de aplicação" value={dwDate} onChange={setDwDate} />
-            <DateFieldPT label="Próxima aplicação" value={dwNext} onChange={setDwNext} />
-            <Field label="Notas" value={dwNotes} onChange={setDwNotes} placeholder="Observações..." />
-            <UploadButton label="Comprovativo / Foto" url={dwDocUrl} loading={uploadingDoc}
+            <Field label={tr("Produto *")} value={dwProduct} onChange={setDwProduct} placeholder={tr("Ex: Frontline, Milbemax, Advocate...")} />
+            <DateFieldPT label={tr("Data de aplicação")} value={dwDate} onChange={setDwDate} />
+            <DateFieldPT label={tr("Próxima aplicação")} value={dwNext} onChange={setDwNext} />
+            <Field label={tr("Notas")} value={dwNotes} onChange={setDwNotes} placeholder={tr("Observações...")} />
+            <UploadButton label={tr("Comprovativo / Foto")} url={dwDocUrl} loading={uploadingDoc}
               onUpload={(uri, name, mime) => handleUpload(setDwDocUrl, uri, name, mime)} />
-            <TouchableOpacity onPress={() => { if (!dwProduct.trim()) { Alert.alert("Erro", "Produto é obrigatório"); return; } addDeworming.mutate(); }}
+            <TouchableOpacity onPress={() => { if (!dwProduct.trim()) { Alert.alert(tr("Erro"), tr("Produto é obrigatório")); return; } addDeworming.mutate(); }}
               disabled={addDeworming.isPending}
               style={{ backgroundColor: "#F59E0B", borderRadius: 16, padding: 15, alignItems: "center", marginTop: 8, opacity: addDeworming.isPending ? 0.7 : 1 }}>
-              {addDeworming.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Guardar Desparasitação</Text>}
+              {addDeworming.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Guardar Desparasitação")}</Text>}
             </TouchableOpacity>
             <View style={{ height: 30 }} />
           </ScrollView>
@@ -716,16 +717,16 @@ export default function PetHealthScreen() {
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <View style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 24 }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>Registar Peso</Text>
+              <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E" }}>{tr("Registar Peso")}</Text>
               <TouchableOpacity onPress={() => setModal(null)}><X size={22} color="#6B7280" /></TouchableOpacity>
             </View>
             <Field label="Peso (kg) *" value={wWeight} onChange={setWWeight} placeholder="Ex: 4.5" keyboardType="decimal-pad" />
-            <DateFieldPT label="Data" value={wDate} onChange={setWDate} />
-            <Field label="Notas" value={wNotes} onChange={setWNotes} placeholder="Observações..." />
-            <TouchableOpacity onPress={() => { if (!wWeight || isNaN(parseFloat(wWeight))) { Alert.alert("Erro", "Insira um peso válido"); return; } addWeight.mutate(); }}
+            <DateFieldPT label={tr("Data")} value={wDate} onChange={setWDate} />
+            <Field label={tr("Notas")} value={wNotes} onChange={setWNotes} placeholder={tr("Observações...")} />
+            <TouchableOpacity onPress={() => { if (!wWeight || isNaN(parseFloat(wWeight))) { Alert.alert(tr("Erro"), tr("Insira um peso válido")); return; } addWeight.mutate(); }}
               disabled={addWeight.isPending}
               style={{ backgroundColor: "#3B82F6", borderRadius: 16, padding: 15, alignItems: "center", marginTop: 8, opacity: addWeight.isPending ? 0.7 : 1 }}>
-              {addWeight.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>Guardar Peso</Text>}
+              {addWeight.isPending ? <ActivityIndicator color="#fff" /> : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Guardar Peso")}</Text>}
             </TouchableOpacity>
           </View>
         </View>

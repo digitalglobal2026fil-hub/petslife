@@ -2,6 +2,7 @@ import { Alert } from "react-native";
 import { authClient } from "./auth";
 import Constants from "expo-constants";
 import { authFetch } from "./auth-fetch";
+import { tr } from "./i18n";
 
 /**
  * Moderação de conteúdo.
@@ -38,11 +39,11 @@ export function useIsAdmin(): boolean {
 export function confirmDelete(what: string): Promise<boolean> {
   return new Promise((resolve) => {
     Alert.alert(
-      "Apagar",
+      tr("Apagar"),
       `Apagar ${what}? Esta acção não pode ser desfeita.`,
       [
-        { text: "Cancelar", style: "cancel", onPress: () => resolve(false) },
-        { text: "Apagar", style: "destructive", onPress: () => resolve(true) },
+        { text: tr("Cancelar"), style: "cancel", onPress: () => resolve(false) },
+        { text: tr("Apagar"), style: "destructive", onPress: () => resolve(true) },
       ],
       { cancelable: true, onDismiss: () => resolve(false) },
     );
@@ -72,18 +73,18 @@ export function reportContent(target: ReportTarget, targetId: string, preview?: 
       });
       if (!res.ok) throw new Error();
       Alert.alert(
-        "Obrigado",
-        "A denúncia foi enviada. A equipa vai analisar e tomar as medidas necessárias.",
+        tr("Obrigado"),
+        tr("A denúncia foi enviada. A equipa vai analisar e tomar as medidas necessárias."),
       );
     } catch {
-      Alert.alert("Sem ligação", "Não foi possível enviar a denúncia. Tente novamente mais tarde.");
+      Alert.alert(tr("Sem ligação"), "Não foi possível enviar a denúncia. Tente novamente mais tarde.");
     }
   };
 
   const buttons: any[] = REASONS.map((r) => ({ text: r, onPress: () => send(r) }));
-  buttons.push({ text: "Cancelar", style: "cancel" });
+  buttons.push({ text: tr("Cancelar"), style: "cancel" });
 
-  Alert.alert("Denunciar conteúdo", "Qual é o motivo?", buttons, { cancelable: true });
+  Alert.alert(tr("Denunciar conteúdo"), tr("Qual é o motivo?"), buttons, { cancelable: true });
 }
 
 /**
@@ -105,13 +106,13 @@ export async function deleteContent(
   try {
     const res = await authFetch(`${API_URL}${path}`, { method: "DELETE" });
     if (res.status === 403) {
-      Alert.alert("Sem permissão", "Só o autor do conteúdo ou a administração podem apagar.");
+      Alert.alert(tr("Sem permissão"), tr("Só o autor do conteúdo ou a administração podem apagar."));
       return false;
     }
     if (!res.ok) throw new Error();
     return true;
   } catch {
-    Alert.alert("Erro", "Não foi possível apagar. Verifique a ligação à internet e tente outra vez.");
+    Alert.alert(tr("Erro"), "Não foi possível apagar. Verifique a ligação à internet e tente outra vez.");
     return false;
   }
 }
