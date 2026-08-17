@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
+import { confirmUsePhoto } from "../../../lib/pick-image";
 
 const COLS = 3;
 const SIZE = (Dimensions.get("window").width - 40 - (COLS - 1) * 4) / COLS;
@@ -40,22 +41,10 @@ export default function PetPhotosScreen() {
     onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
 
-  const addPhoto = async (fromCamera: boolean) => {
-    let result;
-    if (fromCamera) {
-      const perm = await ImagePicker.requestCameraPermissionsAsync();
-      if (!perm.granted) return Alert.alert("Permissão necessária", "Ative o acesso à câmara.");
-      result = await ImagePicker.launchCameraAsync({ quality: 0.85, allowsEditing: true });
-    } else {
-      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!perm.granted) return Alert.alert("Permissão necessária", "Ative o acesso à galeria.");
-      result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.85, allowsMultipleSelection: true });
-    }
-    if (result.canceled) return;
-
+  // Envia as fotos escolhidas para o álbum.
+  const uploadAssets = async (assets: any[]) => {
     setUploading(true);
     try {
-      const assets = result.assets;
       for (const asset of assets) {
         const filename = asset.uri.split("/").pop() ?? `photo_${Date.now()}.jpg`;
         const url = await uploadFile(asset.uri, filename, asset.mimeType ?? "image/jpeg");
@@ -67,6 +56,47 @@ export default function PetPhotosScreen() {
     } finally {
       setUploading(false);
     }
+  };
+
+  // Depois de escolher/cortar a foto aparece sempre um passo com o botão
+  // "Usar esta foto" — o ecrã de recorte é do Android e não dá para lhe
+  // acrescentar botões, por isso a confirmação é feita aqui.
+  const pickAndUpload = async (mode: "camera" | "gallery" | "crop") => {
+    try {
+      let result: any;
+      if (mode === "camera") {
+        const perm = await ImagePicker.requestCameraPermissionsAsync();
+        if (!perm.granted) return Alert.alert("Permissão necessária", "Ative o acesso à câmara.");
+        result = await ImagePicker.launchCameraAsync({ quality: 0.85 });
+      } else {
+        const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!perm.granted) return Alert.alert("Permissão necessária", "Ative o acesso à galeria.");
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          quality: 0.85,
+          allowsEditing: mode === "crop",
+          allowsMultipleSelection: mode === "gallery",
+        });
+      }
+      if (result.canceled || !result.assets?.length) return;
+      // Com várias fotos de uma vez não faz sentido perguntar por cada uma.
+      if (result.assets.length === 1) {
+        const ok = await confirmUsePhoto();
+        if (!ok) return;
+      }
+      await uploadAssets(result.assets);
+    } catch (e: any) {
+      Alert.alert("Ups", e?.message ?? "Não foi possível escolher a foto.");
+    }
+  };
+
+  const addPhoto = async (fromCamera: boolean) => {
+    if (fromCamera) return pickAndUpload("camera");
+    Alert.alert("Adicionar fotos ao álbum 📸", "Como quer escolher?", [
+      { text: "Escolher fotos da galeria", onPress: () => pickAndUpload("gallery") },
+      { text: "Cortar uma foto antes de guardar", onPress: () => pickAndUpload("crop") },
+      { text: "Cancelar", style: "cancel" },
+    ]);
   };
 
   return (

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, User, Phone, MapPin, Mail, Save, Camera } from "lucide-react-native";
 import Constants from "expo-constants";
 import * as ImagePicker from "expo-image-picker";
+import { confirmUsePhoto } from "../lib/pick-image";
 import { uploadImage } from "../lib/upload";
 import { authFetch } from "../lib/auth-fetch";
 
@@ -112,6 +113,9 @@ export default function EditProfileScreen() {
               quality: 0.8,
             });
             if (result.canceled || !result.assets?.[0]) return;
+            // Passo com o botão "Usar esta foto" — o ecrã de recorte é do
+            // Android e não deixa perceber onde carregar para guardar.
+            if (!(await confirmUsePhoto())) return;
             await doUploadPhoto(result.assets[0]);
           } catch (e: any) {
             console.error("[edit-profile] Camera err:", e?.message);
@@ -135,6 +139,7 @@ export default function EditProfileScreen() {
               quality: 0.8,
             });
             if (result.canceled || !result.assets?.[0]) return;
+            if (!(await confirmUsePhoto())) return;
             await doUploadPhoto(result.assets[0]);
           } catch (e: any) {
             console.error("[edit-profile] Gallery err:", e?.message);

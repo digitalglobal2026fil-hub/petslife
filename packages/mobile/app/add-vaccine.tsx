@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ChevronLeft, ChevronDown, Upload, Camera, Syringe } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
+import { confirmUsePhoto } from "../lib/pick-image";
 import { api } from "../lib/api";
 import { uploadImage } from "../lib/upload";
 import { netError } from "../lib/net-error";
@@ -93,13 +94,13 @@ export default function AddVaccineScreen() {
 
   const pickFile = async () => {
     const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.All, quality: 0.85 });
-    if (!res.canceled && res.assets[0]) upload(res.assets[0]);
+    if (!res.canceled && res.assets[0] && (await confirmUsePhoto())) upload(res.assets[0]);
   };
   const pickCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") { Alert.alert("Permissão necessária", "Ative o acesso à câmara."); return; }
     const res = await ImagePicker.launchCameraAsync({ quality: 0.85 });
-    if (!res.canceled && res.assets[0]) upload(res.assets[0]);
+    if (!res.canceled && res.assets[0] && (await confirmUsePhoto())) upload(res.assets[0]);
   };
   const upload = async (a: any) => {
     setUploading(true);

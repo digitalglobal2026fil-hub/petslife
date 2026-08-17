@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles, Siren, Dog, Dumbbell, Pill, Search as SearchIcon, Gauge } from "lucide-react-native";
+import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles, Siren, Dog, Dumbbell, Pill, Search as SearchIcon, Gauge, HeartHandshake } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
 import { AnimalFact } from "../../components/AnimalFact";
@@ -146,6 +146,7 @@ export default function HomeScreen() {
     { icon: Pill, label: "Farmácia", color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/pharmacy" as any) },
     { icon: SearchIcon, label: "Perdidos", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/lost-pets" as any) },
     { icon: Gauge, label: "Peso", color: "#F59E0B", bg: "#FEF3C7", onPress: () => router.push("/weight-chart" as any) },
+    { icon: HeartHandshake, label: "Nossas Missões", color: "#EC4899", bg: "#FDF2F8", onPress: () => router.push("/missions" as any) },
   ];
 
   if (!gateLoading && isBlocked) {

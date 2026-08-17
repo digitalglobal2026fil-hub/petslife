@@ -340,6 +340,35 @@ export default function NotificationsScreen() {
         <ActivityIndicator color="#E07A3A" size="large" style={{ marginTop: 60 }} />
       ) : (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, gap: 10 }}>
+          {/* Botão sempre visível: encerra os avisos de QR de um animal que já
+              voltou para casa. Antes só aparecia dentro do cartão de aviso,
+              por isso quem já tinha limpado os avisos não o encontrava. */}
+          {pets.length > 0 && (
+            <View style={{ backgroundColor: "#ECFDF5", borderRadius: 16, padding: 14, borderWidth: 1.5, borderColor: "#A7F3D0", gap: 10 }}>
+              <Text suppressHighlighting style={{ fontWeight: "800", color: "#065F46", fontSize: 13 }}>
+                O seu animal já voltou para casa? 🏠
+              </Text>
+              <Text suppressHighlighting style={{ color: "#047857", fontSize: 12, lineHeight: 18 }}>
+                Confirme aqui e os avisos do QR code desse animal deixam de aparecer.
+              </Text>
+              {pets.map((p: any) => (
+                <TouchableOpacity
+                  key={`found-${p.id}`}
+                  onPress={() => markFound(p.id, p.name ?? "")}
+                  style={{
+                    flexDirection: "row", alignItems: "center", gap: 8,
+                    backgroundColor: "#16A34A", borderRadius: 12,
+                    paddingHorizontal: 14, paddingVertical: 11, alignSelf: "flex-start",
+                  }}>
+                  <Check size={16} color="#fff" />
+                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 13 }}>
+                    Já encontrei {p.name ? `o ${p.name}` : "o meu animal"}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
           {visible.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 60 }}>
               <Text suppressHighlighting style={{ fontSize: 60, marginBottom: 16 }}>✅</Text>

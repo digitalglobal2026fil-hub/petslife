@@ -21,6 +21,7 @@ import { promoCodes } from "./routes/promo-codes";
 import chat from "./routes/chat";
 import { lostPets } from "./routes/lost-pets";
 import { reports } from "./routes/reports";
+import { missions } from "./routes/missions";
 import { partners } from "./routes/partners";
 import { reminders } from "./routes/reminders";
 import { petScans } from "./routes/pet-scans";
@@ -117,7 +118,8 @@ const app = new Hono()
   .route("/reminders", reminders)
   .route("/pet-scans", petScans)
   .route("/users", users)
-  .route("/reports", reports);
+  .route("/reports", reports)
+  .route("/missions", missions);
 
 export type AppType = typeof app;
 export default app;

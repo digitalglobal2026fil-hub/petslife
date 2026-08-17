@@ -381,3 +381,26 @@ export const userProfiles = sqliteTable("user_profiles", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
+
+// Nossas Missões — trabalho social da PetsLife.
+// Só a administradora publica; qualquer utilizador pode ver e comentar.
+export const missions = sqliteTable("missions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  content: text("content"),
+  imageUrl: text("image_url"),
+  location: text("location"),
+  authorId: text("author_id").notNull(),
+  authorName: text("author_name"),
+  commentsCount: integer("comments_count").default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const missionComments = sqliteTable("mission_comments", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  missionId: text("mission_id").notNull(),
+  userId: text("user_id").notNull(),
+  userName: text("user_name"),
+  content: text("content").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});

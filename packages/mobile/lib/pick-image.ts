@@ -86,6 +86,25 @@ function confirmPicked(img: PickedImage, o: Options): Promise<PickedImage | null
   });
 }
 
+/**
+ * Passo "Usar esta foto?" para ecrãs que escolhem a imagem à sua maneira
+ * (por exemplo o álbum, que deixa escolher várias de uma vez).
+ * Devolve true se for para usar, false se for para desistir.
+ */
+export function confirmUsePhoto(): Promise<boolean> {
+  return new Promise((resolve) => {
+    Alert.alert(
+      "Usar esta foto?",
+      "Carregue em «Usar esta foto» para a guardar.",
+      [
+        { text: "Cancelar", style: "cancel", onPress: () => resolve(false) },
+        { text: "Usar esta foto", onPress: () => resolve(true) },
+      ],
+      { cancelable: true, onDismiss: () => resolve(false) },
+    );
+  });
+}
+
 /** Aplica o passo de confirmação, se estiver ligado. */
 function finish(
   img: PickedImage | null,
