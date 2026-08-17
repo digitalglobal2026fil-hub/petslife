@@ -251,6 +251,23 @@ export default function ProfileScreen() {
             <Text suppressHighlighting style={{ fontWeight: "700", color: "#EF476F", fontSize: 14, flex: 1 }}>Sair da conta</Text>
           </TouchableOpacity>
 
+          {/* Aviso honesto sobre a origem dos conteúdos. Não afirma que a app
+              foi certificada por ninguém — a Google chumba alegações dessas
+              sem prova. Quando houver a revisão da veterinária, troca-se pelo
+              nome e cédula profissional dela. */}
+          <View style={{ backgroundColor: "#F0FDF4", borderRadius: 14, borderWidth: 1.5, borderColor: "#BBF7D0", padding: 14, marginTop: 18, gap: 6 }}>
+            <Text suppressHighlighting style={{ color: "#065F46", fontWeight: "800", fontSize: 12 }}>
+              Sobre os nossos conteúdos
+            </Text>
+            <Text suppressHighlighting style={{ color: "#047857", fontSize: 12, lineHeight: 18 }}>
+              Os guias da PetsLife são baseados em fontes veterinárias reconhecidas.
+            </Text>
+            <Text suppressHighlighting style={{ color: "#047857", fontSize: 12, lineHeight: 18 }}>
+              A PetsLife não substitui a consulta veterinária. Em caso de urgência,
+              procure sempre um médico veterinário.
+            </Text>
+          </View>
+
           <Text style={{ textAlign: "center", color: "#9CA3AF", fontSize: 12, marginTop: 18, marginBottom: 4 }}>
             PetsLife v{Constants.expoConfig?.version ?? "?"} (build {String(Constants.expoConfig?.android?.versionCode ?? "?")})
           </Text>

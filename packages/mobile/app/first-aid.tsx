@@ -212,7 +212,7 @@ export default function FirstAidScreen() {
         <View style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, padding: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
           <AlertTriangle size={18} color="#fff" />
           <Text suppressHighlighting style={{ flex: 1, color: "#fff", fontSize: 12, lineHeight: 18 }}>
-            Em caso de emergência grave, contacte sempre um veterinário. Este guia é de apoio — não substitui cuidados médicos.
+            Em caso de emergência grave, contacte sempre um veterinário. Este guia é de apoio, baseado em fontes veterinárias reconhecidas — não substitui cuidados médicos.
           </Text>
         </View>
       </View>

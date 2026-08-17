@@ -242,6 +242,15 @@ export default function PharmacyScreen() {
         ))}
       </ScrollView>
 
+      {/* Medicacao e assunto serio: aviso claro de que nada aqui dispensa
+          um veterinario. Ajuda tambem na aprovacao da Play Store. */}
+      <View style={{ backgroundColor: "#FEF3C7", borderWidth: 1.5, borderColor: "#FDE68A", borderRadius: 14, padding: 12, marginHorizontal: 20, marginBottom: 12 }}>
+        <Text suppressHighlighting style={{ color: "#92400E", fontSize: 12, lineHeight: 18 }}>
+          Informação baseada em fontes veterinárias reconhecidas. Nunca medique o seu
+          animal sem indicação de um médico veterinário.
+        </Text>
+      </View>
+
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 20) + 60, gap: 10 }}>
         {filtered.map(p => (
           <TouchableOpacity key={p.id} onPress={() => setSelected(p)} activeOpacity={0.85}
