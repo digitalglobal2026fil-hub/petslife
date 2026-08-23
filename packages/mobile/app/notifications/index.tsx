@@ -282,6 +282,13 @@ export default function NotificationsScreen() {
   // Remove os avisos que a utilizadora já apagou
   const visible = notifications.filter((n) => !dismissed.includes(n.id));
 
+  // Animais que TÊM avisos de QR activos neste momento. A caixa verde do
+  // "Já encontrei" só aparece para estes — depois de confirmar que o animal
+  // voltou, os avisos desaparecem e a caixa desaparece com eles.
+  const petsComAviso = pets.filter((p: any) =>
+    visible.some((n) => n.scanId && n.petId === p.id),
+  );
+
   // Sort: high first
   visible.sort((a, b) => {
     const ord = { high: 0, medium: 1, low: 2 };
@@ -344,7 +351,7 @@ export default function NotificationsScreen() {
           {/* Botão sempre visível: encerra os avisos de QR de um animal que já
               voltou para casa. Antes só aparecia dentro do cartão de aviso,
               por isso quem já tinha limpado os avisos não o encontrava. */}
-          {pets.length > 0 && (
+          {petsComAviso.length > 0 && (
             <View style={{ backgroundColor: "#ECFDF5", borderRadius: 16, padding: 14, borderWidth: 1.5, borderColor: "#A7F3D0", gap: 10 }}>
               <Text suppressHighlighting style={{ fontWeight: "800", color: "#065F46", fontSize: 13 }}>
                 O seu animal já voltou para casa? 🏠

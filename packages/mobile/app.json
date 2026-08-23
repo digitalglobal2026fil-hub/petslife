@@ -5,10 +5,10 @@
       "package": "com.petislife2.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#FF6B35"
+        "backgroundColor": "#5BB8B5"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 49,
+      "versionCode": 50,
       "permissions": [
         "VIBRATE",
         "POST_NOTIFICATIONS"
@@ -31,7 +31,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.9.14",
+    "version": "1.9.15",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
