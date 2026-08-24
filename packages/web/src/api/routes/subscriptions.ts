@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { db } from "../database";
+import { db, sqlClient } from "../database";
 import * as schema from "../database/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth, authMiddleware } from "../middleware/auth";
@@ -24,6 +24,30 @@ const TESTER_EMAILS = [
   "wiser.pt@hotmail.com",
   "mdccrds@gmail.com",
 ];
+
+/**
+ * Colunas acrescentadas depois de a tabela já existir em produção.
+ * O ALTER TABLE falha se a coluna já lá estiver — o erro é ignorado de propósito.
+ * NUNCA correr db:push nesta base de dados.
+ */
+let columnsReady: Promise<void> | null = null;
+function ensureColumns() {
+  if (!columnsReady) {
+    columnsReady = (async () => {
+      for (const col of ["google_purchase_token", "google_product_id"]) {
+        try {
+          await sqlClient.execute({
+            sql: `ALTER TABLE subscriptions ADD COLUMN ${col} TEXT`,
+            args: [],
+          });
+        } catch {
+          /* a coluna já existe */
+        }
+      }
+    })();
+  }
+  return columnsReady;
+}
 
 export const subscriptions = new Hono()
   .use("*", authMiddleware)
@@ -80,4 +104,51 @@ export const subscriptions = new Hono()
       currentPeriodEnd: periodEnd,
     }).returning();
     return c.json({ subscription: sub }, 201);
+  })
+
+  /**
+   * Compra feita dentro da app pelo Google Play.
+   *
+   * A app envia o comprovativo (productId + purchaseToken) e nós guardamos e
+   * activamos a subscrição. A validação junto dos servidores da Google exige
+   * uma chave de conta de serviço do Google Cloud que ainda não existe — quando
+   * existir, acrescenta-se aqui, SEM precisar de nova versão da app.
+   */
+  .post("/google-verify", requireAuth, async (c) => {
+    await ensureColumns();
+    const user = c.get("user")!;
+    const body = await c.req.json().catch(() => ({}) as any);
+    const productId = String(body?.productId || "").trim();
+    const purchaseToken = String(body?.purchaseToken || "").trim();
+    if (!productId || !purchaseToken) {
+      return c.json({ error: "productId e purchaseToken obrigatórios" }, 400);
+    }
+
+    // O plano vem do productId, nunca do que a app disser.
+    const plan = productId === "premium_anual" ? "annual" : "monthly";
+    const now = new Date();
+    const periodEnd = plan === "annual"
+      ? new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000)
+      : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    const values = {
+      plan,
+      status: "active",
+      currentPeriodEnd: periodEnd,
+      googlePurchaseToken: purchaseToken,
+      updatedAt: new Date(),
+    };
+
+    const [existing] = await db.select().from(schema.subscriptions).where(eq(schema.subscriptions.userId, user.id));
+    if (existing) {
+      const [sub] = await db.update(schema.subscriptions)
+        .set(values)
+        .where(eq(schema.subscriptions.userId, user.id))
+        .returning();
+      return c.json({ subscription: sub, plan }, 200);
+    }
+    const [sub] = await db.insert(schema.subscriptions)
+      .values({ userId: user.id, ...values })
+      .returning();
+    return c.json({ subscription: sub, plan }, 200);
   });

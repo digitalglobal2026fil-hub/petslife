@@ -49,7 +49,8 @@
           "photosPermission": "A PetsLife precisa de acesso às suas fotos para carregar documentos do seu animal.",
           "cameraPermission": "A PetsLife precisa de acesso à câmara para fotografar documentos."
         }
-      ]
+      ],
+      "expo-iap"
     ]
   }
 }
