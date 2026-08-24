@@ -16,12 +16,12 @@ const ACCENT = "#EF476F";
 type Category = "sintoma" | "comportamento" | "medicacao" | "alimentacao" | "peso" | "outro";
 
 const CATEGORIES: { key: Category; label: string; emoji: string }[] = [
-  { key: "sintoma",        label: "Sintoma",        emoji: "🤒" },
-  { key: "comportamento",  label: "Comportamento",  emoji: "🐾" },
-  { key: "medicacao",      label: "Medicação",      emoji: "💊" },
-  { key: "alimentacao",    label: "Alimentação",    emoji: "🍖" },
+  { key: "sintoma",        label: tr("Sintoma"),        emoji: "🤒" },
+  { key: "comportamento",  label: tr("Comportamento"),  emoji: "🐾" },
+  { key: "medicacao",      label: tr("Medicação"),      emoji: "💊" },
+  { key: "alimentacao",    label: tr("Alimentação"),    emoji: "🍖" },
   { key: "peso",           label: tr("Peso"),           emoji: "⚖️" },
-  { key: "outro",          label: "Outro",          emoji: "📝" },
+  { key: "outro",          label: tr("Outro"),          emoji: "📝" },
 ];
 
 function todayString() {
@@ -132,7 +132,7 @@ export default function AddDiaryScreen() {
               <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
                 {selectedPet
                   ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}`
-                  : "Selecionar animal..."}
+                  : tr("Selecionar animal...")}
               </Text>
               <ChevronDown size={18} color="#9CA3AF" />
             </TouchableOpacity>
@@ -189,7 +189,7 @@ export default function AddDiaryScreen() {
 
         {/* Fields */}
         <Field label={tr("Título *")} value={title} onChange={setTitle} placeholder={tr("Ex: Tosse persistente")} />
-        <Field label="Data (DD/MM/AAAA)" value={date} onChange={setDate} placeholder={tr("DD/MM/AAAA")} />
+        <Field label={tr("Data (DD/MM/AAAA)")} value={date} onChange={setDate} placeholder={tr("DD/MM/AAAA")} />
         <Field label={tr("Descrição")} value={description} onChange={setDescription} placeholder={tr("Descreve o que observaste...")} multiline />
 
         {/* Save */}

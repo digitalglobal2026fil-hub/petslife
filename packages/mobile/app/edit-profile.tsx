@@ -91,7 +91,7 @@ export default function EditProfileScreen() {
       }
     } catch (e: any) {
       console.error("[edit-profile] Erro upload:", e?.message);
-      Alert.alert(tr("Erro ao carregar foto 😿"), e?.message ?? "Tente novamente.");
+      Alert.alert(tr("Erro ao carregar foto 😿"), e?.message ?? tr("Tente novamente."));
     } finally {
       setUploadingPhoto(false);
     }
@@ -114,7 +114,7 @@ export default function EditProfileScreen() {
               quality: 0.8,
             });
             if (result.canceled || !result.assets?.[0]) return;
-            // Passo com o botão "Usar esta foto" — o ecrã de recorte é do
+            // Passo com o botão tr("Usar esta foto") — o ecrã de recorte é do
             // Android e não deixa perceber onde carregar para guardar.
             if (!(await confirmUsePhoto())) return;
             await doUploadPhoto(result.assets[0]);
@@ -167,7 +167,7 @@ export default function EditProfileScreen() {
           city: city.trim() || undefined,
         }),
       });
-      if (!res.ok) throw new Error("Erro ao guardar");
+      if (!res.ok) throw new Error(tr("Erro ao guardar"));
       Alert.alert("✅ Guardado", tr("Perfil atualizado com sucesso!"), [{ text: tr("OK"), onPress: () => router.back() }]);
     } catch {
       Alert.alert(tr("Erro"), tr("Não foi possível guardar o perfil."));
@@ -224,7 +224,7 @@ export default function EditProfileScreen() {
                 </View>
               </TouchableOpacity>
               <Text suppressHighlighting style={{ fontSize: 12, color: "#A08060", marginTop: 8 }}>
-                Toque para alterar a foto
+                {tr("Toque para alterar a foto")}
               </Text>
             </View>
 
@@ -233,7 +233,7 @@ export default function EditProfileScreen() {
             <Text suppressHighlighting style={{ fontSize: 11, color: "#A08060", marginTop: -10, marginBottom: 16, marginLeft: 2 }}>{tr("O email não pode ser alterado aqui")}</Text>
             <Field label={tr("Telefone")} icon={Phone} value={phone} onChangeText={setPhone} placeholder="+351 912 345 678" keyboardType="phone-pad" autoCapitalize="none" />
             <Field label={tr("Morada")} icon={MapPin} value={address} onChangeText={setAddress} placeholder={tr("Rua, número, andar")} />
-            <Field label={tr("Cidade")} icon={MapPin} value={city} onChangeText={setCity} placeholder="Lisboa, Porto..." />
+            <Field label={tr("Cidade")} icon={MapPin} value={city} onChangeText={setCity} placeholder={tr("Lisboa, Porto...")} />
           </ScrollView>
         )}
       </KeyboardAvoidingView>

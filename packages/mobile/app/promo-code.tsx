@@ -12,11 +12,11 @@ import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
 
 const BENEFIT_INFO: Record<string, { title: string; desc: string; icon: any; color: string }> = {
-  lifetime: { title: "Acesso vitalício", desc: "Acesso completo para sempre. Nunca pagas nada.", icon: InfinityIcon, color: "#8B5CF6" },
-  year1: { title: "1 ano grátis", desc: "Acesso completo durante 12 meses, sem pagar.", icon: CalendarCheck, color: "#10B981" },
-  months3: { title: "3 meses grátis", desc: "Acesso completo durante 3 meses, sem pagar.", icon: CalendarCheck, color: "#06B6D4" },
-  discount: { title: "Desconto especial", desc: "Preço reduzido na tua subscrição.", icon: BadgePercent, color: "#FF6B35" },
-  none: { title: "Código de parceiro", desc: "Código registado com sucesso.", icon: Gift, color: "#FF6B35" },
+  lifetime: { title: tr("Acesso vitalício"), desc: tr("Acesso completo para sempre. Nunca pagas nada."), icon: InfinityIcon, color: "#8B5CF6" },
+  year1: { title: tr("1 ano grátis"), desc: tr("Acesso completo durante 12 meses, sem pagar."), icon: CalendarCheck, color: "#10B981" },
+  months3: { title: tr("3 meses grátis"), desc: tr("Acesso completo durante 3 meses, sem pagar."), icon: CalendarCheck, color: "#06B6D4" },
+  discount: { title: tr("Desconto especial"), desc: tr("Preço reduzido na tua subscrição."), icon: BadgePercent, color: "#FF6B35" },
+  none: { title: tr("Código de parceiro"), desc: tr("Código registado com sucesso."), icon: Gift, color: "#FF6B35" },
 };
 
 export default function PromoCodeScreen() {
@@ -45,7 +45,7 @@ export default function PromoCodeScreen() {
       const res = await authFetch(`${BASE_URL}/api/partners/check/${encodeURIComponent(c)}`);
       const data = await res.json();
       if (data.valid) setPreview(data);
-      else Alert.alert(tr("Código inválido"), data.error || "Este código não existe.");
+      else Alert.alert(tr("Código inválido"), data.error || tr("Este código não existe."));
     } catch (e: any) {
       Alert.alert(tr("Sem ligação"), netError(e));
     } finally {
@@ -69,7 +69,7 @@ export default function PromoCodeScreen() {
       });
       const data = await res.json();
       if (!res.ok || data.error) {
-        Alert.alert(tr("Erro"), data.error || "Não foi possível aplicar o código.");
+        Alert.alert(tr("Erro"), data.error || tr("Não foi possível aplicar o código."));
       } else {
         setSuccess({ benefit: data.benefit, message: data.message });
       }

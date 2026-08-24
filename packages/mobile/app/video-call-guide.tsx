@@ -142,7 +142,7 @@ export default function VideoCallGuideScreen() {
               <View style={styles.requirementIcon}>
                 <r.icon size={18} color="#4ECDC4" />
               </View>
-              <Text suppressHighlighting style={styles.requirementText}>{r.label}</Text>
+              <Text suppressHighlighting style={styles.requirementText}>{tr(r.label)}</Text>
               <CheckCircle2 size={18} color="#10B981" />
             </View>
           ))}
@@ -156,11 +156,11 @@ export default function VideoCallGuideScreen() {
               <Text suppressHighlighting style={styles.stepEmoji}>{step.icon}</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text suppressHighlighting style={[styles.stepTitle, { color: step.color }]}>{step.title}</Text>
-              <Text suppressHighlighting style={styles.stepDesc}>{step.desc}</Text>
+              <Text suppressHighlighting style={[styles.stepTitle, { color: step.color }]}>{tr(step.title)}</Text>
+              <Text suppressHighlighting style={styles.stepDesc}>{tr(step.desc)}</Text>
               <View style={[styles.tipBox, { backgroundColor: step.bg }]}>
                 <AlertCircle size={13} color={step.color} />
-                <Text suppressHighlighting style={[styles.tipText, { color: step.color }]}>{step.tip}</Text>
+                <Text suppressHighlighting style={[styles.tipText, { color: step.color }]}>{tr(step.tip)}</Text>
               </View>
             </View>
           </View>
@@ -173,22 +173,22 @@ export default function VideoCallGuideScreen() {
             <Text suppressHighlighting style={styles.permissionsTitle}>{tr("Permissões do browser")}</Text>
           </View>
           <Text suppressHighlighting style={styles.permissionsText}>
-            Quando entrar na chamada pela primeira vez, o browser vai pedir permissão para aceder à câmara e ao microfone.
+            {tr("Quando entrar na chamada pela primeira vez, o browser vai pedir permissão para aceder à câmara e ao microfone.")}
           </Text>
           <Text suppressHighlighting style={[styles.permissionsText, { marginTop: 8, fontWeight: "700" }]}>
-            Carregue sempre em "Permitir" para a chamada funcionar correctamente.
+            {tr('Carregue sempre em "Permitir" para a chamada funcionar correctamente.')}
           </Text>
           {Platform.OS === "android" && (
             <View style={styles.permissionsStep}>
               <Text suppressHighlighting style={styles.permissionsStepText}>
-                📱 Android: Definições → Apps → Chrome → Permissões → Câmara e Microfone
+                {tr("📱 Android: Definições → Apps → Chrome → Permissões → Câmara e Microfone")}
               </Text>
             </View>
           )}
           {Platform.OS === "ios" && (
             <View style={styles.permissionsStep}>
               <Text suppressHighlighting style={styles.permissionsStepText}>
-                📱 iPhone: Definições → Safari → Câmara e Microfone → Perguntar
+                {tr("📱 iPhone: Definições → Safari → Câmara e Microfone → Perguntar")}
               </Text>
             </View>
           )}
@@ -205,13 +205,13 @@ export default function VideoCallGuideScreen() {
           >
             <View style={styles.faqRow}>
               <HelpCircle size={16} color="#FF6B35" style={{ marginTop: 1 }} />
-              <Text suppressHighlighting style={styles.faqQuestion}>{faq.q}</Text>
+              <Text suppressHighlighting style={styles.faqQuestion}>{tr(faq.q)}</Text>
               <Text suppressHighlighting style={styles.faqChevron}>
                 {expandedFaq === i ? "▲" : "▼"}
               </Text>
             </View>
             {expandedFaq === i && (
-              <Text suppressHighlighting style={styles.faqAnswer}>{faq.a}</Text>
+              <Text suppressHighlighting style={styles.faqAnswer}>{tr(faq.a)}</Text>
             )}
           </TouchableOpacity>
         ))}

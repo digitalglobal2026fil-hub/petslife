@@ -18,10 +18,10 @@ const PURPLE = "#8B5CF6";
 const BG = "#F8F6FF";
 
 const BENEFITS = [
-  { key: "discount", label: "Só desconto / contagem", hint: "Não dá acesso grátis. Serve para contar vendas." },
-  { key: "months3", label: "3 meses grátis", hint: "Acesso completo 3 meses." },
-  { key: "year1", label: "1 ano grátis", hint: "Acesso completo 12 meses." },
-  { key: "lifetime", label: "Vitalício", hint: "Nunca paga." },
+  { key: "discount", label: tr("Só desconto / contagem"), hint: tr("Não dá acesso grátis. Serve para contar vendas.") },
+  { key: "months3", label: tr("3 meses grátis"), hint: tr("Acesso completo 3 meses.") },
+  { key: "year1", label: tr("1 ano grátis"), hint: tr("Acesso completo 12 meses.") },
+  { key: "lifetime", label: tr("Vitalício"), hint: tr("Nunca paga.") },
 ];
 
 function benefitLabel(k?: string) {
@@ -73,7 +73,7 @@ export default function AdminScreen() {
       });
       const d = await res.json();
       if (!res.ok) {
-        Alert.alert("Acesso negado", d.error || "PIN incorrecto.");
+        Alert.alert(tr("Acesso negado"), d.error || tr("PIN incorrecto."));
         return;
       }
       setAuthed(true);
@@ -90,7 +90,7 @@ export default function AdminScreen() {
       const res = await authFetch(`${BASE_URL}/api/partners/admin/dashboard`, { headers: authHeaders() });
       const d = await res.json();
       if (res.ok) setData(d);
-      else Alert.alert(tr("Erro"), d.error || "Não foi possível carregar.");
+      else Alert.alert(tr("Erro"), d.error || tr("Não foi possível carregar."));
     } catch (e: any) {
       Alert.alert(tr("Erro"), netError(e));
     }
@@ -105,7 +105,7 @@ export default function AdminScreen() {
         body: JSON.stringify({ name: pName.trim(), mainCode: pCode.trim() || undefined, partnerBenefit: pBenefit, notes: pNotes || undefined }),
       });
       const d = await res.json();
-      if (!res.ok) { Alert.alert(tr("Erro"), d.error || "Falhou."); return; }
+      if (!res.ok) { Alert.alert(tr("Erro"), d.error || tr("Falhou.")); return; }
       setNewPartner(false); setPName(""); setPCode(""); setPNotes(""); setPBenefit("lifetime");
       await load();
       Alert.alert("Parceiro criado", `Código do parceiro: ${d.partner.mainCode}\n\nEle usa este código para ter o acesso dele.`);
@@ -123,7 +123,7 @@ export default function AdminScreen() {
         body: JSON.stringify({ code: cCode.trim() || undefined, benefit: cBenefit, label: cLabel || undefined }),
       });
       const d = await res.json();
-      if (!res.ok) { Alert.alert(tr("Erro"), d.error || "Falhou."); return; }
+      if (!res.ok) { Alert.alert(tr("Erro"), d.error || tr("Falhou.")); return; }
       setNewCodeFor(null); setCCode(""); setCLabel(""); setCBenefit("discount");
       await load();
       Alert.alert(tr("Código criado"), `${d.code.code}\n\nO parceiro dá este código aos seguidores dele.`);
@@ -222,9 +222,9 @@ export default function AdminScreen() {
         <View style={{ flexDirection: "row", gap: 8, marginTop: 18 }}>
           {[
             { icon: Users, label: tr("Parceiros"), value: totals.partners },
-            { icon: Ticket, label: "Códigos", value: totals.codes },
-            { icon: TrendingUp, label: "Resgates", value: totals.redemptions },
-            { icon: Trophy, label: "30 dias", value: totals.last30Days },
+            { icon: Ticket, label: tr("Códigos"), value: totals.codes },
+            { icon: TrendingUp, label: tr("Resgates"), value: totals.redemptions },
+            { icon: Trophy, label: tr("30 dias"), value: totals.last30Days },
           ].map((s) => (
             <View key={s.label} style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.16)", borderRadius: 14, padding: 10, alignItems: "center" }}>
               <s.icon size={15} color="#fff" />
@@ -286,9 +286,9 @@ export default function AdminScreen() {
                         <View style={{ flex: 1 }}>
                           <Text suppressHighlighting style={{ fontWeight: "800", fontSize: 14.5, color: "#1A1A2E", letterSpacing: 1 }}>{cc.code}</Text>
                           <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
-                            {cc.kind === "main" ? "Código do parceiro" : benefitLabel(cc.benefit)}
+                            {cc.kind === "main" ? tr("Código do parceiro") : benefitLabel(cc.benefit)}
                             {cc.label ? ` · ${cc.label}` : ""}
-                            {cc.maxUses != null ? ` · máx ${cc.maxUses}` : " · ilimitado"}
+                            {cc.maxUses != null ? ` · máx ${cc.maxUses}` : ` · ${tr("ilimitado")}`}
                           </Text>
                         </View>
                         <Text suppressHighlighting style={{ fontWeight: "800", color: PURPLE, fontSize: 15, marginRight: 10 }}>{cc.redemptions}</Text>
@@ -357,7 +357,7 @@ export default function AdminScreen() {
               <Field label={tr("Código dele (opcional)")} value={pCode} onChange={(t: string) => setPCode(t.toUpperCase())} placeholder={tr("Ex: JOAO — deixa vazio para gerar")} upper />
               <Text suppressHighlighting style={{ fontSize: 12.5, fontWeight: "700", color: "#6B7280", marginBottom: 8, marginTop: 4 }}>{tr("O que o PARCEIRO recebe")}</Text>
               <BenefitPicker value={pBenefit} onChange={setPBenefit} />
-              <Field label="Notas (opcional)" value={pNotes} onChange={setPNotes} placeholder={tr("Ex: 40k seguidores Instagram")} />
+              <Field label={tr("Notas (opcional)")} value={pNotes} onChange={setPNotes} placeholder={tr("Ex: 40k seguidores Instagram")} />
 
               <TouchableOpacity onPress={createPartner} style={{ backgroundColor: PURPLE, borderRadius: 15, padding: 16, alignItems: "center", marginTop: 10 }}>
                 <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15.5 }}>{tr("Criar parceiro")}</Text>
@@ -383,7 +383,7 @@ export default function AdminScreen() {
               <Field label={tr("Código (opcional)")} value={cCode} onChange={(t: string) => setCCode(t.toUpperCase())} placeholder={tr("Ex: JOAO10 — vazio para gerar")} upper />
               <Text suppressHighlighting style={{ fontSize: 12.5, fontWeight: "700", color: "#6B7280", marginBottom: 8, marginTop: 4 }}>{tr("O que QUEM USA recebe")}</Text>
               <BenefitPicker value={cBenefit} onChange={setCBenefit} />
-              <Field label="Nota (opcional)" value={cLabel} onChange={setCLabel} placeholder={tr("Ex: story de Agosto")} />
+              <Field label={tr("Nota (opcional)")} value={cLabel} onChange={setCLabel} placeholder={tr("Ex: story de Agosto")} />
 
               <TouchableOpacity onPress={createCode} style={{ backgroundColor: PURPLE, borderRadius: 15, padding: 16, alignItems: "center", marginTop: 10 }}>
                 <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15.5 }}>{tr("Criar código")}</Text>

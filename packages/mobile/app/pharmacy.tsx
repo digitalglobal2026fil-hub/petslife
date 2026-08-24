@@ -164,18 +164,18 @@ export default function PharmacyScreen() {
             <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", textAlign: "center", marginTop: 4, fontSize: 13 }}>{selected.brand}</Text>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 8, marginTop: 12 }}>
               <Stars rating={selected.rating} />
-              <Text suppressHighlighting style={{ color: "#fff", fontSize: 13, fontWeight: "700" }}>{selected.rating} ({selected.reviews} avaliações)</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontSize: 13, fontWeight: "700" }}>{selected.rating} ({selected.reviews} {tr("avaliações")})</Text>
             </View>
           </View>
 
           <View style={{ padding: 20, gap: 16 }}>
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
               <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 10 }}>{tr("📋 Descrição")}</Text>
-              <Text suppressHighlighting style={{ color: "#374151", fontSize: 14, lineHeight: 22 }}>{selected.description}</Text>
+              <Text suppressHighlighting style={{ color: "#374151", fontSize: 14, lineHeight: 22 }}>{tr(selected.description)}</Text>
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
                 {selected.tags.map(t => (
                   <View key={t} style={{ backgroundColor: selected.bg, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1.5, borderColor: selected.color + "40" }}>
-                    <Text suppressHighlighting style={{ color: selected.color, fontSize: 12, fontWeight: "700" }}>{t}</Text>
+                    <Text suppressHighlighting style={{ color: selected.color, fontSize: 12, fontWeight: "700" }}>{tr(t)}</Text>
                   </View>
                 ))}
               </View>
@@ -201,7 +201,7 @@ export default function PharmacyScreen() {
 
             <View style={{ backgroundColor: "#FFFBEB", borderRadius: 16, padding: 14, borderWidth: 1.5, borderColor: "#FDE68A" }}>
               <Text suppressHighlighting style={{ color: "#92400E", fontSize: 13, lineHeight: 20 }}>
-                ⚠️ Consulte sempre o seu veterinário antes de administrar qualquer medicamento ou suplemento ao seu animal.
+                {tr("⚠️ Consulte sempre o seu veterinário antes de administrar qualquer medicamento ou suplemento ao seu animal.")}
               </Text>
             </View>
           </View>
@@ -238,7 +238,7 @@ export default function PharmacyScreen() {
         {CATEGORIES.map(c => (
           <TouchableOpacity key={c} onPress={() => setCategory(c)}
             style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: category === c ? BLUE : CARD, borderWidth: 1.5, borderColor: category === c ? BLUE : "#E5E7EB" }}>
-            <Text suppressHighlighting style={{ color: category === c ? "#fff" : GRAY, fontWeight: "700", fontSize: 12 }}>{c}</Text>
+            <Text suppressHighlighting style={{ color: category === c ? "#fff" : GRAY, fontWeight: "700", fontSize: 12 }}>{tr(c)}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -247,8 +247,7 @@ export default function PharmacyScreen() {
           um veterinario. Ajuda tambem na aprovacao da Play Store. */}
       <View style={{ backgroundColor: "#FEF3C7", borderWidth: 1.5, borderColor: "#FDE68A", borderRadius: 14, padding: 12, marginHorizontal: 20, marginBottom: 12 }}>
         <Text suppressHighlighting style={{ color: "#92400E", fontSize: 12, lineHeight: 18 }}>
-          Informação baseada em fontes veterinárias reconhecidas. Nunca medique o seu
-          animal sem indicação de um médico veterinário.
+          {tr("Informação baseada em fontes veterinárias reconhecidas. Nunca medique o seu animal sem indicação de um médico veterinário.")}
         </Text>
       </View>
 
@@ -261,7 +260,7 @@ export default function PharmacyScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <View style={{ backgroundColor: p.bg, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3, alignSelf: "flex-start", marginBottom: 5 }}>
-                <Text suppressHighlighting style={{ color: p.color, fontSize: 10, fontWeight: "700" }}>{p.category}</Text>
+                <Text suppressHighlighting style={{ color: p.color, fontSize: 10, fontWeight: "700" }}>{tr(p.category)}</Text>
               </View>
               <Text suppressHighlighting style={{ fontWeight: "800", color: DARK, fontSize: 14 }} numberOfLines={1}>{p.name}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, marginTop: 1 }}>{p.brand}</Text>

@@ -36,18 +36,18 @@ const CAT_PHRASES: Record<string, string[]> = {
 };
 
 const CAT_INFO: Record<string, { label: string; emoji: string; color: string }> = {
-  "biz-clinica":    { label: "Clínicas",     emoji: "🏥", color: "#FEE2E2" },
+  "biz-clinica":    { label: tr("Clínicas"),     emoji: "🏥", color: "#FEE2E2" },
   "biz-petshop":    { label: tr("Petshops"),     emoji: "🐾", color: "#D1FAE5" },
-  "biz-hotel":      { label: "Hotéis",       emoji: "🏠", color: "#DBEAFE" },
+  "biz-hotel":      { label: tr("Hotéis"),       emoji: "🏠", color: "#DBEAFE" },
   "biz-tosquiador": { label: tr("Tosquiadores"), emoji: "✂️", color: "#F3E8FF" },
-  "biz-treino":     { label: "Treino",       emoji: "🎾", color: "#FEF3C7" },
-  "biz-outro":      { label: "Outros",       emoji: "📦", color: ICON_BG },
-  "biz-todos":      { label: "Todos os Negócios", emoji: "🏪", color: ICON_BG },
+  "biz-treino":     { label: tr("Treino"),       emoji: "🎾", color: "#FEF3C7" },
+  "biz-outro":      { label: tr("Outros"),       emoji: "📦", color: ICON_BG },
+  "biz-todos":      { label: tr("Todos os Negócios"), emoji: "🏪", color: ICON_BG },
   "list-adoption":  { label: tr("Adoção"),       emoji: "🏠", color: "#D1FAE5" },
-  "list-products":  { label: "Produtos",     emoji: "🛍️", color: "#DBEAFE" },
+  "list-products":  { label: tr("Produtos"),     emoji: "🛍️", color: "#DBEAFE" },
   "list-services":  { label: tr("Serviços"),     emoji: "✂️", color: "#F3E8FF" },
-  "list-lost":      { label: "Perdidos",     emoji: "🔎", color: "#FEE2E2" },
-  "list-todos":     { label: "Todos os Anúncios", emoji: "📋", color: ICON_BG },
+  "list-lost":      { label: tr("Perdidos"),     emoji: "🔎", color: "#FEE2E2" },
+  "list-todos":     { label: tr("Todos os Anúncios"), emoji: "📋", color: ICON_BG },
 };
 
 const typeEmoji: Record<string, string> = {
@@ -120,7 +120,7 @@ function ListingCard({ l, onPress }: { l: any; onPress: () => void }) {
         <Text suppressHighlighting style={{ fontWeight: "700", color: BROWN, fontSize: 13 }} numberOfLines={1}>{l.title}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 6 }}>
           <Text suppressHighlighting style={{ color: ORANGE, fontWeight: "800", fontSize: 15 }}>
-            {l.price === 0 ? "Grátis" : `€${Number(l.price).toFixed(2)}`}
+            {l.price === 0 ? tr("Grátis") : `€${Number(l.price).toFixed(2)}`}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
             <Tag size={11} color={GRAY} />
@@ -206,7 +206,7 @@ export default function MarketplaceCategory() {
           <ChevronLeft size={20} color={BROWN} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: BROWN }}>{info.emoji} {info.label}</Text>
+          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: BROWN }}>{info.emoji} {tr(info.label)}</Text>
         </View>
         <TouchableOpacity onPress={() => router.push(isBiz ? "/add-business" : "/add-listing")}
           style={{ backgroundColor: isBiz ? BROWN2 : ORANGE, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 8 }}>
@@ -216,12 +216,12 @@ export default function MarketplaceCategory() {
 
       {/* Phrase banner */}
       <View style={{ marginHorizontal: 20, marginBottom: 14, backgroundColor: info.color, borderRadius: 16, padding: 12, borderWidth: 1.5, borderColor: BORDER }}>
-        <Text suppressHighlighting style={{ color: BROWN2, fontSize: 13, fontWeight: "600", textAlign: "center", fontStyle: "italic" }}>{phrase}</Text>
+        <Text suppressHighlighting style={{ color: BROWN2, fontSize: 13, fontWeight: "600", textAlign: "center", fontStyle: "italic" }}>{tr(phrase)}</Text>
       </View>
 
       {/* Search */}
       <View style={{ paddingHorizontal: 20 }}>
-        <SearchInput onSearch={handleSearch} placeholder={isBiz ? "Pesquisar por nome ou cidade..." : "Pesquisar anúncios..."} />
+        <SearchInput onSearch={handleSearch} placeholder={isBiz ? tr("Pesquisar por nome ou cidade...") : tr("Pesquisar anúncios...")} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}
@@ -237,9 +237,9 @@ export default function MarketplaceCategory() {
           filteredBiz.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
               <Text suppressHighlighting style={{ fontSize: 56 }}>🏪</Text>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: BROWN, marginTop: 14, textAlign: "center" }}>{emptyPhrase}</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: BROWN, marginTop: 14, textAlign: "center" }}>{tr(emptyPhrase)}</Text>
               <Text suppressHighlighting style={{ color: GRAY, marginTop: 6, textAlign: "center", fontSize: 13 }}>
-                {businesses.length === 0 ? "Sê o primeiro a registar um negócio aqui!" : "Tenta outra pesquisa"}
+                {businesses.length === 0 ? tr("Sê o primeiro a registar um negócio aqui!") : tr("Tenta outra pesquisa")}
               </Text>
               {businesses.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-business")}
@@ -255,9 +255,9 @@ export default function MarketplaceCategory() {
           filteredList.length === 0 ? (
             <View style={{ alignItems: "center", paddingVertical: 50 }}>
               <Text suppressHighlighting style={{ fontSize: 56 }}>🛒</Text>
-              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: BROWN, marginTop: 14, textAlign: "center" }}>{emptyPhrase}</Text>
+              <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: BROWN, marginTop: 14, textAlign: "center" }}>{tr(emptyPhrase)}</Text>
               <Text suppressHighlighting style={{ color: GRAY, marginTop: 6, textAlign: "center", fontSize: 13 }}>
-                {listings.length === 0 ? "Publica o primeiro anúncio!" : "Tenta outra pesquisa"}
+                {listings.length === 0 ? tr("Publica o primeiro anúncio!") : tr("Tenta outra pesquisa")}
               </Text>
               {listings.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-listing")}

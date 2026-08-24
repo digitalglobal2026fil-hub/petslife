@@ -13,7 +13,7 @@ const GRAY = "#A08060";
 
 /**
  * Folha de escolha de idioma para o ecrã de Perfil.
- * Abre uma folha com as 6 línguas disponíveis.
+ * Abre uma folha com as 5 línguas disponíveis.
  */
 export function LanguageModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const { lang, setLang, t } = useLang();

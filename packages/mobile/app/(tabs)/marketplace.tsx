@@ -44,8 +44,8 @@ const typeEmoji: Record<string, string> = {
   hotel: "🏠", treino: "🎾", outro: "📦",
 };
 const typeLabel: Record<string, string> = {
-  clinica: tr("Clínica"), petshop: "Petshop", tosquiador: "Tosquiador",
-  hotel: "Hotel Animal", treino: "Treino", outro: "Outro",
+  clinica: tr("Clínica"), petshop: tr("Petshop"), tosquiador: tr("Tosquiador"),
+  hotel: tr("Hotel Animal"), treino: tr("Treino"), outro: tr("Outro"),
 };
 
 function BusinessCard({ b, onPress, isOwner, onDelete }: { b: any; onPress: () => void; isOwner?: boolean; onDelete: () => void }) {
@@ -148,7 +148,7 @@ function ListingCard({ l, onPress, isOwner, onDelete }: { l: any; onPress: () =>
         <Text style={{ fontWeight: "700", color: "#1A1A2E", fontSize: 13 }} numberOfLines={1}>{l.title}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 6 }}>
           <Text style={{ color: "#FF6B35", fontWeight: "800", fontSize: 15 }}>
-            {l.price === 0 ? "Grátis" : `€${Number(l.price).toFixed(2)}`}
+            {l.price === 0 ? tr("Grátis") : `€${Number(l.price).toFixed(2)}`}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
             <Tag size={11} color="#9CA3AF" />
@@ -168,20 +168,20 @@ function ListingCard({ l, onPress, isOwner, onDelete }: { l: any; onPress: () =>
 
 // ─── Business categories ──────────────────────────────────────────────────────
 const BIZ_CATS = [
-  { key: "todos",      label: "Todos",       emoji: "🔍", route: null },
-  { key: "clinica",    label: "Clínicas",    emoji: "🏥", route: "/category/clinicas" },
+  { key: "todos",      label: tr("Todos"),       emoji: "🔍", route: null },
+  { key: "clinica",    label: tr("Clínicas"),    emoji: "🏥", route: "/category/clinicas" },
   { key: "petshop",    label: tr("Petshops"),    emoji: "🐾", route: "/category/petshops" },
-  { key: "hotel",      label: "Hotéis",      emoji: "🏨", route: "/category/hoteis" },
+  { key: "hotel",      label: tr("Hotéis"),      emoji: "🏨", route: "/category/hoteis" },
   { key: "tosquiador", label: tr("Tosquiadores"),emoji: "✂️", route: "/category/tosquiadores" },
-  { key: "treino",     label: "Treino",      emoji: "🎯", route: "/category/treino" },
-  { key: "outro",      label: "Outro",       emoji: "📦", route: null },
+  { key: "treino",     label: tr("Treino"),      emoji: "🎯", route: "/category/treino" },
+  { key: "outro",      label: tr("Outro"),       emoji: "📦", route: null },
 ];
 
 // ─── Listing categories ────────────────────────────────────────────────────────
 const LIST_CATS = [
-  { key: "todos",     label: "Todos",          emoji: "🔍", route: null },
+  { key: "todos",     label: tr("Todos"),          emoji: "🔍", route: null },
   { key: "adoption",  label: tr("Adoção"),         emoji: "❤️", route: "/category/adocao" },
-  { key: "products",  label: "Produtos",       emoji: "🛍️", route: null },
+  { key: "products",  label: tr("Produtos"),       emoji: "🛍️", route: null },
   { key: "services",  label: tr("Serviços"),       emoji: "🛠️", route: "/category/servicos" },
   { key: "lost",      label: tr("Animal Perdido"), emoji: "🔍", route: "/category/perdidos" },
 ];
@@ -205,7 +205,7 @@ export default function MarketplaceScreen() {
     queryKey: ["businesses"],
     queryFn: async () => {
       const res = await (api as any).businesses.$get();
-      if (!res.ok) throw new Error("Erro ao carregar negócios");
+      if (!res.ok) throw new Error(tr("Erro ao carregar negócios"));
       return res.json();
     },
   });
@@ -215,7 +215,7 @@ export default function MarketplaceScreen() {
     queryKey: ["marketplace"],
     queryFn: async () => {
       const res = await api.marketplace.$get();
-      if (!res.ok) throw new Error("Erro ao carregar anúncios");
+      if (!res.ok) throw new Error(tr("Erro ao carregar anúncios"));
       return res.json();
     },
   });
@@ -239,7 +239,7 @@ export default function MarketplaceScreen() {
   const refetch = tab === "businesses" ? bizQuery.refetch : listQuery.refetch;
 
   if (!gateLoading && isBlocked) {
-    return <PaywallScreen featureName="Loja" />;
+    return <PaywallScreen featureName={tr("Loja")} />;
   }
 
   return (
@@ -298,7 +298,7 @@ export default function MarketplaceScreen() {
       {/* Search */}
       <SearchInput
         onSearch={handleSearch}
-        placeholder={tab === "businesses" ? "Pesquisar negócios, cidade..." : "Pesquisar anúncios..."}
+        placeholder={tab === "businesses" ? tr("Pesquisar negócios, cidade...") : tr("Pesquisar anúncios...")}
       />
 
       {/* Category pills */}
@@ -345,12 +345,12 @@ export default function MarketplaceScreen() {
             <View style={{ alignItems: "center", paddingVertical: 40 }}>
               <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🏪</Text>
               <Text style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>
-                {businesses.length === 0 ? "Ainda sem negócios" : "Sem resultados"}
+                {businesses.length === 0 ? tr("Ainda sem negócios") : tr("Sem resultados")}
               </Text>
               <Text style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>
                 {businesses.length === 0
-                  ? "Seja o primeiro a registar o seu negócio!"
-                  : "Tente outra pesquisa ou categoria"}
+                  ? tr("Seja o primeiro a registar o seu negócio!")
+                  : tr("Tente outra pesquisa ou categoria")}
               </Text>
               {businesses.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-business")}
@@ -378,12 +378,12 @@ export default function MarketplaceScreen() {
             <View style={{ alignItems: "center", paddingVertical: 40 }}>
               <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🛒</Text>
               <Text style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>
-                {listings.length === 0 ? "Sem anúncios ainda" : "Sem resultados"}
+                {listings.length === 0 ? tr("Sem anúncios ainda") : tr("Sem resultados")}
               </Text>
               <Text style={{ color: "#6B7280", marginTop: 4, textAlign: "center" }}>
                 {listings.length === 0
-                  ? "Seja o primeiro a publicar um anúncio!"
-                  : "Tente outra pesquisa ou categoria"}
+                  ? tr("Seja o primeiro a publicar um anúncio!")
+                  : tr("Tente outra pesquisa ou categoria")}
               </Text>
               {listings.length === 0 && (
                 <TouchableOpacity onPress={() => router.push("/add-listing")}

@@ -17,11 +17,11 @@ import { tr } from "../lib/i18n";
  */
 
 const TYPE_LABEL: Record<string, string> = {
-  post: "Publicação da comunidade",
-  comment: "Comentário",
-  listing: "Anúncio do marketplace",
-  business: "Negócio / clínica",
-  lost_pet: "Animal perdido",
+  post: tr("Publicação da comunidade"),
+  comment: tr("Comentário"),
+  listing: tr("Anúncio do marketplace"),
+  business: tr("Negócio / clínica"),
+  lost_pet: tr("Animal perdido"),
 };
 
 const RED = "#EF4444";
@@ -51,7 +51,7 @@ export default function ReportsScreen() {
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const removeContent = async (r: any) => {
-    const ok = await confirmDelete("o conteúdo denunciado");
+    const ok = await confirmDelete(tr("o conteúdo denunciado"));
     if (!ok) return;
     setBusy(r.id);
     try {
@@ -151,7 +151,7 @@ export default function ReportsScreen() {
                 </View>
 
                 <Text style={{ fontWeight: "800", color: "#1A1A2E", fontSize: 15, marginTop: 8 }}>
-                  {r.reason || "Sem motivo indicado"}
+                  {r.reason || tr("Sem motivo indicado")}
                 </Text>
 
                 {r.preview ? (

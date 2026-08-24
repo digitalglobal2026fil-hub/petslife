@@ -13,16 +13,16 @@ import { pickImageWithChoice } from "../lib/pick-image";
 import { tr } from "../lib/i18n";
 
 const SPECIES = [
-  { key: "dog", label: "Cão", icon: Dog, emoji: "🐕" },
-  { key: "cat", label: "Gato", icon: Cat, emoji: "🐱" },
-  { key: "bird", label: "Pássaro", icon: Bird, emoji: "🦜" },
-  { key: "rabbit", label: "Coelho", icon: Rabbit, emoji: "🐰" },
-  { key: "other", label: "Outro", icon: Dog, emoji: "🐾" },
+  { key: "dog", label: tr("Cão"), icon: Dog, emoji: "🐕" },
+  { key: "cat", label: tr("Gato"), icon: Cat, emoji: "🐱" },
+  { key: "bird", label: tr("Pássaro"), icon: Bird, emoji: "🦜" },
+  { key: "rabbit", label: tr("Coelho"), icon: Rabbit, emoji: "🐰" },
+  { key: "other", label: tr("Outro"), icon: Dog, emoji: "🐾" },
 ];
 
 const GENDERS = [
-  { key: "male", label: "Macho" },
-  { key: "female", label: "Fêmea" },
+  { key: "male", label: tr("Macho") },
+  { key: "female", label: tr("Fêmea") },
 ];
 
 const Input = ({ label, value, onChangeText, placeholder, keyboardType, maxLength }: any) => (
@@ -59,7 +59,7 @@ export default function AddPetScreen() {
   async function pickPhoto() {
     try {
       const asset = await pickImageWithChoice({
-        title: "Foto do animal",
+        title: tr("Foto do animal"),
         aspect: [1, 1],
         quality: 0.8,
       });
@@ -77,7 +77,7 @@ export default function AddPetScreen() {
       }
     } catch (e: any) {
       setUploadingPhoto(false);
-      Alert.alert(tr("Erro ao escolher foto"), e?.message ?? "Tenta novamente ou escolhe outra imagem.");
+      Alert.alert(tr("Erro ao escolher foto"), e?.message ?? tr("Tenta novamente ou escolhe outra imagem."));
     }
   }
 
@@ -92,7 +92,7 @@ export default function AddPetScreen() {
       qc.invalidateQueries({ queryKey: ["pets"] });
       router.back();
     },
-    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível adicionar o animal.")),
+    onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível adicionar o animal."))),
   });
 
   function handleSubmit() {
@@ -167,7 +167,7 @@ export default function AddPetScreen() {
 
         <Input label={tr("Raça")} value={breed} onChangeText={setBreed} placeholder={tr("Ex: Labrador, Siamês...")} />
         <DateFieldPT label={tr("Data de nascimento")} value={birthDate} onChange={setBirthDate} />
-        <Input label={tr("Nº Microchip")} value={microchip} onChangeText={setMicrochip} placeholder="Ex: 620098123456789" keyboardType="numeric" maxLength={20} />
+        <Input label={tr("Nº Microchip")} value={microchip} onChangeText={setMicrochip} placeholder={tr("Ex: 620098123456789")} keyboardType="numeric" maxLength={20} />
 
         <View style={{ marginBottom: 14 }}>
           <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 6 }}>{tr("Notas")}</Text>

@@ -12,12 +12,12 @@ import { netError } from "../lib/net-error";
 import { tr } from "../lib/i18n";
 
 const types = [
-  { value: "clinica",     label: "🏥 Clínica Veterinária" },
-  { value: "petshop",     label: "🐾 Petshop" },
-  { value: "tosquiador",  label: "✂️ Tosquiador" },
-  { value: "hotel",       label: "🏠 Hotel Animal" },
-  { value: "treino",      label: "🎾 Treino/Comportamento" },
-  { value: "outro",       label: "📦 Outro" },
+  { value: "clinica",     label: tr("🏥 Clínica Veterinária") },
+  { value: "petshop",     label: tr("🐾 Petshop") },
+  { value: "tosquiador",  label: tr("✂️ Tosquiador") },
+  { value: "hotel",       label: tr("🏠 Hotel Animal") },
+  { value: "treino",      label: tr("🎾 Treino/Comportamento") },
+  { value: "outro",       label: tr("📦 Outro") },
 ];
 
 // FORA do componente — evita que o teclado feche a cada keystroke
@@ -75,7 +75,7 @@ export default function AddBusinessScreen() {
       });
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(text.includes("<") ? "Erro no servidor. Tente novamente." : text);
+        throw new Error(text.includes("<") ? tr("Erro no servidor. Tente novamente.") : text);
       }
       return res.json();
     },
@@ -84,7 +84,7 @@ export default function AddBusinessScreen() {
       Alert.alert(tr("✅ Negócio registado!"), tr("O teu negócio já está visível para todos os utilizadores."));
       router.back();
     },
-    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível registar o negócio.")),
+    onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível registar o negócio."))),
   });
 
   return (
@@ -131,7 +131,7 @@ export default function AddBusinessScreen() {
           <Input label={tr("Morada")} value={address} onChangeText={setAddress} placeholder={tr("Rua, número, código postal")} />
           <Input label={tr("Cidade")} value={city} onChangeText={setCity} placeholder={tr("Ex: Lisboa, Porto, Setúbal...")} />
           <Input label={tr("Link para marcar consulta")} value={bookingUrl} onChangeText={setBookingUrl} placeholder="https://... (opcional)" keyboardType="url" />
-          <Input label={tr("Telefone para marcações")} value={bookingPhone} onChangeText={setBookingPhone} placeholder="+351 912 345 678 (opcional)" keyboardType="phone-pad" />
+          <Input label={tr("Telefone para marcações")} value={bookingPhone} onChangeText={setBookingPhone} placeholder={tr("+351 912 345 678 (opcional)")} keyboardType="phone-pad" />
           <Input label={tr("Horário")} value={schedule} onChangeText={setSchedule} placeholder={tr("Ex: Seg-Sex 9h-18h, Sáb 9h-13h")} />
           <Input label={tr("Serviços e preços")} value={services} onChangeText={setServices} placeholder={tr("Ex: Consulta geral €25, Vacina €15, Tosquia €30...")} multiline />
 

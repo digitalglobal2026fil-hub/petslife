@@ -162,7 +162,7 @@ export default function NotificationsScreen() {
   const markFound = useCallback((petId: string, petName: string) => {
     Alert.alert(
       tr("Já encontrei!"),
-      `Confirmar que ${petName || "o seu animal"} já está em casa? Os avisos deste animal deixam de aparecer.`,
+      `Confirmar que ${petName || tr("o seu animal")} já está em casa? Os avisos deste animal deixam de aparecer.`,
       [
         { text: tr("Cancelar"), style: "cancel" },
         {
@@ -264,12 +264,12 @@ export default function NotificationsScreen() {
     if (sc.finderPhone) parts.push(`Tel: ${sc.finderPhone}`);
     if (sc.message) parts.push(`"${sc.message}"`);
     if (sc.address) parts.push(sc.address);
-    if (hasCoords) parts.push("Toca para ver no mapa");
+    if (hasCoords) parts.push(tr("Toca para ver no mapa"));
     notifications.push({
       id: `scan-${sc.id}`,
       emoji: "\ud83d\udea8",
-      title: `QR code digitalizado — ${sc.petName || "o teu animal"}`,
-      body: parts.length ? parts.join(" · ") : "Alguém digitalizou o QR code do teu animal.",
+      title: `QR code digitalizado — ${sc.petName || tr("o teu animal")}`,
+      body: parts.length ? parts.join(" · ") : tr("Alguém digitalizou o QR code do teu animal."),
       time: when ? when.toLocaleString("pt-PT") : "",
       urgency: "high",
       url: hasCoords ? `https://www.google.com/maps?q=${sc.lat},${sc.lng}` : undefined,
@@ -370,7 +370,7 @@ export default function NotificationsScreen() {
                   }}>
                   <Check size={16} color="#fff" />
                   <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 13 }}>
-                    Já encontrei {p.name ? `o ${p.name}` : "o meu animal"}
+                    {tr("Já encontrei")} {p.name ? `o ${p.name}` : tr("o meu animal")}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -412,7 +412,7 @@ export default function NotificationsScreen() {
                         }}>
                         <Check size={15} color="#fff" />
                         <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>
-                          Já encontrei {n.petName ? `o ${n.petName}` : "o meu animal"}
+                          {tr("Já encontrei")} {n.petName ? `o ${n.petName}` : tr("o meu animal")}
                         </Text>
                       </TouchableOpacity>
                     ) : null}

@@ -31,11 +31,11 @@ function Field({ label, value, onChange, placeholder, keyboardType, multiline }:
 }
 
 const TYPES = [
-  { k: "consulta", l: "🩺 Consulta", c: "#FF6B35" },
-  { k: "vacina", l: "💉 Vacina", c: "#4ECDC4" },
-  { k: "exame", l: "🔬 Exame", c: "#3B82F6" },
-  { k: "cirurgia", l: "🏥 Cirurgia", c: "#EF476F" },
-  { k: "outro", l: "📋 Outro", c: "#8B5CF6" },
+  { k: "consulta", l: tr("🩺 Consulta"), c: "#FF6B35" },
+  { k: "vacina", l: tr("💉 Vacina"), c: "#4ECDC4" },
+  { k: "exame", l: tr("🔬 Exame"), c: "#3B82F6" },
+  { k: "cirurgia", l: tr("🏥 Cirurgia"), c: "#EF476F" },
+  { k: "outro", l: tr("📋 Outro"), c: "#8B5CF6" },
 ];
 
 export default function AddAppointmentScreen() {
@@ -104,7 +104,7 @@ export default function AddAppointmentScreen() {
             <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
               style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? "#FF6B35" : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
-                {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : "Selecionar animal..."}
+                {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : tr("Selecionar animal...")}
               </Text>
               <ChevronDown size={18} color="#9CA3AF" />
             </TouchableOpacity>

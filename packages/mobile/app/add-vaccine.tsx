@@ -80,7 +80,7 @@ export default function AddVaccineScreen() {
       });
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(text.includes("<") ? "Erro no servidor. Tente novamente." : text);
+        throw new Error(text.includes("<") ? tr("Erro no servidor. Tente novamente.") : text);
       }
       return res.json();
     },
@@ -90,7 +90,7 @@ export default function AddVaccineScreen() {
       qc.invalidateQueries({ queryKey: ["health-logs"] });
       Alert.alert("✅ Vacina guardada!", tr("Vacina adicionada com sucesso."), [{ text: tr("OK"), onPress: () => router.back() }]);
     },
-    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível guardar a vacina.")),
+    onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível guardar a vacina."))),
   });
 
   const pickFile = async () => {
@@ -149,7 +149,7 @@ export default function AddVaccineScreen() {
             <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
               style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? "#4ECDC4" : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
-                {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : "Selecionar animal..."}
+                {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : tr("Selecionar animal...")}
               </Text>
               <ChevronDown size={18} color="#9CA3AF" />
             </TouchableOpacity>
@@ -188,7 +188,7 @@ export default function AddVaccineScreen() {
 
         <Field label={tr("Médico veterinário")} value={vet} onChange={setVet} placeholder={tr("Nome do veterinário")} />
         <Field label={tr("Clínica / Hospital")} value={clinic} onChange={setClinic} placeholder={tr("Nome da clínica")} />
-        <Field label={tr("Número de lote")} value={batch} onChange={setBatch} placeholder="Ex: AB12345" />
+        <Field label={tr("Número de lote")} value={batch} onChange={setBatch} placeholder={tr("Ex: AB12345")} />
         <Field label={tr("Notas")} value={notes} onChange={setNotes} placeholder={tr("Reações, observações...")} multiline />
 
         {/* Upload */}

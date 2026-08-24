@@ -585,16 +585,16 @@ export default function BreedGuideScreen() {
             <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{selected.name}</Text>
             <View style={{ flexDirection: "row", justifyContent: "center", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
               <View style={{ backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>📏 {selected.size}</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>📏 {tr(selected.size)}</Text>
               </View>
               <View style={{ backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>⏳ {selected.life}</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>⏳ {tr(selected.life)}</Text>
               </View>
               <View style={{ backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>⚖️ {selected.weight}</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>⚖️ {tr(selected.weight)}</Text>
               </View>
               <View style={{ backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 }}>
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>🌍 {selected.origin}</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>🌍 {tr(selected.origin)}</Text>
               </View>
             </View>
           </View>
@@ -606,7 +606,7 @@ export default function BreedGuideScreen() {
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
                 {selected.personality.map(p => (
                   <View key={p} style={{ backgroundColor: selected.bg, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, borderWidth: 1.5, borderColor: selected.color + "40" }}>
-                    <Text suppressHighlighting style={{ color: selected.color, fontWeight: "700", fontSize: 13 }}>{p}</Text>
+                    <Text suppressHighlighting style={{ color: selected.color, fontWeight: "700", fontSize: 13 }}>{tr(p)}</Text>
                   </View>
                 ))}
               </View>
@@ -615,7 +615,7 @@ export default function BreedGuideScreen() {
             {/* Cuidados */}
             <View style={{ backgroundColor: CARD, borderRadius: 20, padding: 18 }}>
               <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 10 }}>{tr("🛁 Cuidados")}</Text>
-              <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 14, lineHeight: 22 }}>{selected.care}</Text>
+              <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 14, lineHeight: 22 }}>{tr(selected.care)}</Text>
             </View>
 
             {/* Saúde */}
@@ -624,7 +624,7 @@ export default function BreedGuideScreen() {
               {selected.health.map(h => (
                 <View key={h} style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 8 }}>
                   <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: "#EF4444" }} />
-                  <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 14 }}>{h}</Text>
+                  <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 14 }}>{tr(h)}</Text>
                 </View>
               ))}
             </View>
@@ -632,7 +632,7 @@ export default function BreedGuideScreen() {
             {/* Ideal para */}
             <View style={{ backgroundColor: selected.bg, borderRadius: 20, padding: 18, borderWidth: 1.5, borderColor: selected.color + "30" }}>
               <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK, marginBottom: 8 }}>{tr("🏠 Ideal para")}</Text>
-              <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 14, lineHeight: 20 }}>{selected.ideal}</Text>
+              <Text suppressHighlighting style={{ color: "#4B5563", fontSize: 14, lineHeight: 20 }}>{tr(selected.ideal)}</Text>
             </View>
           </View>
         </ScrollView>
@@ -650,7 +650,7 @@ export default function BreedGuideScreen() {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>{tr("Guia de Raças 📖")}</Text>
-            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{BREEDS.length} raças disponíveis</Text>
+            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{BREEDS.length} {tr("raças disponíveis")}</Text>
           </View>
         </View>
         <View style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, flexDirection: "row", alignItems: "center", paddingHorizontal: 14, paddingVertical: 10, gap: 8 }}>
@@ -705,7 +705,7 @@ export default function BreedGuideScreen() {
                     textAlignVertical: "center",
                   }}
                 >
-                  {f.label}
+                  {tr(f.label)}
                 </Text>
               </TouchableOpacity>
             );
@@ -722,11 +722,11 @@ export default function BreedGuideScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK }}>{b.name}</Text>
-              <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, marginTop: 2 }}>{b.size} · {b.life}</Text>
+              <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, marginTop: 2 }}>{tr(b.size)} · {tr(b.life)}</Text>
               <View style={{ flexDirection: "row", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
                 {b.personality.slice(0, 2).map(p => (
                   <View key={p} style={{ backgroundColor: b.bg, borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 }}>
-                    <Text suppressHighlighting style={{ color: b.color, fontSize: 11, fontWeight: "700" }}>{p}</Text>
+                    <Text suppressHighlighting style={{ color: b.color, fontSize: 11, fontWeight: "700" }}>{tr(p)}</Text>
                   </View>
                 ))}
               </View>

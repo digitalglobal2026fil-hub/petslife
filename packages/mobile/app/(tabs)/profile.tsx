@@ -110,10 +110,10 @@ export default function ProfileScreen() {
   const userEmail = (meData as any)?.user?.email ?? session?.user?.email ?? "";
 
   async function handleSignOut() {
-    Alert.alert("Sair", tr("Tem a certeza que quer sair?"), [
+    Alert.alert(tr("Sair"), tr("Tem a certeza que quer sair?"), [
       { text: tr("Cancelar"), style: "cancel" },
       {
-        text: "Sair", style: "destructive", onPress: async () => {
+        text: tr("Sair"), style: "destructive", onPress: async () => {
           // Limpar o token PRIMEIRO: garante que a sessão local termina
           // mesmo que o servidor esteja em baixo ou sem rede.
           clearToken();
@@ -136,12 +136,12 @@ export default function ProfileScreen() {
 
   const menuItems = [
     { icon: Globe, label: t("Idioma"), sublabel: `${currentLang.flag}  ${currentLang.name}`, color: "#3B82F6", onPress: () => setLangOpen(true) },
-    { icon: CreditCard, label: "Subscrição", sublabel: isTrial ? "Trial ativo" : isActive ? "Premium ativo" : "Inativo", color: "#FF6B35", onPress: () => router.push("/subscription") },
-    { icon: Gift, label: "Código Promocional", sublabel: "Tens um código especial?", color: "#10B981", onPress: () => router.push("/promo-code" as any) },
-    { icon: Pill, label: tr("Lembretes"), sublabel: "Medicação, tratamentos e vacinas", color: "#4ECDC4", onPress: () => router.push("/reminders" as any) },
-    { icon: MapPin, label: tr("Vets e Outros"), sublabel: "Clínicas, lojas e serviços", color: "#06D6A0", onPress: () => router.push("/find-vets") },
-    { icon: Shield, label: "Privacidade", sublabel: "Política de privacidade", color: "#8B5CF6", onPress: () => Linking.openURL(`${API_URL}/privacy`).catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir a política de privacidade."))) },
-    { icon: HelpCircle, label: "Ajuda e Suporte", sublabel: "Contacte-nos por email", color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir o email."))) },
+    { icon: CreditCard, label: tr("Subscrição"), sublabel: isTrial ? tr("Trial ativo") : isActive ? tr("Premium ativo") : tr("Inativo"), color: "#FF6B35", onPress: () => router.push("/subscription") },
+    { icon: Gift, label: tr("Código Promocional"), sublabel: tr("Tens um código especial?"), color: "#10B981", onPress: () => router.push("/promo-code" as any) },
+    { icon: Pill, label: tr("Lembretes"), sublabel: tr("Medicação, tratamentos e vacinas"), color: "#4ECDC4", onPress: () => router.push("/reminders" as any) },
+    { icon: MapPin, label: tr("Vets e Outros"), sublabel: tr("Clínicas, lojas e serviços"), color: "#06D6A0", onPress: () => router.push("/find-vets") },
+    { icon: Shield, label: tr("Privacidade"), sublabel: tr("Política de privacidade"), color: "#8B5CF6", onPress: () => Linking.openURL(`${API_URL}/privacy`).catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir a política de privacidade."))) },
+    { icon: HelpCircle, label: tr("Ajuda e Suporte"), sublabel: tr("Contacte-nos por email"), color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir o email."))) },
   ];
 
   // Área de administração — só aparece nas contas de administração
@@ -150,19 +150,19 @@ export default function ProfileScreen() {
     menuItems.push({
       icon: ShieldAlert, label: tr("Denúncias"),
       sublabel: reportCount > 0
-        ? `${reportCount} ${reportCount === 1 ? "denúncia por ver" : "denúncias por ver"}`
-        : "Conteúdo assinalado pelos utilizadores",
+        ? `${reportCount} ${reportCount === 1 ? tr("denúncia por ver") : tr("denúncias por ver")}`
+        : tr("Conteúdo assinalado pelos utilizadores"),
       color: "#EF4444", onPress: () => router.push("/reports" as any),
       badge: reportCount,
     } as any);
     menuItems.push({
-      icon: Lock, label: "Gestão de Parceiros", sublabel: "Códigos e desempenho (PIN)",
+      icon: Lock, label: tr("Gestão de Parceiros"), sublabel: tr("Códigos e desempenho (PIN)"),
       color: "#8B5CF6", onPress: () => router.push("/admin" as any),
     });
   }
 
   const statusColor = isTrial ? "#FF6B35" : isActive ? "#06D6A0" : "#9CA3AF";
-  const statusLabel = isTrial ? "🎉 Trial ativo" : isActive ? "⭐ Premium" : "Sem plano";
+  const statusLabel = isTrial ? tr("🎉 Trial ativo") : isActive ? tr("⭐ Premium") : tr("Sem plano");
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F6FF" }} edges={["top", "left", "right"]}>
@@ -265,7 +265,7 @@ export default function ProfileScreen() {
               nome e cédula profissional dela. */}
           <View style={{ backgroundColor: "#F0FDF4", borderRadius: 14, borderWidth: 1.5, borderColor: "#BBF7D0", padding: 14, marginTop: 18, gap: 6 }}>
             <Text suppressHighlighting style={{ color: "#065F46", fontWeight: "800", fontSize: 12 }}>
-              Sobre os nossos conteúdos
+              {tr("Sobre os nossos conteúdos")}
             </Text>
             <Text suppressHighlighting style={{ color: "#047857", fontSize: 12, lineHeight: 18 }}>
               Os guias da PetsLife são baseados em fontes veterinárias reconhecidas.

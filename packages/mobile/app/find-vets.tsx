@@ -26,14 +26,14 @@ export default function FindVetsScreen() {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        setError("Permissão de localização negada. Active nas definições do telemóvel.");
+        setError(tr("Permissão de localização negada. Active nas definições do telemóvel."));
         setLoading(false);
         return;
       }
       const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
       setCoords({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
     } catch (e) {
-      setError("Não foi possível obter a sua localização.");
+      setError(tr("Não foi possível obter a sua localização."));
     } finally {
       setLoading(false);
     }
@@ -59,18 +59,18 @@ export default function FindVetsScreen() {
 
   const SEARCHES = [
     { emoji: "🏥", label: tr("Clínicas Veterinárias"), query: "veterinário clínica veterinária perto de mim" },
-    { emoji: "🚑", label: "Urgências 24h", query: "clínica veterinária urgência 24 horas" },
-    { emoji: "💊", label: "Pet Shops", query: "pet shop loja animais perto de mim" },
-    { emoji: "✂️", label: "Grooming / Tosquia", query: "grooming banho tosquia cão gato perto de mim" },
-    { emoji: "🏨", label: "Hotéis e Creches", query: "hotel para cães creche canina perto de mim" },
-    { emoji: "🎓", label: "Treinadores", query: "treinador canino adestrador perto de mim" },
-    { emoji: "🚶", label: "Passeadores e Pet Sitters", query: "passeador de cães pet sitter perto de mim" },
-    { emoji: "🐦", label: "Vets de Exóticos", query: "veterinário animais exóticos aves répteis perto de mim" },
-    { emoji: "🐴", label: "Vets de Grandes Animais", query: "veterinário equinos animais de quinta perto de mim" },
-    { emoji: "🏡", label: "Associações e Canis", query: "associação animais canil gatil adoção perto de mim" },
-    { emoji: "🐟", label: "Aquariofilia", query: "loja aquários peixes aquariofilia perto de mim" },
-    { emoji: "🌾", label: "Rações e Agro-Lojas", query: "loja rações agro animais perto de mim" },
-    { emoji: "🕊️", label: "Serviços Funerários", query: "crematório animais serviço funerário pet perto de mim" },
+    { emoji: "🚑", label: tr("Urgências 24h"), query: "clínica veterinária urgência 24 horas" },
+    { emoji: "💊", label: tr("Pet Shops"), query: "pet shop loja animais perto de mim" },
+    { emoji: "✂️", label: tr("Grooming / Tosquia"), query: "grooming banho tosquia cão gato perto de mim" },
+    { emoji: "🏨", label: tr("Hotéis e Creches"), query: "hotel para cães creche canina perto de mim" },
+    { emoji: "🎓", label: tr("Treinadores"), query: "treinador canino adestrador perto de mim" },
+    { emoji: "🚶", label: tr("Passeadores e Pet Sitters"), query: "passeador de cães pet sitter perto de mim" },
+    { emoji: "🐦", label: tr("Vets de Exóticos"), query: "veterinário animais exóticos aves répteis perto de mim" },
+    { emoji: "🐴", label: tr("Vets de Grandes Animais"), query: "veterinário equinos animais de quinta perto de mim" },
+    { emoji: "🏡", label: tr("Associações e Canis"), query: "associação animais canil gatil adoção perto de mim" },
+    { emoji: "🐟", label: tr("Aquariofilia"), query: "loja aquários peixes aquariofilia perto de mim" },
+    { emoji: "🌾", label: tr("Rações e Agro-Lojas"), query: "loja rações agro animais perto de mim" },
+    { emoji: "🕊️", label: tr("Serviços Funerários"), query: "crematório animais serviço funerário pet perto de mim" },
   ];
 
   return (
@@ -94,7 +94,7 @@ export default function FindVetsScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E", fontSize: 14 }}>
-              {loading ? "A obter localização..." : coords ? "Localização obtida ✓" : "Localização indisponível"}
+              {loading ? tr("A obter localização...") : coords ? tr("Localização obtida ✓") : tr("Localização indisponível")}
             </Text>
             {coords && (
               <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{coords.latitude.toFixed(4)}°, {coords.longitude.toFixed(4)}°</Text>
@@ -130,7 +130,7 @@ export default function FindVetsScreen() {
         <View style={{ backgroundColor: "#FFF0EB", borderRadius: 20, padding: 18, marginTop: 24, borderWidth: 1.5, borderColor: "#FFD5C2" }}>
           <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "700", color: "#FF6B35", marginBottom: 10 }}>{tr("🚨 Urgência Veterinária")}</Text>
           <Text suppressHighlighting style={{ color: "#1A1A2E", fontSize: 13, lineHeight: 20, marginBottom: 14 }}>
-            Em Portugal, o número de emergência é o <Text suppressHighlighting style={{ fontWeight: "700" }}>112</Text>{tr(". Para urgências veterinárias, ligue para a clínica mais próxima ou dirija-se a uma clínica 24h.")}
+            {tr("Em Portugal, o número de emergência é o")} <Text suppressHighlighting style={{ fontWeight: "700" }}>112</Text>{tr(". Para urgências veterinárias, ligue para a clínica mais próxima ou dirija-se a uma clínica 24h.")}
           </Text>
           <TouchableOpacity onPress={() => Linking.openURL("tel:112")}
             style={{ backgroundColor: "#FF6B35", borderRadius: 14, padding: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
@@ -143,9 +143,9 @@ export default function FindVetsScreen() {
         <View style={{ backgroundColor: "#E8FAF9", borderRadius: 20, padding: 18, marginTop: 16, marginBottom: 24 }}>
           <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("💡 Dicas úteis")}</Text>
           {[
-            "Guarde o contacto do seu veterinário nos favoritos",
-            "Procure clínicas 24h perto de casa com antecedência",
-            "Mantenha o cartão de vacinação sempre atualizado",
+            tr("Guarde o contacto do seu veterinário nos favoritos"),
+            tr("Procure clínicas 24h perto de casa com antecedência"),
+            tr("Mantenha o cartão de vacinação sempre atualizado"),
           ].map((tip, i) => (
             <View key={i} style={{ flexDirection: "row", gap: 8, marginTop: i > 0 ? 6 : 0 }}>
               <Text suppressHighlighting style={{ color: "#4ECDC4", fontWeight: "700" }}>•</Text>

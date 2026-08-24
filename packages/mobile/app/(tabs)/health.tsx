@@ -11,12 +11,12 @@ import { PaywallScreen } from "../../components/PaywallScreen";
 import { tr } from "../../lib/i18n";
 
 const sections = [
-  { icon: Syringe,     label: tr("Vacinas"),         sublabel: "Registo e lembretes",      color: "#4ECDC4", bg: "#E8FAF9", route: "/add-vaccine" },
-  { icon: Calendar,    label: tr("Consultas"),        sublabel: "Agenda e histórico",        color: "#FF6B35", bg: "#FFF0EB", route: "/add-appointment" },
-  { icon: Heart,       label: tr("Diário de Saúde"),  sublabel: "Registo diário",            color: "#EF476F", bg: "#FFF0F3", route: "/add-diary" },
-  { icon: FileText,    label: tr("Documentos"),       sublabel: "Receitas e exames",         color: "#8B5CF6", bg: "#F3EEFF", route: "/add-document" },
-  { icon: Pill,        label: tr("Desparasitação"),   sublabel: "Controlo interno/externo",  color: "#F59E0B", bg: "#FEF3C7", route: "/add-deworming" },
-  { icon: Stethoscope, label: tr("Peso"),             sublabel: "Gráfico de evolução",       color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
+  { icon: Syringe,     label: tr("Vacinas"),         sublabel: tr("Registo e lembretes"),      color: "#4ECDC4", bg: "#E8FAF9", route: "/add-vaccine" },
+  { icon: Calendar,    label: tr("Consultas"),        sublabel: tr("Agenda e histórico"),        color: "#FF6B35", bg: "#FFF0EB", route: "/add-appointment" },
+  { icon: Heart,       label: tr("Diário de Saúde"),  sublabel: tr("Registo diário"),            color: "#EF476F", bg: "#FFF0F3", route: "/add-diary" },
+  { icon: FileText,    label: tr("Documentos"),       sublabel: tr("Receitas e exames"),         color: "#8B5CF6", bg: "#F3EEFF", route: "/add-document" },
+  { icon: Pill,        label: tr("Desparasitação"),   sublabel: tr("Controlo interno/externo"),  color: "#F59E0B", bg: "#FEF3C7", route: "/add-deworming" },
+  { icon: Stethoscope, label: tr("Peso"),             sublabel: tr("Gráfico de evolução"),       color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
 ];
 
 function SectionCard({ s, index }: { s: any; index: number }) {
@@ -119,10 +119,10 @@ export default function HealthScreen() {
           <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 12 }}>{tr("Ferramentas")}</Text>
           <View style={{ gap: 10 }}>
             {[
-              { icon: Video, label: tr("Consulta Online"), sublabel: "Videochamada com o vet", color: "#FF6B35", bg: "#FFF0EB", route: "/consult" },
-              { icon: Siren, label: "Primeiros Socorros", sublabel: "Guia de emergências", color: "#FF4757", bg: "#FFF0F2", route: "/first-aid" },
-              { icon: Pill, label: "Farmácia Pet", sublabel: "Medicamentos e produtos", color: "#4ECDC4", bg: "#E8FAF9", route: "/pharmacy" },
-              { icon: Gauge, label: "Gráfico de Peso", sublabel: "Monitorize a evolução", color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
+              { icon: Video, label: tr("Consulta Online"), sublabel: tr("Videochamada com o vet"), color: "#FF6B35", bg: "#FFF0EB", route: "/consult" },
+              { icon: Siren, label: tr("Primeiros Socorros"), sublabel: tr("Guia de emergências"), color: "#FF4757", bg: "#FFF0F2", route: "/first-aid" },
+              { icon: Pill, label: tr("Farmácia Pet"), sublabel: tr("Medicamentos e produtos"), color: "#4ECDC4", bg: "#E8FAF9", route: "/pharmacy" },
+              { icon: Gauge, label: tr("Gráfico de Peso"), sublabel: tr("Monitorize a evolução"), color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
             ].map(tool => (
               <TouchableOpacity key={tool.label} onPress={() => router.push(tool.route as any)}
                 style={{ backgroundColor: tool.bg, borderRadius: 20, padding: 16, flexDirection: "row", alignItems: "center", gap: 14 }}>

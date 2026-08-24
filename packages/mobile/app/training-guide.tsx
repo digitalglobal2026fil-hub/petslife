@@ -278,9 +278,9 @@ export default function TrainingGuideScreen() {
               <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>{tr("Voltar")}</Text>
             </TouchableOpacity>
             <Text suppressHighlighting style={{ fontSize: 52, textAlign: "center" }}>{selected.emoji}</Text>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{selected.title}</Text>
+            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{tr(selected.title)}</Text>
             <View style={{ backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6, alignSelf: "center", marginTop: 10 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>📊 {selected.difficulty}</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>📊 {tr(selected.difficulty)}</Text>
             </View>
           </View>
 
@@ -292,14 +292,14 @@ export default function TrainingGuideScreen() {
                   <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: catColor, alignItems: "center", justifyContent: "center" }}>
                     <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>{i + 1}</Text>
                   </View>
-                  <Text suppressHighlighting style={{ flex: 1, color: "#374151", fontSize: 14, lineHeight: 22 }}>{s}</Text>
+                  <Text suppressHighlighting style={{ flex: 1, color: "#374151", fontSize: 14, lineHeight: 22 }}>{tr(s)}</Text>
                 </View>
               ))}
             </View>
 
             <View style={{ backgroundColor: "#FFFBEB", borderRadius: 20, padding: 18, borderWidth: 1.5, borderColor: "#FDE68A" }}>
               <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "800", color: "#92400E", marginBottom: 8 }}>{tr("💡 Dica Importante")}</Text>
-              <Text suppressHighlighting style={{ color: "#78350F", fontSize: 14, lineHeight: 22 }}>{selected.tip}</Text>
+              <Text suppressHighlighting style={{ color: "#78350F", fontSize: 14, lineHeight: 22 }}>{tr(selected.tip)}</Text>
             </View>
 
             <TouchableOpacity onPress={() => Linking.openURL(selected.videoUrl)}
@@ -307,7 +307,7 @@ export default function TrainingGuideScreen() {
               <Play size={20} color="#fff" fill="#fff" />
               <View>
                 <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{tr("Ver vídeo no YouTube")}</Text>
-                <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 11 }}>{selected.videoTitle}</Text>
+                <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 11 }}>{tr(selected.videoTitle)}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -333,7 +333,7 @@ export default function TrainingGuideScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingBottom: Math.max(insets.bottom, 20) + 60 }}>
         {GUIDES.map(cat => (
           <View key={cat.category} style={{ marginBottom: 24 }}>
-            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: cat.color, marginBottom: 12 }}>{cat.category}</Text>
+            <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: cat.color, marginBottom: 12 }}>{tr(cat.category)}</Text>
             {cat.guides.map(g => (
               <TouchableOpacity key={g.title} onPress={() => { setSelected(g); setCatColor(cat.color); setCatBg(cat.bg); }} activeOpacity={0.85}
                 style={{ backgroundColor: CARD, borderRadius: 18, padding: 16, marginBottom: 10, flexDirection: "row", alignItems: "center", gap: 12, borderWidth: 1.5, borderColor: cat.color + "25" }}>
@@ -341,10 +341,10 @@ export default function TrainingGuideScreen() {
                   <Text suppressHighlighting style={{ fontSize: 28 }}>{g.emoji}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text suppressHighlighting style={{ fontWeight: "800", color: DARK, fontSize: 15 }}>{g.title}</Text>
+                  <Text suppressHighlighting style={{ fontWeight: "800", color: DARK, fontSize: 15 }}>{tr(g.title)}</Text>
                   <View style={{ flexDirection: "row", gap: 8, marginTop: 5 }}>
                     <View style={{ backgroundColor: cat.bg, borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 }}>
-                      <Text suppressHighlighting style={{ color: cat.color, fontSize: 11, fontWeight: "700" }}>📊 {g.difficulty}</Text>
+                      <Text suppressHighlighting style={{ color: cat.color, fontSize: 11, fontWeight: "700" }}>📊 {tr(g.difficulty)}</Text>
                     </View>
                     <View style={{ backgroundColor: "#FEF2F2", borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 }}>
                       <Text suppressHighlighting style={{ color: "#DC2626", fontSize: 11, fontWeight: "700" }}>{tr("▶ Vídeo")}</Text>

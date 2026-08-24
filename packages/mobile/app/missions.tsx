@@ -67,14 +67,14 @@ export default function MissionsScreen() {
   const canPost = !!data?.canPost;
 
   async function pickPhoto() {
-    const picked = await pickImageWithChoice({ title: "Foto da missão", quality: 0.85 });
+    const picked = await pickImageWithChoice({ title: tr("Foto da missão"), quality: 0.85 });
     if (!picked) return;
     setUploading(true);
     try {
       const url = await uploadImage(picked.uri, picked.mimeType);
       setImageUrl(url);
     } catch (e: any) {
-      Alert.alert(tr("Erro ao carregar foto"), e?.message ?? "Tente novamente.");
+      Alert.alert(tr("Erro ao carregar foto"), e?.message ?? tr("Tente novamente."));
     } finally {
       setUploading(false);
     }
@@ -96,13 +96,13 @@ export default function MissionsScreen() {
       });
       if (!res.ok) {
         const t = await res.json().catch(() => ({} as any));
-        throw new Error(t?.message ?? "Não foi possível publicar.");
+        throw new Error(t?.message ?? tr("Não foi possível publicar."));
       }
       setComposer(false);
       setTitle(""); setContent(""); setLocation(""); setImageUrl(null);
       qc.invalidateQueries({ queryKey: ["missions"] });
     } catch (e: any) {
-      Alert.alert("Ups", e?.message ?? "Não foi possível publicar.");
+      Alert.alert("Ups", e?.message ?? tr("Não foi possível publicar."));
     } finally {
       setSaving(false);
     }
@@ -116,10 +116,10 @@ export default function MissionsScreen() {
         onPress: async () => {
           try {
             const res = await authFetch(`${API_URL}/api/missions/${m.id}`, { method: "DELETE" });
-            if (!res.ok) throw new Error("Sem permissão ou sem ligação.");
+            if (!res.ok) throw new Error(tr("Sem permissão ou sem ligação."));
             qc.invalidateQueries({ queryKey: ["missions"] });
           } catch (e: any) {
-            Alert.alert("Ups", e?.message ?? "Não foi possível apagar.");
+            Alert.alert("Ups", e?.message ?? tr("Não foi possível apagar."));
           }
         },
       },
@@ -138,7 +138,7 @@ export default function MissionsScreen() {
           <View style={{ flex: 1 }}>
             <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: DARK }}>{tr("Nossas Missões")}</Text>
             <Text suppressHighlighting style={{ fontSize: 12, color: "#9D174D", marginTop: 2 }}>
-              Trabalho social da PetsLife 🐾
+              {tr("Trabalho social da PetsLife 🐾")}
             </Text>
           </View>
           {canPost && (
@@ -159,12 +159,12 @@ export default function MissionsScreen() {
             <View style={{ alignItems: "center", paddingVertical: 60 }}>
               <HeartHandshake size={54} color={PINK} />
               <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: DARK, marginTop: 16, marginBottom: 8 }}>
-                Ainda não há missões
+                {tr("Ainda não há missões")}
               </Text>
               <Text suppressHighlighting style={{ color: GRAY, textAlign: "center", lineHeight: 22 }}>
                 {canPost
-                  ? "Carregue em «Publicar» para partilhar o primeiro trabalho social da PetsLife."
-                  : "Em breve vamos partilhar aqui os trabalhos sociais que fazemos pelos animais."}
+                  ? tr("Carregue em «Publicar» para partilhar o primeiro trabalho social da PetsLife.")
+                  : tr("Em breve vamos partilhar aqui os trabalhos sociais que fazemos pelos animais.")}
               </Text>
             </View>
           ) : (
@@ -193,7 +193,7 @@ export default function MissionsScreen() {
                       style={{ flexDirection: "row", alignItems: "center", gap: 7, backgroundColor: PINK_BG, borderWidth: 1.5, borderColor: PINK_BORDER, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 9 }}>
                       <MessageCircle size={15} color={PINK} />
                       <Text suppressHighlighting style={{ color: PINK, fontWeight: "800", fontSize: 12 }}>
-                        Comentários{m.commentsCount ? ` (${m.commentsCount})` : ""}
+                        {tr("Comentários")}{m.commentsCount ? ` (${m.commentsCount})` : ""}
                       </Text>
                     </TouchableOpacity>
                     {canPost && (
@@ -241,7 +241,7 @@ export default function MissionsScreen() {
                 placeholderTextColor={GRAY}
                 style={{ backgroundColor: "#fff", borderRadius: 14, borderWidth: 1.5, borderColor: "#F0E8E0", padding: 14, fontSize: 15, color: DARK }} />
 
-              <TextInput value={location} onChangeText={setLocation} placeholder="Local (opcional)"
+              <TextInput value={location} onChangeText={setLocation} placeholder={tr("Local (opcional)")}
                 placeholderTextColor={GRAY}
                 style={{ backgroundColor: "#fff", borderRadius: 14, borderWidth: 1.5, borderColor: "#F0E8E0", padding: 14, fontSize: 15, color: DARK }} />
 
@@ -252,7 +252,7 @@ export default function MissionsScreen() {
               <TouchableOpacity onPress={publish} disabled={saving || uploading}
                 style={{ backgroundColor: PINK, borderRadius: 14, padding: 16, alignItems: "center", opacity: saving || uploading ? 0.6 : 1 }}>
                 <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>
-                  {saving ? "A publicar..." : "Publicar missão"}
+                  {saving ? tr("A publicar...") : tr("Publicar missão")}
                 </Text>
               </TouchableOpacity>
             </ScrollView>
@@ -294,11 +294,11 @@ function CommentsModal({ mission, onClose, canModerate }: { mission: Mission | n
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      if (!res.ok) throw new Error("Não foi possível comentar.");
+      if (!res.ok) throw new Error(tr("Não foi possível comentar."));
       setText("");
       qc.invalidateQueries({ queryKey: ["mission-comments", missionId] });
     } catch (e: any) {
-      Alert.alert("Ups", e?.message ?? "Não foi possível comentar.");
+      Alert.alert("Ups", e?.message ?? tr("Não foi possível comentar."));
     } finally {
       setSending(false);
     }
@@ -312,10 +312,10 @@ function CommentsModal({ mission, onClose, canModerate }: { mission: Mission | n
         onPress: async () => {
           try {
             const res = await authFetch(`${API_URL}/api/missions/${missionId}/comments/${c.id}`, { method: "DELETE" });
-            if (!res.ok) throw new Error("Sem permissão.");
+            if (!res.ok) throw new Error(tr("Sem permissão."));
             qc.invalidateQueries({ queryKey: ["mission-comments", missionId] });
           } catch (e: any) {
-            Alert.alert("Ups", e?.message ?? "Não foi possível apagar.");
+            Alert.alert("Ups", e?.message ?? tr("Não foi possível apagar."));
           }
         },
       },
@@ -332,7 +332,7 @@ function CommentsModal({ mission, onClose, canModerate }: { mission: Mission | n
               <X size={19} color={DARK} />
             </TouchableOpacity>
             <Text suppressHighlighting numberOfLines={1} style={{ fontSize: 17, fontWeight: "800", color: DARK, flex: 1 }}>
-              {mission?.title ?? "Comentários"}
+              {mission?.title ?? tr("Comentários")}
             </Text>
           </View>
 
@@ -342,7 +342,7 @@ function CommentsModal({ mission, onClose, canModerate }: { mission: Mission | n
             <ScrollView contentContainerStyle={{ padding: 20, paddingTop: 0, gap: 10 }}>
               {comments.length === 0 ? (
                 <Text suppressHighlighting style={{ color: GRAY, textAlign: "center", marginTop: 30 }}>
-                  Ainda não há comentários. Seja a primeira pessoa a comentar 🐾
+                  {tr("Ainda não há comentários. Seja a primeira pessoa a comentar 🐾")}
                 </Text>
               ) : comments.map((c) => (
                 <View key={c.id} style={{ backgroundColor: "#fff", borderRadius: 14, borderWidth: 1.5, borderColor: "#F0E8E0", padding: 14 }}>

@@ -24,9 +24,9 @@ function getToken(): string {
 
 const SPECIALTIES = ["Geral", "Dermatologia", "Ortopedia", "Oncologia", "Comportamento", "Nutrição", "Outro"];
 const DURATIONS = [
-  { label: "30 min", value: 30 },
-  { label: "45 min", value: 45 },
-  { label: "60 min", value: 60 },
+  { label: tr("30 min"), value: 30 },
+  { label: tr("45 min"), value: 45 },
+  { label: tr("60 min"), value: 60 },
 ];
 
 interface Consultation {
@@ -69,11 +69,11 @@ async function cancelConsultation(id: string): Promise<void> {
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; color: string; bg: string }> = {
-    pending:   { label: "Pendente",    color: "#B45309", bg: "#FEF3C7" },
-    confirmed: { label: "Confirmada",  color: "#047857", bg: "#D1FAE5" },
-    ongoing:   { label: "Em curso",    color: "#1D4ED8", bg: "#DBEAFE" },
-    done:      { label: "Concluída",   color: "#6B7280", bg: "#F3F4F6" },
-    cancelled: { label: "Cancelada",   color: "#B91C1C", bg: "#FEE2E2" },
+    pending:   { label: tr("Pendente"),    color: "#B45309", bg: "#FEF3C7" },
+    confirmed: { label: tr("Confirmada"),  color: "#047857", bg: "#D1FAE5" },
+    ongoing:   { label: tr("Em curso"),    color: "#1D4ED8", bg: "#DBEAFE" },
+    done:      { label: tr("Concluída"),   color: "#6B7280", bg: "#F3F4F6" },
+    cancelled: { label: tr("Cancelada"),   color: "#B91C1C", bg: "#FEE2E2" },
   };
   const s = map[status] ?? map.pending;
   return (
@@ -259,7 +259,7 @@ export default function ConsultScreen() {
                     </View>
                     <View style={{ flex: 1 }}>
                       <Text suppressHighlighting style={styles.cardTitle}>{c.vetName || tr("Veterinário")}</Text>
-                      <Text suppressHighlighting style={styles.cardSub}>{c.specialty} · {c.duration} min</Text>
+                      <Text suppressHighlighting style={styles.cardSub}>{tr(c.specialty ?? "")} · {c.duration} min</Text>
                     </View>
                     <StatusBadge status={c.status} />
                   </View>
@@ -272,7 +272,7 @@ export default function ConsultScreen() {
                   {c.roomUrl && (
                     <View style={{ backgroundColor: "#D1FAE5", borderRadius: 12, padding: 12, marginBottom: 8, borderWidth: 1, borderColor: "#6EE7B7" }}>
                       <Text suppressHighlighting style={{ color: "#047857", fontSize: 12, fontWeight: "800", marginBottom: 6 }}>
-                        Link da consulta (este verde é o único)
+                        {tr("Link da consulta (este verde é o único)")}
                       </Text>
                       <View style={{ backgroundColor: "#fff", borderRadius: 10, padding: 10, flexDirection: "row", alignItems: "center", gap: 8 }}>
                         <Text suppressHighlighting style={{ flex: 1, color: "#065F46", fontSize: 11, fontFamily: "monospace" }} numberOfLines={1}>{c.roomUrl}</Text>
@@ -315,7 +315,7 @@ export default function ConsultScreen() {
                       </View>
                       <View style={{ flex: 1 }}>
                         <Text suppressHighlighting style={styles.cardTitle}>{c.vetName || tr("Veterinário")}</Text>
-                        <Text suppressHighlighting style={styles.cardSub}>{c.specialty} · {c.duration} min</Text>
+                        <Text suppressHighlighting style={styles.cardSub}>{tr(c.specialty ?? "")} · {c.duration} min</Text>
                       </View>
                       <StatusBadge status={c.status} />
                     </View>
@@ -360,7 +360,7 @@ export default function ConsultScreen() {
                     style={[styles.chip, specialty === s && styles.chipActive]}
                     onPress={() => setSpecialty(s)}
                   >
-                    <Text suppressHighlighting style={[styles.chipText, specialty === s && styles.chipTextActive]}>{s}</Text>
+                    <Text suppressHighlighting style={[styles.chipText, specialty === s && styles.chipTextActive]}>{tr(s)}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -381,7 +381,7 @@ export default function ConsultScreen() {
                 maxLength={5}
               />
               <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 11, marginTop: 4, marginBottom: 14 }}>
-                Hora em formato 24h — ex: 14:30
+                {tr("Hora em formato 24h — ex: 14:30")}
               </Text>
 
               <Text suppressHighlighting style={styles.fieldLabel}>{tr("Duração")}</Text>

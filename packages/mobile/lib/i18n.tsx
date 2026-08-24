@@ -20,16 +20,15 @@ import { T, ORDER } from "./locales/catalog";
 
 export const LANGUAGES = [
   { code: "pt", label: "Português", flag: "🇵🇹", name: "Português (Portugal)" },
-  { code: "br", label: "Português (BR)", flag: "🇧🇷", name: "Português (Brasil)" },
   { code: "en", label: "English", flag: "🇬🇧", name: "English" },
   { code: "es", label: "Español", flag: "🇪🇸", name: "Español" },
   { code: "fr", label: "Français", flag: "🇫🇷", name: "Français" },
   { code: "de", label: "Deutsch", flag: "🇩🇪", name: "Deutsch" },
 ];
 
-export type LangCode = "pt" | "br" | "en" | "es" | "fr" | "de";
+export type LangCode = "pt" | "en" | "es" | "fr" | "de";
 
-// Índice de cada idioma dentro do array de traduções ([en, es, de, fr, br]).
+// Índice de cada idioma dentro do array de traduções ([en, es, de, fr]).
 const INDEX: Record<string, number> = {};
 ORDER.forEach((code, i) => {
   INDEX[code] = i;
@@ -63,7 +62,7 @@ function detectDeviceLang(): LangCode {
 
   const loc = String(raw).toLowerCase().replace("_", "-");
   if (!loc) return "pt";
-  if (loc.startsWith("pt")) return loc.includes("br") ? "br" : "pt";
+  if (loc.startsWith("pt")) return "pt";
   if (loc.startsWith("es")) return "es";
   if (loc.startsWith("fr")) return "fr";
   if (loc.startsWith("de")) return "de";
@@ -152,10 +151,10 @@ export function getLang(): LangCode {
   return currentLang;
 }
 
-/** Locale para datas e números: pt -> pt-PT, br -> pt-BR, en -> en-GB... */
+/** Locale para datas e números: pt -> pt-PT, en -> en-GB... */
 export function getLocale(): string {
   const map: Record<string, string> = {
-    pt: "pt-PT", br: "pt-BR", en: "en-GB", es: "es-ES", fr: "fr-FR", de: "de-DE",
+    pt: "pt-PT", en: "en-GB", es: "es-ES", fr: "fr-FR", de: "de-DE",
   };
   return map[currentLang] ?? "pt-PT";
 }

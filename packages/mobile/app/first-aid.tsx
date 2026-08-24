@@ -148,9 +148,9 @@ export default function FirstAidScreen() {
               <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>{tr("Voltar")}</Text>
             </TouchableOpacity>
             <Text suppressHighlighting style={{ fontSize: 56, textAlign: "center" }}>{selected.emoji}</Text>
-            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{selected.title}</Text>
+            <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{tr(selected.title)}</Text>
             <View style={{ backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6, alignSelf: "center", marginTop: 10 }}>
-              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 13 }}>{sv.label}</Text>
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 13 }}>{tr(sv.label)}</Text>
             </View>
           </View>
 
@@ -163,7 +163,7 @@ export default function FirstAidScreen() {
                   <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: selected.color, alignItems: "center", justifyContent: "center", marginTop: 2 }}>
                     <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>{i + 1}</Text>
                   </View>
-                  <Text suppressHighlighting style={{ flex: 1, color: "#374151", fontSize: 14, lineHeight: 22 }}>{s}</Text>
+                  <Text suppressHighlighting style={{ flex: 1, color: "#374151", fontSize: 14, lineHeight: 22 }}>{tr(s)}</Text>
                 </View>
               ))}
             </View>
@@ -174,7 +174,7 @@ export default function FirstAidScreen() {
               {selected.doNot.map((d, i) => (
                 <View key={i} style={{ flexDirection: "row", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
                   <Text suppressHighlighting style={{ fontSize: 16, marginTop: 1 }}>🚫</Text>
-                  <Text suppressHighlighting style={{ flex: 1, color: "#991B1B", fontSize: 14, lineHeight: 20 }}>{d}</Text>
+                  <Text suppressHighlighting style={{ flex: 1, color: "#991B1B", fontSize: 14, lineHeight: 20 }}>{tr(d)}</Text>
                 </View>
               ))}
             </View>
@@ -213,7 +213,7 @@ export default function FirstAidScreen() {
         <View style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, padding: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
           <AlertTriangle size={18} color="#fff" />
           <Text suppressHighlighting style={{ flex: 1, color: "#fff", fontSize: 12, lineHeight: 18 }}>
-            Em caso de emergência grave, contacte sempre um veterinário. Este guia é de apoio, baseado em fontes veterinárias reconhecidas — não substitui cuidados médicos.
+            {tr("Em caso de emergência grave, contacte sempre um veterinário. Este guia é de apoio, baseado em fontes veterinárias reconhecidas — não substitui cuidados médicos.")}
           </Text>
         </View>
       </View>
@@ -232,7 +232,7 @@ export default function FirstAidScreen() {
           { label: "⚕️ Situações Moderadas", items: moderados, color: "#8B5CF6" },
         ].map(section => (
           <View key={section.label}>
-            <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "800", color: section.color, marginTop: 12, marginBottom: 8 }}>{section.label}</Text>
+            <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "800", color: section.color, marginTop: 12, marginBottom: 8 }}>{tr(section.label)}</Text>
             {section.items.map(e => (
               <TouchableOpacity key={e.title} onPress={() => setSelected(e)} activeOpacity={0.85}
                 style={{ backgroundColor: CARD, borderRadius: 18, padding: 16, marginBottom: 8, flexDirection: "row", alignItems: "center", gap: 12, borderWidth: 1.5, borderColor: e.color + "25" }}>
@@ -240,9 +240,9 @@ export default function FirstAidScreen() {
                   <Text suppressHighlighting style={{ fontSize: 28 }}>{e.emoji}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text suppressHighlighting style={{ fontWeight: "800", color: DARK, fontSize: 15 }}>{e.title}</Text>
+                  <Text suppressHighlighting style={{ fontWeight: "800", color: DARK, fontSize: 15 }}>{tr(e.title)}</Text>
                   <View style={{ backgroundColor: e.bg, borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, alignSelf: "flex-start", marginTop: 5 }}>
-                    <Text suppressHighlighting style={{ color: e.color, fontSize: 11, fontWeight: "700" }}>{severityLabel[e.severity].label}</Text>
+                    <Text suppressHighlighting style={{ color: e.color, fontSize: 11, fontWeight: "700" }}>{tr(severityLabel[e.severity].label)}</Text>
                   </View>
                 </View>
                 <ChevronRight size={18} color={GRAY} />

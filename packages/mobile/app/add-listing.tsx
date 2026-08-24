@@ -71,7 +71,7 @@ export default function AddListingScreen() {
       });
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(text.includes("<") ? "Erro no servidor. Tente novamente." : text);
+        throw new Error(text.includes("<") ? tr("Erro no servidor. Tente novamente.") : text);
       }
       return res.json();
     },
@@ -79,7 +79,7 @@ export default function AddListingScreen() {
       qc.invalidateQueries({ queryKey: ["marketplace"] });
       Alert.alert("Sucesso!", tr("O seu anúncio foi publicado."), [{ text: tr("OK"), onPress: () => router.back() }]);
     },
-    onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível publicar o anúncio.")),
+    onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível publicar o anúncio."))),
   });
 
   function handleSubmit() {

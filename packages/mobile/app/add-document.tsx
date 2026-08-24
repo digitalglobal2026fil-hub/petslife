@@ -117,10 +117,10 @@ export default function AddDocumentScreen() {
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>
-            {isPrescription ? "Nova Receita 💊" : "Novo Documento 📄"}
+            {isPrescription ? tr("Nova Receita 💊") : tr("Novo Documento 📄")}
           </Text>
           <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>
-            {isPrescription ? "Tire foto ou carregue a receita médica" : "Passaporte, exames, licenças..."}
+            {isPrescription ? tr("Tire foto ou carregue a receita médica") : tr("Passaporte, exames, licenças...")}
           </Text>
         </View>
         <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: bgColor, alignItems: "center", justifyContent: "center" }}>
@@ -137,7 +137,7 @@ export default function AddDocumentScreen() {
             <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
               style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? color : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
-                {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : "Selecionar animal..."}
+                {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : tr("Selecionar animal...")}
               </Text>
               <ChevronDown size={18} color="#9CA3AF" />
             </TouchableOpacity>
@@ -170,21 +170,21 @@ export default function AddDocumentScreen() {
               {DOC_TYPES.filter(t => t.k !== "receita").map((t) => (
                 <TouchableOpacity key={t.k} onPress={() => setDocType(t.k)}
                   style={{ paddingHorizontal: 14, paddingVertical: 10, borderRadius: 20, backgroundColor: docType === t.k ? color : "#fff", borderWidth: 1.5, borderColor: docType === t.k ? color : "#F0E8E0" }}>
-                  <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: docType === t.k ? "#fff" : "#6B7280" }}>{t.l}</Text>
+                  <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "700", color: docType === t.k ? "#fff" : "#6B7280" }}>{tr(t.l)}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
           </>
         )}
 
-        <Field label={isPrescription ? "Medicamento / Título *" : tr("Título / Nome *")} value={title} onChange={setTitle}
-          placeholder={isPrescription ? "Ex: Antibiótico, Anti-inflamatório..." : tr("Ex: Passaporte Europeu, Licença Municipal...")} />
-        <Field label={isPrescription ? "Posologia / Notas" : tr("Notas")} value={notes} onChange={setNotes}
-          placeholder={isPrescription ? "Ex: 1 comp. 2x por dia durante 7 dias..." : tr("Observações...")} multiline />
+        <Field label={isPrescription ? tr("Medicamento / Título *") : tr("Título / Nome *")} value={title} onChange={setTitle}
+          placeholder={isPrescription ? tr("Ex: Antibiótico, Anti-inflamatório...") : tr("Ex: Passaporte Europeu, Licença Municipal...")} />
+        <Field label={isPrescription ? tr("Posologia / Notas") : tr("Notas")} value={notes} onChange={setNotes}
+          placeholder={isPrescription ? tr("Ex: 1 comp. 2x por dia durante 7 dias...") : tr("Observações...")} multiline />
 
         {/* Upload zone */}
         <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>
-          {isPrescription ? "Foto / Scan da receita *" : "Foto / Scan do documento *"}
+          {isPrescription ? tr("Foto / Scan da receita *") : tr("Foto / Scan do documento *")}
         </Text>
 
         {url ? (
@@ -227,7 +227,7 @@ export default function AddDocumentScreen() {
           style={{ backgroundColor: color, borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: color, shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
           {save.isPending ? <ActivityIndicator color="#fff" /> : (
             <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>
-              💾 {isPrescription ? "Guardar Receita" : tr("Guardar Documento")}
+              💾 {isPrescription ? tr("Guardar Receita") : tr("Guardar Documento")}
             </Text>
           )}
         </TouchableOpacity>
