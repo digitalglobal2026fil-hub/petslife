@@ -10,9 +10,11 @@ import { router } from 'expo-router';
 import { ModerationButton } from "../components/ModerationButton";
 import { deleteContent } from "../lib/moderation";
 
-import { Platform } from 'react-native';
+import { Platform, Share } from 'react-native';
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
+import { uploadImage } from "../lib/upload";
+import { pickImageWithChoice } from "../lib/pick-image";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -24,6 +26,47 @@ function getToken(): string {
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://petslife.onrender.com';
 const COLORS = { bg: '#F8F6FF', orange: '#FF6B35', teal: '#4ECDC4', purple: '#8B5CF6', dark: '#1A1A2E', text: '#333', gray: '#888', lightGray: '#E8E4F8', card: '#FFFFFF', red: '#FF4757', green: '#2ED573' };
 
+// Texto do cartaz para partilhar no WhatsApp, Facebook ou onde a pessoa quiser.
+// O contacto é só o que ela escrever no texto — não vai nada da conta dela.
+function posterText(post: any) {
+  const linhas = [
+    post.type === 'found' ? '🎉 ANIMAL ENCONTRADO' : '🚨 ANIMAL PERDIDO 🚨',
+    '',
+    post.petName ? `Nome: ${post.petName}` : '',
+    post.breed ? `Raça: ${post.breed}` : '',
+    post.color ? `Cor: ${post.color}` : '',
+    post.location ? `📍 ${post.location}` : '',
+    '',
+    post.description || '',
+    '',
+    post.photo1 ? `Foto: ${post.photo1}` : '',
+    post.photo2 ? `Foto: ${post.photo2}` : '',
+    '',
+    'Partilhado pela app PetsLife 🐾',
+  ];
+  return linhas.filter(l => l !== '').join('\n');
+}
+
+async function sharePoster(post: any) {
+  const message = posterText(post);
+  try {
+    await Share.share({ message });
+  } catch {
+    Alert.alert(tr("Erro"), tr("Não foi possível abrir a partilha."));
+  }
+}
+
+function shareWhatsApp(post: any) {
+  const url = `whatsapp://send?text=${encodeURIComponent(posterText(post))}`;
+  Linking.openURL(url).catch(() => sharePoster(post));
+}
+
+function shareFacebook(post: any) {
+  // O Facebook não aceita texto pré-escrito por link, por isso copiamos
+  // o cartaz para a folha de partilha do telefone, onde o Facebook aparece.
+  sharePoster(post);
+}
+
 export default function LostPetsScreen() {
   const [tab, setTab] = useState<'lost' | 'found'>('lost');
   const [posts, setPosts] = useState<any[]>([]);
@@ -31,6 +74,13 @@ export default function LostPetsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [filter, setFilter] = useState('all');
+
+  // Cartaz: até 2 fotos e o animal escolhido da lista da utilizadora.
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [myPets, setMyPets] = useState<any[]>([]);
+  const [petId, setPetId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({
     type: 'lost',
@@ -53,8 +103,8 @@ export default function LostPetsScreen() {
         setPosts(data.posts || []);
       }
     } catch (e) {
-      // fallback to mock data
-      setPosts(MOCK_POSTS.filter(p => p.type === tab));
+      // sem internet: fica a lista vazia em vez de mostrar exemplos inventados
+      setPosts([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -63,30 +113,106 @@ export default function LostPetsScreen() {
 
   useEffect(() => { setLoading(true); fetchPosts(); }, [tab]);
 
+  // Lista de animais da utilizadora, para ela escolher qual se perdeu
+  // em vez de escrever tudo à mão.
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await authFetch(`${API_URL}/api/pets`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : (data?.pets ?? []);
+        setMyPets(Array.isArray(list) ? list : []);
+      } catch {
+        /* sem lista: ela escreve à mão */
+      }
+    })();
+  }, []);
+
+  // Ao escolher um animal, preenchemos o que já sabemos dele.
+  const choosePet = (pet: any) => {
+    if (petId === String(pet.id)) {
+      setPetId(null);
+      return;
+    }
+    setPetId(String(pet.id));
+    setForm(f => ({
+      ...f,
+      petName: pet.name || f.petName,
+      species: pet.species || f.species,
+      breed: pet.breed || f.breed,
+    }));
+    if (pet.photoUrl && photos.length === 0) setPhotos([pet.photoUrl]);
+  };
+
+  const addPhoto = async () => {
+    if (photos.length >= 2) {
+      Alert.alert(tr("Máximo 2 fotos"), tr("Já tens 2 fotos. Remove uma para escolher outra."));
+      return;
+    }
+    try {
+      const asset = await pickImageWithChoice({ title: tr("Foto do animal"), quality: 0.8 });
+      if (!asset) return;
+      setUploading(true);
+      try {
+        const url = await uploadImage(asset.uri, asset.mimeType ?? "image/jpeg");
+        setPhotos(p => [...p, url].slice(0, 2));
+      } catch {
+        Alert.alert(tr("Erro"), tr("Não foi possível fazer upload da foto."));
+      } finally {
+        setUploading(false);
+      }
+    } catch (e: any) {
+      setUploading(false);
+      Alert.alert(tr("Erro ao escolher foto"), e?.message ?? tr("Tenta novamente ou escolhe outra imagem."));
+    }
+  };
+
   const handleOpenMaps = (lat: number, lng: number, name: string) => {
     const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
     Linking.openURL(url).catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir o Google Maps")));
   };
 
   const handleSubmit = async () => {
-    if (!form.petName || !form.location || !form.contact) {
-      Alert.alert(tr("Campos obrigatórios"), tr("Preenche o nome, localização e contacto"));
+    if (!form.petName || !form.description) {
+      Alert.alert(
+        tr("Falta preencher"),
+        tr("Escreve o nome do animal e o texto do cartaz (onde se perdeu e o teu contacto).")
+      );
       return;
     }
+    if (saving) return;
+    setSaving(true);
     try {
       const res = await authFetch(`${API_URL}/api/lost-pets`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, type: tab }),
+        body: JSON.stringify({
+          ...form,
+          type: tab,
+          petId,
+          photo1: photos[0] ?? null,
+          photo2: photos[1] ?? null,
+        }),
       });
       if (res.ok) {
-        Alert.alert('✅ Publicado!', tr("O anúncio foi publicado com sucesso."));
         setShowModal(false);
+        setPhotos([]);
+        setPetId(null);
+        setForm(f => ({ ...f, petName: '', breed: '', color: '', location: '', description: '', contact: '' }));
         fetchPosts();
+        Alert.alert(
+          tr("Cartaz publicado"),
+          tr("Já está visível para todos. Agora partilha-o no WhatsApp e no Facebook para chegar a mais gente."),
+          [{ text: tr("Partilhar agora"), onPress: () => sharePoster({ ...form, photo1: photos[0] }) }, { text: tr("Depois") }]
+        );
+      } else {
+        Alert.alert(tr("Erro"), tr("Não foi possível publicar. Verifica a ligação à internet e tenta outra vez."));
       }
     } catch (e) {
-      Alert.alert('Publicado localmente', tr("Anúncio guardado. Será sincronizado em breve."));
-      setShowModal(false);
+      Alert.alert(tr("Sem internet"), tr("Não foi possível publicar agora. Tenta outra vez quando tiveres ligação."));
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -145,6 +271,7 @@ export default function LostPetsScreen() {
                 const ok = await deleteContent("lost_pet", String(post.id));
                 if (ok) fetchPosts();
               }}
+              onResolved={fetchPosts}
             />
           ))}
         </ScrollView>
@@ -166,6 +293,56 @@ export default function LostPetsScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            {/* Escolher um dos animais dela — poupa-lhe escrever tudo à mão */}
+            {myPets.length > 0 && (
+              <View>
+                <Text style={styles.fieldLabel}>{tr("Qual dos teus animais?")}</Text>
+                <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+                  {myPets.map((p: any) => (
+                    <TouchableOpacity
+                      key={String(p.id)}
+                      onPress={() => choosePet(p)}
+                      style={[styles.filterChip, petId === String(p.id) && styles.filterChipActive]}
+                    >
+                      <Text style={[styles.filterText, petId === String(p.id) && styles.filterTextActive]}>
+                        {p.name || tr("Sem nome")}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Até 2 fotos */}
+            <View>
+              <Text style={styles.fieldLabel}>{tr("Fotos (até 2)")}</Text>
+              <View style={{ flexDirection: 'row', gap: 10, flexWrap: 'wrap' }}>
+                {photos.map((uri, idx) => (
+                  <View key={idx} style={styles.photoBox}>
+                    <Image source={{ uri }} style={styles.photoImg} />
+                    <TouchableOpacity
+                      style={styles.photoRemove}
+                      onPress={() => setPhotos(p => p.filter((_, i) => i !== idx))}
+                    >
+                      <Ionicons name="close" size={14} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+                {photos.length < 2 && (
+                  <TouchableOpacity style={styles.photoAdd} onPress={addPhoto} disabled={uploading}>
+                    {uploading ? (
+                      <ActivityIndicator color={COLORS.orange} />
+                    ) : (
+                      <>
+                        <Ionicons name="camera-outline" size={26} color={COLORS.orange} />
+                        <Text style={styles.photoAddTxt}>{tr("Juntar foto")}</Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+
             {[
               { key: 'petName', label: 'Nome do animal', placeholder: 'ex: Rex' },
               { key: 'breed', label: tr("Raça"), placeholder: 'ex: Labrador' },
@@ -204,9 +381,36 @@ export default function LostPetsScreen() {
   );
 }
 
-function PostCard({ post, onMaps, onDelete }: { post: any; onMaps: (lat: number, lng: number, name: string) => void; onDelete: () => void }) {
+function PostCard({ post, onMaps, onDelete, onResolved }: { post: any; onMaps: (lat: number, lng: number, name: string) => void; onDelete: () => void; onResolved?: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const isLost = post.type === 'lost';
+  const fotos = [post.photo1, post.photo2].filter(Boolean);
+
+  const marcarEncontrado = () => {
+    Alert.alert(
+      tr("Já encontrei"),
+      tr("Queres fechar este aviso? Deixa de aparecer na lista."),
+      [
+        { text: tr("Não") },
+        {
+          text: tr("Sim, já encontrei"),
+          onPress: async () => {
+            try {
+              const res = await authFetch(`${API_URL}/api/lost-pets/${post.id}/resolve`, { method: 'PATCH' });
+              if (res.ok) {
+                Alert.alert(tr("Que bom!"), tr("O aviso foi fechado. Ficamos felizes pelo reencontro."));
+                onResolved?.();
+              } else {
+                Alert.alert(tr("Erro"), tr("Não foi possível fechar o aviso. Tenta outra vez."));
+              }
+            } catch {
+              Alert.alert(tr("Sem internet"), tr("Tenta outra vez quando tiveres ligação."));
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <TouchableOpacity style={styles.card} onPress={() => setExpanded(!expanded)} activeOpacity={0.9}>
@@ -225,6 +429,13 @@ function PostCard({ post, onMaps, onDelete }: { post: any; onMaps: (lat: number,
           onDelete={onDelete}
         />
       </View>
+      {fotos.length > 0 && (
+        <View style={styles.cardPhotoRow}>
+          {fotos.map((uri: string, i: number) => (
+            <Image key={i} source={{ uri }} style={styles.cardPhoto} />
+          ))}
+        </View>
+      )}
       <Text style={styles.cardName}>{post.petName || 'Animal sem nome'}</Text>
       <Text style={styles.cardBreed}>{post.breed || post.species || 'Espécie desconhecida'} • {post.color || ''}</Text>
       <View style={styles.cardLoc}>
@@ -248,6 +459,20 @@ function PostCard({ post, onMaps, onDelete }: { post: any; onMaps: (lat: number,
               </TouchableOpacity>
             )}
           </View>
+
+          {/* Partilhar o cartaz — é isto que faz o animal aparecer */}
+          <TouchableOpacity style={styles.shareBtn} onPress={() => shareWhatsApp(post)}>
+            <Ionicons name="logo-whatsapp" size={18} color="#fff" />
+            <Text style={styles.shareBtnTxt}>{tr("Partilhar no WhatsApp")}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.shareBtnAlt} onPress={() => shareFacebook(post)}>
+            <Ionicons name="share-social-outline" size={18} color="#fff" />
+            <Text style={styles.shareBtnTxt}>{tr("Partilhar no Facebook ou noutra app")}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.foundBtn} onPress={marcarEncontrado}>
+            <Ionicons name="checkmark-circle-outline" size={18} color="#fff" />
+            <Text style={styles.shareBtnTxt}>{tr("Já encontrei")}</Text>
+          </TouchableOpacity>
         </View>
       )}
       <View style={styles.expandRow}>
@@ -257,11 +482,7 @@ function PostCard({ post, onMaps, onDelete }: { post: any; onMaps: (lat: number,
   );
 }
 
-const MOCK_POSTS = [
-  { id: '1', type: 'lost', petName: 'Bolinha', species: 'dog', breed: 'Labrador', color: 'Dourado', location: 'Parque das Nações, Lisboa', lat: 38.7636, lng: -9.0942, description: 'Perdeu-se ontem à tarde. Muito amigável, responde pelo nome.', contact: '912345678', date: '26/06/2026' },
-  { id: '2', type: 'lost', petName: 'Mimi', species: 'cat', breed: 'Persa', color: 'Branco com manchas laranja', location: 'Cascais Centro', description: 'Gata castrada, com coleira azul.', contact: '965432109', date: '25/06/2026' },
-  { id: '3', type: 'found', petName: 'Desconhecido', species: 'dog', breed: 'Indefinida', color: 'Preto e branco', location: 'Sintra, perto da estação', lat: 38.8003, lng: -9.3869, description: 'Encontrei este cão perdido. Sem coleira. Está saudável.', contact: '935678901', date: '26/06/2026' },
-];
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bg },
@@ -309,4 +530,15 @@ const styles = StyleSheet.create({
   typeTxt: { fontSize: 14, fontWeight: '700', color: COLORS.text },
   fieldLabel: { fontSize: 13, fontWeight: '600', color: COLORS.dark, marginBottom: 6 },
   input: { borderWidth: 1, borderColor: '#E0D8F8', borderRadius: 10, padding: 12, fontSize: 14, color: COLORS.dark, backgroundColor: COLORS.bg },
+  photoBox: { width: 96, height: 96, borderRadius: 12, overflow: 'hidden', position: 'relative', backgroundColor: COLORS.lightGray },
+  photoImg: { width: '100%', height: '100%' },
+  photoRemove: { position: 'absolute', top: 4, right: 4, backgroundColor: COLORS.red, borderRadius: 10, padding: 3 },
+  photoAdd: { width: 96, height: 96, borderRadius: 12, borderWidth: 2, borderStyle: 'dashed', borderColor: COLORS.orange, alignItems: 'center', justifyContent: 'center', gap: 4 },
+  photoAddTxt: { fontSize: 11, color: COLORS.orange, fontWeight: '600' },
+  cardPhotoRow: { flexDirection: 'row', gap: 8, marginBottom: 10 },
+  cardPhoto: { width: 110, height: 110, borderRadius: 12, backgroundColor: COLORS.lightGray },
+  shareBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#25D366', paddingVertical: 12, borderRadius: 12 },
+  shareBtnTxt: { color: '#fff', fontWeight: '800', fontSize: 14 },
+  shareBtnAlt: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.purple, paddingVertical: 12, borderRadius: 12 },
+  foundBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.green, paddingVertical: 12, borderRadius: 12 },
 });

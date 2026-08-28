@@ -1,31 +1,27 @@
-# v51 — traduções (1.9.16 / versionCode 51)
+# PetsLife v53 — em curso (28 Ago 2026)
 
-## Feito (tsc a 0 erros em cada passo)
-- pt-BR removido (5 idiomas: PT, EN, ES, FR, DE)
-- catalog-guias.ts — 760 chaves (Primeiros Socorros, Farmácia, Adestramento, Raças)
-- catalog-ecras.ts ligado ao catalog.ts
-- Ecrãs envolvidos em tr(): first-aid, pharmacy, training-guide, breed-guide,
-  find-vets, video-call-guide, (tabs)/marketplace, marketplace/[slug],
-  add-document, missions, (tabs)/consult, add-vaccine, reports, notifications
+Decisões dela: **B** (planos base novos 3,28 €/16,30 € na consola → 3,99 €/19,99 € finais;
+NÃO mexer nos FALLBACK da app) + **cartaz de animal perdido incluído**.
+
+## Feito
+- [x] first-aid.tsx: Hemorragias, Engasgos, Intoxicação ou Envenenamento reescritos com os textos dela
+- [x] first-aid.tsx: cartão novo **Queimaduras**
+- [x] breed-guide.tsx: +58 fichas (38 cães inc. 4 raças portuguesas, 10 gatos, outros)
+- [x] tsc mobile = 0 erros depois das raças
+- [x] lost-pets.ts (API): ALTER TABLE photo1/photo2/petId + POST aceita-os
+- [x] lost-pets.tsx: imports Share/uploadImage/pickImageWithChoice
 
 ## A fazer
-- [ ] admin.tsx
-- [ ] add-business.tsx
-- [ ] add-listing.tsx
-- [ ] (tabs)/profile.tsx
-- [ ] promo-code.tsx
-- [ ] add-appointment.tsx
-- [ ] (tabs)/health.tsx
-- [ ] edit-profile.tsx
-- [ ] add-diary.tsx
-- [ ] add-pet.tsx
-- [ ] bumpar 1.9.16 / 51 em app.json + android/app/build.gradle
-- [ ] APK + AAB (tmux, /tmp/build51.sh)
-- [ ] commit + push + GitHub Release
-- [ ] avisar: faltam 12 testadores × 14 dias para Produção
+- [ ] lost-pets.tsx: escolher animal, até 2 fotos, texto livre, Partilhar (WhatsApp/FB), "Já encontrei"
+- [ ] remover MOCK_POSTS (Bolinha/Mimi)
+- [ ] tsc mobile + web = 0 erros
+- [ ] bump 1.9.18 / versionCode 53 (app.json linha 34, build.gradle 95/96)
+- [ ] build APK + AAB (/tmp/build53.sh, ~5 min, NUNCA prebuild)
+- [ ] verificar BILLING no manifesto fundido
+- [ ] commit + tag v1.9.18 + GitHub Release com os 2 ficheiros
+- [ ] avisar e acabar (não esperar redeploy do Render)
 
-## Regras
-- Não usar async-storage, expo-notifications, expo-device, expo-localization
-- Filtros do pharmacy comparam a chave PT — não mexer
-- Nomes de raças ficam em PT
-- Correr /tmp/dedup.py depois de cada bloco novo
+## Lembretes para ela
+- Nome "PetisLife" → corrigir na Ficha da loja (Editar ficha predefinida)
+- Contador dos 12 testadores: Testar e lançar → Produção
+- Criar planos base `mensal-b` 3,28 € e `anual-b` 16,30 €, activar e desactivar os antigos

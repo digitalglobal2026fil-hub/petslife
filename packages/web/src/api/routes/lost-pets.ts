@@ -25,6 +25,19 @@ const ensureTable = async () => {
     )`,
     args: [],
   });
+  // Colunas acrescentadas depois da tabela já existir em produção.
+  // ALTER TABLE dentro de try/catch: se a coluna já existe, ignora-se o erro.
+  for (const col of [
+    'photo1 TEXT',
+    'photo2 TEXT',
+    'petId TEXT',
+  ]) {
+    try {
+      await db.execute({ sql: `ALTER TABLE lost_pets ADD COLUMN ${col}`, args: [] });
+    } catch {
+      /* coluna já existe */
+    }
+  }
 };
 
 lostPets.get('/', async (c) => {
@@ -45,11 +58,11 @@ lostPets.post('/', async (c) => {
   try {
     await ensureTable();
     const body = await c.req.json();
-    const { type, petName, species, breed, color, location, lat, lng, description, contact } = body;
+    const { type, petName, species, breed, color, location, lat, lng, description, contact, photo1, photo2, petId } = body;
     const id = `lp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     await db.execute({
-      sql: `INSERT INTO lost_pets (id, type, petName, species, breed, color, location, lat, lng, description, contact) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [id, type || 'lost', petName || '', species || 'dog', breed || '', color || '', location || '', lat ? parseFloat(lat) : null, lng ? parseFloat(lng) : null, description || '', contact || ''],
+      sql: `INSERT INTO lost_pets (id, type, petName, species, breed, color, location, lat, lng, description, contact, photo1, photo2, petId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [id, type || 'lost', petName || '', species || 'dog', breed || '', color || '', location || '', lat ? parseFloat(lat) : null, lng ? parseFloat(lng) : null, description || '', contact || '', photo1 || null, photo2 || null, petId || null],
     });
     return c.json({ success: true, id }, 201);
   } catch (e: any) {

@@ -26,15 +26,17 @@ const EMERGENCIES = [
     doNot: ["Não force a boca se o animal resistir", "Não dê água nem comida", "Não tape as narinas"],
   },
   {
-    title: "Intoxicação / Envenenamento", emoji: "☠️", severity: "urgente", color: "#EF4444", bg: "#FEF2F2",
+    title: "Intoxicação ou Envenenamento", emoji: "☠️", severity: "urgente", color: "#EF4444", bg: "#FEF2F2",
     steps: [
-      "Identifique o que o animal ingeriu (guarde a embalagem)",
-      "Não induza o vómito sem orientação do veterinário",
-      "Contacte o veterinário ou linha de emergência imediatamente",
-      "Se possível, leve a embalagem do produto ao veterinário",
-      "Monitorize: vómitos, tremores, salivação excessiva",
+      "Nunca provoque o vómito nem dê qualquer medicamento ou remédio caseiro sem falar primeiro com um veterinário",
+      "Fale com um veterinário de imediato e siga as indicações que lhe der",
+      "Se souber o que o animal ingeriu, guarde a embalagem e leve-a consigo",
     ],
-    doNot: ["Não induza vómito com sal", "Não dê leite", "Não espere para ver se melhora"],
+    doNot: [
+      "Não provoque o vómito",
+      "Não dê medicamentos por sua iniciativa",
+      "Não dê remédios caseiros",
+    ],
   },
   {
     title: "Convulsões", emoji: "⚡", severity: "urgente", color: "#EF4444", bg: "#FEF2F2",
@@ -48,15 +50,17 @@ const EMERGENCIES = [
     doNot: ["Não tente segurar o animal", "Não coloque nada na boca", "Não grite — mantenha silêncio e luz baixa"],
   },
   {
-    title: "Corte / Hemorragia", emoji: "🩸", severity: "grave", color: "#F97316", bg: "#FFF7ED",
+    title: "Hemorragias", emoji: "🩸", severity: "grave", color: "#F97316", bg: "#FFF7ED",
     steps: [
-      "Use luvas se possível",
-      "Pressione firmemente com pano limpo ou gaze",
-      "Mantenha pressão por 5-10 minutos sem levantar",
-      "Se não parar, vá ao veterinário urgente",
-      "Para pata: pode usar torniquete improvisado APENAS se hemorragia severa",
+      "Pressione a ferida com uma gaze esterilizada ou um pano limpo",
+      "Mantenha a pressão até o sangue parar ou até chegar à clínica",
+      "Use luvas se tiver à mão",
     ],
-    doNot: ["Não use água oxigenada", "Não retire o pano — adicione outro por cima", "Não limpe a ferida em excesso"],
+    doNot: [
+      "Não levante a gaze para ir vendo — se ensopar, ponha outra por cima",
+      "Não use água oxigenada",
+      "Não limpe a ferida em excesso",
+    ],
   },
   {
     title: "Picada de insecto / Alergia", emoji: "🐝", severity: "grave", color: "#F97316", bg: "#FFF7ED",
@@ -81,15 +85,30 @@ const EMERGENCIES = [
     doNot: ["Não use água muito gelada ou gelo", "Não cubra com toalha molhada (retém calor)", "Não force a beber"],
   },
   {
-    title: "Engasgamento", emoji: "🤢", severity: "grave", color: "#F97316", bg: "#FFF7ED",
+    title: "Engasgos", emoji: "🤢", severity: "grave", color: "#F97316", bg: "#FFF7ED",
     steps: [
-      "Se conseguir ver o objecto, tente remover com os dedos",
-      "Para cães pequenos: segure de cabeça para baixo e dê palmadas nas costas",
-      "Manobra de Heimlich: aplique pressão abdominal para cima",
-      "Se inconsciente: tentativa de CPR apenas com treino",
-      "Vá ao veterinário mesmo depois de resolver",
+      "Abra a boca do animal com cuidado para ver se existe algum objecto visível",
+      "Tente retirá-lo com os dedos ou com uma pinça",
+      "Se não conseguir alcançar, ou se o animal continuar aflito, não force e procure ajuda de imediato",
     ],
-    doNot: ["Não force o objecto para baixo", "Não dê água", "Não perca tempo — age rápido"],
+    doNot: [
+      "Não force o objecto para baixo",
+      "Não insista se não estiver a conseguir — vá ao veterinário",
+      "Não dê água nem comida",
+    ],
+  },
+  {
+    title: "Queimaduras", emoji: "🔥", severity: "grave", color: "#F97316", bg: "#FFF7ED",
+    steps: [
+      "Lave a zona afectada com água fria corrente durante pelo menos 10 minutos para aliviar a dor",
+      "Cubra com um pano limpo e húmido",
+      "Leve o animal ao veterinário",
+    ],
+    doNot: [
+      "Não aplique cremes",
+      "Não aplique pasta de dentes",
+      "Não use receitas caseiras",
+    ],
   },
   {
     title: "Fractura / Osso partido", emoji: "🦴", severity: "moderado", color: "#8B5CF6", bg: "#F3EEFF",
