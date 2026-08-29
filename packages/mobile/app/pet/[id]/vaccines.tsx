@@ -13,6 +13,8 @@ import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
 import { pickImageWithChoice } from "../../../lib/pick-image";
 import { tr } from "../../../lib/i18n";
+import { Share2, Printer } from "lucide-react-native";
+import { shareImage, printImage } from "../../../lib/share-image";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -194,6 +196,21 @@ export default function VaccinesPage() {
               {v.documentUrl && (
                 <Image source={{ uri: v.documentUrl }} style={{ width: "100%", height: 140, borderRadius: 12, marginTop: 12, resizeMode: "cover" }} />
               )}
+              {v.documentUrl && (
+                <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
+                  <TouchableOpacity onPress={() => shareImage(v.documentUrl, v.name)}
+                    style={{ flex: 1, backgroundColor: "#22C55E", borderRadius: 12, paddingVertical: 10, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                    <Share2 size={15} color="#fff" />
+                    <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>{tr("Partilhar")}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => printImage(v.documentUrl, v.name)}
+                    style={{ flex: 1, backgroundColor: "#3B82F6", borderRadius: 12, paddingVertical: 10, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                    <Printer size={15} color="#fff" />
+                    <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 13 }}>{tr("Imprimir")}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
             </View>
           ))
         )}

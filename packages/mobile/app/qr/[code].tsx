@@ -1,9 +1,10 @@
 import { View, Text, TouchableOpacity, Share, Alert, Linking, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ChevronLeft, Share2, Globe } from "lucide-react-native";
+import { ChevronLeft, Share2, Globe, Printer } from "lucide-react-native";
 import Constants from "expo-constants";
 import { tr } from "../../lib/i18n";
+import { shareImage, printImage } from "../../lib/share-image";
 
 // URL do servidor real
 const PET_BASE_URL = "https://petslife.onrender.com/pet";
@@ -15,6 +16,10 @@ export default function QRCodeScreen() {
   // URL pública permanente do perfil do animal
   const petProfileUrl = `${PET_BASE_URL}/${code}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(petProfileUrl)}`;
+
+  async function handleShareImage() {
+    await shareImage(qrUrl, `Encontrei este animal! Aceda ao perfil em: ${petProfileUrl}`);
+  }
 
   async function handleShare() {
     try {
@@ -58,6 +63,11 @@ export default function QRCodeScreen() {
         </Text>
 
         <View style={{ flexDirection: "row", gap: 12, marginTop: 28, width: "100%" }}>
+          <TouchableOpacity onPress={() => printImage(qrUrl, tr("QR Code do Animal"))}
+            style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: "#3B82F6", borderRadius: 18, paddingVertical: 15 }}>
+            <Printer size={18} color="#fff" />
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Imprimir")}</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={handleShare}
             style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: "#FF6B35", borderRadius: 18, paddingVertical: 15 }}>
             <Share2 size={18} color="#fff" />
@@ -69,6 +79,12 @@ export default function QRCodeScreen() {
             <Text suppressHighlighting style={{ color: "#1A1A2E", fontWeight: "700", fontSize: 15 }}>{tr("Ver Online")}</Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity onPress={handleShareImage}
+          style={{ marginTop: 12, width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: "#22C55E", borderRadius: 18, paddingVertical: 14 }}>
+          <Share2 size={18} color="#fff" />
+          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 15 }}>{tr("Partilhar imagem do QR")}</Text>
+        </TouchableOpacity>
 
         <View style={{ backgroundColor: "#E8FAF9", borderRadius: 16, padding: 14, marginTop: 16, flexDirection: "row", alignItems: "flex-start", gap: 10, width: "100%" }}>
           <Text suppressHighlighting style={{ fontSize: 20 }}>💡</Text>

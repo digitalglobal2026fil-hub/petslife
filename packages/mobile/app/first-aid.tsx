@@ -45,7 +45,7 @@ const EMERGENCIES = [
       "Afaste objectos perigosos em redor",
       "Proteja a cabeça com uma toalha macia",
       "Marque a hora de início da convulsão",
-      "Após parar, cubra com cobertor e vá ao veterinário",
+      "Leve o animal ao veterinário de imediato — não espere que a convulsão passe",
     ],
     doNot: ["Não tente segurar o animal", "Não coloque nada na boca", "Não grite — mantenha silêncio e luz baixa"],
   },
@@ -92,7 +92,6 @@ const EMERGENCIES = [
       "Se não conseguir alcançar, ou se o animal continuar aflito, não force e procure ajuda de imediato",
     ],
     doNot: [
-      "Não force o objecto para baixo",
       "Não insista se não estiver a conseguir — vá ao veterinário",
       "Não dê água nem comida",
     ],
@@ -204,7 +203,7 @@ export default function FirstAidScreen() {
               <Phone size={20} color="#fff" />
               <View>
                 <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>{tr("Ligar ao Veterinário")}</Text>
-                <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.8)", fontSize: 11 }}>213 420 000 — Linha Vet 24h</Text>
+                <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.8)", fontSize: 11 }}>213 420 000 — Linha veterinária de urgência</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -242,7 +241,7 @@ export default function FirstAidScreen() {
         <TouchableOpacity onPress={() => Linking.openURL("tel:213420000")}
           style={{ backgroundColor: RED, borderRadius: 16, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 8 }}>
           <Phone size={18} color="#fff" />
-          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{tr("🚨 Ligar Vet Emergência 24h")}</Text>
+          <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{tr("🚨 Ligar Linha Veterinária de Urgência")}</Text>
         </TouchableOpacity>
 
         {[

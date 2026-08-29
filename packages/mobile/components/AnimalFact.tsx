@@ -1,6 +1,6 @@
-import { View, Text, Platform } from "react-native";
-import { useMemo } from "react";
-import { PetIllustration } from "./PetIllustration";
+import { View, Text, Platform, Animated, Easing } from "react-native";
+import { useMemo, useRef, useEffect } from "react";
+import { AnimatedPet } from "./AnimatedPet";
 
 const BROWN = "#6B3A2A";
 const BROWN2 = "#8B5E3C";
@@ -46,23 +46,41 @@ interface AnimalFactProps {
   compact?: boolean;
 }
 
-function FactIcon({ fact, size }: { fact: typeof ANIMAL_FACTS[0]; size: number }) {
-  if (fact.speciesKey) {
-    return (
-      <View style={{
-        width: size, height: size, borderRadius: size / 2, backgroundColor: ICON_CIRCLE_BG,
-        alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: BORDER,
-      }}>
-        <PetIllustration species={fact.speciesKey} size={size * 0.8} />
-      </View>
+// Emoji de reserva com um balanço suave, para que TODOS os bonequinhos se mexam
+function WobbleEmoji({ emoji, size }: { emoji: string; size: number }) {
+  const a = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(a, { toValue: 1, duration: 900, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(a, { toValue: 0, duration: 900, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      ]),
     );
-  }
+    loop.start();
+    return () => loop.stop();
+  }, []);
+  const rotate = a.interpolate({ inputRange: [0, 1], outputRange: ["-7deg", "7deg"] });
+  const translateY = a.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, -size * 0.06, 0] });
+  return (
+    <Animated.Text
+      suppressHighlighting
+      style={{ fontSize: size * 0.5, backgroundColor: "transparent", transform: [{ rotate }, { translateY }] }}
+    >
+      {emoji}
+    </Animated.Text>
+  );
+}
+
+function FactIcon({ fact, size }: { fact: typeof ANIMAL_FACTS[0]; size: number }) {
   return (
     <View style={{
       width: size, height: size, borderRadius: size / 2, backgroundColor: ICON_CIRCLE_BG,
       alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: BORDER,
+      overflow: "hidden",
     }}>
-      <Text suppressHighlighting style={{ fontSize: size * 0.5, backgroundColor: "transparent" }}>{fact.emoji}</Text>
+      {fact.speciesKey
+        ? <AnimatedPet species={fact.speciesKey} size={size * 0.8} animate />
+        : <WobbleEmoji emoji={fact.emoji} size={size} />}
     </View>
   );
 }

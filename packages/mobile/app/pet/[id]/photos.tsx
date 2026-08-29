@@ -3,13 +3,14 @@ import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Ale
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Plus, Trash2, Camera, Upload } from "lucide-react-native";
+import { ChevronLeft, Plus, Trash2, Camera, Upload, Share2, Printer } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../lib/api";
 import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
 import { confirmUsePhoto } from "../../../lib/pick-image";
 import { tr } from "../../../lib/i18n";
+import { shareImage, printImage } from "../../../lib/share-image";
 
 const COLS = 3;
 const SIZE = (Dimensions.get("window").width - 40 - (COLS - 1) * 4) / COLS;
@@ -176,9 +177,19 @@ export default function PetPhotosScreen() {
       {selectedPhoto && (
         <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.92)", alignItems: "center", justifyContent: "center" }}>
           <Image source={{ uri: selectedPhoto.url }} style={{ width: "100%", height: "70%", resizeMode: "contain" }} />
-          <View style={{ flexDirection: "row", gap: 16, marginTop: 24 }}>
+          <View style={{ flexDirection: "row", gap: 12, marginTop: 20, flexWrap: "wrap", justifyContent: "center", paddingHorizontal: 16 }}>
+            <TouchableOpacity onPress={() => shareImage(selectedPhoto.url, tr("Foto do meu animal"))}
+              style={{ backgroundColor: "#22C55E", borderRadius: 14, paddingHorizontal: 18, paddingVertical: 12, flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Share2 size={16} color="#fff" />
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Partilhar")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => printImage(selectedPhoto.url, tr("Foto do meu animal"))}
+              style={{ backgroundColor: "#3B82F6", borderRadius: 14, paddingHorizontal: 18, paddingVertical: 12, flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Printer size={16} color="#fff" />
+              <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Imprimir")}</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => setSelectedPhoto(null)}
-              style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, paddingHorizontal: 24, paddingVertical: 12 }}>
+              style={{ backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, paddingHorizontal: 18, paddingVertical: 12 }}>
               <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Fechar")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -186,7 +197,7 @@ export default function PetPhotosScreen() {
                 { text: tr("Cancelar"), style: "cancel" },
                 { text: tr("Eliminar"), style: "destructive", onPress: () => deleteMutation.mutate(selectedPhoto.id) },
               ])}
-              style={{ backgroundColor: "#EF4444", borderRadius: 14, paddingHorizontal: 24, paddingVertical: 12, flexDirection: "row", alignItems: "center", gap: 8 }}>
+              style={{ backgroundColor: "#EF4444", borderRadius: 14, paddingHorizontal: 18, paddingVertical: 12, flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Trash2 size={16} color="#fff" />
               <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Eliminar")}</Text>
             </TouchableOpacity>

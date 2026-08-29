@@ -15,6 +15,7 @@ const DARK = "#1A1A2E";
 const BREEDS = [
   {
     name: "Labrador Retriever", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/labrador-retriever.jpg"),
     origin: "Canadá", life: "10–12 anos", weight: "25–36 kg",
     personality: ["Amigável", "Activo", "Leal", "Paciente"],
     health: ["Displasia da anca", "Obesidade", "Problemas oculares"],
@@ -24,6 +25,7 @@ const BREEDS = [
   },
   {
     name: "Golden Retriever", species: "dog", emoji: "🐕‍🦺", size: "Grande",
+    photo: require("../assets/breeds/golden-retriever.jpg"),
     origin: "Escócia", life: "10–12 anos", weight: "25–34 kg",
     personality: ["Carinhoso", "Inteligente", "Tolerante", "Brincalhão"],
     health: ["Cancro", "Displasia da anca", "Otites"],
@@ -33,6 +35,7 @@ const BREEDS = [
   },
   {
     name: "Bulldog Francês", species: "dog", emoji: "🐶", size: "Pequeno",
+    photo: require("../assets/breeds/bulldog-frances.jpg"),
     origin: "França", life: "10–12 anos", weight: "8–14 kg",
     personality: ["Divertido", "Afectuoso", "Adaptável", "Calmo"],
     health: ["Problemas respiratórios", "Doenças de pele", "Displasia da anca"],
@@ -42,6 +45,7 @@ const BREEDS = [
   },
   {
     name: "Pastor Alemão", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/pastor-alemao.jpg"),
     origin: "Alemanha", life: "9–13 anos", weight: "22–40 kg",
     personality: ["Corajoso", "Leal", "Inteligente", "Versátil"],
     health: ["Displasia da anca", "Degeneração da coluna", "Alergias"],
@@ -51,6 +55,7 @@ const BREEDS = [
   },
   {
     name: "Poodle", species: "dog", emoji: "🐩", size: "Variável",
+    photo: require("../assets/breeds/poodle.jpg"),
     origin: "Alemanha/França", life: "12–15 anos", weight: "2–32 kg",
     personality: ["Inteligente", "Activo", "Instinto", "Fiel"],
     health: ["Problemas oculares", "Displasia da anca", "Alergias cutâneas"],
@@ -60,6 +65,7 @@ const BREEDS = [
   },
   {
     name: "Persa", species: "cat", emoji: "🐱", size: "Médio",
+    photo: require("../assets/breeds/persa.jpg"),
     origin: "Irão", life: "12–17 anos", weight: "3–7 kg",
     personality: ["Tranquilo", "Carinhoso", "Reservado", "Elegante"],
     health: ["Problemas respiratórios", "Doenças renais", "Olhos"],
@@ -69,6 +75,7 @@ const BREEDS = [
   },
   {
     name: "Maine Coon", species: "cat", emoji: "🐈", size: "Grande",
+    photo: require("../assets/breeds/maine-coon.jpg"),
     origin: "EUA", life: "12–15 anos", weight: "4–10 kg",
     personality: ["Sociável", "Inteligente", "Brincalhão", "Leal"],
     health: ["Miocardiopatia", "Displasia da anca", "Doença renal"],
@@ -78,6 +85,7 @@ const BREEDS = [
   },
   {
     name: "Siamês", species: "cat", emoji: "🐈‍⬛", size: "Médio",
+    photo: require("../assets/breeds/siames.jpg"),
     origin: "Tailândia", life: "12–20 anos", weight: "3–6 kg",
     personality: ["Vocal", "Curioso", "Social", "Inteligente"],
     health: ["Problemas dentários", "Amiloidose", "Asma"],
@@ -87,6 +95,7 @@ const BREEDS = [
   },
   {
     name: "Canário", species: "bird", emoji: "🐤", size: "Pequeno",
+    photo: require("../assets/breeds/canario.jpg"),
     origin: "Ilhas Canárias", life: "10–15 anos", weight: "20–30 g",
     personality: ["Musical", "Activo", "Tímido", "Alegre"],
     health: ["Acarose", "Infecções respiratórias", "Obesidade"],
@@ -96,6 +105,7 @@ const BREEDS = [
   },
   {
     name: "Papagaio Cinzento", species: "bird", emoji: "🦜", size: "Médio",
+    photo: require("../assets/breeds/papagaio-cinzento.jpg"),
     origin: "África", life: "40–60 anos", weight: "400–600 g",
     personality: ["Inteligente", "Mimado", "Sensível", "Comunicativo"],
     health: ["Doenças do fígado", "Infecções respiratórias", "Autofagia"],
@@ -107,6 +117,7 @@ const BREEDS = [
   // ---------- CÃES (raças comuns em Portugal) ----------
   {
     name: "Cão da Serra da Estrela", species: "dog", emoji: "🐕", size: "Muito grande",
+    photo: require("../assets/breeds/cao-da-serra-da-estrela.jpg"),
     origin: "Portugal", life: "10–14 anos", weight: "30–50 kg",
     personality: ["Protector", "Leal", "Independente", "Calmo"],
     health: ["Displasia da anca", "Torção gástrica", "Problemas cardíacos"],
@@ -116,6 +127,7 @@ const BREEDS = [
   },
   {
     name: "Podengo Português", species: "dog", emoji: "🐕", size: "Pequeno a médio",
+    photo: require("../assets/breeds/podengo-portugues.jpg"),
     origin: "Portugal", life: "12–15 anos", weight: "4–30 kg",
     personality: ["Vivo", "Alerta", "Corajoso", "Brincalhão"],
     health: ["Muito saudável", "Luxação da patela", "Problemas oculares"],
@@ -125,6 +137,7 @@ const BREEDS = [
   },
   {
     name: "Yorkshire Terrier", species: "dog", emoji: "🐶", size: "Muito pequeno",
+    photo: require("../assets/breeds/yorkshire-terrier.jpg"),
     origin: "Inglaterra", life: "13–16 anos", weight: "2–3 kg",
     personality: ["Corajoso", "Enérgico", "Afectuoso", "Teimoso"],
     health: ["Problemas dentários", "Traqueia colapsada", "Luxação da patela"],
@@ -134,6 +147,7 @@ const BREEDS = [
   },
   {
     name: "Chihuahua", species: "dog", emoji: "🐶", size: "Muito pequeno",
+    photo: require("../assets/breeds/chihuahua.jpg"),
     origin: "México", life: "12–18 anos", weight: "1–3 kg",
     personality: ["Corajoso", "Muito ligado ao dono", "Alerta", "Ciumento"],
     health: ["Hidrocefalia", "Problemas dentários", "Hipoglicemia", "Tremores com frio"],
@@ -145,6 +159,7 @@ const BREEDS = [
   // ---------- GATOS ----------
   {
     name: "Gato Europeu Comum", species: "cat", emoji: "🐈", size: "Médio",
+    photo: require("../assets/breeds/gato-europeu-comum.jpg"),
     origin: "Europa", life: "14–20 anos", weight: "3–6 kg",
     personality: ["Equilibrado", "Independente", "Bom caçador", "Adaptável"],
     health: ["Muito robusto", "Doença renal na velhice", "Parasitas"],
@@ -154,6 +169,7 @@ const BREEDS = [
   },
   {
     name: "British Shorthair", species: "cat", emoji: "🐱", size: "Médio a grande",
+    photo: require("../assets/breeds/british-shorthair.jpg"),
     origin: "Reino Unido", life: "14–20 anos", weight: "4–8 kg",
     personality: ["Calmo", "Reservado", "Afável", "Pouco exigente"],
     health: ["Cardiomiopatia", "Doença renal policística", "Obesidade"],
@@ -163,6 +179,7 @@ const BREEDS = [
   },
   {
     name: "Sphynx (sem pelo)", species: "cat", emoji: "🐈", size: "Médio",
+    photo: require("../assets/breeds/sphynx-sem-pelo.jpg"),
     origin: "Canadá", life: "12–15 anos", weight: "3–6 kg",
     personality: ["Muito afectuoso", "Brincalhão", "Sociável", "Pegajoso"],
     health: ["Problemas de pele", "Cardiomiopatia", "Sensível ao frio e ao sol"],
@@ -174,6 +191,7 @@ const BREEDS = [
   // ---------- AVES ----------
   {
     name: "Periquito", species: "bird", emoji: "🐦", size: "Muito pequeno",
+    photo: require("../assets/breeds/periquito.jpg"),
     origin: "Austrália", life: "7–12 anos", weight: "30–40 g",
     personality: ["Alegre", "Sociável", "Curioso", "Falador"],
     health: ["Tumores", "Papo entupido", "Ácaros", "Obesidade"],
@@ -183,6 +201,7 @@ const BREEDS = [
   },
   {
     name: "Calopsita", species: "bird", emoji: "🦜", size: "Pequeno",
+    photo: require("../assets/breeds/calopsita.jpg"),
     origin: "Austrália", life: "15–20 anos", weight: "80–110 g",
     personality: ["Meiga", "Assobia melodias", "Ligada ao dono", "Sensível"],
     health: ["Doença do bico e das penas", "Deficiência de vitamina A", "Stress por solidão"],
@@ -192,6 +211,7 @@ const BREEDS = [
   },
   {
     name: "Agapornis (inseparável)", species: "bird", emoji: "🦜", size: "Muito pequeno",
+    photo: require("../assets/breeds/agapornis-inseparavel.jpg"),
     origin: "África", life: "10–15 anos", weight: "40–60 g",
     personality: ["Muito activo", "Territorial", "Afectuoso", "Barulhento"],
     health: ["Automutilação de penas", "Problemas respiratórios", "Fracturas"],
@@ -203,6 +223,7 @@ const BREEDS = [
   // ---------- ROEDORES (inclui coelhos) ----------
   {
     name: "Hamster Sírio", species: "rodent", emoji: "🐹", size: "Muito pequeno",
+    photo: require("../assets/breeds/hamster-sirio.jpg"),
     origin: "Síria", life: "2–3 anos", weight: "120–200 g",
     personality: ["Solitário", "Activo à noite", "Curioso", "Territorial"],
     health: ["Tumores", "Cauda molhada (diarreia)", "Dentes crescidos", "Obesidade"],
@@ -212,6 +233,7 @@ const BREEDS = [
   },
   {
     name: "Porquinho-da-índia", species: "rodent", emoji: "🐹", size: "Pequeno",
+    photo: require("../assets/breeds/porquinho-da-india.jpg"),
     origin: "Andes", life: "5–8 anos", weight: "700–1200 g",
     personality: ["Sociável", "Assobia quando contente", "Medroso", "Meigo"],
     health: ["Escorbuto (falta de vitamina C)", "Problemas dentários", "Infecções respiratórias"],
@@ -221,6 +243,7 @@ const BREEDS = [
   },
   {
     name: "Coelho Anão", species: "rodent", emoji: "🐰", size: "Pequeno",
+    photo: require("../assets/breeds/coelho-anao.jpg"),
     origin: "Europa", life: "8–12 anos", weight: "1–2 kg",
     personality: ["Curioso", "Afectuoso", "Activo", "Social"],
     health: ["Problemas dentários", "Paragem intestinal", "Mixomatose", "Doença hemorrágica"],
@@ -230,6 +253,7 @@ const BREEDS = [
   },
   {
     name: "Chinchila", species: "rodent", emoji: "🐭", size: "Pequeno",
+    photo: require("../assets/breeds/chinchila.jpg"),
     origin: "Andes", life: "10–20 anos", weight: "400–800 g",
     personality: ["Activa", "Saltitante", "Tímida", "Nocturna"],
     health: ["Golpe de calor", "Problemas dentários", "Fungos na pele"],
@@ -239,6 +263,7 @@ const BREEDS = [
   },
   {
     name: "Ratazana doméstica", species: "rodent", emoji: "🐀", size: "Pequeno",
+    photo: require("../assets/breeds/ratazana-domestica.jpg"),
     origin: "Ásia", life: "2–4 anos", weight: "300–600 g",
     personality: ["Muito inteligente", "Sociável", "Aprende truques", "Limpa"],
     health: ["Tumores mamários", "Infecções respiratórias", "Problemas de pele"],
@@ -250,6 +275,7 @@ const BREEDS = [
   // ---------- RÉPTEIS ----------
   {
     name: "Tartaruga do Mediterrâneo", species: "reptile", emoji: "🐢", size: "Médio",
+    photo: require("../assets/breeds/tartaruga-do-mediterraneo.jpg"),
     origin: "Bacia do Mediterrâneo", life: "50–100 anos", weight: "1–5 kg",
     personality: ["Calma", "Curiosa", "Lenta", "Independente"],
     health: ["Carapaça mole (falta de cálcio)", "Problemas respiratórios", "Vermes"],
@@ -259,6 +285,7 @@ const BREEDS = [
   },
   {
     name: "Gecko Leopardo", species: "reptile", emoji: "🦎", size: "Pequeno",
+    photo: require("../assets/breeds/gecko-leopardo.jpg"),
     origin: "Ásia", life: "15–20 anos", weight: "50–90 g",
     personality: ["Dócil", "Nocturno", "Tranquilo", "Fácil de manusear"],
     health: ["Doença óssea metabólica", "Muda de pele presa", "Impactação por areia"],
@@ -268,6 +295,7 @@ const BREEDS = [
   },
   {
     name: "Dragão Barbudo", species: "reptile", emoji: "🦎", size: "Médio",
+    photo: require("../assets/breeds/dragao-barbudo.jpg"),
     origin: "Austrália", life: "10–15 anos", weight: "300–600 g",
     personality: ["Muito dócil", "Diurno", "Curioso", "Sociável com o dono"],
     health: ["Doença óssea metabólica", "Parasitas", "Impactação intestinal"],
@@ -277,6 +305,7 @@ const BREEDS = [
   },
   {
     name: "Cobra do Milho", species: "reptile", emoji: "🐍", size: "Médio",
+    photo: require("../assets/breeds/cobra-do-milho.jpg"),
     origin: "América do Norte", life: "15–20 anos", weight: "700–900 g",
     personality: ["Calma", "Não agressiva", "Discreta", "Resistente"],
     health: ["Muda de pele presa", "Ácaros", "Infecções da boca"],
@@ -288,6 +317,7 @@ const BREEDS = [
   // ---------- AQUÁTICOS ----------
   {
     name: "Peixe Dourado (alforreca)", species: "aquatic", emoji: "🐟", size: "Pequeno a médio",
+    photo: require("../assets/breeds/peixe-dourado-alforreca.jpg"),
     origin: "China", life: "10–25 anos", weight: "100–300 g",
     personality: ["Sociável", "Activo", "Reconhece a hora da comida"],
     health: ["Ponto branco", "Problemas da bexiga natatória", "Água com amónia"],
@@ -297,6 +327,7 @@ const BREEDS = [
   },
   {
     name: "Peixe Betta (lutador)", species: "aquatic", emoji: "🐠", size: "Muito pequeno",
+    photo: require("../assets/breeds/peixe-betta-lutador.jpg"),
     origin: "Tailândia", life: "3–5 anos", weight: "3–5 g",
     personality: ["Territorial", "Curioso", "Vistoso", "Interage com o dono"],
     health: ["Podridão das barbatanas", "Inchaço", "Fungos"],
@@ -306,6 +337,7 @@ const BREEDS = [
   },
   {
     name: "Carpa Koi", species: "aquatic", emoji: "🐟", size: "Muito grande",
+    photo: require("../assets/breeds/carpa-koi.jpg"),
     origin: "Japão", life: "25–50 anos", weight: "5–15 kg",
     personality: ["Mansa", "Come da mão", "Sociável", "Serena"],
     health: ["Parasitas da pele", "Úlceras", "Falta de oxigénio no Verão"],
@@ -315,6 +347,7 @@ const BREEDS = [
   },
   {
     name: "Pato Doméstico", species: "aquatic", emoji: "🦆", size: "Médio",
+    photo: require("../assets/breeds/pato-domestico.jpg"),
     origin: "Domesticado (Ásia/Europa)", life: "8–15 anos", weight: "2–4 kg",
     personality: ["Muito sociável", "Barulhento", "Curioso", "Ligado ao grupo"],
     health: ["Problemas nas patas", "Botulismo", "Falta de niacina", "Predadores"],
@@ -326,6 +359,7 @@ const BREEDS = [
   // ---------- ANIMAIS DE QUINTA ----------
   {
     name: "Galinha Poedeira", species: "farm", emoji: "🐔", size: "Médio",
+    photo: require("../assets/breeds/galinha-poedeira.jpg"),
     origin: "Domesticada", life: "5–10 anos", weight: "1,5–3 kg",
     personality: ["Curiosa", "Hierárquica", "Sociável", "Activa de dia"],
     health: ["Piolhos e ácaros", "Coccidiose", "Postura presa", "Bicagem entre elas"],
@@ -335,6 +369,7 @@ const BREEDS = [
   },
   {
     name: "Cabra Anã", species: "farm", emoji: "🐐", size: "Pequeno a médio",
+    photo: require("../assets/breeds/cabra-ana.jpg"),
     origin: "África Ocidental", life: "12–18 anos", weight: "20–35 kg",
     personality: ["Brincalhona", "Curiosa", "Fugitiva", "Muito social"],
     health: ["Vermes internos", "Timpanismo (inchaço)", "Problemas nos cascos"],
@@ -344,6 +379,7 @@ const BREEDS = [
   },
   {
     name: "Ovelha", species: "farm", emoji: "🐑", size: "Grande",
+    photo: require("../assets/breeds/ovelha.jpg"),
     origin: "Ásia Menor", life: "10–14 anos", weight: "45–100 kg",
     personality: ["Calma", "Gregária", "Medrosa", "Rotineira"],
     health: ["Vermes", "Miíase (bicheira)", "Problemas nos cascos", "Golpe de calor"],
@@ -353,6 +389,7 @@ const BREEDS = [
   },
   {
     name: "Cavalo", species: "farm", emoji: "🐴", size: "Muito grande",
+    photo: require("../assets/breeds/cavalo.jpg"),
     origin: "Ásia Central", life: "25–35 anos", weight: "350–700 kg",
     personality: ["Sensível", "Inteligente", "Gregário", "Leal"],
     health: ["Cólica (urgência grave)", "Laminite", "Vermes", "Problemas dentários"],
@@ -362,6 +399,7 @@ const BREEDS = [
   },
   {
     name: "Porco Miniatura", species: "farm", emoji: "🐷", size: "Médio",
+    photo: require("../assets/breeds/porco-miniatura.jpg"),
     origin: "Domesticado", life: "12–20 anos", weight: "35–90 kg",
     personality: ["Muito inteligente", "Teimoso", "Afectuoso", "Guloso"],
     health: ["Obesidade", "Problemas de pele", "Artrite", "Cascos crescidos"],
@@ -372,6 +410,7 @@ const BREEDS = [
   // ---------- RAÇAS ACRESCENTADAS ----------
   {
     name: "Border Collie", species: "dog", emoji: "🐕", size: "Médio",
+    photo: require("../assets/breeds/border-collie.jpg"),
     origin: "Reino Unido", life: "12–15 anos", weight: "14–20 kg",
     personality: ["Muito inteligente", "Incansável", "Obediente", "Sensível"],
     health: ["Displasia da anca", "Anomalia ocular do Collie", "Epilepsia"],
@@ -381,6 +420,7 @@ const BREEDS = [
   },
   {
     name: "Beagle", species: "dog", emoji: "🐶", size: "Pequeno a médio",
+    photo: require("../assets/breeds/beagle.jpg"),
     origin: "Reino Unido", life: "12–15 anos", weight: "9–14 kg",
     personality: ["Alegre", "Teimoso", "Sociável", "Guloso"],
     health: ["Obesidade", "Otites", "Epilepsia", "Problemas de coluna"],
@@ -390,6 +430,7 @@ const BREEDS = [
   },
   {
     name: "Rafeiro / Cão sem raça", species: "dog", emoji: "🐕", size: "Variável",
+    photo: require("../assets/breeds/rafeiro-cao-sem-raca.jpg"),
     origin: "Portugal e todo o mundo", life: "12–16 anos", weight: "Variável",
     personality: ["Equilibrado", "Agradecido", "Adaptável", "Único"],
     health: ["Geralmente mais saudável que os de raça", "Depende da origem"],
@@ -399,6 +440,7 @@ const BREEDS = [
   },
   {
     name: "Cocker Spaniel", species: "dog", emoji: "🐕", size: "Médio",
+    photo: require("../assets/breeds/cocker-spaniel.jpg"),
     origin: "Reino Unido", life: "12–15 anos", weight: "12–16 kg",
     personality: ["Meigo", "Alegre", "Apegado", "Sensível"],
     health: ["Otites frequentes", "Cataratas", "Problemas de pele"],
@@ -408,6 +450,7 @@ const BREEDS = [
   },
   {
     name: "Ragdoll", species: "cat", emoji: "🐱", size: "Grande",
+    photo: require("../assets/breeds/ragdoll.jpg"),
     origin: "Estados Unidos", life: "12–17 anos", weight: "4,5–9 kg",
     personality: ["Extremamente calmo", "Amoroso", "Fica mole ao colo", "Segue o dono"],
     health: ["Cardiomiopatia hipertrófica", "Problemas renais", "Bolas de pelo"],
@@ -417,6 +460,7 @@ const BREEDS = [
   },
   {
     name: "Bengal", species: "cat", emoji: "🐈", size: "Médio a grande",
+    photo: require("../assets/breeds/bengal.jpg"),
     origin: "Estados Unidos", life: "12–16 anos", weight: "4–8 kg",
     personality: ["Muito activo", "Brincalhão", "Falador", "Gosta de água"],
     health: ["Cardiomiopatia", "Atrofia da retina", "Problemas digestivos"],
@@ -426,6 +470,7 @@ const BREEDS = [
   },
   {
     name: "Ringneck (Periquito-de-colar)", species: "bird", emoji: "🦜", size: "Médio",
+    photo: require("../assets/breeds/ringneck-periquito-de-colar.jpg"),
     origin: "Índia e África", life: "25–30 anos", weight: "115–140 g",
     personality: ["Muito inteligente", "Fala bem", "Independente", "Teimoso na adolescência"],
     health: ["Arrancar penas por tédio", "Psitacose", "Problemas de fígado por má alimentação"],
@@ -435,6 +480,7 @@ const BREEDS = [
   },
   {
     name: "Caturra Ninfa", species: "bird", emoji: "🐦", size: "Pequeno",
+    photo: require("../assets/breeds/caturra-ninfa.jpg"),
     origin: "Austrália", life: "15–20 anos", weight: "80–120 g",
     personality: ["Carinhosa", "Assobia melodias", "Sociável", "Meiga"],
     health: ["Pó das penas (alergias no dono)", "Terrores nocturnos", "Obesidade"],
@@ -444,6 +490,7 @@ const BREEDS = [
   },
   {
     name: "Caldinho / Canário-da-terra", species: "bird", emoji: "🐤", size: "Muito pequeno",
+    photo: require("../assets/breeds/caldinho-canario-da-terra.jpg"),
     origin: "América do Sul", life: "8–12 anos", weight: "20 g",
     personality: ["Canta muito", "Activo", "Territorial entre machos"],
     health: ["Ácaros", "Stress por barulho", "Falta de cálcio"],
@@ -453,6 +500,7 @@ const BREEDS = [
   },
   {
     name: "Pombo Doméstico", species: "bird", emoji: "🕊️", size: "Médio",
+    photo: require("../assets/breeds/pombo-domestico.jpg"),
     origin: "Europa e Ásia", life: "10–15 anos", weight: "300–500 g",
     personality: ["Muito calmo", "Fiel ao par", "Reconhece o dono"],
     health: ["Tricomoníase", "Vermes", "Varíola aviária"],
@@ -462,6 +510,7 @@ const BREEDS = [
   },
   {
     name: "Coelho Belier (orelhudo)", species: "rodent", emoji: "🐰", size: "Médio",
+    photo: require("../assets/breeds/coelho-belier-orelhudo.jpg"),
     origin: "Países Baixos", life: "7–12 anos", weight: "2–4 kg",
     personality: ["Muito calmo", "Meigo", "Gosta de colo", "Curioso"],
     health: ["Dentes crescidos", "Otites por causa das orelhas", "Estase intestinal"],
@@ -471,6 +520,7 @@ const BREEDS = [
   },
   {
     name: "Hamster Anão Russo", species: "rodent", emoji: "🐹", size: "Muito pequeno",
+    photo: require("../assets/breeds/hamster-anao-russo.jpg"),
     origin: "Rússia e Cazaquistão", life: "2–3 anos", weight: "30–50 g",
     personality: ["Rápido", "Nocturno", "Curioso"],
     health: ["Diabetes (muito comum)", "Tumores", "Problemas de pele"],
@@ -480,6 +530,7 @@ const BREEDS = [
   },
   {
     name: "Furão", species: "rodent", emoji: "🦡", size: "Pequeno",
+    photo: require("../assets/breeds/furao.jpg"),
     origin: "Europa", life: "6–10 anos", weight: "0,7–2 kg",
     personality: ["Brincalhão", "Curioso", "Ladrão de objectos", "Dorme muitas horas"],
     health: ["Doença adrenal", "Insulinoma", "Gripe humana (apanha de nós)"],
@@ -489,6 +540,7 @@ const BREEDS = [
   },
   {
     name: "Camaleão-comum", species: "reptile", emoji: "🦎", size: "Médio",
+    photo: require("../assets/breeds/camaleao-comum.jpg"),
     origin: "Sul de Portugal e Mediterrâneo", life: "5–8 anos", weight: "100–200 g",
     personality: ["Solitário", "Lento", "Muito sensível ao stress"],
     health: ["Desidratação", "Falta de cálcio", "Infecções respiratórias"],
@@ -498,6 +550,7 @@ const BREEDS = [
   },
   {
     name: "Pogona / Tartaruga de água", species: "reptile", emoji: "🐢", size: "Médio",
+    photo: require("../assets/breeds/pogona-tartaruga-de-agua.jpg"),
     origin: "Ásia e América", life: "20–40 anos", weight: "1–2 kg",
     personality: ["Calma", "Activa de dia", "Come da mão"],
     health: ["Casco mole por falta de UVB", "Infecções nos olhos", "Água suja"],
@@ -507,6 +560,7 @@ const BREEDS = [
   },
   {
     name: "Guppy", species: "aquatic", emoji: "🐠", size: "Muito pequeno",
+    photo: require("../assets/breeds/guppy.jpg"),
     origin: "América do Sul", life: "2–3 anos", weight: "1–2 g",
     personality: ["Muito activo", "Pacífico", "Colorido", "Vive em grupo"],
     health: ["Ponto branco", "Fungos na cauda", "Excesso de crias"],
@@ -516,6 +570,7 @@ const BREEDS = [
   },
   {
     name: "Pato Real / Marreco", species: "aquatic", emoji: "🦆", size: "Médio",
+    photo: require("../assets/breeds/pato-real-marreco.jpg"),
     origin: "Europa", life: "10–15 anos", weight: "1–1,5 kg",
     personality: ["Sociável", "Bom guardião", "Barulhento"],
     health: ["Patas feridas", "Parasitas", "Predadores"],
@@ -525,6 +580,7 @@ const BREEDS = [
   },
   {
     name: "Codorniz", species: "farm", emoji: "🐣", size: "Muito pequeno",
+    photo: require("../assets/breeds/codorniz.jpg"),
     origin: "Ásia", life: "2–4 anos", weight: "100–300 g",
     personality: ["Discreta", "Nervosa", "Vive em grupo"],
     health: ["Stress", "Bicagem", "Falta de proteína"],
@@ -534,6 +590,7 @@ const BREEDS = [
   },
   {
     name: "Burro / Jumento", species: "farm", emoji: "🫏", size: "Grande",
+    photo: require("../assets/breeds/burro-jumento.jpg"),
     origin: "África", life: "30–40 anos", weight: "150–350 kg",
     personality: ["Calmo", "Muito inteligente", "Prudente", "Fiel"],
     health: ["Cascos crescidos", "Vermes", "Obesidade com erva rica"],
@@ -543,6 +600,7 @@ const BREEDS = [
   },
   {
     name: "Maltês (Bichon Maltês)", species: "dog", emoji: "🐶", size: "Muito pequeno",
+    photo: require("../assets/breeds/maltes-bichon-maltes.jpg"),
     origin: "Malta / Mediterrâneo", life: "12–15 anos", weight: "3–4 kg",
     personality: ["Meigo", "Alegre", "Corajoso", "Muito apegado"],
     health: ["Lágrimas nos olhos", "Tártaro e perda de dentes", "Luxação da rótula"],
@@ -552,6 +610,7 @@ const BREEDS = [
   },
   {
     name: "Bichon Frisé", species: "dog", emoji: "🐩", size: "Pequeno",
+    photo: require("../assets/breeds/bichon-frise.jpg"),
     origin: "Bélgica / França", life: "12–15 anos", weight: "5–8 kg",
     personality: ["Brincalhão", "Sociável", "Bem-humorado", "Sensível"],
     health: ["Alergias de pele", "Problemas de ouvidos", "Cataratas"],
@@ -561,6 +620,7 @@ const BREEDS = [
   },
   {
     name: "Shih Tzu", species: "dog", emoji: "🐶", size: "Pequeno",
+    photo: require("../assets/breeds/shih-tzu.jpg"),
     origin: "Tibete / China", life: "12–16 anos", weight: "4–8 kg",
     personality: ["Companheiro", "Calmo", "Teimoso", "Afectuoso"],
     health: ["Dificuldade a respirar no calor", "Olhos secos e feridas na córnea", "Problemas de coluna"],
@@ -570,6 +630,7 @@ const BREEDS = [
   },
   {
     name: "Chow Chow", species: "dog", emoji: "🐕", size: "Médio a grande",
+    photo: require("../assets/breeds/chow-chow.jpg"),
     origin: "China", life: "9–12 anos", weight: "20–32 kg",
     personality: ["Independente", "Reservado", "Digno", "Territorial"],
     health: ["Displasia da anca", "Entrópio (pálpebras viradas)", "Golpe de calor", "Problemas de tiroide"],
@@ -579,6 +640,7 @@ const BREEDS = [
   },
   {
     name: "Dogue Alemão (Grande Dinamarquês)", species: "dog", emoji: "🐕", size: "Gigante",
+    photo: require("../assets/breeds/dogue-alemao-grande-dinamarques.jpg"),
     origin: "Alemanha", life: "7–10 anos", weight: "45–90 kg",
     personality: ["Gentil", "Tranquilo", "Amigo das crianças", "Sensível"],
     health: ["Torção do estômago (urgência)", "Problemas cardíacos", "Displasia da anca", "Dores de crescimento"],
@@ -588,6 +650,7 @@ const BREEDS = [
   },
   {
     name: "Maremano-Abruzês (Pastor Maremano)", species: "dog", emoji: "🐕‍🦺", size: "Grande",
+    photo: require("../assets/breeds/maremano-abruzes-pastor-maremano.jpg"),
     origin: "Itália", life: "11–13 anos", weight: "30–45 kg",
     personality: ["Guardião", "Independente", "Corajoso", "Desconfiado de estranhos"],
     health: ["Displasia da anca", "Torção do estômago", "Problemas de ouvidos"],
@@ -597,6 +660,7 @@ const BREEDS = [
   },
   {
     name: "Rottweiler", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/rottweiler.jpg"),
     origin: "Alemanha", life: "8–11 anos", weight: "35–60 kg",
     personality: ["Confiante", "Leal", "Calmo", "Protector"],
     health: ["Displasia da anca e do cotovelo", "Problemas cardíacos", "Obesidade", "Cancro dos ossos"],
@@ -606,6 +670,7 @@ const BREEDS = [
   },
   {
     name: "Boxer", species: "dog", emoji: "🐕", size: "Médio a grande",
+    photo: require("../assets/breeds/boxer.jpg"),
     origin: "Alemanha", life: "10–12 anos", weight: "25–32 kg",
     personality: ["Palhaço", "Energético", "Muito apegado", "Bom com crianças"],
     health: ["Problemas cardíacos", "Cancro", "Dificuldade a respirar no calor", "Displasia da anca"],
@@ -615,6 +680,7 @@ const BREEDS = [
   },
   {
     name: "Husky Siberiano", species: "dog", emoji: "🐺", size: "Médio",
+    photo: require("../assets/breeds/husky-siberiano.jpg"),
     origin: "Sibéria", life: "12–14 anos", weight: "16–27 kg",
     personality: ["Aventureiro", "Sociável", "Teimoso", "Falador (uiva)"],
     health: ["Problemas oculares", "Displasia da anca", "Problemas de pele no calor"],
@@ -624,6 +690,7 @@ const BREEDS = [
   },
   {
     name: "Dobermann", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/dobermann.jpg"),
     origin: "Alemanha", life: "10–12 anos", weight: "32–45 kg",
     personality: ["Atento", "Muito inteligente", "Leal", "Cheio de energia"],
     health: ["Doença cardíaca (cardiomiopatia)", "Problemas de coagulação", "Coluna cervical"],
@@ -633,6 +700,7 @@ const BREEDS = [
   },
   {
     name: "Pug (Carlino)", species: "dog", emoji: "🐶", size: "Pequeno",
+    photo: require("../assets/breeds/pug-carlino.jpg"),
     origin: "China", life: "12–15 anos", weight: "6–9 kg",
     personality: ["Palhaço", "Carinhoso", "Comilão", "Muito de colo"],
     health: ["Dificuldade grave a respirar", "Olhos feridos", "Obesidade", "Pregas infectadas"],
@@ -642,6 +710,7 @@ const BREEDS = [
   },
   {
     name: "Teckel (Dachshund / Salsicha)", species: "dog", emoji: "🌭", size: "Pequeno",
+    photo: require("../assets/breeds/teckel-dachshund-salsicha.jpg"),
     origin: "Alemanha", life: "12–16 anos", weight: "4–9 kg",
     personality: ["Corajoso", "Teimoso", "Vigilante", "Caçador"],
     health: ["Hérnia discal (coluna)", "Obesidade", "Problemas dentários"],
@@ -651,6 +720,7 @@ const BREEDS = [
   },
   {
     name: "Pinscher Miniatura", species: "dog", emoji: "🐶", size: "Muito pequeno",
+    photo: require("../assets/breeds/pinscher-miniatura.jpg"),
     origin: "Alemanha", life: "12–16 anos", weight: "3–6 kg",
     personality: ["Corajoso", "Muito activo", "Vigilante", "Late bastante"],
     health: ["Luxação da rótula", "Problemas dentários", "Fracturas por saltos"],
@@ -660,6 +730,7 @@ const BREEDS = [
   },
   {
     name: "Lulu da Pomerânia (Spitz Alemão)", species: "dog", emoji: "🐕", size: "Muito pequeno",
+    photo: require("../assets/breeds/lulu-da-pomerania-spitz-alemao.jpg"),
     origin: "Alemanha / Polónia", life: "12–16 anos", weight: "1,8–3,5 kg",
     personality: ["Extrovertido", "Vivo", "Vigilante", "Convencido"],
     health: ["Traqueia colapsada", "Queda de pelo hormonal", "Problemas dentários", "Luxação da rótula"],
@@ -669,6 +740,7 @@ const BREEDS = [
   },
   {
     name: "São Bernardo", species: "dog", emoji: "🐕‍🦺", size: "Gigante",
+    photo: require("../assets/breeds/sao-bernardo.jpg"),
     origin: "Suíça", life: "8–10 anos", weight: "60–90 kg",
     personality: ["Paciente", "Bonacheirão", "Protector", "Calmo"],
     health: ["Displasia da anca", "Torção do estômago", "Problemas de coração", "Golpe de calor"],
@@ -678,6 +750,7 @@ const BREEDS = [
   },
   {
     name: "Jack Russell Terrier", species: "dog", emoji: "🐶", size: "Pequeno",
+    photo: require("../assets/breeds/jack-russell-terrier.jpg"),
     origin: "Inglaterra", life: "13–16 anos", weight: "5–8 kg",
     personality: ["Incansável", "Esperto", "Destemido", "Escavador"],
     health: ["Luxação da rótula", "Surdez em alguns exemplares", "Problemas oculares"],
@@ -687,6 +760,7 @@ const BREEDS = [
   },
   {
     name: "Bulldog Inglês", species: "dog", emoji: "🐶", size: "Médio",
+    photo: require("../assets/breeds/bulldog-ingles.jpg"),
     origin: "Inglaterra", life: "8–10 anos", weight: "18–25 kg",
     personality: ["Tranquilo", "Teimoso", "Afectuoso", "Preguiçoso"],
     health: ["Problemas respiratórios graves", "Pregas infectadas", "Displasia da anca", "Problemas de parto"],
@@ -696,6 +770,7 @@ const BREEDS = [
   },
   {
     name: "Basset Hound", species: "dog", emoji: "🐕", size: "Médio",
+    photo: require("../assets/breeds/basset-hound.jpg"),
     origin: "França", life: "10–12 anos", weight: "20–29 kg",
     personality: ["Calmo", "Teimoso", "Amigável", "Guiado pelo olfacto"],
     health: ["Otites (orelhas compridas)", "Problemas de coluna", "Obesidade", "Olhos irritados"],
@@ -705,6 +780,7 @@ const BREEDS = [
   },
   {
     name: "Akita Inu", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/akita-inu.jpg"),
     origin: "Japão", life: "10–13 anos", weight: "32–50 kg",
     personality: ["Fiel", "Reservado", "Digno", "Dominante com outros cães"],
     health: ["Problemas de tiroide", "Doenças autoimunes de pele", "Displasia da anca"],
@@ -714,6 +790,7 @@ const BREEDS = [
   },
   {
     name: "Shiba Inu", species: "dog", emoji: "🦊", size: "Pequeno a médio",
+    photo: require("../assets/breeds/shiba-inu.jpg"),
     origin: "Japão", life: "13–16 anos", weight: "8–11 kg",
     personality: ["Independente", "Limpo", "Alerta", "Teimoso"],
     health: ["Alergias de pele", "Luxação da rótula", "Problemas oculares"],
@@ -723,6 +800,7 @@ const BREEDS = [
   },
   {
     name: "Samoiedo", species: "dog", emoji: "🐕‍🦺", size: "Médio a grande",
+    photo: require("../assets/breeds/samoiedo.jpg"),
     origin: "Sibéria", life: "12–14 anos", weight: "16–30 kg",
     personality: ["Sorridente", "Sociável", "Brincalhão", "Falador"],
     health: ["Displasia da anca", "Problemas oculares", "Diabetes"],
@@ -732,6 +810,7 @@ const BREEDS = [
   },
   {
     name: "Cane Corso", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/cane-corso.jpg"),
     origin: "Itália", life: "9–12 anos", weight: "40–50 kg",
     personality: ["Protector", "Sereno", "Muito ligado ao dono", "Dominante"],
     health: ["Displasia da anca", "Pálpebras viradas", "Torção do estômago"],
@@ -741,6 +820,7 @@ const BREEDS = [
   },
   {
     name: "Mastim / Dogue de Bordéus", species: "dog", emoji: "🐕", size: "Gigante",
+    photo: require("../assets/breeds/mastim-dogue-de-bordeus.jpg"),
     origin: "França", life: "8–10 anos", weight: "45–65 kg",
     personality: ["Calmo", "Corajoso", "Afectuoso", "Preguiçoso em casa"],
     health: ["Problemas cardíacos", "Displasia da anca", "Golpe de calor", "Babar constante"],
@@ -750,6 +830,7 @@ const BREEDS = [
   },
   {
     name: "Galgo / Greyhound", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/galgo-greyhound.jpg"),
     origin: "Egipto / Inglaterra", life: "10–14 anos", weight: "25–40 kg",
     personality: ["Doce", "Sossegado", "Reservado", "Corredor"],
     health: ["Sensibilidade à anestesia", "Frio e feridas na pele fina", "Problemas dentários"],
@@ -759,6 +840,7 @@ const BREEDS = [
   },
   {
     name: "Schnauzer", species: "dog", emoji: "🐶", size: "Variável",
+    photo: require("../assets/breeds/schnauzer.jpg"),
     origin: "Alemanha", life: "12–15 anos", weight: "5–45 kg",
     personality: ["Atento", "Corajoso", "Brincalhão", "Vigilante"],
     health: ["Pedras na bexiga", "Pancreatite", "Diabetes", "Problemas oculares"],
@@ -768,6 +850,7 @@ const BREEDS = [
   },
   {
     name: "West Highland Terrier (Westie)", species: "dog", emoji: "🐶", size: "Pequeno",
+    photo: require("../assets/breeds/west-highland-terrier-westie.jpg"),
     origin: "Escócia", life: "12–16 anos", weight: "6–10 kg",
     personality: ["Confiante", "Alegre", "Teimoso", "Curioso"],
     health: ["Alergias e comichão", "Problemas de pele", "Luxação da rótula"],
@@ -777,6 +860,7 @@ const BREEDS = [
   },
   {
     name: "Fox Terrier", species: "dog", emoji: "🐶", size: "Pequeno",
+    photo: require("../assets/breeds/fox-terrier.jpg"),
     origin: "Inglaterra", life: "12–15 anos", weight: "6–9 kg",
     personality: ["Vivo", "Destemido", "Muito activo", "Latido fácil"],
     health: ["Luxação da rótula", "Surdez", "Problemas oculares"],
@@ -786,6 +870,7 @@ const BREEDS = [
   },
   {
     name: "Lhasa Apso", species: "dog", emoji: "🐶", size: "Pequeno",
+    photo: require("../assets/breeds/lhasa-apso.jpg"),
     origin: "Tibete", life: "12–15 anos", weight: "5–8 kg",
     personality: ["Independente", "Vigilante", "Digno", "Desconfiado"],
     health: ["Olhos secos", "Problemas de rins", "Luxação da rótula"],
@@ -795,6 +880,7 @@ const BREEDS = [
   },
   {
     name: "Pequinês", species: "dog", emoji: "🐶", size: "Muito pequeno",
+    photo: require("../assets/breeds/pequines.jpg"),
     origin: "China", life: "12–15 anos", weight: "3–6 kg",
     personality: ["Orgulhoso", "Leal", "Teimoso", "Corajoso"],
     health: ["Dificuldade a respirar", "Olhos salientes e feridos", "Problemas de coluna", "Golpe de calor"],
@@ -804,6 +890,7 @@ const BREEDS = [
   },
   {
     name: "Papillon", species: "dog", emoji: "🐶", size: "Muito pequeno",
+    photo: require("../assets/breeds/papillon.jpg"),
     origin: "França / Bélgica", life: "13–16 anos", weight: "2–5 kg",
     personality: ["Espertíssimo", "Alegre", "Activo", "Sociável"],
     health: ["Luxação da rótula", "Problemas dentários", "Fontanela aberta"],
@@ -813,6 +900,7 @@ const BREEDS = [
   },
   {
     name: "Weimaraner", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/weimaraner.jpg"),
     origin: "Alemanha", life: "10–13 anos", weight: "25–40 kg",
     personality: ["Incansável", "Colante", "Inteligente", "Sensível"],
     health: ["Torção do estômago", "Displasia da anca", "Ansiedade de separação"],
@@ -822,6 +910,7 @@ const BREEDS = [
   },
   {
     name: "Setter Irlandês", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/setter-irlandes.jpg"),
     origin: "Irlanda", life: "11–14 anos", weight: "24–32 kg",
     personality: ["Exuberante", "Amigável", "Brincalhão", "Distraído"],
     health: ["Displasia da anca", "Torção do estômago", "Otites", "Epilepsia"],
@@ -831,6 +920,7 @@ const BREEDS = [
   },
   {
     name: "Staffordshire Bull Terrier", species: "dog", emoji: "🐕", size: "Médio",
+    photo: require("../assets/breeds/staffordshire-bull-terrier.jpg"),
     origin: "Inglaterra", life: "12–14 anos", weight: "11–17 kg",
     personality: ["Muito afectuoso", "Corajoso", "Brincalhão", "Amigo das crianças"],
     health: ["Alergias de pele", "Cataratas juvenis", "Problemas articulares"],
@@ -840,6 +930,7 @@ const BREEDS = [
   },
   {
     name: "Braco Alemão", species: "dog", emoji: "🐕", size: "Grande",
+    photo: require("../assets/breeds/braco-alemao.jpg"),
     origin: "Alemanha", life: "12–14 anos", weight: "20–32 kg",
     personality: ["Trabalhador", "Obediente", "Energético", "Sociável"],
     health: ["Displasia da anca", "Otites", "Torção do estômago"],
@@ -849,6 +940,7 @@ const BREEDS = [
   },
   {
     name: "Cão de Água Português", species: "dog", emoji: "🐩", size: "Médio",
+    photo: require("../assets/breeds/cao-de-agua-portugues.jpg"),
     origin: "Portugal (Algarve)", life: "11–14 anos", weight: "16–27 kg",
     personality: ["Trabalhador", "Alegre", "Muito inteligente", "Colante"],
     health: ["Displasia da anca", "Problemas oculares hereditários", "Doença de armazenamento (GM1)"],
@@ -858,6 +950,7 @@ const BREEDS = [
   },
   {
     name: "Cão de Castro Laboreiro", species: "dog", emoji: "🐕‍🦺", size: "Grande",
+    photo: require("../assets/breeds/cao-de-castro-laboreiro.jpg"),
     origin: "Portugal (Minho)", life: "12–14 anos", weight: "23–40 kg",
     personality: ["Guardião", "Desconfiado", "Muito leal", "Rústico"],
     health: ["Displasia da anca", "Poucas doenças hereditárias", "Otites"],
@@ -867,6 +960,7 @@ const BREEDS = [
   },
   {
     name: "Rafeiro do Alentejo", species: "dog", emoji: "🐕‍🦺", size: "Gigante",
+    photo: require("../assets/breeds/rafeiro-do-alentejo.jpg"),
     origin: "Portugal (Alentejo)", life: "10–13 anos", weight: "35–60 kg",
     personality: ["Sereno", "Guardião nocturno", "Independente", "Protector"],
     health: ["Displasia da anca", "Torção do estômago", "Problemas articulares"],
@@ -876,6 +970,7 @@ const BREEDS = [
   },
   {
     name: "Cão da Serra de Aires", species: "dog", emoji: "🐕", size: "Médio",
+    photo: require("../assets/breeds/cao-da-serra-de-aires.jpg"),
     origin: "Portugal (Alentejo)", life: "12–14 anos", weight: "17–27 kg",
     personality: ["Vivo", "Espertíssimo", "Brincalhão", "Muito apegado"],
     health: ["Displasia da anca", "Problemas oculares", "Alergias de pele"],
@@ -885,6 +980,7 @@ const BREEDS = [
   },
   {
     name: "Sagrado da Birmânia", species: "cat", emoji: "🐱", size: "Médio a grande",
+    photo: require("../assets/breeds/sagrado-da-birmania.jpg"),
     origin: "Birmânia / França", life: "13–16 anos", weight: "4–6 kg",
     personality: ["Doce", "Calmo", "Sociável", "Companheiro"],
     health: ["Problemas cardíacos", "Cálculos renais", "Bolas de pelo"],
@@ -894,6 +990,7 @@ const BREEDS = [
   },
   {
     name: "Norueguês da Floresta", species: "cat", emoji: "🐈", size: "Grande",
+    photo: require("../assets/breeds/noruegues-da-floresta.jpg"),
     origin: "Noruega", life: "14–16 anos", weight: "4–9 kg",
     personality: ["Independente", "Tranquilo", "Trepador", "Afectuoso sem ser colante"],
     health: ["Problemas cardíacos", "Displasia da anca", "Doença renal"],
@@ -903,6 +1000,7 @@ const BREEDS = [
   },
   {
     name: "Angorá Turco", species: "cat", emoji: "🐈", size: "Médio",
+    photo: require("../assets/breeds/angora-turco.jpg"),
     origin: "Turquia", life: "13–18 anos", weight: "3–5 kg",
     personality: ["Brincalhão", "Activo", "Curioso", "Falador"],
     health: ["Surdez em brancos de olhos azuis", "Problemas cardíacos", "Ataxia hereditária"],
@@ -912,6 +1010,7 @@ const BREEDS = [
   },
   {
     name: "Abissínio", species: "cat", emoji: "🐈", size: "Médio",
+    photo: require("../assets/breeds/abissinio.jpg"),
     origin: "Etiópia / Egipto", life: "12–16 anos", weight: "3–5 kg",
     personality: ["Elétrico", "Curiosíssimo", "Sociável", "Inteligente"],
     health: ["Problemas de gengivas", "Doença renal (amiloidose)", "Atrofia da retina"],
@@ -921,6 +1020,7 @@ const BREEDS = [
   },
   {
     name: "Scottish Fold (orelhas dobradas)", species: "cat", emoji: "🐱", size: "Médio",
+    photo: require("../assets/breeds/scottish-fold-orelhas-dobradas.jpg"),
     origin: "Escócia", life: "11–15 anos", weight: "3–6 kg",
     personality: ["Meigo", "Calmo", "Adaptável", "Companheiro"],
     health: ["Problemas de cartilagem e articulações (osteocondrodisplasia)", "Doença renal", "Problemas cardíacos"],
@@ -930,6 +1030,7 @@ const BREEDS = [
   },
   {
     name: "Devon Rex", species: "cat", emoji: "🐈", size: "Pequeno",
+    photo: require("../assets/breeds/devon-rex.jpg"),
     origin: "Inglaterra", life: "12–16 anos", weight: "2,5–4,5 kg",
     personality: ["Palhaço", "Colante", "Trepador", "Muito sociável"],
     health: ["Problemas cardíacos", "Fraqueza muscular hereditária", "Pele oleosa"],
@@ -939,6 +1040,7 @@ const BREEDS = [
   },
   {
     name: "Azul da Rússia", species: "cat", emoji: "🐱", size: "Médio",
+    photo: require("../assets/breeds/azul-da-russia.jpg"),
     origin: "Rússia", life: "15–20 anos", weight: "3–5,5 kg",
     personality: ["Reservado", "Leal a um dono", "Sossegado", "Rotineiro"],
     health: ["Muito saudável", "Obesidade", "Pedras na bexiga"],
@@ -948,6 +1050,7 @@ const BREEDS = [
   },
   {
     name: "Siberiano", species: "cat", emoji: "🐈", size: "Grande",
+    photo: require("../assets/breeds/siberiano.jpg"),
     origin: "Rússia", life: "12–18 anos", weight: "4,5–9 kg",
     personality: ["Robusto", "Brincalhão", "Afectuoso", "Corajoso"],
     health: ["Problemas cardíacos", "Doença renal"],
@@ -957,6 +1060,7 @@ const BREEDS = [
   },
   {
     name: "Exótico (Persa de pelo curto)", species: "cat", emoji: "🐱", size: "Médio",
+    photo: require("../assets/breeds/exotico-persa-de-pelo-curto.jpg"),
     origin: "EUA", life: "12–15 anos", weight: "3–6 kg",
     personality: ["Preguiçoso", "Doce", "Silencioso", "De colo"],
     health: ["Dificuldade a respirar", "Lágrimas e olhos feridos", "Doença renal policística"],
@@ -966,6 +1070,7 @@ const BREEDS = [
   },
   {
     name: "Munchkin (patas curtas)", species: "cat", emoji: "🐈", size: "Pequeno",
+    photo: require("../assets/breeds/munchkin-patas-curtas.jpg"),
     origin: "EUA", life: "12–15 anos", weight: "2,5–4 kg",
     personality: ["Brincalhão", "Sociável", "Curioso", "Bem-humorado"],
     health: ["Problemas de coluna (lordose)", "Peito afundado", "Artrite"],
@@ -975,6 +1080,7 @@ const BREEDS = [
   },
   {
     name: "Coelho Rex", species: "rodent", emoji: "🐰", size: "Médio",
+    photo: require("../assets/breeds/coelho-rex.jpg"),
     origin: "França", life: "8–10 anos", weight: "2–2,5 kg",
     personality: ["Dócil", "Curioso", "Sociável", "Calmo"],
     health: ["Feridas nas patas (pododermatite)", "Dentes em crescimento", "Problemas digestivos"],
@@ -984,6 +1090,7 @@ const BREEDS = [
   },
   {
     name: "Degu", species: "rodent", emoji: "🐭", size: "Pequeno",
+    photo: require("../assets/breeds/degu.jpg"),
     origin: "Chile", life: "6–8 anos", weight: "170–300 g",
     personality: ["Muito sociável", "Diurno", "Activo", "Comunicativo"],
     health: ["Diabetes (muito sensível ao açúcar)", "Cataratas", "Dentes em crescimento"],
@@ -993,6 +1100,7 @@ const BREEDS = [
   },
   {
     name: "Píton-real", species: "reptile", emoji: "🐍", size: "Médio",
+    photo: require("../assets/breeds/piton-real.jpg"),
     origin: "África Ocidental", life: "20–30 anos", weight: "1,5–2,5 kg",
     personality: ["Calma", "Lenta", "Nocturna", "Tímida"],
     health: ["Infecções respiratórias", "Muda de pele incompleta", "Recusa de comida (normal no inverno)"],
@@ -1002,6 +1110,7 @@ const BREEDS = [
   },
   {
     name: "Axolote", species: "aquatic", emoji: "🦎", size: "Médio",
+    photo: require("../assets/breeds/axolote.jpg"),
     origin: "México", life: "10–15 anos", weight: "60–200 g",
     personality: ["Curioso", "Sossegado", "Sempre \"a sorrir\"", "Solitário"],
     health: ["Stress com água quente", "Fungos e feridas nas guelras", "Ingestão de cascalho"],
@@ -1011,6 +1120,7 @@ const BREEDS = [
   },
   {
     name: "Peru", species: "farm", emoji: "🦃", size: "Grande",
+    photo: require("../assets/breeds/peru.jpg"),
     origin: "América do Norte", life: "8–10 anos", weight: "5–15 kg",
     personality: ["Curioso", "Sociável", "Vigilante", "Mais esperto do que parece"],
     health: ["Parasitas intestinais", "Doenças respiratórias", "Problemas de patas pelo peso"],
@@ -1020,6 +1130,7 @@ const BREEDS = [
   },
   {
     name: "Ganso", species: "farm", emoji: "🦢", size: "Grande",
+    photo: require("../assets/breeds/ganso.jpg"),
     origin: "Europa / Ásia", life: "15–25 anos", weight: "4–10 kg",
     personality: ["Guardião", "Fiel", "Barulhento", "Corajoso"],
     health: ["Problemas de patas", "Parasitas", "Asa virada por excesso de proteína"],
@@ -1067,7 +1178,9 @@ export default function BreedGuideScreen() {
               <ChevronLeft size={20} color="#fff" />
               <Text suppressHighlighting style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>{tr("Voltar")}</Text>
             </TouchableOpacity>
-            <Text suppressHighlighting style={{ fontSize: 64, textAlign: "center" }}>{selected.emoji}</Text>
+            <View style={{ alignItems: "center" }}>
+              <Image source={selected.photo} style={{ width: 132, height: 132, borderRadius: 66, borderWidth: 4, borderColor: "#fff" }} resizeMode="cover" />
+            </View>
             <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 8 }}>{selected.name}</Text>
             <View style={{ flexDirection: "row", justifyContent: "center", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
               <View style={{ backgroundColor: "rgba(255,255,255,0.25)", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 }}>
@@ -1203,9 +1316,7 @@ export default function BreedGuideScreen() {
         {filtered.map(b => (
           <TouchableOpacity key={b.name} onPress={() => setSelected(b)} activeOpacity={0.85}
             style={{ backgroundColor: CARD, borderRadius: 20, padding: 16, flexDirection: "row", alignItems: "center", gap: 14, borderWidth: 1.5, borderColor: b.color + "25" }}>
-            <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: b.bg, alignItems: "center", justifyContent: "center" }}>
-              <Text suppressHighlighting style={{ fontSize: 32 }}>{b.emoji}</Text>
-            </View>
+            <Image source={b.photo} style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: b.bg }} resizeMode="cover" />
             <View style={{ flex: 1 }}>
               <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: DARK }}>{b.name}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 12, marginTop: 2 }}>{tr(b.size)} · {tr(b.life)}</Text>

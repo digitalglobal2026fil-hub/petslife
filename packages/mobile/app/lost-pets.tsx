@@ -14,6 +14,7 @@ import { Platform, Share } from 'react-native';
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
 import { uploadImage } from "../lib/upload";
+import * as Print from "expo-print";
 import { pickImageWithChoice } from "../lib/pick-image";
 
 const TOKEN_KEY = "bearer_token";
@@ -53,6 +54,42 @@ async function sharePoster(post: any) {
     await Share.share({ message });
   } catch {
     Alert.alert(tr("Erro"), tr("Não foi possível abrir a partilha."));
+  }
+}
+
+// Imprimir o cartaz (ou guardar em PDF) — usa o menu normal do telefone
+async function printPoster(post: any) {
+  try {
+    const fotos = [post.photo1, post.photo2].filter(Boolean) as string[];
+    const titulo = post.type === 'found' ? '🎉 ANIMAL ENCONTRADO' : '🚨 ANIMAL PERDIDO';
+    const linhas = [
+      post.petName ? `<b>Nome:</b> ${post.petName}` : '',
+      post.breed ? `<b>Raça:</b> ${post.breed}` : '',
+      post.color ? `<b>Cor:</b> ${post.color}` : '',
+      post.location ? `<b>📍</b> ${post.location}` : '',
+      post.contact ? `<b>Contacto:</b> ${post.contact}` : '',
+    ].filter(Boolean).join('<br/>');
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8" />
+      <style>
+        @page { margin: 18px; }
+        body { font-family: -apple-system, Roboto, sans-serif; text-align: center; color: #1A1A2E; }
+        h1 { font-size: 34px; margin: 0 0 6px; color: ${post.type === 'found' ? '#16A34A' : '#DC2626'}; }
+        .dados { font-size: 17px; line-height: 1.6; margin: 10px 0; }
+        .desc { font-size: 16px; line-height: 1.5; margin: 12px 20px; }
+        .fotos { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+        .fotos img { max-width: ${fotos.length > 1 ? '46%' : '80%'}; max-height: 340px; object-fit: contain; border-radius: 10px; }
+        .rodape { margin-top: 16px; font-size: 13px; color: #888; }
+      </style></head>
+      <body>
+        <h1>${titulo}</h1>
+        <div class="dados">${linhas}</div>
+        ${post.description ? `<div class="desc">${String(post.description).replace(/</g, '&lt;')}</div>` : ''}
+        <div class="fotos">${fotos.map(f => `<img src="${f}" />`).join('')}</div>
+        <div class="rodape">Partilhado pela app PetsLife 🐾</div>
+      </body></html>`;
+    await Print.printAsync({ html });
+  } catch {
+    Alert.alert(tr("Erro"), tr("Não foi possível imprimir o cartaz."));
   }
 }
 
@@ -469,6 +506,10 @@ function PostCard({ post, onMaps, onDelete, onResolved }: { post: any; onMaps: (
             <Ionicons name="share-social-outline" size={18} color="#fff" />
             <Text style={styles.shareBtnTxt}>{tr("Partilhar no Facebook ou noutra app")}</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.printBtn} onPress={() => printPoster(post)}>
+            <Ionicons name="print-outline" size={18} color="#fff" />
+            <Text style={styles.shareBtnTxt}>{tr("Imprimir cartaz")}</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.foundBtn} onPress={marcarEncontrado}>
             <Ionicons name="checkmark-circle-outline" size={18} color="#fff" />
             <Text style={styles.shareBtnTxt}>{tr("Já encontrei")}</Text>
@@ -541,4 +582,5 @@ const styles = StyleSheet.create({
   shareBtnTxt: { color: '#fff', fontWeight: '800', fontSize: 14 },
   shareBtnAlt: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.purple, paddingVertical: 12, borderRadius: 12 },
   foundBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.green, paddingVertical: 12, borderRadius: 12 },
+  printBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#3B82F6', paddingVertical: 12, borderRadius: 12 },
 });

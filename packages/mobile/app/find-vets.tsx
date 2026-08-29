@@ -59,7 +59,7 @@ export default function FindVetsScreen() {
 
   const SEARCHES = [
     { emoji: "🏥", label: tr("Clínicas Veterinárias"), query: "veterinário clínica veterinária perto de mim" },
-    { emoji: "🚑", label: tr("Urgências 24h"), query: "clínica veterinária urgência 24 horas" },
+    { emoji: "🚑", label: tr("Hospitais 24h"), query: "hospital veterinário 24 horas urgência" },
     { emoji: "💊", label: tr("Pet Shops"), query: "pet shop loja animais perto de mim" },
     { emoji: "✂️", label: tr("Grooming / Tosquia"), query: "grooming banho tosquia cão gato perto de mim" },
     { emoji: "🏨", label: tr("Hotéis e Creches"), query: "hotel para cães creche canina perto de mim" },
@@ -130,7 +130,7 @@ export default function FindVetsScreen() {
         <View style={{ backgroundColor: "#FFF0EB", borderRadius: 20, padding: 18, marginTop: 24, borderWidth: 1.5, borderColor: "#FFD5C2" }}>
           <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "700", color: "#FF6B35", marginBottom: 10 }}>{tr("🚨 Urgência Veterinária")}</Text>
           <Text suppressHighlighting style={{ color: "#1A1A2E", fontSize: 13, lineHeight: 20, marginBottom: 14 }}>
-            {tr("Em Portugal, o número de emergência é o")} <Text suppressHighlighting style={{ fontWeight: "700" }}>112</Text>{tr(". Para urgências veterinárias, ligue para a clínica mais próxima ou dirija-se a uma clínica 24h.")}
+            {tr("Em Portugal, o número de emergência é o")} <Text suppressHighlighting style={{ fontWeight: "700" }}>112</Text>{tr(". As clínicas e os consultórios veterinários têm horário de funcionamento; só os hospitais veterinários estão abertos 24 horas. Numa urgência à noite ou ao fim de semana, dirija-se a um hospital veterinário.")}
           </Text>
           <TouchableOpacity onPress={() => Linking.openURL("tel:112")}
             style={{ backgroundColor: "#FF6B35", borderRadius: 14, padding: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
@@ -144,7 +144,7 @@ export default function FindVetsScreen() {
           <Text suppressHighlighting style={{ fontSize: 14, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("💡 Dicas úteis")}</Text>
           {[
             tr("Guarde o contacto do seu veterinário nos favoritos"),
-            tr("Procure clínicas 24h perto de casa com antecedência"),
+            tr("Saiba de antemão qual é o hospital veterinário 24h mais perto de casa"),
             tr("Mantenha o cartão de vacinação sempre atualizado"),
           ].map((tip, i) => (
             <View key={i} style={{ flexDirection: "row", gap: 8, marginTop: i > 0 ? 6 : 0 }}>

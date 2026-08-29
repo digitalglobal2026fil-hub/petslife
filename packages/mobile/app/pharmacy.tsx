@@ -124,6 +124,182 @@ const PRODUCTS = [
       { name: "Zooplus PT", url: "https://www.zooplus.pt" },
     ],
   },
+  {
+    id: "11", category: "Antiparasitários", emoji: "🪲",
+    name: "Frontline Combo Cão", brand: "Boehringer",
+    description: "Pipeta mensal para cães. Mata pulgas, carraças e piolhos e impede que os ovos se desenvolvam dentro de casa.",
+    price: "10,90€", rating: 4.6, reviews: 511,
+    tags: ["Cães", "Pulgas", "Carraças", tr("Mensal")],
+    color: "#F97316", bg: "#FFF7ED",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "12", category: "Antiparasitários", emoji: "🦟",
+    name: "Advantix Spot-On Cão", brand: "Elanco",
+    description: "Pipeta mensal que também repele mosquitos e flebótomos, os que transmitem a leishmaniose. Nunca usar em gatos.",
+    price: "14,50€", rating: 4.7, reviews: 398,
+    tags: ["Cães", "Leishmaniose", "Mosquitos", tr("Mensal")],
+    color: "#F97316", bg: "#FFF7ED",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "13", category: "Antiparasitários", emoji: "⭕",
+    name: "Coleira Seresto", brand: "Elanco",
+    description: "Coleira que protege até 8 meses contra pulgas e carraças. Há versão para cão e versão para gato.",
+    price: "39,90€", rating: 4.6, reviews: 447,
+    tags: ["8 meses", "Cães", "Gatos", "Coleira"],
+    color: "#F97316", bg: "#FFF7ED",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "14", category: "Antiparasitários", emoji: "💊",
+    name: "NexGard Comprimido", brand: "Boehringer",
+    description: "Comprimido mastigável mensal contra pulgas e carraças. Boa opção para cães que tomam banho com frequência ou nadam.",
+    price: "13,90€", rating: 4.7, reviews: 362,
+    tags: ["Cães", "Comprimido", tr("Mensal")],
+    color: "#F97316", bg: "#FFF7ED",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "15", category: "Antiparasitários", emoji: "💊",
+    name: "Simparica Trio", brand: "Zoetis",
+    description: "Comprimido mensal que cobre pulgas, carraças, vermes intestinais e dirofilariose num só produto.",
+    price: "19,90€", rating: 4.8, reviews: 254,
+    tags: ["Cães", "Interno e externo", tr("Mensal")],
+    color: "#F97316", bg: "#FFF7ED",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "16", category: "Antiparasitários", emoji: "🐛",
+    name: "Drontal Plus", brand: "Elanco",
+    description: "Desparasitante interno em comprimido. Trata lombrigas, ténias e outros vermes. Repetir conforme o veterinário indicar.",
+    price: "7,50€", rating: 4.7, reviews: 620,
+    tags: ["Vermes", "Interno", "Cães"],
+    color: "#F97316", bg: "#FFF7ED",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "17", category: "Antiparasitários", emoji: "🐛",
+    name: "Milbemax Gato", brand: "Elanco",
+    description: "Desparasitante interno para gatos, em comprimido pequeno e fácil de dar. Vermes redondos e ténias.",
+    price: "8,90€", rating: 4.5, reviews: 289,
+    tags: ["Gatos", "Vermes", "Interno"],
+    color: "#F97316", bg: "#FFF7ED",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "18", category: "Higiene", emoji: "🛁",
+    name: "Champô Antiparasitário Beaphar", brand: "Beaphar",
+    description: "Champô que ajuda a eliminar pulgas durante o banho. É um apoio: não substitui a pipeta nem o comprimido.",
+    price: "8,50€", rating: 4.1, reviews: 143,
+    tags: ["Banho", "Pulgas", "Cães e gatos"],
+    color: "#4ECDC4", bg: "#E8FAF9",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "19", category: "Higiene", emoji: "🧴",
+    name: "Soro Fisiológico Estéril", brand: "Genérico",
+    description: "Para limpar olhos, narinas e feridas superficiais. Deve haver sempre um frasco na caixa de primeiros socorros.",
+    price: "3,50€", rating: 4.9, reviews: 731,
+    tags: ["Feridas", "Olhos", "Essencial"],
+    color: "#4ECDC4", bg: "#E8FAF9",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "20", category: "Higiene", emoji: "🩹",
+    name: "Spray Cicatrizante com Clorexidina", brand: "Virbac",
+    description: "Desinfeta e ajuda a cicatrizar pequenas feridas e arranhões. Se a ferida for funda ou infetar, ir ao veterinário.",
+    price: "12,90€", rating: 4.6, reviews: 208,
+    tags: ["Feridas", "Desinfetante", "Pele"],
+    color: "#4ECDC4", bg: "#E8FAF9",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "21", category: "Higiene", emoji: "👁️",
+    name: "Solução de Limpeza Ocular", brand: "Beaphar",
+    description: "Limpa o canto dos olhos e as manchas de lágrima. Muito útil no maltês, no shih tzu e noutras raças de olhos lacrimejantes.",
+    price: "7,90€", rating: 4.4, reviews: 176,
+    tags: ["Olhos", "Lágrimas", "Raças pequenas"],
+    color: "#4ECDC4", bg: "#E8FAF9",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "22", category: "Higiene", emoji: "👂",
+    name: "Limpador Auricular Epi-Otic", brand: "Virbac",
+    description: "Limpa e seca o canal do ouvido. Importante nos cães de orelhas caídas, como o basset hound e o cocker.",
+    price: "11,50€", rating: 4.7, reviews: 344,
+    tags: ["Ouvidos", "Otites", "Orelhas caídas"],
+    color: "#4ECDC4", bg: "#E8FAF9",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "23", category: "Suplementos", emoji: "🦴",
+    name: "Cosequin Condroprotetor", brand: "Nutramax",
+    description: "Glucosamina e condroitina para as articulações. Indicado em cães grandes, idosos ou com displasia da anca.",
+    price: "26,90€", rating: 4.7, reviews: 312,
+    tags: ["Articulações", "Idosos", "Cães grandes"],
+    color: "#8B5CF6", bg: "#F3EEFF",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "24", category: "Suplementos", emoji: "🦠",
+    name: "Fortiflora Probiótico", brand: "Purina",
+    description: "Pó probiótico para juntar à comida. Ajuda a repor a flora intestinal em diarreias e depois de antibióticos.",
+    price: "21,50€", rating: 4.8, reviews: 465,
+    tags: ["Diarreia", "Intestino", "Cães e gatos"],
+    color: "#8B5CF6", bg: "#F3EEFF",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "25", category: "Suplementos", emoji: "🧪",
+    name: "Multivitamínico Beaphar", brand: "Beaphar",
+    description: "Vitaminas em pasta ou comprimido para animais em recuperação, gestantes ou com pouco apetite.",
+    price: "9,90€", rating: 4.3, reviews: 187,
+    tags: ["Vitaminas", "Recuperação", "Apetite"],
+    color: "#8B5CF6", bg: "#F3EEFF",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
+  {
+    id: "26", category: "Cuidados Dentários", emoji: "🦷",
+    name: "Escova de Dedo com Pasta", brand: "Beaphar",
+    description: "Escova que se põe no dedo, mais fácil de usar em animais pequenos. A pasta é para engolir: nunca usar pasta de dentes de humanos.",
+    price: "6,90€", rating: 4.4, reviews: 231,
+    tags: ["Dentes", "Fácil", "Cães e gatos"],
+    color: "#4ECDC4", bg: "#E8FAF9",
+    where: [
+      { name: "Zooplus PT", url: "https://www.zooplus.pt" },
+    ],
+  },
 ];
 
 const CATEGORIES = ["Todos", "Antiparasitários", "Suplementos", "Higiene", "Alimentação Especial", "Cuidados Dentários"];
