@@ -53,7 +53,7 @@ const GUIDES = [
         ],
         tip: "Pode levar dias ou semanas — sem pressão. Sempre positivo!",
         videoTitle: "Como ensinar o cão a deitar",
-        videoUrl: "https://www.youtube.com/watch?v=IBibDxVfYgg",
+        videoUrl: "https://www.youtube.com/watch?v=wF5q4XwRqAU",
       },
       {
         title: "Não puxar na trela", emoji: "🦮", difficulty: "Intermédio",
