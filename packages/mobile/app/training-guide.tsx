@@ -58,13 +58,14 @@ const GUIDES = [
       {
         title: "Não puxar na trela", emoji: "🦮", difficulty: "Intermédio",
         steps: [
-          "Quando o cão puxar, PARE completamente",
-          "Espere que a trela fique solta",
+          "Use sempre peitoral (corpete) — nunca coleira de aperto, de pinos ou de enforcamento",
+          "Quando o cão puxar, PARE completamente e espere, sem dar puxões",
+          "Espere que a trela fique solta por iniciativa dele",
           "Quando largar a tensão, continue a andar",
           "Mude de direcção se ele continuar a puxar",
-          "Elogie e prémio quando andar ao lado",
+          "Elogie e dê prémio sempre que andar ao seu lado",
         ],
-        tip: "Requer muita paciência nas primeiras semanas. Resultado: passeios agradáveis para sempre.",
+        tip: "O peitoral distribui a força pelo peito e protege o pescoço e a traqueia. Coleiras de aperto machucam e ensinam o cão a ter medo do passeio, não a andar bem. Requer paciência nas primeiras semanas — o resultado dura para sempre.",
         videoTitle: "Passeio sem puxar na trela",
         videoUrl: "https://www.youtube.com/watch?v=8VXZyrgjZ4U",
       },
@@ -302,6 +303,12 @@ export default function TrainingGuideScreen() {
               <Text suppressHighlighting style={{ color: "#78350F", fontSize: 14, lineHeight: 22 }}>{tr(selected.tip)}</Text>
             </View>
 
+            <View style={{ backgroundColor: "#E6FAF5", borderRadius: 16, padding: 14, borderWidth: 1.5, borderColor: "#A7F3D0" }}>
+              <Text suppressHighlighting style={{ color: "#065F46", fontSize: 13, lineHeight: 20 }}>
+                {tr("🐾 Treino positivo: prémios e elogios, peitoral nos passeios, nunca coleiras de aperto nem castigos.")}
+              </Text>
+            </View>
+
             <TouchableOpacity onPress={() => Linking.openURL(selected.videoUrl)}
               style={{ backgroundColor: "#FF0000", borderRadius: 18, padding: 16, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 }}>
               <Play size={20} color="#fff" fill="#fff" />
@@ -325,12 +332,21 @@ export default function TrainingGuideScreen() {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "900", color: "#fff" }}>{tr("Treino & Comportamento 🎯")}</Text>
-            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{tr("Guias com vídeo incluído")}</Text>
+            <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{tr("Guias e vídeos de reforço positivo")}</Text>
           </View>
         </View>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingBottom: Math.max(insets.bottom, 20) + 60 }}>
+        {/* Metodo da app: so reforco positivo. Sem coleiras de aperto nem castigos. */}
+        <View style={{ backgroundColor: "#E6FAF5", borderRadius: 18, padding: 16, marginBottom: 20, borderWidth: 1.5, borderColor: "#A7F3D0" }}>
+          <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "900", color: GREEN_DARK, marginBottom: 6 }}>
+            {tr("🐾 Só treino positivo")}
+          </Text>
+          <Text suppressHighlighting style={{ color: "#065F46", fontSize: 13, lineHeight: 20 }}>
+            {tr("Todos os guias e vídeos desta página usam reforço positivo: prémios, elogios e paciência. Use peitoral (corpete) nos passeios. Nunca use coleiras de aperto, de pinos, de enforcamento, choques, gritos, puxões ou castigos — magoam o animal e destroem a confiança em si.")}
+          </Text>
+        </View>
         {GUIDES.map(cat => (
           <View key={cat.category} style={{ marginBottom: 24 }}>
             <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "800", color: cat.color, marginBottom: 12 }}>{tr(cat.category)}</Text>

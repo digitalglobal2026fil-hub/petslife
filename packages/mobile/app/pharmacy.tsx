@@ -304,6 +304,15 @@ const PRODUCTS = [
 
 const CATEGORIES = ["Todos", "Antiparasitários", "Suplementos", "Higiene", "Alimentação Especial", "Cuidados Dentários"];
 
+const CAT_EMOJI: Record<string, string> = {
+  "Todos": "🧺",
+  "Antiparasitários": "🪲",
+  "Suplementos": "💊",
+  "Higiene": "🛁",
+  "Alimentação Especial": "🍽️",
+  "Cuidados Dentários": "🦷",
+};
+
 export default function PharmacyScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -317,6 +326,12 @@ export default function PharmacyScreen() {
     const matchCat = category === "Todos" || p.category === category;
     return matchSearch && matchCat;
   });
+
+  // Agrupar por categoria para mostrar o titulo de cada uma por cima dos produtos
+  const grupos: [string, typeof PRODUCTS][] = CATEGORIES
+    .filter(c => c !== "Todos")
+    .map(c => [c, filtered.filter(p => p.category === c)] as [string, typeof PRODUCTS])
+    .filter(([, produtos]) => produtos.length > 0);
 
   const Stars = ({ rating }: { rating: number }) => (
     <View style={{ flexDirection: "row", gap: 1 }}>
@@ -410,11 +425,22 @@ export default function PharmacyScreen() {
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 20, paddingVertical: 14 }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0, flexShrink: 0 }}
+        contentContainerStyle={{ gap: 8, paddingHorizontal: 20, paddingVertical: 14, alignItems: "center" }}
+      >
         {CATEGORIES.map(c => (
           <TouchableOpacity key={c} onPress={() => setCategory(c)}
-            style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: category === c ? BLUE : CARD, borderWidth: 1.5, borderColor: category === c ? BLUE : "#E5E7EB" }}>
-            <Text suppressHighlighting style={{ color: category === c ? "#fff" : GRAY, fontWeight: "700", fontSize: 12 }}>{tr(c)}</Text>
+            style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 22, backgroundColor: category === c ? BLUE : CARD, borderWidth: 1.5, borderColor: category === c ? BLUE : "#E5E7EB" }}>
+            <Text
+              suppressHighlighting
+              numberOfLines={1}
+              style={{ color: category === c ? "#fff" : "#374151", fontWeight: "800", fontSize: 13, includeFontPadding: false }}
+            >
+              {CAT_EMOJI[c] ? `${CAT_EMOJI[c]} ` : ""}{tr(c)}
+            </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -428,7 +454,15 @@ export default function PharmacyScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 20) + 60, gap: 10 }}>
-        {filtered.map(p => (
+        {grupos.map(([cat, produtos]) => (
+          <View key={cat} style={{ gap: 10 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 4 }}>
+              <Text suppressHighlighting style={{ fontSize: 16 }}>{CAT_EMOJI[cat] ?? "📦"}</Text>
+              <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "900", color: DARK }}>{tr(cat)}</Text>
+              <View style={{ flex: 1, height: 1.5, backgroundColor: "#E5E7EB" }} />
+              <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: GRAY }}>{produtos.length}</Text>
+            </View>
+            {produtos.map(p => (
           <TouchableOpacity key={p.id} onPress={() => setSelected(p)} activeOpacity={0.85}
             style={{ backgroundColor: CARD, borderRadius: 20, padding: 16, flexDirection: "row", gap: 14, borderWidth: 1.5, borderColor: p.color + "20" }}>
             <View style={{ width: 60, height: 60, borderRadius: 20, backgroundColor: p.bg, alignItems: "center", justifyContent: "center" }}>
@@ -451,7 +485,14 @@ export default function PharmacyScreen() {
               </View>
             </View>
           </TouchableOpacity>
+            ))}
+          </View>
         ))}
+        {grupos.length === 0 && (
+          <View style={{ alignItems: "center", paddingVertical: 40 }}>
+            <Text suppressHighlighting style={{ color: GRAY, fontSize: 14 }}>{tr("Nenhum produto encontrado.")}</Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

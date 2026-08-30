@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles, Siren, Dog, Dumbbell, Pill, Search as SearchIcon, Gauge, HeartHandshake, Heart } from "lucide-react-native";
+import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles, Siren, Dog, Dumbbell, Pill, Search as SearchIcon, Gauge, HeartHandshake, Heart, ClipboardList, BookOpen } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
 import { AnimalFact } from "../../components/AnimalFact";
@@ -145,8 +145,15 @@ export default function HomeScreen() {
     { icon: Dog, label: "Guia de Raças", color: "#8B5CF6", bg: "#F3EEFF", onPress: () => router.push("/breed-guide" as any) },
     { icon: Dumbbell, label: "Treino", color: "#FF6B35", bg: "#FFF0EB", onPress: () => router.push("/training-guide" as any) },
     { icon: Pill, label: "Farmácia", color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/pharmacy" as any) },
-    { icon: SearchIcon, label: "Perdidos", color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/lost-pets" as any) },
+    { icon: SearchIcon, label: tr("Animais Perdidos"), color: "#06D6A0", bg: "#E6FAF5", onPress: () => router.push("/lost-pets" as any) },
     { icon: Heart, label: tr("Adoções"), color: "#EC4899", bg: "#FDF2F8", onPress: () => router.push("/category/adocao" as any) },
+    { icon: ClipboardList, label: tr("Diário de Saúde"), color: "#EF476F", bg: "#FFF0F3", onPress: () => router.push("/add-diary" as any) },
+    {
+      icon: BookOpen, label: tr("Diário do Animal"), color: "#0EA5E9", bg: "#E0F2FE", onPress: () => {
+        if (pets.length === 0) { Alert.alert(tr("Diário do Animal"), tr("Adicione um animal primeiro.")); return; }
+        router.push(`/pet/${pets[0].id}/diario` as any);
+      }
+    },
     { icon: Gauge, label: tr("Peso"), color: "#F59E0B", bg: "#FEF3C7", onPress: () => router.push("/weight-chart" as any) },
     { icon: HeartHandshake, label: tr("Nossas Missões"), color: "#EC4899", bg: "#FDF2F8", onPress: () => router.push("/missions" as any) },
   ];

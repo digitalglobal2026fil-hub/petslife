@@ -33,3 +33,13 @@ Build: /tmp/build54.sh (sed do build53.sh). Release por GitHub API.
 7. Curiosidades: AnimatedPet em vez de PetIllustration + emoji com balanço (WobbleEmoji)
 8. 111 fotos reais (Wikipédia/Wikimedia, 400x400, 4.1 MB) em assets/breeds/,
    campo photo: require(...) em cada ficha; foto na lista e na ficha detalhada
+
+## v55 (em curso, ainda não compilada)
+1. breed-guide: "Rafeiro / Cão sem raça" → "Raça indefinida"; Westie sem escovagem repetida
+2. pharmacy: chips com emoji e sem nomes cortados; produtos agrupados por categoria; categorias vazias escondidas
+3. Início: "Diário de Saúde" e "Diário do Animal" novos; "Animais Perdidos"
+4. marketplace: saíram Adoções e Perdidos (abrem-se pelo Início)
+5. training-guide: só reforço positivo, peitoral obrigatório, cartão verde de aviso
+6. 111 fotos de raças refeitas: animal INTEIRO na moldura (sem corte), foto certa via títulos da Wikipédia; Akita Inu e Pombo Doméstico trocados (colagem/desenho)
+7. Mosaico em store-assets/mosaico/folha1-4.jpg — À ESPERA DE APROVAÇÃO DELA antes de compilar
+8. PENDENTE: verificar os 18 vídeos do YouTube em training-guide (perguntar antes)

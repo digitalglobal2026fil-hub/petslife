@@ -180,10 +180,8 @@ const BIZ_CATS = [
 // ─── Listing categories ────────────────────────────────────────────────────────
 const LIST_CATS = [
   { key: "todos",     label: tr("Todos"),          emoji: "🔍", route: null },
-  { key: "adoption",  label: tr("Adoção"),         emoji: "❤️", route: "/category/adocao" },
   { key: "products",  label: tr("Produtos"),       emoji: "🛍️", route: null },
   { key: "services",  label: tr("Serviços"),       emoji: "🛠️", route: "/category/servicos" },
-  { key: "lost",      label: tr("Animal Perdido"), emoji: "🔍", route: "/category/perdidos" },
 ];
 
 // ─── Main screen ──────────────────────────────────────────────────────────────
