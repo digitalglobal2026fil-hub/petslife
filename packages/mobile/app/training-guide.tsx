@@ -27,7 +27,7 @@ const GUIDES = [
         ],
         tip: "Consistência é chave! Use sempre a mesma palavra. Positivo sempre — nunca puna.",
         videoTitle: "Treino de Sentar — Tutorial",
-        videoUrl: "https://www.youtube.com/watch?v=-yfxy1BFnsM",
+        videoUrl: "https://www.youtube.com/watch?v=ecqpyk3wMvU",
       },
       {
         title: "Vem cá", emoji: "📣", difficulty: "Iniciante",
@@ -98,7 +98,7 @@ const GUIDES = [
         ],
         tip: "Latir é comunicação natural. O objectivo é controlar, não eliminar completamente.",
         videoTitle: "Como travar o latido excessivo",
-        videoUrl: "https://www.youtube.com/watch?v=3XRMsv9-XhE",
+        videoUrl: "https://www.youtube.com/watch?v=e8WqpaA-hgY",
       },
       {
         title: "Morder e Morder a Brincar", emoji: "🦷", difficulty: "Iniciante",
