@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect, useState } from "react";
-import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill, ShieldAlert, Globe } from "lucide-react-native";
+import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill, ShieldAlert, Globe, Music, Volume2, VolumeX } from "lucide-react-native";
 import { authClient, clearToken } from "../../lib/auth";
 import { api } from "../../lib/api";
 import Constants from "expo-constants";
@@ -11,6 +11,7 @@ import { Platform } from "react-native";
 import { authFetch } from "../../lib/auth-fetch";
 import { LanguageModal } from "../../components/LanguagePicker";
 import { useLang, LANGUAGES, tr } from "../../lib/i18n";
+import { somAberturaLigado, definirSomAbertura, experimentarAbertura } from "../../lib/opening-sound";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -130,11 +131,21 @@ export default function ProfileScreen() {
     ]);
   }
 
+  const [somLigado, setSomLigado] = useState(true);
+  useEffect(() => { somAberturaLigado().then(setSomLigado); }, []);
+  async function alternarSom() {
+    const novo = !somLigado;
+    setSomLigado(novo);
+    await definirSomAbertura(novo);
+    if (novo) experimentarAbertura();
+  }
+
   const [langOpen, setLangOpen] = useState(false);
   const { lang, t } = useLang();
   const currentLang = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
 
   const menuItems = [
+    { icon: somLigado ? Volume2 : VolumeX, label: tr("Som de abertura"), sublabel: somLigado ? tr("Ligado — toca ao abrir a app") : tr("Desligado"), color: "#F59E0B", onPress: alternarSom },
     { icon: Globe, label: t("Idioma"), sublabel: `${currentLang.flag}  ${currentLang.name}`, color: "#3B82F6", onPress: () => setLangOpen(true) },
     { icon: CreditCard, label: tr("Subscrição"), sublabel: isTrial ? tr("Trial ativo") : isActive ? tr("Premium ativo") : tr("Inativo"), color: "#FF6B35", onPress: () => router.push("/subscription") },
     { icon: Gift, label: tr("Código Promocional"), sublabel: tr("Tens um código especial?"), color: "#10B981", onPress: () => router.push("/promo-code" as any) },

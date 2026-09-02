@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles, Siren, Dog, Dumbbell, Pill, Search as SearchIcon, Gauge, HeartHandshake, Heart, ClipboardList, BookOpen } from "lucide-react-native";
+import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles, Siren, Dog, Dumbbell, Pill, Search as SearchIcon, Gauge, HeartHandshake, Heart, ClipboardList, BookOpen, Coffee, Scale, Skull } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
 import { AnimalFact } from "../../components/AnimalFact";
@@ -154,6 +154,9 @@ export default function HomeScreen() {
         router.push(`/pet/${pets[0].id}/diario` as any);
       }
     },
+    { icon: Coffee, label: tr("Pet Friendly"), color: "#14B8A6", bg: "#E6FAF5", onPress: () => router.push("/pet-friendly" as any) },
+    { icon: Scale, label: tr("Quanta Ração"), color: "#4ECDC4", bg: "#E8FAF9", onPress: () => router.push("/food-calculator" as any) },
+    { icon: Skull, label: tr("Venenos em Casa"), color: "#DC2626", bg: "#FEF2F2", onPress: () => router.push("/toxic" as any) },
     { icon: Gauge, label: tr("Peso"), color: "#F59E0B", bg: "#FEF3C7", onPress: () => router.push("/weight-chart" as any) },
     { icon: HeartHandshake, label: tr("Nossas Missões"), color: "#EC4899", bg: "#FDF2F8", onPress: () => router.push("/missions" as any) },
   ];

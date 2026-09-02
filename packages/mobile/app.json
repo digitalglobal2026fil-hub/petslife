@@ -31,7 +31,7 @@
     },
     "name": "PetsLife",
     "slug": "petslife",
-    "version": "1.9.20",
+    "version": "1.9.23",
     "scheme": "petslife",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -50,7 +50,8 @@
           "cameraPermission": "A PetsLife precisa de acesso à câmara para fotografar documentos."
         }
       ],
-      "expo-iap"
+      "expo-iap",
+      "expo-audio"
     ]
   }
 }

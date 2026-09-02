@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { View, Text, Image, Animated, Easing, Dimensions } from "react-native";
 import PawIcon from "./PawIcon";
+import { tocarAberturaUmaVez } from "../lib/opening-sound";
 
 const LOADING_ART = require("../assets/petslife-loading.png");
 
@@ -83,6 +84,12 @@ function FloatingPaw({ paw }: { paw: (typeof PAWS)[number] }) {
  * playful bouncing mascot + "quase lá..." message.
  */
 export function AppLoading({ message = "Só um instante..." }: { message?: string }) {
+  // Musiquinha de abertura: o módulo garante que só toca uma vez por
+  // arranque, mesmo que este ecrã apareça várias vezes.
+  useEffect(() => {
+    tocarAberturaUmaVez();
+  }, []);
+
   const bounce = useRef(new Animated.Value(0)).current;
   const dots = useRef(new Animated.Value(0)).current;
   const progress = useRef(new Animated.Value(0)).current;

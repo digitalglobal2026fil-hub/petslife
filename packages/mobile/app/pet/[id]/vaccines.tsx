@@ -14,7 +14,7 @@ import { DateFieldPT } from "../../../components/DateFieldPT";
 import { pickImageWithChoice } from "../../../lib/pick-image";
 import { tr } from "../../../lib/i18n";
 import { Share2, Printer } from "lucide-react-native";
-import { shareImage, printImage } from "../../../lib/share-image";
+import { shareImage, printImage, printVaccineCard } from "../../../lib/share-image";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -94,6 +94,13 @@ export default function VaccinesPage() {
   const [notes, setNotes] = useState("");
   const [docUrl, setDocUrl] = useState<string | null>(null);
 
+  const { data: petData } = useQuery({
+    queryKey: ["pet", id],
+    queryFn: async () => (await api.pets[":id"].$get({ param: { id: id! } })).json(),
+    enabled: !!id,
+  });
+  const pet = (petData as any)?.pet ?? {};
+
   const { data, isLoading } = useQuery({
     queryKey: ["vaccines", id],
     queryFn: async () => (await api.vaccines["pet"][":petId"].$get({ param: { petId: id! } })).json(),
@@ -154,6 +161,14 @@ export default function VaccinesPage() {
       <View style={{ marginHorizontal: 20, marginBottom: 16, backgroundColor: GREEN_BG, borderRadius: 16, padding: 14, borderWidth: 1.5, borderColor: "#B2EDD5" }}>
         <Text suppressHighlighting style={{ color: GREEN, fontWeight: "700", fontSize: 13, textAlign: "center" }}>{phrase}</Text>
       </View>
+
+      {vaccines.length > 0 && (
+        <TouchableOpacity onPress={() => printVaccineCard(pet, vaccines)}
+          style={{ marginHorizontal: 20, marginBottom: 16, backgroundColor: CARD, borderRadius: 16, padding: 14, borderWidth: 1.5, borderColor: BORDER, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <Printer size={18} color={BROWN} />
+          <Text suppressHighlighting style={{ color: BROWN, fontWeight: "800", fontSize: 14 }}>{tr("Cartão de vacinas em PDF")}</Text>
+        </TouchableOpacity>
+      )}
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 0, paddingBottom: 40 }}>
         {isLoading ? (

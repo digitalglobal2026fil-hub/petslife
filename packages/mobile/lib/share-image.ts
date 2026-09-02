@@ -131,3 +131,70 @@ export async function printImages(uris: (string | null | undefined)[], title?: s
     Alert.alert("Não foi possível imprimir", e?.message ?? "Tente novamente.");
   }
 }
+
+/**
+ * Cartão de vacinas em PDF, para levar ao veterinário ou guardar.
+ * A pessoa carrega no botão e escolhe "Guardar como PDF" ou a impressora.
+ */
+export async function printVaccineCard(
+  pet: { name?: string | null; species?: string | null; breed?: string | null; birthDate?: string | null; chip?: string | null; qrCode?: string | null },
+  vaccines: any[],
+) {
+  try {
+    if (!vaccines?.length) {
+      Alert.alert("Sem vacinas", "Registe pelo menos uma vacina primeiro.");
+      return;
+    }
+    const esc = (s: any) =>
+      String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const hoje = new Date().toLocaleDateString("pt-PT");
+    const linhas = vaccines
+      .map(
+        (v) => `<tr>
+          <td><b>${esc(v.name)}</b>${v.batch ? `<div class="s">Lote: ${esc(v.batch)}</div>` : ""}</td>
+          <td>${esc(v.date ?? "—")}</td>
+          <td>${esc(v.nextDate ?? "—")}</td>
+          <td>${esc(v.veterinarian ?? "—")}${v.clinic ? `<div class="s">${esc(v.clinic)}</div>` : ""}</td>
+        </tr>`,
+      )
+      .join("");
+    const info = [
+      pet.species ? `Espécie: ${esc(pet.species)}` : "",
+      pet.breed ? `Raça: ${esc(pet.breed)}` : "",
+      pet.birthDate ? `Nascimento: ${esc(pet.birthDate)}` : "",
+      pet.chip ? `Chip: ${esc(pet.chip)}` : "",
+    ]
+      .filter(Boolean)
+      .join(" &nbsp;·&nbsp; ");
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8" />
+      <style>
+        @page { margin: 26px; }
+        body { margin: 0; font-family: -apple-system, Roboto, sans-serif; color: #1A1A2E; }
+        .top { background: #4ECDC4; color: #fff; border-radius: 14px; padding: 16px 18px; }
+        .top h1 { margin: 0; font-size: 21px; }
+        .top .n { font-size: 15px; margin-top: 4px; opacity: .95; }
+        .info { font-size: 12px; color: #555; margin: 14px 0 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: #E8FAF9; text-align: left; padding: 8px; border: 1px solid #CFEDEB; }
+        td { padding: 8px; border: 1px solid #E5E7EB; vertical-align: top; }
+        .s { font-size: 10px; color: #777; }
+        .rodape { margin-top: 18px; font-size: 10px; color: #999; text-align: center; }
+      </style></head>
+      <body>
+        <div class="top">
+          <h1>Cartão de Vacinas</h1>
+          <div class="n">${esc(pet.name ?? "Animal")}</div>
+        </div>
+        ${info ? `<div class="info">${info}</div>` : ""}
+        <table>
+          <tr><th>Vacina</th><th>Administrada</th><th>Próxima</th><th>Veterinário</th></tr>
+          ${linhas}
+        </table>
+        <div class="rodape">Emitido pela app PetsLife em ${hoje} · Documento informativo, não substitui a caderneta oficial</div>
+      </body></html>`;
+    await Print.printAsync({ html });
+  } catch (e: any) {
+    Alert.alert("Não foi possível criar o PDF", e?.message ?? "Tente novamente.");
+  }
+}
