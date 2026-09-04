@@ -3,6 +3,20 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const API = "/api/promo-codes/admin";
 
+// Link que a Filipa envia. Em producao e petslife.onrender.com; em
+// desenvolvimento usa o endereco onde a pagina esta aberta.
+function linkDoCodigo(code: string) {
+  return `${window.location.origin}/promo/${code}`;
+}
+
+function mensagemDoCodigo(code: string) {
+  return [
+    "Ola! Tenho um presente para ti \u{1F43E}",
+    "Acesso vitalicio a minha app PetsLife - de graca, para sempre.",
+    "Clica aqui e segue os passos: " + linkDoCodigo(code),
+  ].join("\n");
+}
+
 async function fetchCodes() {
   const r = await fetch(API, { credentials: "include" });
   return r.json();
@@ -15,6 +29,7 @@ export default function AdminPromo() {
   const [customCode, setCustomCode] = useState("");
   const [creating, setCreating] = useState(false);
   const [msg, setMsg] = useState("");
+  const [novo, setNovo] = useState<string | null>(null);
 
   async function createCode() {
     setCreating(true);
@@ -29,6 +44,7 @@ export default function AdminPromo() {
     if (d.error) setMsg("❌ " + d.error);
     else {
       setMsg("✅ Código criado: " + d.promo.code);
+      setNovo(d.promo.code);
       setDescription(""); setCustomCode("");
       qc.invalidateQueries({ queryKey: ["promo-codes"] });
     }
@@ -39,6 +55,16 @@ export default function AdminPromo() {
     if (!confirm("Apagar código?")) return;
     await fetch(`${API}/${id}`, { method: "DELETE", credentials: "include" });
     qc.invalidateQueries({ queryKey: ["promo-codes"] });
+  }
+
+  async function copiarMensagem(code: string) {
+    await navigator.clipboard.writeText(mensagemDoCodigo(code));
+    alert("Mensagem copiada. Cole no WhatsApp e envie.");
+  }
+
+  async function copiarLink(code: string) {
+    await navigator.clipboard.writeText(linkDoCodigo(code));
+    alert("Link copiado: " + linkDoCodigo(code));
   }
 
   async function copyCode(code: string) {
@@ -89,6 +115,29 @@ export default function AdminPromo() {
           </button>
         </div>
         {msg && <p style={s.msg}>{msg}</p>}
+
+        {novo && (
+          <div style={s.pronta}>
+            <div style={s.prontaTitulo}>Mensagem pronta para enviar</div>
+            <pre style={s.prontaTexto}>{mensagemDoCodigo(novo)}</pre>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button style={s.btnVerde} onClick={() => copiarMensagem(novo)}>
+                Copiar mensagem
+              </button>
+              <a
+                style={s.btnWhats}
+                href={`https://wa.me/?text=${encodeURIComponent(mensagemDoCodigo(novo))}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Enviar por WhatsApp
+              </a>
+              <button style={s.copyBtn} onClick={() => copiarLink(novo)}>
+                Copiar só o link
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Lista */}
@@ -120,7 +169,10 @@ export default function AdminPromo() {
                 </td>
                 <td style={s.td}>{new Date(c.createdAt).toLocaleDateString("pt-PT")}</td>
                 <td style={s.td}>
-                  <button style={s.copyBtn} onClick={() => copyCode(c.code)}>Copiar</button>
+                  <button style={s.copyBtn} onClick={() => copyCode(c.code)}>Código</button>
+                  {!c.usedByUserId && (
+                    <button style={s.msgBtn} onClick={() => copiarMensagem(c.code)}>Mensagem</button>
+                  )}
                   {!c.usedByUserId && (
                     <button style={s.delBtn} onClick={() => deleteCode(c.id)}>Apagar</button>
                   )}
@@ -157,5 +209,11 @@ const s: Record<string, React.CSSProperties> = {
   tagUsed: { background:"#F3F4F6", color:"#6B7280", padding:"3px 10px", borderRadius:20, fontSize:12, fontWeight:600 },
   tagFree: { background:"#D1FAE5", color:"#065F46", padding:"3px 10px", borderRadius:20, fontSize:12, fontWeight:600 },
   copyBtn: { background:"#EFF6FF", color:"#2563EB", border:"none", borderRadius:7, padding:"5px 12px", fontSize:13, cursor:"pointer", marginRight:6 },
+  pronta: { marginTop:16, background:"#F0FDF4", border:"1.5px solid #BBF7D0", borderRadius:12, padding:16 },
+  prontaTitulo: { fontSize:13, fontWeight:700, color:"#065F46", marginBottom:8, textTransform:"uppercase" as const, letterSpacing:0.5 },
+  prontaTexto: { whiteSpace:"pre-wrap" as const, fontFamily:"inherit", fontSize:14.5, color:"#1F2937", lineHeight:1.6, margin:"0 0 12px", wordBreak:"break-word" as const },
+  btnVerde: { background:"#10B981", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:14, fontWeight:700, cursor:"pointer" },
+  btnWhats: { background:"#25D366", color:"#fff", textDecoration:"none", borderRadius:9, padding:"10px 18px", fontSize:14, fontWeight:700, display:"inline-block" },
+  msgBtn: { background:"#ECFDF5", color:"#059669", border:"none", borderRadius:7, padding:"5px 12px", fontSize:13, cursor:"pointer", marginRight:6 },
   delBtn: { background:"#FEF2F2", color:"#DC2626", border:"none", borderRadius:7, padding:"5px 12px", fontSize:13, cursor:"pointer" },
 };
