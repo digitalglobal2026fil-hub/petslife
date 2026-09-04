@@ -1,5 +1,6 @@
 import { Route, Switch } from "wouter";
 import AdminPromo from "./pages/admin-promo";
+import Promo from "./pages/promo";
 import Index from "./pages/index";
 import SignIn from "./pages/sign-in";
 import SignUp from "./pages/sign-up";
@@ -22,6 +23,7 @@ function App() {
         <Route path="/pet/:code" component={PetProfile} />
         <Route path="/call/:roomId" component={Call} />
         <Route path="/admin/promo" component={AdminPromo} />
+        <Route path="/promo/:code" component={Promo} />
       </Switch>
       {import.meta.env.DEV && <AgentFeedback />}
       {<RunableBadge />}

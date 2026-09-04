@@ -3,8 +3,32 @@ import { db } from "../database";
 import * as schema from "../database/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "../middleware/auth";
+import { isAdmin } from "../lib/admin";
+
+// Quem pode criar/ver/apagar códigos: os emails de administração da app
+// (packages/web/src/api/lib/admin.ts) ou, se estiver definida, a variável
+// de ambiente ADMIN_USER_IDS (ids ou emails separados por vírgulas).
+function podeGerir(user: { id: string; email: string }): boolean {
+  if (isAdmin(user)) return true;
+  const extra = (process.env.ADMIN_USER_IDS || "")
+    .split(",").map((s: string) => s.trim()).filter(Boolean);
+  return extra.includes(user.id) || extra.includes(user.email);
+}
 
 export const promoCodes = new Hono()
+
+  // Verificar um código sem estar autenticado (página web /promo/CODIGO)
+  .get("/check/:code", async (c) => {
+    const raw = c.req.param("code") || "";
+    const code = raw.toUpperCase().trim();
+    if (!code) return c.json({ error: "Código inválido" }, 400);
+
+    const [promo] = await db.select().from(schema.promoCodes)
+      .where(eq(schema.promoCodes.code, code));
+
+    if (!promo) return c.json({ valid: false, used: false, code }, 200);
+    return c.json({ valid: true, used: !!promo.usedByUserId, code }, 200);
+  })
 
   // Resgatar código (app mobile)
   .post("/redeem", requireAuth, async (c) => {
@@ -49,11 +73,7 @@ export const promoCodes = new Hono()
   // Listar todos os códigos (admin - só tu)
   .get("/admin", requireAuth, async (c) => {
     const user = c.get("user")!;
-    // Só o teu email tem acesso
-    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map((s: string) => s.trim());
-    if (!ADMIN_IDS.includes(user.id) && !ADMIN_IDS.includes(user.email)) {
-      return c.json({ error: "Sem permissão" }, 403);
-    }
+    if (!podeGerir(user)) return c.json({ error: "Sem permissão" }, 403);
 
     const codes = await db.select().from(schema.promoCodes)
       .orderBy(schema.promoCodes.createdAt);
@@ -64,10 +84,7 @@ export const promoCodes = new Hono()
   // Criar código (admin)
   .post("/admin", requireAuth, async (c) => {
     const user = c.get("user")!;
-    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map((s: string) => s.trim());
-    if (!ADMIN_IDS.includes(user.id) && !ADMIN_IDS.includes(user.email)) {
-      return c.json({ error: "Sem permissão" }, 403);
-    }
+    if (!podeGerir(user)) return c.json({ error: "Sem permissão" }, 403);
 
     const { description, customCode } = await c.req.json();
 
@@ -90,10 +107,7 @@ export const promoCodes = new Hono()
   // Apagar código (admin)
   .delete("/admin/:id", requireAuth, async (c) => {
     const user = c.get("user")!;
-    const ADMIN_IDS = (process.env.ADMIN_USER_IDS || "").split(",").map((s: string) => s.trim());
-    if (!ADMIN_IDS.includes(user.id) && !ADMIN_IDS.includes(user.email)) {
-      return c.json({ error: "Sem permissão" }, 403);
-    }
+    if (!podeGerir(user)) return c.json({ error: "Sem permissão" }, 403);
 
     const id = c.req.param("id");
     await db.delete(schema.promoCodes).where(eq(schema.promoCodes.id, id));
