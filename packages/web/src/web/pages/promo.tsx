@@ -3,6 +3,25 @@ import { useEffect, useState } from "react";
 const PLAY_STORE =
   "https://play.google.com/store/apps/details?id=com.petislife2.app";
 
+const BENEFICIOS: Record<string, { titulo: string; texto: string }> = {
+  lifetime: {
+    titulo: "Acesso vitalício à PetsLife",
+    texto: "Com este código tem a app completa para sempre, sem pagar nada, nunca.",
+  },
+  year1: {
+    titulo: "1 ano grátis na PetsLife",
+    texto: "Com este código tem a app completa durante um ano inteiro, sem pagar nada.",
+  },
+  months3: {
+    titulo: "3 meses grátis na PetsLife",
+    texto: "Com este código tem a app completa durante 3 meses, sem pagar nada.",
+  },
+  discount: {
+    titulo: "Desconto na PetsLife",
+    texto: "Com este código tem um desconto na subscrição da app.",
+  },
+};
+
 function getCode(): string {
   const parts = window.location.pathname.split("/").filter(Boolean);
   return (parts[parts.length - 1] ?? "").toUpperCase();
@@ -11,6 +30,7 @@ function getCode(): string {
 export default function PromoPage() {
   const [code, setCode] = useState("");
   const [estado, setEstado] = useState<"a-ver" | "ok" | "usado" | "invalido">("a-ver");
+  const [beneficio, setBeneficio] = useState("lifetime");
   const [copiado, setCopiado] = useState(false);
 
   useEffect(() => {
@@ -23,6 +43,7 @@ export default function PromoPage() {
     fetch(`/api/promo-codes/check/${encodeURIComponent(c)}`)
       .then((r) => r.json())
       .then((d) => {
+        if (d?.benefit) setBeneficio(d.benefit);
         if (!d?.valid) setEstado("invalido");
         else if (d.used) setEstado("usado");
         else setEstado("ok");
@@ -67,8 +88,8 @@ export default function PromoPage() {
           <>
             <h1 style={s.titulo}>Este código já foi usado</h1>
             <p style={s.texto}>
-              Cada código só pode ser activado por uma pessoa. Se foi você que o
-              activou, já tem acesso vitalício — basta entrar na app.
+              Este código já atingiu o limite de utilizações. Se foi você que o
+              activou, o acesso já está na sua conta — basta entrar na app.
             </p>
             <a href={PLAY_STORE} style={s.botaoPrincipal}>
               Abrir a PetsLife
@@ -79,10 +100,11 @@ export default function PromoPage() {
         {estado === "ok" && (
           <>
             <div style={s.presente}>Presente para si</div>
-            <h1 style={s.titulo}>Acesso vitalício à PetsLife</h1>
+            <h1 style={s.titulo}>
+              {(BENEFICIOS[beneficio] ?? BENEFICIOS.lifetime).titulo}
+            </h1>
             <p style={s.texto}>
-              Com este código tem a app completa <strong>para sempre</strong>,
-              sem pagar nada, nunca.
+              {(BENEFICIOS[beneficio] ?? BENEFICIOS.lifetime).texto}
             </p>
 
             <div style={s.caixaCodigo}>

@@ -17,7 +17,10 @@ function podeGerir(user: { id: string; email: string }): boolean {
 
 export const promoCodes = new Hono()
 
-  // Verificar um código sem estar autenticado (página web /promo/CODIGO)
+  // Verificar um código sem estar autenticado (página web /promo/CODIGO).
+  // Procura primeiro nos códigos promocionais e, se não encontrar, nos
+  // códigos de parceiro — são duas tabelas diferentes mas para quem recebe
+  // o link é tudo "o meu código".
   .get("/check/:code", async (c) => {
     const raw = c.req.param("code") || "";
     const code = raw.toUpperCase().trim();
@@ -26,8 +29,29 @@ export const promoCodes = new Hono()
     const [promo] = await db.select().from(schema.promoCodes)
       .where(eq(schema.promoCodes.code, code));
 
-    if (!promo) return c.json({ valid: false, used: false, code }, 200);
-    return c.json({ valid: true, used: !!promo.usedByUserId, code }, 200);
+    if (promo) {
+      return c.json({
+        valid: true,
+        used: !!promo.usedByUserId,
+        code,
+        benefit: "lifetime",
+      }, 200);
+    }
+
+    const [pc] = await db.select().from(schema.partnerCodes)
+      .where(eq(schema.partnerCodes.code, code));
+
+    if (pc && pc.active) {
+      const esgotado = pc.maxUses != null && pc.uses >= pc.maxUses;
+      return c.json({
+        valid: true,
+        used: esgotado,
+        code,
+        benefit: pc.benefit,
+      }, 200);
+    }
+
+    return c.json({ valid: false, used: false, code }, 200);
   })
 
   // Resgatar código (app mobile)
