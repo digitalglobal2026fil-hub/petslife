@@ -1,8 +1,8 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, RefreshControl, Image } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, RefreshControl, Image, Keyboard } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Search, MapPin, Heart } from "lucide-react-native";
+import { Search, MapPin, Heart, Plus, X } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { CategoryHeader } from "../../components/CategoryHeader";
@@ -93,16 +93,44 @@ export default function AdocaoScreen() {
         accentColor="#EF4444"
       />
 
-      {/* Search */}
-      <View style={{ marginHorizontal: 20, marginBottom: 16, flexDirection: "row", alignItems: "center", backgroundColor: "#fff", borderRadius: 16, borderWidth: 1.5, borderColor: "#FEE2E2", paddingHorizontal: 14, height: 46 }}>
-        <Search size={18} color="#A0A0B0" />
-        <TextInput
-          value={search}
-          onChangeText={setSearch}
-          placeholder={tr("Pesquisar animais...")}
-          placeholderTextColor="#B0B0C0"
-          style={{ flex: 1, marginLeft: 10, fontSize: 15, color: "#1A1A2E" }}
-        />
+      {/* Botão para publicar um animal para adoção — antes não havia forma
+          de o fazer a partir desta página. */}
+      <TouchableOpacity
+        onPress={() => router.push("/add-listing" as any)}
+        activeOpacity={0.85}
+        style={{ marginHorizontal: 20, marginBottom: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: "#EF4444", borderRadius: 16, paddingVertical: 14 }}>
+        <Plus size={19} color="#fff" />
+        <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 15 }}>
+          {tr("Colocar animal para adoção")}
+        </Text>
+      </TouchableOpacity>
+
+      {/* Pesquisa: filtra à medida que se escreve e tem botão próprio, para
+          quem prefere carregar em vez de esperar. */}
+      <View style={{ marginHorizontal: 20, marginBottom: 16, flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", backgroundColor: "#fff", borderRadius: 16, borderWidth: 1.5, borderColor: "#FEE2E2", paddingHorizontal: 14, height: 46 }}>
+          <Search size={18} color="#A0A0B0" />
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder={tr("Pesquisar animais...")}
+            placeholderTextColor="#B0B0C0"
+            returnKeyType="search"
+            onSubmitEditing={() => Keyboard.dismiss()}
+            style={{ flex: 1, marginLeft: 10, fontSize: 15, color: "#1A1A2E" }}
+          />
+          {search.length > 0 && (
+            <TouchableOpacity onPress={() => { setSearch(""); Keyboard.dismiss(); }} style={{ padding: 4 }}>
+              <X size={16} color="#9CA3AF" />
+            </TouchableOpacity>
+          )}
+        </View>
+        <TouchableOpacity
+          onPress={() => Keyboard.dismiss()}
+          activeOpacity={0.85}
+          style={{ width: 46, height: 46, borderRadius: 16, backgroundColor: "#EF4444", alignItems: "center", justifyContent: "center" }}>
+          <Search size={19} color="#fff" />
+        </TouchableOpacity>
       </View>
 
       <AnimalFact />
@@ -114,7 +142,11 @@ export default function AdocaoScreen() {
           <View style={{ alignItems: "center", marginTop: 60 }}>
             <Text style={{ fontSize: 48, backgroundColor: "transparent" }}>🐾</Text>
             <Text suppressHighlighting style={{ fontSize: 16, fontWeight: "700", color: "#1A1A2E", marginTop: 12 }}>{tr("Sem animais para adoção")}</Text>
-            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center" }}>{tr("Nenhum animal disponível para adoção neste momento.")}</Text>
+            <Text suppressHighlighting style={{ fontSize: 14, color: "#6B7280", marginTop: 6, textAlign: "center", paddingHorizontal: 20, lineHeight: 20 }}>
+              {search
+                ? tr("Não encontrámos nada com essa procura. Tente outra palavra.")
+                : tr("Ainda não há animais para adoção. Carregue no botão acima para publicar o primeiro.")}
+            </Text>
           </View>
         ) : (
           filtered.map((item: any) => (

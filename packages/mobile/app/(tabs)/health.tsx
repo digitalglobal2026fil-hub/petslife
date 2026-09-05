@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-import { Syringe, Calendar, FileText, ChevronRight, Heart, PawPrint, Stethoscope, Pill, Siren, Gauge, Video } from "lucide-react-native";
+import { Syringe, Calendar, CalendarDays, FileText, ChevronRight, Heart, PawPrint, Stethoscope, Pill, Siren, Gauge, Video } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
@@ -13,6 +13,7 @@ import { tr } from "../../lib/i18n";
 const sections = [
   { icon: Syringe,     label: tr("Vacinas"),         sublabel: tr("Registo e lembretes"),      color: "#4ECDC4", bg: "#E8FAF9", route: "/add-vaccine" },
   { icon: Calendar,    label: tr("Consultas"),        sublabel: tr("Agenda e histórico"),        color: "#FF6B35", bg: "#FFF0EB", route: "/add-appointment" },
+  { icon: CalendarDays, label: tr("Agenda"),        sublabel: tr("Calendário de tudo o que tem marcado"), color: "#3B82F6", bg: "#EFF6FF", route: "/agenda" },
   { icon: Heart,       label: tr("Diário de Saúde"),  sublabel: tr("Registo diário"),            color: "#EF476F", bg: "#FFF0F3", route: "/add-diary" },
   { icon: FileText,    label: tr("Documentos"),       sublabel: tr("Receitas e exames"),         color: "#8B5CF6", bg: "#F3EEFF", route: "/add-document" },
   { icon: Pill,        label: tr("Desparasitação"),   sublabel: tr("Controlo interno/externo"),  color: "#F59E0B", bg: "#FEF3C7", route: "/add-deworming" },
@@ -121,6 +122,7 @@ export default function HealthScreen() {
             {[
               { icon: Video, label: tr("Consulta Online"), sublabel: tr("Videochamada com o vet"), color: "#FF6B35", bg: "#FFF0EB", route: "/consult" },
               { icon: Siren, label: tr("Primeiros Socorros"), sublabel: tr("Guia de emergências"), color: "#FF4757", bg: "#FFF0F2", route: "/first-aid" },
+              { icon: Pill, label: tr("Medicação"), sublabel: tr("Lembretes e como administrar"), color: "#EF4444", bg: "#FEF2F2", route: "/reminders" },
               { icon: Pill, label: tr("Farmácia Pet"), sublabel: tr("Medicamentos e produtos"), color: "#4ECDC4", bg: "#E8FAF9", route: "/pharmacy" },
               { icon: Gauge, label: tr("Gráfico de Peso"), sublabel: tr("Monitorize a evolução"), color: "#06D6A0", bg: "#E6FAF5", route: "/weight-chart" },
             ].map(tool => (

@@ -30,8 +30,14 @@ type Mission = {
   location?: string | null;
   authorName?: string | null;
   commentsCount?: number | null;
+  reactions?: Record<string, number> | null;
+  myReaction?: string | null;
   createdAt?: number | string | null;
 };
+
+// Reações possíveis. Uma por pessoa: carregar noutra troca, carregar na
+// mesma tira.
+const EMOJIS = ["👍", "❤️", "😍", "🥰", "👏"];
 
 function formatDate(v: any): string {
   if (!v) return "";
@@ -65,6 +71,36 @@ export default function MissionsScreen() {
 
   const missions: Mission[] = data?.missions ?? [];
   const canPost = !!data?.canPost;
+
+  async function reagir(missionId: string, emoji: string) {
+    // Actualiza já no ecrã e só depois confirma no servidor — assim a
+    // reação aparece sem espera.
+    qc.setQueryData(["missions"], (velho: any) => {
+      if (!velho?.missions) return velho;
+      return {
+        ...velho,
+        missions: velho.missions.map((m: Mission) => {
+          if (m.id !== missionId) return m;
+          const contas = { ...(m.reactions ?? {}) };
+          const anterior = m.myReaction ?? null;
+          if (anterior) contas[anterior] = Math.max(0, (contas[anterior] ?? 1) - 1);
+          const nova = anterior === emoji ? null : emoji;
+          if (nova) contas[nova] = (contas[nova] ?? 0) + 1;
+          return { ...m, reactions: contas, myReaction: nova };
+        }),
+      };
+    });
+    try {
+      await authFetch(`${API_URL}/api/missions/${missionId}/reactions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emoji }),
+      });
+    } catch {
+      /* se falhar, o refrescar seguinte repõe a verdade */
+    }
+    qc.invalidateQueries({ queryKey: ["missions"] });
+  }
 
   async function pickPhoto() {
     const picked = await pickImageWithChoice({ title: tr("Foto da missão"), quality: 0.85 });
@@ -187,6 +223,31 @@ export default function MissionsScreen() {
                   <Text suppressHighlighting style={{ color: GRAY, fontSize: 11 }}>
                     {formatDate(m.createdAt)}{m.authorName ? ` · ${m.authorName}` : ""}
                   </Text>
+
+                  {/* Reações */}
+                  <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 6 }}>
+                    {EMOJIS.map((e) => {
+                      const total = m.reactions?.[e] ?? 0;
+                      const minha = m.myReaction === e;
+                      return (
+                        <TouchableOpacity key={e} onPress={() => reagir(m.id, e)} activeOpacity={0.7}
+                          style={{
+                            flexDirection: "row", alignItems: "center", gap: 5,
+                            borderRadius: 20, paddingHorizontal: 11, paddingVertical: 7,
+                            borderWidth: 1.5,
+                            borderColor: minha ? PINK : "#F0E8E0",
+                            backgroundColor: minha ? PINK_BG : "#FAFAFA",
+                          }}>
+                          <Text suppressHighlighting style={{ fontSize: 15 }}>{e}</Text>
+                          {total > 0 && (
+                            <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "800", color: minha ? PINK : GRAY }}>
+                              {total}
+                            </Text>
+                          )}
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
 
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 4 }}>
                     <TouchableOpacity onPress={() => setOpenComments(m)}

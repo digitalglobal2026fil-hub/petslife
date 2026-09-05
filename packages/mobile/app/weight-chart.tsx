@@ -146,6 +146,13 @@ export default function WeightChartScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Botao grande e visivel para registar peso (o "+" do cabecalho passava
+          despercebido). */}
+      <TouchableOpacity onPress={() => setShowAddModal(true)} style={styles.registarBtn} activeOpacity={0.85}>
+        <Ionicons name="add-circle" size={20} color="#fff" />
+        <Text style={styles.registarBtnTxt}>{tr("Registar peso")}</Text>
+      </TouchableOpacity>
+
       {loading ? (
         <View style={styles.center}><ActivityIndicator size="large" color={COLORS.orange} /></View>
       ) : (
@@ -306,6 +313,8 @@ const styles = StyleSheet.create({
   backBtn: { padding: 4, marginRight: 8 },
   headerTitle: { flex: 1, fontSize: 18, fontWeight: '700', color: COLORS.dark },
   addBtn: { backgroundColor: COLORS.orange, borderRadius: 20, padding: 8 },
+  registarBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.orange, marginHorizontal: 16, marginTop: 4, marginBottom: 4, borderRadius: 16, paddingVertical: 14 },
+  registarBtnTxt: { color: '#fff', fontSize: 15.5, fontWeight: '800' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   petChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#fff', borderWidth: 1, borderColor: COLORS.lightGray },
   petChipActive: { backgroundColor: COLORS.purple, borderColor: COLORS.purple },

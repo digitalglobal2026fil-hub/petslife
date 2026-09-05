@@ -2,13 +2,13 @@ import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-aud
 import { kvGet, kvSet } from "./kv";
 
 /**
- * Musiquinha de abertura (ukulele alegre, ~3,8 s) — a mesma melodia do
+ * Musiquinha de abertura (ukulele alegre, ~10 s) — a mesma melodia do
  * vídeo promocional, para dar coerência à marca.
  *
  * Regras:
  *  - toca UMA única vez por arranque a frio da app (a flag `jaTocou` vive
  *    no módulo, por isso reinicia só quando o processo morre);
- *  - volume baixo (35%), não abafa nada;
+ *  - volume moderado (60%), acompanha o ecrã de abertura até entrar na app;
  *  - `playsInSilentMode: false` — no iOS, se o telemóvel estiver em
  *    silêncio, não toca nada;
  *  - a pessoa pode desligar no Perfil ("Som de abertura"). A preferência
@@ -49,15 +49,15 @@ export async function tocarAberturaUmaVez(): Promise<void> {
       interruptionMode: "mixWithOthers",
     });
     player = createAudioPlayer(SOM);
-    player.volume = 0.35;
+    player.volume = 0.6;
     player.play();
-    // Liberta o recurso quando a música acaba (4,5 s de margem).
+    // Liberta o recurso quando a música acaba (10 s + margem).
     setTimeout(() => {
       try {
         player?.remove();
       } catch {}
       player = null;
-    }, 4500);
+    }, 11000);
   } catch {
     /* sem som é melhor do que app a rebentar */
   }
@@ -68,12 +68,12 @@ export async function experimentarAbertura(): Promise<void> {
   try {
     await setAudioModeAsync({ playsInSilentMode: false, shouldPlayInBackground: false });
     const p = createAudioPlayer(SOM);
-    p.volume = 0.35;
+    p.volume = 0.6;
     p.play();
     setTimeout(() => {
       try {
         p.remove();
       } catch {}
-    }, 4500);
+    }, 11000);
   } catch {}
 }

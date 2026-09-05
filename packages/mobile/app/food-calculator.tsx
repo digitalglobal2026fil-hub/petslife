@@ -74,7 +74,7 @@ export default function FoodCalculatorScreen() {
           <ChevronLeft size={20} color={DARK} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: DARK }}>{tr("Quanta ração dar")}</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: DARK }}>{tr("Medidor de Ração")}</Text>
           <Text suppressHighlighting style={{ fontSize: 12, color: GRAY }}>{tr("Calcule a dose certa por dia")}</Text>
         </View>
       </View>

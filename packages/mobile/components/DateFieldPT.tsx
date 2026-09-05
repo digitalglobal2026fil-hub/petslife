@@ -1,6 +1,7 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, Modal } from "react-native";
 import { useState, useEffect } from "react";
-import { Calendar } from "lucide-react-native";
+import { Calendar, X } from "lucide-react-native";
+import CalendarioMes from "./CalendarioMes";
 import { tr } from "../lib/i18n";
 
 /**
@@ -58,6 +59,7 @@ type Props = {
 
 export function DateFieldPT({ label, value, onChange, showToday = true, color = "#FF6B35" }: Props) {
   const [text, setText] = useState(isoToPT(value));
+  const [calendario, setCalendario] = useState(false);
 
   // Acompanhar alterações vindas de fora (ex.: preenchimento automático)
   useEffect(() => {
@@ -86,7 +88,10 @@ export function DateFieldPT({ label, value, onChange, showToday = true, color = 
     <View style={{ marginBottom: 14 }}>
       <Text suppressHighlighting style={styles.label}>{label}</Text>
       <View style={styles.row}>
-        <Calendar size={17} color="#9CA3AF" />
+        {/* O ícone abre um calendário para escolher o dia sem escrever nada. */}
+        <TouchableOpacity onPress={() => setCalendario(true)} style={{ paddingVertical: 12, paddingRight: 4 }}>
+          <Calendar size={19} color={color} />
+        </TouchableOpacity>
         <TextInput
           style={styles.input}
           value={text}
@@ -102,6 +107,28 @@ export function DateFieldPT({ label, value, onChange, showToday = true, color = 
           </TouchableOpacity>
         )}
       </View>
+      <Modal visible={calendario} transparent animationType="fade" onRequestClose={() => setCalendario(false)}>
+        <View style={styles.fundo}>
+          <View style={styles.caixa}>
+            <View style={styles.caixaTopo}>
+              <Text suppressHighlighting style={styles.caixaTitulo}>{tr("Escolha o dia")}</Text>
+              <TouchableOpacity onPress={() => setCalendario(false)} style={{ padding: 4 }}>
+                <X size={20} color="#9CA3AF" />
+              </TouchableOpacity>
+            </View>
+            <CalendarioMes
+              valor={ptToISO(text) || value || null}
+              cor={color}
+              aoEscolher={(iso) => {
+                setText(isoToPT(iso));
+                onChange(iso);
+                setCalendario(false);
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
+
       <Text suppressHighlighting style={styles.hint}>
         {invalid ? "Essa data não existe. Verifique o dia e o mês."
           : incomplete ? "Continue a escrever: dia, mês e ano."
@@ -123,6 +150,10 @@ const styles = StyleSheet.create({
   today: { paddingHorizontal: 11, paddingVertical: 5, borderRadius: 8 },
   todayTxt: { fontWeight: "800", fontSize: 12 },
   hint: { color: "#9CA3AF", fontSize: 11, marginTop: 4 },
+  fundo: { flex: 1, backgroundColor: "rgba(0,0,0,0.45)", alignItems: "center", justifyContent: "center", padding: 22 },
+  caixa: { width: "100%", maxWidth: 380, backgroundColor: "#fff", borderRadius: 20, padding: 16 },
+  caixaTopo: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 6 },
+  caixaTitulo: { fontSize: 15.5, fontWeight: "800", color: "#1A1A2E" },
 });
 
 export default DateFieldPT;

@@ -10,6 +10,21 @@ import {
   ChevronDown, ChevronUp, Share2, X,
 } from "lucide-react-native";
 import { BASE_URL } from "../lib/api";
+
+// Mensagem que a administradora envia a quem recebe o código.
+// Sem links: só o código e onde o colar dentro da app.
+function mensagemDoCodigo(code: string) {
+  return [
+    "Olá! Tenho um presente para ti 🐾",
+    "",
+    "O teu código PetsLife:",
+    code,
+    "",
+    "Abre a app PetsLife, vai a Perfil → Código Promocional,",
+    "cola o código e está feito.",
+  ].join("\n");
+}
+
 import { netError } from "../lib/net-error";
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
@@ -293,7 +308,7 @@ export default function AdminScreen() {
                         </View>
                         <Text suppressHighlighting style={{ fontWeight: "800", color: PURPLE, fontSize: 15, marginRight: 10 }}>{cc.redemptions}</Text>
                         <TouchableOpacity
-                          onPress={() => Share.share({ message: `Usa o meu código ${cc.code} na app PetsLife! 🐾\n\nDescarrega: https://petslife.onrender.com` })}
+                          onPress={() => Share.share({ message: mensagemDoCodigo(cc.code) })}
                           style={{ padding: 6 }}>
                           <Share2 size={15} color="#9CA3AF" />
                         </TouchableOpacity>

@@ -96,6 +96,14 @@ export default function WeightPage() {
         </TouchableOpacity>
       </View>
 
+      {/* Botao grande e visivel para registar peso (o "+" do cabecalho passava
+          despercebido). */}
+      <TouchableOpacity onPress={() => setModal(true)} activeOpacity={0.85}
+        style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: COLOR, marginHorizontal: 20, marginBottom: 14, borderRadius: 16, paddingVertical: 14 }}>
+        <Text suppressHighlighting style={{ color: "#fff", fontSize: 20, fontWeight: "800", lineHeight: 22 }}>+</Text>
+        <Text suppressHighlighting style={{ color: "#fff", fontSize: 15.5, fontWeight: "800" }}>{tr("Registar peso")}</Text>
+      </TouchableOpacity>
+
       <View style={{ marginHorizontal: 20, marginBottom: 16, backgroundColor: COLOR_BG, borderRadius: 16, padding: 14, borderWidth: 1.5, borderColor: "#BFDBFE" }}>
         <Text suppressHighlighting style={{ color: COLOR, fontWeight: "700", fontSize: 13, textAlign: "center" }}>
           Manter o peso ideal é sinal de saúde e felicidade! 🐾💙

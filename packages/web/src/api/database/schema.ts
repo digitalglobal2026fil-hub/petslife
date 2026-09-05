@@ -396,6 +396,52 @@ export const missions = sqliteTable("missions", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+// "Lembranças" — memorial dos animais que já partiram. Qualquer pessoa
+// publica o seu, com fotos, um vídeo (link) e uma despedida; os outros
+// deixam comentários e acendem uma vela.
+export const memorials = sqliteTable("memorials", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull(),
+  userName: text("user_name"),
+  petName: text("pet_name").notNull(),
+  species: text("species"),
+  photoUrl: text("photo_url"),
+  photos: text("photos"),          // JSON: lista de fotos extra
+  videoUrl: text("video_url"),     // link (YouTube, etc.)
+  message: text("message"),
+  birthDate: text("birth_date"),
+  deathDate: text("death_date"),
+  candles: integer("candles").default(0),
+  commentsCount: integer("comments_count").default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const memorialComments = sqliteTable("memorial_comments", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  memorialId: text("memorial_id").notNull(),
+  userId: text("user_id").notNull(),
+  userName: text("user_name"),
+  content: text("content").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const memorialCandles = sqliteTable("memorial_candles", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  memorialId: text("memorial_id").notNull(),
+  userId: text("user_id").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+// Reações às missões (👍 ❤️ 😍 🥰 👏). Uma reação por pessoa por missão —
+// carregar noutro emoji troca; carregar no mesmo tira.
+export const missionReactions = sqliteTable("mission_reactions", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  missionId: text("mission_id").notNull(),
+  userId: text("user_id").notNull(),
+  emoji: text("emoji").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 export const missionComments = sqliteTable("mission_comments", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   missionId: text("mission_id").notNull(),

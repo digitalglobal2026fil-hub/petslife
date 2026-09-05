@@ -196,6 +196,11 @@ export default function RemindersScreen() {
                   <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 12, marginTop: 3 }}>
                     {info.label}{r.dosage ? ` · ${r.dosage}` : ""}
                   </Text>
+                  {r.notes ? (
+                    <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12.5, marginTop: 5, lineHeight: 17 }}>
+                      {r.notes}
+                    </Text>
+                  ) : null}
                   {hours.length > 0 && (
                     <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
                       {hours.map((h) => (
@@ -324,8 +329,8 @@ export default function RemindersScreen() {
               <Label>{tr("Data de fim (opcional)")}</Label>
               <DateFieldPT label="" value={endDate} onChange={setEndDate} showToday={false} />
 
-              <Label>Notas (opcional)</Label>
-              <Input value={notes} onChangeText={setNotes} placeholder={tr("Ex: dar com comida")} />
+              <Label>{tr("Como se administra (opcional)")}</Label>
+              <Input value={notes} onChangeText={setNotes} placeholder={tr("Ex: meio comprimido de manhã, com comida")} />
 
               <TouchableOpacity
                 onPress={save}
