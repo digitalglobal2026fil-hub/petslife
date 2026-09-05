@@ -60,3 +60,10 @@ que já não quer acrescentar mais nada ("Quero acrescentar mais coisas antes").
 - [x] "Quanta Ração" → "Medidor de Ração"
 - [ ] FALTA: ecrã Agenda (calendário do mês com pontinhos + lista do dia)
 tsc mobile 0 erros · tsc web 0 erros
+
+## v57 — build a decorrer (5 Set)
+- [x] Agenda: packages/web/src/api/routes/agenda.ts (GET /api/agenda) + app/agenda.tsx
+      + atalho do Início corrigido (apontava para /health) + entrada na Saúde + 7 traduções
+- [x] git commit b548618 + push (Render redeploy automático)
+- [ ] build v57 a correr (tmux b57), versionCode 57 / 1.9.24
+- [ ] depois: verificar BILLING=1, tag v57, GitHub Release com APK+AAB
