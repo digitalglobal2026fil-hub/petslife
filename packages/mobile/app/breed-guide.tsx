@@ -229,6 +229,26 @@ const BREEDS = [
     ideal: "Donos presentes, casas onde o barulho não incomoda",
     color: "#F97316", bg: "#FFEDD5",
   },
+  {
+    name: "Arara-azul", species: "bird", emoji: "🦜", size: "Muito grande",
+    photo: require("../assets/breeds/arara-azul.jpg"),
+    origin: "Brasil", life: "50–60 anos", weight: "1,2–1,7 kg",
+    personality: ["Muito inteligente", "Muito apegada ao dono", "Brincalhona", "Barulhenta"],
+    health: ["Arrancar as penas por solidão", "Bico e unhas mal gastos", "Falta de cálcio"],
+    care: "É a maior arara do mundo e vive tanto como uma pessoa — costuma ficar como herança na família. Espécie ameaçada e protegida: só se pode ter com documentos legais de criador registado (CITES). Precisa de espaço enorme, nozes duras para roer e companhia o dia todo.",
+    ideal: "Só para quem tem experiência, espaço e licença",
+    color: "#2563EB", bg: "#DBEAFE",
+  },
+  {
+    name: "Arara-vermelha", species: "bird", emoji: "🦜", size: "Muito grande",
+    photo: require("../assets/breeds/arara-vermelha.jpg"),
+    origin: "América Central e do Sul", life: "40–50 anos", weight: "0,9–1,2 kg",
+    personality: ["Muito inteligente", "Imita palavras", "Ciumenta", "Muito barulhenta"],
+    health: ["Arrancar as penas", "Obesidade com excesso de sementes", "Problemas respiratórios com fumo e sprays"],
+    care: "Grita alto de manhã e ao fim do dia — não é ave para apartamento com vizinhos próximos. Come fruta, legumes e frutos secos, não só girassol. Também é espécie protegida: exige documentos legais.",
+    ideal: "Casas grandes, donos experientes e sempre presentes",
+    color: "#DC2626", bg: "#FEE2E2",
+  },
 
   // ---------- ROEDORES (inclui coelhos) ----------
   {
