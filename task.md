@@ -76,3 +76,26 @@ recusada (ECONNREFUSED ...:465). NENHUM email saía (recuperação e avisos do Q
 - [x] página /reset-password criada (o link do email não abria nada) + dist rebuild — commit 9a1a188
 - [x] validação real das compras Google Play — commit 8b96928 (falta ela pôr a chave no Render)
 - [ ] confirmar em produção que o email sai depois do redeploy
+
+## 6 Set 2026 — Pagamentos e verificação Google (fechado)
+
+- Validação de compras Google Play: ATIVA em produção.
+  - Projeto Cloud: PetisLife (id `petislife`), API "Google Play Android Developer" ativada.
+  - Conta de serviço: `id-petslife-compras@petislife.iam.gserviceaccount.com`
+  - Permissões no Play Console (Utilizadores e permissões, app PetsLife): Ver informações da app + Ver dados financeiros + Gerir encomendas e subscrições.
+  - `GOOGLE_PLAY_SERVICE_ACCOUNT` colocado no Render.
+  - Confirmado: GET /api/subscriptions/google-status?pin=2776 -> validacaoLigada:true, pacote com.petislife2.app
+  - NOTA: nunca apagar o projeto Cloud "PetisLife" — a chave morre com ele.
+  - NOTA: o "Acesso à API" já não existe no menu do Play Console; a conta de serviço liga-se por Utilizadores e permissões.
+
+- Produtos de subscrição arrumados:
+  - `premium_mensal`: plano base "mensal" Ativa, 3,99 €, oferta `gratis-3-dias` Ativa. Um só plano base.
+  - `premium_anual`: tinha DOIS planos base activos. "anual" (21,90 €) DESATIVADO junto com a oferta `gratis-3-dias`.
+    Fica "anual-b" (19,99 €) Ativa com nova oferta `gratis-3-dias-b` Ativa (elegibilidade: nunca tiveram qualquer subscrição).
+  - Avisos "níveis de preço antigos" continuam (outros países); Portugal está certo. Sem impacto.
+
+- Email "[Final reminder] Register your apps and signing keys ... before Sep 30, 2026":
+  RESOLVIDO SEM AÇÃO. Play Console > Validação de programadores Android > Nomes de pacotes:
+  NutriTrack, PetisLife (com.petislife2.app) e PetsLife todas "Registada". Identidade da conta verificada.
+
+- v59 (Guia de Raças: Pogona/Tartaruga separados + Arara-azul + Arara-vermelha) ainda POR COMPILAR — a utilizadora respondeu "Depois digo".
