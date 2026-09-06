@@ -1,87 +1,132 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { authClient } from "../lib/auth";
+import { PawPrint, CheckCircle2 } from "lucide-react";
 
-export default function ResetPassword() {
+/**
+ * Página onde a pessoa escolhe a password nova.
+ *
+ * O link do email traz o código na barra de endereço (?token=...). Sem esta
+ * página, o email de recuperação chegava e o link não abria nada.
+ */
+export default function ResetPasswordPage() {
+  const [token, setToken] = useState<string | null>(null);
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
-  const [msg, setMsg] = useState("");
-  const [token, setToken] = useState("");
+  const [repetir, setRepetir] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+  const [pronto, setPronto] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const t = params.get("token") ?? "";
-    setToken(t);
-    if (!t) { setStatus("error"); setMsg("Link inválido ou expirado."); }
+    const p = new URLSearchParams(window.location.search);
+    setToken(p.get("token"));
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (password.length < 8) return setMsg("A password deve ter pelo menos 8 caracteres.");
-    if (password !== confirm) return setMsg("As passwords não coincidem.");
-    setStatus("loading");
+    setErro(null);
+    if (!password || password.length < 8) {
+      setErro("A password nova tem de ter pelo menos 8 caracteres.");
+      return;
+    }
+    if (password !== repetir) {
+      setErro("As duas passwords não são iguais.");
+      return;
+    }
+    if (!token) {
+      setErro("Este link já não é válido. Peça a recuperação outra vez na app.");
+      return;
+    }
+    setLoading(true);
     try {
       const res = await authClient.resetPassword({ newPassword: password, token });
-      if ((res as any)?.error) throw new Error((res as any).error.message);
-      setStatus("done");
-      setMsg("Password alterada com sucesso! Já podes fechar esta página e entrar na app.");
-    } catch (e: any) {
-      setStatus("error");
-      setMsg(e?.message ?? "Erro ao redefinir password. O link pode ter expirado.");
+      if ((res as any)?.error) throw new Error((res as any).error.message ?? "Erro");
+      setPronto(true);
+    } catch (err: any) {
+      const m = String(err?.message ?? "");
+      setErro(
+        m.toLowerCase().includes("invalid") || m.toLowerCase().includes("expired")
+          ? "Este link já expirou. Peça a recuperação outra vez na app."
+          : "Não foi possível mudar a password. Tente novamente.",
+      );
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F5ECD7", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <div style={{ background: "#fff", borderRadius: 24, padding: 36, maxWidth: 420, width: "100%", boxShadow: "0 8px 40px rgba(107,58,42,0.12)", border: "1.5px solid #E8D5B7" }}>
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 48, marginBottom: 8 }}>🐾</div>
-          <h1 style={{ color: "#6B3A2A", fontWeight: 900, fontSize: 24, margin: 0 }}>Nova password</h1>
-          <p style={{ color: "#A08060", fontSize: 13, marginTop: 6 }}>Define a tua nova password para a PetsLife</p>
+    <div className="min-h-screen bg-[#FFF9F5] flex items-center justify-center px-6">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <Link href="/">
+            <a className="inline-flex items-center gap-2 mb-4">
+              <div className="bg-[#F5EDE4] rounded-2xl p-2">
+                <PawPrint size={32} color="#8B5E3C" />
+              </div>
+              <span className="text-3xl font-extrabold text-[#FF6B35]">PetsLife</span>
+            </a>
+          </Link>
         </div>
 
-        {status === "done" ? (
-          <div style={{ background: "#F0FFF4", border: "1.5px solid #9AE6B4", borderRadius: 12, padding: 20, textAlign: "center", color: "#276749", fontWeight: 600 }}>
-            ✅ {msg}
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div>
-              <label style={{ fontSize: 13, fontWeight: 700, color: "#A08060", display: "block", marginBottom: 6 }}>Nova password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="Mínimo 8 caracteres"
-                required
-                style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid #E8D5B7", background: "#F5ECD7", fontSize: 15, color: "#6B3A2A", boxSizing: "border-box" }}
-              />
+        <div className="bg-white rounded-3xl shadow-sm border border-[#F0E8E0] p-8">
+          {pronto ? (
+            <div className="text-center">
+              <CheckCircle2 size={48} className="mx-auto mb-4 text-green-500" />
+              <h1 className="text-2xl font-extrabold text-[#1A1A2E] mb-2">Password alterada</h1>
+              <p className="text-gray-500 mb-6">
+                Já pode voltar à app PetsLife e entrar com a password nova.
+              </p>
+              <Link href="/sign-in">
+                <a className="inline-block bg-[#FF6B35] text-white font-bold py-3 px-6 rounded-xl hover:bg-[#e55a24] transition">
+                  Entrar
+                </a>
+              </Link>
             </div>
-            <div>
-              <label style={{ fontSize: 13, fontWeight: 700, color: "#A08060", display: "block", marginBottom: 6 }}>Confirmar password</label>
-              <input
-                type="password"
-                value={confirm}
-                onChange={e => setConfirm(e.target.value)}
-                placeholder="Repete a nova password"
-                required
-                style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid #E8D5B7", background: "#F5ECD7", fontSize: 15, color: "#6B3A2A", boxSizing: "border-box" }}
-              />
-            </div>
-            {msg && (
-              <div style={{ background: "#FFF0F0", border: "1.5px solid #FECDCD", borderRadius: 10, padding: 12, color: "#E53E3E", fontSize: 13, fontWeight: 600 }}>
-                {msg}
-              </div>
-            )}
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              style={{ background: "#6B3A2A", color: "#fff", border: "none", borderRadius: 14, padding: "16px 0", fontWeight: 900, fontSize: 16, cursor: "pointer", marginTop: 4 }}
-            >
-              {status === "loading" ? "A guardar..." : "Guardar nova password"}
-            </button>
-          </form>
-        )}
+          ) : (
+            <>
+              <h1 className="text-2xl font-extrabold text-[#1A1A2E] mb-2 text-center">Nova password</h1>
+              <p className="text-gray-500 text-sm text-center mb-6">
+                Escolha a password que vai passar a usar na app.
+              </p>
+
+              {erro && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-5 text-sm text-red-600 text-center">
+                  {erro}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Password nova</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="pelo menos 8 caracteres"
+                    className="w-full border border-[#F0E8E0] rounded-xl px-4 py-3 text-[#1A1A2E] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Repita a password</label>
+                  <input
+                    type="password"
+                    value={repetir}
+                    onChange={(e) => setRepetir(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full border border-[#F0E8E0] rounded-xl px-4 py-3 text-[#1A1A2E] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-[#FF6B35] text-white font-bold py-3 rounded-xl hover:bg-[#e55a24] transition disabled:opacity-60 mt-2"
+                >
+                  {loading ? "A guardar..." : "Guardar password"}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

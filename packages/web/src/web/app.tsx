@@ -5,6 +5,7 @@ import Index from "./pages/index";
 import SignIn from "./pages/sign-in";
 import SignUp from "./pages/sign-up";
 import Privacy from "./pages/privacy";
+import ResetPassword from "./pages/reset-password";
 import DeleteAccount from "./pages/delete-account";
 import PetProfile from "./pages/pet-profile";
 import Call from "./pages/call";
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" component={Index} />
         <Route path="/sign-in" component={SignIn} />
         <Route path="/sign-up" component={SignUp} />
+        <Route path="/reset-password" component={ResetPassword} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/delete-account" component={DeleteAccount} />
         <Route path="/pet/:code" component={PetProfile} />
