@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { authClient } from "../lib/auth";
-import { PawPrint, CheckCircle2 } from "lucide-react";
+import { PawPrint, CheckCircle2, Eye, EyeOff } from "lucide-react";
 
 /**
  * Página onde a pessoa escolhe a password nova.
@@ -16,6 +16,7 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [pronto, setPronto] = useState(false);
+  const [verPassword, setVerPassword] = useState(false);
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
@@ -74,11 +75,21 @@ export default function ResetPasswordPage() {
               <CheckCircle2 size={48} className="mx-auto mb-4 text-green-500" />
               <h1 className="text-2xl font-extrabold text-[#1A1A2E] mb-2">Password alterada</h1>
               <p className="text-gray-500 mb-6">
-                Já pode voltar à app PetsLife e entrar com a password nova.
+                Já pode entrar na app PetsLife com a password nova.
+              </p>
+              <a
+                href="petslife://"
+                className="inline-block w-full bg-[#FF6B35] text-white font-bold py-3 px-6 rounded-xl hover:bg-[#e55a24] transition"
+              >
+                Abrir a app PetsLife
+              </a>
+              <p className="text-gray-400 text-xs mt-4">
+                Se o botão não abrir a app, feche esta página e abra a PetsLife
+                normalmente no seu telemóvel.
               </p>
               <Link href="/sign-in">
-                <a className="inline-block bg-[#FF6B35] text-white font-bold py-3 px-6 rounded-xl hover:bg-[#e55a24] transition">
-                  Entrar
+                <a className="inline-block text-gray-400 text-xs mt-4 underline">
+                  Prefiro entrar aqui no site
                 </a>
               </Link>
             </div>
@@ -98,24 +109,47 @@ export default function ResetPasswordPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Password nova</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="pelo menos 8 caracteres"
-                    className="w-full border border-[#F0E8E0] rounded-xl px-4 py-3 text-[#1A1A2E] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
-                  />
+                  <div className="relative">
+                    <input
+                      type={verPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="pelo menos 8 caracteres"
+                      className="w-full border border-[#F0E8E0] rounded-xl px-4 py-3 pr-12 text-[#1A1A2E] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setVerPassword((v) => !v)}
+                      aria-label={verPassword ? "Esconder password" : "Mostrar password"}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#FF6B35] p-1"
+                    >
+                      {verPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Repita a password</label>
-                  <input
-                    type="password"
-                    value={repetir}
-                    onChange={(e) => setRepetir(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full border border-[#F0E8E0] rounded-xl px-4 py-3 text-[#1A1A2E] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
-                  />
+                  <div className="relative">
+                    <input
+                      type={verPassword ? "text" : "password"}
+                      value={repetir}
+                      onChange={(e) => setRepetir(e.target.value)}
+                      placeholder="escreva outra vez"
+                      className="w-full border border-[#F0E8E0] rounded-xl px-4 py-3 pr-12 text-[#1A1A2E] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 focus:border-[#FF6B35] transition"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setVerPassword((v) => !v)}
+                      aria-label={verPassword ? "Esconder password" : "Mostrar password"}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#FF6B35] p-1"
+                    >
+                      {verPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
+                {password.length > 0 && repetir.length > 0 && password !== repetir && (
+                  <p className="text-xs text-red-500">As duas passwords ainda não são iguais.</p>
+                )}
                 <button
                   type="submit"
                   disabled={loading}
