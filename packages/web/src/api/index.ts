@@ -29,7 +29,7 @@ import { reminders } from "./routes/reminders";
 import { petScans } from "./routes/pet-scans";
 import { users } from "./routes/users";
 import { ensureTables } from "./database/ensure-tables";
-import { sendMail, getLastMailError } from "./notify";
+import { sendMail, getLastMailError, metodoDeEnvio } from "./notify";
 
 // Cria tabelas novas no arranque (o projecto não tem migrações automáticas)
 ensureTables();
@@ -56,6 +56,7 @@ const app = new Hono()
       gmailPassword: Boolean(process.env.GMAIL_APP_PASSWORD),
       twilio: Boolean(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_FROM),
       websiteUrl: process.env.WEBSITE_URL ?? null,
+      metodoDeEnvio: metodoDeEnvio(),
     };
     let emailSent: boolean | null = null;
     if (to) {

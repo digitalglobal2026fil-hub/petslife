@@ -15,6 +15,87 @@ export function getLastMailError() {
  * nem a recuperação de password, nem os avisos do QR — e o erro ficava escondido.
  * Passa a forçar IPv4 (family: 4) e, se a porta 465 falhar, tenta a 587.
  */
+/**
+ * ENVIO POR API WEB (Brevo ou Resend) — é este que funciona no Render.
+ *
+ * O Render bloqueia as portas de SMTP: a 465 é recusada e a 587 fica em espera
+ * até desistir. Com o Gmail por SMTP nunca sai email nenhum, seja qual for a
+ * password. Por isso o envio passa primeiro por uma API web, que usa a porta
+ * normal da internet (443) e não é bloqueada.
+ *
+ * Basta uma destas variáveis no Render:
+ *   BREVO_API_KEY   → conta gratuita em brevo.com (300 emails por dia)
+ *   RESEND_API_KEY  → conta gratuita em resend.com
+ *   MAIL_FROM       → opcional, o endereço que aparece como remetente
+ *                     (por omissão usa o GMAIL_USER)
+ *
+ * Se nenhuma existir, tenta o SMTP à mesma — para não deixar de funcionar em
+ * sítios onde o SMTP não esteja bloqueado.
+ */
+async function enviarPorApi(to: string, subject: string, html: string): Promise<boolean | null> {
+  const remetente = process.env.MAIL_FROM || process.env.GMAIL_USER || "";
+
+  const brevo = process.env.BREVO_API_KEY;
+  if (brevo) {
+    try {
+      const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: { "api-key": brevo, "Content-Type": "application/json", accept: "application/json" },
+        body: JSON.stringify({
+          sender: { name: "PetsLife", email: remetente },
+          to: [{ email: to }],
+          subject,
+          htmlContent: html,
+        }),
+      });
+      if (res.ok) {
+        lastMailError = null;
+        console.log("[notify] email enviado por Brevo para", to);
+        return true;
+      }
+      lastMailError = `Brevo ${res.status}: ${(await res.text().catch(() => "")).slice(0, 300)}`;
+      console.error("[notify]", lastMailError);
+      return false;
+    } catch (e: any) {
+      lastMailError = `Brevo: ${e?.message ?? String(e)}`;
+      console.error("[notify]", lastMailError);
+      return false;
+    }
+  }
+
+  const resend = process.env.RESEND_API_KEY;
+  if (resend) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${resend}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ from: `PetsLife <${remetente}>`, to: [to], subject, html }),
+      });
+      if (res.ok) {
+        lastMailError = null;
+        console.log("[notify] email enviado por Resend para", to);
+        return true;
+      }
+      lastMailError = `Resend ${res.status}: ${(await res.text().catch(() => "")).slice(0, 300)}`;
+      console.error("[notify]", lastMailError);
+      return false;
+    } catch (e: any) {
+      lastMailError = `Resend: ${e?.message ?? String(e)}`;
+      console.error("[notify]", lastMailError);
+      return false;
+    }
+  }
+
+  return null; // nenhuma API configurada — segue para o SMTP
+}
+
+/** Diz qual a forma de envio que está configurada (para o diagnóstico). */
+export function metodoDeEnvio(): string {
+  if (process.env.BREVO_API_KEY) return "Brevo (API web)";
+  if (process.env.RESEND_API_KEY) return "Resend (API web)";
+  return "SMTP do Gmail (bloqueado no Render)";
+}
+
 /** Guarda o endereço IPv4 do Gmail depois de o descobrir uma vez. */
 let ipGmail: string | null = null;
 
@@ -47,6 +128,10 @@ export async function sendMail(to: string, subject: string, html: string) {
     console.warn("[notify] Gmail não configurado — email não enviado");
     return false;
   }
+
+  // Primeiro a API web (a única que passa no Render).
+  const porApi = await enviarPorApi(to, subject, html);
+  if (porApi !== null) return porApi;
 
   const ip = await enderecoIPv4();
   const anfitrioes = ip ? [ip, "smtp.gmail.com"] : ["smtp.gmail.com"];
