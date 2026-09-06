@@ -67,3 +67,12 @@ tsc mobile 0 erros · tsc web 0 erros
 - [x] git commit b548618 + push (Render redeploy automático)
 - [ ] build v57 a correr (tmux b57), versionCode 57 / 1.9.24
 - [ ] depois: verificar BILLING=1, tag v57, GitHub Release com APK+AAB
+
+## 6 Set — emails de recuperação de password
+Causa encontrada: no Render o smtp.gmail.com resolvia para IPv6 e a ligação era
+recusada (ECONNREFUSED ...:465). NENHUM email saía (recuperação e avisos do QR).
+- [x] notify.ts: family: 4 (IPv4) + segunda tentativa pela porta 587 — commit 6bb5a74
+- [x] auth.ts deixou de ter mailer próprio (service gmail, 587, sem limpar espaços) — usa sendMail
+- [x] página /reset-password criada (o link do email não abria nada) + dist rebuild — commit 9a1a188
+- [x] validação real das compras Google Play — commit 8b96928 (falta ela pôr a chave no Render)
+- [ ] confirmar em produção que o email sai depois do redeploy
