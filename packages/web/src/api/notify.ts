@@ -63,6 +63,68 @@ async function enviarPorApi(to: string, subject: string, html: string): Promise<
     }
   }
 
+  // Mailjet — plano gratuito com 6000 emails por mês (200 por dia).
+  const mjKey = process.env.MAILJET_API_KEY;
+  const mjSecret = process.env.MAILJET_SECRET_KEY;
+  if (mjKey && mjSecret) {
+    try {
+      const cred = Buffer.from(`${mjKey}:${mjSecret}`).toString("base64");
+      const res = await fetch("https://api.mailjet.com/v3.1/send", {
+        method: "POST",
+        headers: { Authorization: `Basic ${cred}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Messages: [{
+            From: { Email: remetente, Name: "PetsLife" },
+            To: [{ Email: to }],
+            Subject: subject,
+            HTMLPart: html,
+          }],
+        }),
+      });
+      if (res.ok) {
+        lastMailError = null;
+        console.log("[notify] email enviado por Mailjet para", to);
+        return true;
+      }
+      lastMailError = `Mailjet ${res.status}: ${(await res.text().catch(() => "")).slice(0, 300)}`;
+      console.error("[notify]", lastMailError);
+      return false;
+    } catch (e: any) {
+      lastMailError = `Mailjet: ${e?.message ?? String(e)}`;
+      console.error("[notify]", lastMailError);
+      return false;
+    }
+  }
+
+  // SendGrid — plano gratuito com 100 emails por dia.
+  const sg = process.env.SENDGRID_API_KEY;
+  if (sg) {
+    try {
+      const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${sg}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email: to }] }],
+          from: { email: remetente, name: "PetsLife" },
+          subject,
+          content: [{ type: "text/html", value: html }],
+        }),
+      });
+      if (res.ok || res.status === 202) {
+        lastMailError = null;
+        console.log("[notify] email enviado por SendGrid para", to);
+        return true;
+      }
+      lastMailError = `SendGrid ${res.status}: ${(await res.text().catch(() => "")).slice(0, 300)}`;
+      console.error("[notify]", lastMailError);
+      return false;
+    } catch (e: any) {
+      lastMailError = `SendGrid: ${e?.message ?? String(e)}`;
+      console.error("[notify]", lastMailError);
+      return false;
+    }
+  }
+
   const resend = process.env.RESEND_API_KEY;
   if (resend) {
     try {
@@ -92,6 +154,8 @@ async function enviarPorApi(to: string, subject: string, html: string): Promise<
 /** Diz qual a forma de envio que está configurada (para o diagnóstico). */
 export function metodoDeEnvio(): string {
   if (process.env.BREVO_API_KEY) return "Brevo (API web)";
+  if (process.env.MAILJET_API_KEY && process.env.MAILJET_SECRET_KEY) return "Mailjet (API web)";
+  if (process.env.SENDGRID_API_KEY) return "SendGrid (API web)";
   if (process.env.RESEND_API_KEY) return "Resend (API web)";
   return "SMTP do Gmail (bloqueado no Render)";
 }
