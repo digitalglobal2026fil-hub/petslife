@@ -3,6 +3,8 @@ import { db, sqlClient } from "../database";
 import * as schema from "../database/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth, authMiddleware } from "../middleware/auth";
+import { verificarSubscricao, validacaoGoogleActiva } from "../lib/google-play";
+import { isAdmin } from "../lib/admin";
 
 // Testadores fechados (Play Console) — acesso ilimitado, sem bloqueio de trial/subscrição
 const TESTER_EMAILS = [
@@ -78,8 +80,40 @@ export const subscriptions = new Hono()
     );
     return c.json({ subscription: sub, isActive, isTrial }, 200);
   })
+  /**
+   * Activação manual — só para a administração e para os testadores fechados.
+   * Antes qualquer pessoa que chamasse esta rota ficava com subscrição activa
+   * sem pagar. As compras a sério passam pelo /google-verify.
+   */
+  /**
+   * Diagnóstico: diz se a validação das compras já está ligada.
+   * Abrir no browser: /api/subscriptions/google-status?pin=2776
+   */
+  .get("/google-status", async (c) => {
+    const pin = c.req.query("pin") || "";
+    if (pin !== (process.env.ADMIN_PIN || "2776")) return c.json({ error: "PIN errado" }, 403);
+    const ligada = validacaoGoogleActiva();
+    let conta: string | null = null;
+    try {
+      const j = JSON.parse(process.env.GOOGLE_PLAY_SERVICE_ACCOUNT || "{}");
+      conta = j.client_email || null;
+    } catch { conta = "JSON inválido"; }
+    return c.json({
+      validacaoLigada: ligada,
+      contaDeServico: conta,
+      pacote: process.env.ANDROID_PACKAGE_NAME || "com.petislife2.app",
+      nota: ligada
+        ? "As compras são confirmadas junto da Google."
+        : "Falta a variável GOOGLE_PLAY_SERVICE_ACCOUNT no Render.",
+    }, 200);
+  })
+
   .post("/activate", requireAuth, async (c) => {
     const user = c.get("user")!;
+    const emailUtilizador = (user.email || "").toLowerCase();
+    if (!isAdmin(user) && !TESTER_EMAILS.includes(emailUtilizador)) {
+      return c.json({ error: "As subscrições são feitas pelo Google Play." }, 403);
+    }
     const body = await c.req.json();
     const { plan } = body; // monthly or annual
     const now = new Date();
@@ -109,10 +143,12 @@ export const subscriptions = new Hono()
   /**
    * Compra feita dentro da app pelo Google Play.
    *
-   * A app envia o comprovativo (productId + purchaseToken) e nós guardamos e
-   * activamos a subscrição. A validação junto dos servidores da Google exige
-   * uma chave de conta de serviço do Google Cloud que ainda não existe — quando
-   * existir, acrescenta-se aqui, SEM precisar de nova versão da app.
+   * A app envia o comprovativo (productId + purchaseToken). O servidor pergunta
+   * à Google se a compra existe mesmo, se foi paga e até quando é válida, e só
+   * depois dá acesso. A data de fim vem da Google, não da app.
+   *
+   * Enquanto a variável GOOGLE_PLAY_SERVICE_ACCOUNT não estiver no Render, a
+   * validação fica desligada e a compra é aceite como antes (não parte nada).
    */
   .post("/google-verify", requireAuth, async (c) => {
     await ensureColumns();
@@ -124,12 +160,27 @@ export const subscriptions = new Hono()
       return c.json({ error: "productId e purchaseToken obrigatórios" }, 400);
     }
 
-    // O plano vem do productId, nunca do que a app disser.
-    const plan = productId === "premium_anual" ? "annual" : "monthly";
+    // Perguntar à Google se esta compra é verdadeira.
+    let confirmacao;
+    try {
+      confirmacao = await verificarSubscricao(purchaseToken);
+    } catch (e) {
+      console.error("[subscriptions] falha a validar na Google:", e);
+      confirmacao = { valida: false, motivo: "Não foi possível confirmar a compra agora." } as const;
+    }
+    if (!confirmacao.valida) {
+      return c.json({ error: confirmacao.motivo || "Compra não confirmada pela Google." }, 402);
+    }
+
+    // O plano vem do productId que a Google devolve; só se usa o da app quando
+    // a validação está desligada.
+    const idReal = (confirmacao as any).productId || productId;
+    const plan = idReal === "premium_anual" ? "annual" : "monthly";
     const now = new Date();
-    const periodEnd = plan === "annual"
+    const fimGoogle = (confirmacao as any).expiraEm as Date | undefined;
+    const periodEnd = fimGoogle ?? (plan === "annual"
       ? new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000)
-      : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000));
 
     const values = {
       plan,
@@ -145,10 +196,10 @@ export const subscriptions = new Hono()
         .set(values)
         .where(eq(schema.subscriptions.userId, user.id))
         .returning();
-      return c.json({ subscription: sub, plan }, 200);
+      return c.json({ subscription: sub, plan, validado: validacaoGoogleActiva() }, 200);
     }
     const [sub] = await db.insert(schema.subscriptions)
       .values({ userId: user.id, ...values })
       .returning();
-    return c.json({ subscription: sub, plan }, 200);
+    return c.json({ subscription: sub, plan, validado: validacaoGoogleActiva() }, 200);
   });
