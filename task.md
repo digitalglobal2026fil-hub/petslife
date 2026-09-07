@@ -99,3 +99,41 @@ recusada (ECONNREFUSED ...:465). NENHUM email saía (recuperação e avisos do Q
   NutriTrack, PetisLife (com.petislife2.app) e PetsLife todas "Registada". Identidade da conta verificada.
 
 - v59 (Guia de Raças: Pogona/Tartaruga separados + Arara-azul + Arara-vermelha) ainda POR COMPILAR — a utilizadora respondeu "Depois digo".
+
+## 6/7 Set 2026 — Tutorial do cãozinho + ecrã "Como funciona" (commit b8299b5)
+
+Pedido dela: "quando abre aparece o tutorial com um cãozinho e um balão, e dentro dessa
+bolha ou patas aparecem as explicações; o tutorial é como se mexe na app; depois termina
+o tutorial e fica só uma lista de explicações escritas para tirarem dúvidas".
+
+FEITO (só código — NÃO compilado ainda):
+- packages/mobile/app/tutorial.tsx (novo, ~215 linhas)
+  - Mascote: assets/mascot-dog.png (o cachorro golden que já existia), chamado "Max"
+  - Balão de fala branco com bico a apontar para o cão; cão com animação de salto em loop
+  - 9 passos: apresentação, barra de baixo, adicionar animal, Saúde, Agenda, QR Code,
+    Álbum/Lembranças, Comunidade/Marketplace, "e se me esquecer" -> aponta para Como funciona
+  - Progresso em PATINHAS (PawPrint), clicáveis para saltar entre passos
+  - "Saltar" sempre visível em cima; último botão = "Começar a usar a app"
+  - Aparece UMA vez: chave `tutorial_visto_v1` via lib/kv.ts (expo-secure-store)
+- packages/mobile/app/index.tsx: depois da sessão, se a chave não for "1" redirecciona
+  para /tutorial; se a leitura falhar assume visto (não incomoda a utilizadora)
+- packages/mobile/app/ajuda.tsx (novo, ~283 linhas) = "Como funciona"
+  - Cartão em cima com o cão e botão "Ver o tutorial" (repõe a chave e abre /tutorial)
+  - 9 secções ecrã por ecrã (Início, Saúde, Agenda, QR Code, Álbum, Lembranças,
+    Comunidade, Marketplace/Negócios, Perfil), cada linha com patinha
+  - 10 perguntas frequentes em acordeão (3 dias grátis, como subscrever, como CANCELAR
+    na Play Store, password esquecida, app lenta a abrir, vários animais, mudar de
+    telemóvel, partilhar QR, avisos, "a app não substitui o veterinário")
+  - Botão de email de suporte no fim
+- Perfil: entrada nova "Como funciona" (BookOpen, #F59E0B) -> /ajuda; "Ajuda e Suporte"
+  passou a ícone Mail e continua a abrir o email
+- i18n: 99 chaves novas em catalog-ecras.ts (en/es/de/fr), 3 blocos comentados.
+  Verificado com /tmp/keys.py -> 0 em falta
+- Ajudas dos ecrãs vazios: as frases de vaccines.tsx, photos.tsx e diario.tsx estavam em
+  português fixo sem tr() -> envolvidas em tr() e traduzidas. Os restantes ecrãs vazios
+  já tinham frase de orientação.
+
+tsc: 0 erros no mobile e no web.
+
+PENDENTE: compilar v59 (1.9.26, versionCode 59) com isto + as correcções do Guia de Raças
+(Pogona/Tartaruga separados, Arara-azul, Arara-vermelha). Ela disse "depois digo".
