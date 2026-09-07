@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect, useState } from "react";
-import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill, ShieldAlert, Globe, Music, Volume2, VolumeX } from "lucide-react-native";
+import { Camera, Bell, CreditCard, MapPin, LogOut, ChevronRight, Shield, HelpCircle, Gift, Edit2, Sparkles, Lock, Pill, ShieldAlert, Globe, Music, Volume2, VolumeX, BookOpen, Mail } from "lucide-react-native";
 import { authClient, clearToken } from "../../lib/auth";
 import { api } from "../../lib/api";
 import Constants from "expo-constants";
@@ -152,7 +152,8 @@ export default function ProfileScreen() {
     { icon: Pill, label: tr("Lembretes"), sublabel: tr("Medicação, tratamentos e vacinas"), color: "#4ECDC4", onPress: () => router.push("/reminders" as any) },
     { icon: MapPin, label: tr("Vets e Outros"), sublabel: tr("Clínicas, lojas e serviços"), color: "#06D6A0", onPress: () => router.push("/find-vets") },
     { icon: Shield, label: tr("Privacidade"), sublabel: tr("Política de privacidade"), color: "#8B5CF6", onPress: () => Linking.openURL(`${API_URL}/privacy`).catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir a política de privacidade."))) },
-    { icon: HelpCircle, label: tr("Ajuda e Suporte"), sublabel: tr("Contacte-nos por email"), color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir o email."))) },
+    { icon: BookOpen, label: tr("Como funciona"), sublabel: tr("Tutorial e explicações de cada ecrã"), color: "#F59E0B", onPress: () => router.push("/ajuda" as any) },
+    { icon: Mail, label: tr("Ajuda e Suporte"), sublabel: tr("Contacte-nos por email"), color: "#6B7280", onPress: () => Linking.openURL("mailto:support@petslife.app?subject=Suporte%20PetsLife").catch(() => Alert.alert(tr("Erro"), tr("Não foi possível abrir o email."))) },
   ];
 
   // Área de administração — só aparece nas contas de administração

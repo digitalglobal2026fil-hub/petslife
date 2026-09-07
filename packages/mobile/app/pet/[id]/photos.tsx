@@ -138,7 +138,7 @@ export default function PetPhotosScreen() {
           <Text suppressHighlighting style={{ fontSize: 60, marginBottom: 16 }}>📷</Text>
           <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("Álbum vazio")}</Text>
           <Text suppressHighlighting style={{ color: "#9CA3AF", textAlign: "center", lineHeight: 22, marginBottom: 24 }}>
-            Adicione fotos do seu animal para criar memórias especiais.
+            {tr("Adicione fotos do seu animal para criar memórias especiais.")}
           </Text>
           <View style={{ flexDirection: "row", gap: 12 }}>
             <TouchableOpacity onPress={() => addPhoto(true)}

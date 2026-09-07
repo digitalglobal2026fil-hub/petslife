@@ -178,7 +178,7 @@ export default function VaccinesPage() {
             <Text suppressHighlighting style={{ fontSize: 60 }}>💉</Text>
             <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16, textAlign: "center" }}>{tr("Sem vacinas ainda")}</Text>
             <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, textAlign: "center", marginTop: 8, paddingHorizontal: 30, lineHeight: 20 }}>
-              Registe a caderneta de vacinação do seu bichinho! Cada vacina é um ato de amor 🐾
+              {tr("Registe a caderneta de vacinação do seu bichinho! Cada vacina é um ato de amor 🐾")}
             </Text>
             <TouchableOpacity onPress={() => setModal(true)}
               style={{ backgroundColor: GREEN, borderRadius: 18, paddingHorizontal: 28, paddingVertical: 14, marginTop: 24 }}>

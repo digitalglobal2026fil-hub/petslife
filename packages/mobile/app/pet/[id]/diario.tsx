@@ -118,7 +118,7 @@ export default function DiarioPage() {
               <Text suppressHighlighting style={{ fontSize: 60 }}>📓</Text>
               <Text suppressHighlighting style={{ color: BROWN, fontSize: 18, fontWeight: "800", marginTop: 16 }}>{tr("Diário vazio")}</Text>
               <Text suppressHighlighting style={{ color: GRAY, fontSize: 13, textAlign: "center", marginTop: 8, paddingHorizontal: 30, lineHeight: 20 }}>
-                Registe os momentos, sintomas e aventuras do seu bichinho! Cada entrada é uma memória 🐾💕
+                {tr("Registe os momentos, sintomas e aventuras do seu bichinho! Cada entrada é uma memória 🐾💕")}
               </Text>
               <TouchableOpacity onPress={() => setModal(true)}
                 style={{ backgroundColor: COLOR, borderRadius: 18, paddingHorizontal: 28, paddingVertical: 14, marginTop: 24 }}>
