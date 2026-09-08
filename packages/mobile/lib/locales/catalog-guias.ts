@@ -839,4 +839,20 @@ export const GUIAS: Record<string, readonly [string, string, string, string]> = 
   "Quintais com horta": ["Yards with a vegetable patch", "Patios con huerta", "Höfe mit Gemüsegarten", "Cours avec potager"],
   "Quintais pequenos, varandas grandes": ["Small yards, large balconies", "Patios pequeños, balcones grandes", "Kleine Höfe, große Balkone", "Petites cours, grands balcons"],
   "Terrenos, companhia de cavalos, quintas pedagógicas": ["Land, company for horses, educational farms", "Terrenos, compañía de caballos, granjas escuela", "Land, Gesellschaft für Pferde, Lernbauernhöfe", "Terrains, compagnie pour chevaux, fermes pédagogiques"],
+
+  // ── Guia de Raças: aves novas (rosela, araras, répteis) ──────────────
+  "Rosela": ["Rosella", "Rosela", "Rosella", "Rosella"],
+  "90–120 g": ["90–120 g", "90–120 g", "90–120 g", "90–120 g"],
+  "Muito colorida": ["Very colourful", "Muy colorida", "Sehr farbenfroh", "Très coloré"],
+  "Reservada": ["Reserved", "Reservada", "Zurückhaltend", "Réservé"],
+  "Assobia bem": ["Whistles well", "Silba bien", "Pfeift schön", "Siffle bien"],
+  "Vermes intestinais": ["Intestinal worms", "Gusanos intestinales", "Darmwürmer", "Vers intestinaux"],
+  "Fungos no papo": ["Fungal infection in the crop", "Hongos en el buche", "Pilzbefall im Kropf", "Mycose du jabot"],
+  "Obesidade com excesso de sementes": ["Obesity from too many seeds", "Obesidad por exceso de semillas", "Fettleibigkeit durch zu viele Körner", "Obésité due à un excès de graines"],
+  "É uma ave mais para observar do que para pegar ao colo — raramente gosta de mimos. Precisa de gaiola comprida (mínimo 120 cm) porque voa na horizontal. Sementes, fruta e verduras; gosta de procurar comida no chão da gaiola. Melhor sozinha ou em casal — é territorial com outras aves.": ["This is a bird to watch rather than to cuddle — it rarely enjoys being handled. It needs a long cage (at least 120 cm) because it flies horizontally. Seeds, fruit and greens; it likes to forage on the cage floor. Best kept alone or as a pair — it is territorial with other birds.", "Es un ave más para observar que para tener en brazos — rara vez le gustan los mimos. Necesita una jaula larga (mínimo 120 cm) porque vuela en horizontal. Semillas, fruta y verduras; le gusta buscar comida en el suelo de la jaula. Mejor sola o en pareja — es territorial con otras aves.", "Ein Vogel zum Beobachten, nicht zum Kuscheln — er mag es selten, angefasst zu werden. Er braucht einen langen Käfig (mindestens 120 cm), weil er waagerecht fliegt. Körner, Obst und Grünzeug; er sucht gern am Käfigboden nach Futter. Am besten einzeln oder als Paar — anderen Vögeln gegenüber territorial.", "C'est un oiseau à observer plutôt qu'à prendre dans les bras — il aime rarement les câlins. Il a besoin d'une cage longue (au moins 120 cm) car il vole à l'horizontale. Graines, fruits et verdure ; il aime chercher sa nourriture au fond de la cage. Mieux seul ou en couple — il est territorial avec les autres oiseaux."],
+  "Quem gosta de aves bonitas para observar e tem espaço": ["Anyone who likes beautiful birds to watch and has space", "Quien le gustan las aves bonitas para observar y tiene espacio", "Wer schöne Vögel zum Beobachten mag und Platz hat", "Ceux qui aiment observer de beaux oiseaux et ont de la place"],
+  "Arara-azul": ["Hyacinth macaw", "Guacamayo azul", "Hyazinthara", "Ara hyacinthe"],
+  "Arara-vermelha": ["Scarlet macaw", "Guacamayo rojo", "Hellroter Ara", "Ara macao"],
+  "Pogona (dragão barbudo)": ["Bearded dragon", "Pogona (dragón barbudo)", "Bartagame", "Pogona (dragon barbu)"],
+  "Tartaruga de água": ["Water turtle", "Tortuga de agua", "Wasserschildkröte", "Tortue aquatique"],
 };

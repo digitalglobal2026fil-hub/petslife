@@ -230,6 +230,16 @@ const BREEDS = [
     color: "#F97316", bg: "#FFEDD5",
   },
   {
+    name: "Rosela", species: "bird", emoji: "🦜", size: "Médio",
+    photo: require("../assets/breeds/rosela.jpg"),
+    origin: "Austrália", life: "15–20 anos", weight: "90–120 g",
+    personality: ["Muito colorida", "Activa", "Reservada", "Assobia bem"],
+    health: ["Vermes intestinais", "Fungos no papo", "Obesidade com excesso de sementes"],
+    care: "É uma ave mais para observar do que para pegar ao colo — raramente gosta de mimos. Precisa de gaiola comprida (mínimo 120 cm) porque voa na horizontal. Sementes, fruta e verduras; gosta de procurar comida no chão da gaiola. Melhor sozinha ou em casal — é territorial com outras aves.",
+    ideal: "Quem gosta de aves bonitas para observar e tem espaço",
+    color: "#E11D48", bg: "#FFE4E6",
+  },
+  {
     name: "Arara-azul", species: "bird", emoji: "🦜", size: "Muito grande",
     photo: require("../assets/breeds/arara-azul.jpg"),
     origin: "Brasil", life: "50–60 anos", weight: "1,2–1,7 kg",
