@@ -9,6 +9,7 @@ import {
 import { tr } from "../lib/i18n";
 import { kvSet } from "../lib/kv";
 import { TUTORIAL_KEY } from "./tutorial";
+import { safeBack } from "../lib/safe-back";
 
 type Secao = {
   icone: any;
@@ -199,7 +200,7 @@ export default function Ajuda() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top"]}>
       {/* Topo */}
       <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 12 }}>
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} style={{ padding: 4, marginRight: 6 }}>
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/profile")} activeOpacity={0.7} style={{ padding: 4, marginRight: 6 }}>
           <ChevronLeft size={26} color="#1A1A2E" />
         </TouchableOpacity>
         <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>

@@ -1,8 +1,8 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert, Animated } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert, Animated, Share, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { Plus, Bell, QrCode, Syringe, Calendar, MapPin, AlertCircle, PawPrint, Sparkles, Siren, Dog, Dumbbell, Pill, Search as SearchIcon, Gauge, HeartHandshake, Heart, ClipboardList, BookOpen, Coffee, Scale, Skull, Flame } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
@@ -12,7 +12,24 @@ import { PaywallScreen } from "../../components/PaywallScreen";
 import { SubscriptionBanner } from "../../components/SubscriptionBanner";
 import { PetIllustration } from "../../components/PetIllustration";
 import { NotificationBell } from "../../components/NotificationBell";
+import { ShareReminderBird } from "../../components/ShareReminderBird";
+import { ExitShareModal } from "../../components/ExitShareModal";
+import { lembretePartilhaActivoNestaSessao, TEXTO_LEMBRETE_PARTILHA } from "../../lib/share-reminder";
 import { tr } from "../../lib/i18n";
+
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.petislife2.app";
+
+async function partilharApp() {
+  try {
+    await Share.share({
+      message: `${TEXTO_LEMBRETE_PARTILHA}\n\n${PLAY_STORE_URL}`,
+      url: PLAY_STORE_URL,
+      title: "PetsLife",
+    });
+  } catch {
+    /* utilizadora cancelou a partilha — sem problema */
+  }
+}
 
 function PetCard({ pet, index, onPress }: { pet: any; index: number; onPress: () => void }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -100,6 +117,28 @@ export default function HomeScreen() {
   const { data: session } = authClient.useSession();
   const headerAnim = useRef(new Animated.Value(0)).current;
   const { isLoading: gateLoading, isBlocked } = useSubscriptionGate();
+
+  // Lembrete de partilha (passarinho + bandeirola): decidido uma vez por
+  // arranque em share-reminder.ts (1 em cada 3 aberturas). Aparece como
+  // banner aqui e, se ainda não tiver sido visto, também ao tentar saír.
+  const [mostrarBanner, setMostrarBanner] = useState(true);
+  const [mostrarModalSaida, setMostrarModalSaida] = useState(false);
+  const avisoSaidaMostradoRef = useRef(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      const aoVoltar = () => {
+        if (lembretePartilhaActivoNestaSessao() && !avisoSaidaMostradoRef.current) {
+          avisoSaidaMostradoRef.current = true;
+          setMostrarModalSaida(true);
+          return true; // segura a saída para mostrar o aviso primeiro
+        }
+        return false; // comportamento normal (sai da app)
+      };
+      const sub = BackHandler.addEventListener("hardwareBackPress", aoVoltar);
+      return () => sub.remove();
+    }, []),
+  );
 
   const { data: petsData, isLoading } = useQuery({
     queryKey: ["pets"],
@@ -201,6 +240,14 @@ export default function HomeScreen() {
           <SubscriptionBanner />
         </View>
 
+        {/* Passarinho: lembrete de partilha/apoio à causa animal */}
+        {mostrarBanner && lembretePartilhaActivoNestaSessao() && (
+          <ShareReminderBird
+            onClose={() => setMostrarBanner(false)}
+            onShare={partilharApp}
+          />
+        )}
+
         {/* Pets list */}
         <View style={{ marginTop: 28, paddingHorizontal: 20, marginBottom: 8 }}>
           <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E", marginBottom: 14 }}>{tr("Os meus pets")}</Text>
@@ -289,6 +336,19 @@ export default function HomeScreen() {
           </View>
         )}
       </ScrollView>
+
+      <ExitShareModal
+        visible={mostrarModalSaida}
+        onClose={() => {
+          setMostrarModalSaida(false);
+          BackHandler.exitApp();
+        }}
+        onShare={async () => {
+          await partilharApp();
+          setMostrarModalSaida(false);
+          BackHandler.exitApp();
+        }}
+      />
     </SafeAreaView>
   );
 }

@@ -14,6 +14,7 @@ import { AnimatedPetGroup } from "../components/AnimatedPet";
 import { authFetch } from "../lib/auth-fetch";
 import { DateFieldPT } from "../components/DateFieldPT";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const TEAL = "#4ECDC4";
 const BG = "#F2FBFA";
@@ -149,7 +150,7 @@ export default function RemindersScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       <View style={{ backgroundColor: TEAL, paddingHorizontal: 18, paddingTop: 12, paddingBottom: 24, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ padding: 4 }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")} style={{ padding: 4 }}>
             <ArrowLeft size={22} color="#fff" />
           </TouchableOpacity>
           <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#fff" }}>{tr("Lembretes")}</Text>

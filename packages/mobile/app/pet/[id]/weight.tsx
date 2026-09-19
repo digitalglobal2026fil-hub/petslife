@@ -10,6 +10,7 @@ import { api } from "../../../lib/api";
 import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
 import { tr } from "../../../lib/i18n";
+import { safeBack } from "../../../lib/safe-back";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -82,7 +83,7 @@ export default function WeightPage() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 10 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, `/pet/${id}`)}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: CARD, borderWidth: 1.5, borderColor: BORDER, alignItems: "center", justifyContent: "center" }}>
           <Text suppressHighlighting style={{ fontSize: 18 }}>←</Text>
         </TouchableOpacity>
@@ -166,7 +167,7 @@ export default function WeightPage() {
         }
       </ScrollView>
 
-      <Modal visible={modal} animationType="slide" presentationStyle="pageSheet">
+      <Modal onRequestClose={() => setModal(false)} visible={modal} animationType="slide" presentationStyle="pageSheet">
         <SafeAreaView style={{ flex: 1, backgroundColor: BG }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 16 }}>
             <TouchableOpacity onPress={() => setModal(false)}>

@@ -10,6 +10,7 @@ import { ChevronLeft } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const types = [
   { value: "clinica",     label: tr("🏥 Clínica Veterinária") },
@@ -82,7 +83,7 @@ export default function AddBusinessScreen() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["businesses"] });
       Alert.alert(tr("✅ Negócio registado!"), tr("O teu negócio já está visível para todos os utilizadores."));
-      router.back();
+      safeBack(router, "/(tabs)/businesses");
     },
     onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível registar o negócio."))),
   });
@@ -95,7 +96,7 @@ export default function AddBusinessScreen() {
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 12 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/businesses")} style={{ marginRight: 12 }}>
             <ChevronLeft size={24} color="#1A1A2E" />
           </TouchableOpacity>
           <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>{tr("Registar Negócio")}</Text>

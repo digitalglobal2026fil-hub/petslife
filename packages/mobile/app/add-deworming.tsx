@@ -6,7 +6,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ChevronLeft, ChevronDown, Upload, Camera, Syringe } from "lucide-react-native";
+import { ChevronLeft, ChevronDown, Upload, Camera, Bug } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { confirmUsePhoto } from "../lib/pick-image";
 import { api } from "../lib/api";
@@ -29,7 +29,7 @@ function Field({ label, value, onChange, placeholder, keyboardType, multiline }:
         placeholderTextColor="#9CA3AF" keyboardType={keyboardType ?? "default"}
         multiline={multiline} numberOfLines={multiline ? 3 : 1}
         style={{
-          backgroundColor: "#FFF9F5", borderWidth: 1.5, borderColor: "#F0E8E0",
+          backgroundColor: "#FFFBEB", borderWidth: 1.5, borderColor: "#FDE68A",
           borderRadius: 14, padding: 12, fontSize: 14, color: "#1A1A2E",
           minHeight: multiline ? 80 : undefined, textAlignVertical: multiline ? "top" : undefined
         }}
@@ -38,19 +38,18 @@ function Field({ label, value, onChange, placeholder, keyboardType, multiline }:
   );
 }
 
-export default function AddVaccineScreen() {
+export default function AddDewormingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const qc = useQueryClient();
 
   const [petId, setPetId] = useState<string | null>(null);
   const [petPickerOpen, setPetPickerOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [dwType, setDwType] = useState("internal");
+  const [product, setProduct] = useState("");
   const [date, setDate] = useState("");
   const [next, setNext] = useState("");
   const [vet, setVet] = useState("");
-  const [clinic, setClinic] = useState("");
-  const [batch, setBatch] = useState("");
   const [notes, setNotes] = useState("");
   const [docUrl, setDocUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -64,17 +63,15 @@ export default function AddVaccineScreen() {
 
   const save = useMutation({
     mutationFn: async () => {
-      // date is notNull in schema — send today if empty
       const today = new Date().toISOString().split("T")[0];
-      const res = await api.vaccines.$post({
+      const res = await (api as any).dewormings.$post({
         json: {
           petId,
-          name,
+          product,
+          type: dwType,
           date: date.trim() || today,
           nextDate: next.trim() || undefined,
           veterinarian: vet.trim() || undefined,
-          clinic: clinic.trim() || undefined,
-          batch: batch.trim() || undefined,
           notes: notes.trim() || undefined,
           documentUrl: docUrl || undefined,
         },
@@ -86,12 +83,11 @@ export default function AddVaccineScreen() {
       return res.json();
     },
     onSuccess: () => {
-      // invalidate all vaccines queries (pet health screen uses ["vaccines", petId])
-      qc.invalidateQueries({ queryKey: ["vaccines"] });
-      qc.invalidateQueries({ queryKey: ["health-logs"] });
-      Alert.alert("✅ Vacina guardada!", tr("Vacina adicionada com sucesso."), [{ text: tr("OK"), onPress: () => safeBack(router) }]);
+      qc.invalidateQueries({ queryKey: ["dewormings"] });
+      qc.invalidateQueries({ queryKey: ["all-dewormings-notif"] });
+      Alert.alert("✅ Desparasitação guardada!", tr("Registo adicionado com sucesso."), [{ text: tr("OK"), onPress: () => safeBack(router) }]);
     },
-    onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível guardar a vacina."))),
+    onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível guardar o registo."))),
   });
 
   const pickFile = async () => {
@@ -107,32 +103,32 @@ export default function AddVaccineScreen() {
   const upload = async (a: any) => {
     setUploading(true);
     try {
-      const url = await uploadFile(a.uri, a.fileName ?? `vaccine_${Date.now()}.jpg`, a.mimeType ?? "image/jpeg");
+      const url = await uploadFile(a.uri, a.fileName ?? `deworming_${Date.now()}.jpg`, a.mimeType ?? "image/jpeg");
       setDocUrl(url);
     } catch (e: any) { Alert.alert(tr("Erro no upload"), e.message); }
     finally { setUploading(false); }
   };
 
   const handleSave = () => {
-    if (!petId) { Alert.alert(tr("Selecione um animal"), tr("Escolha a qual animal pertence esta vacina.")); return; }
-    if (!name.trim()) { Alert.alert(tr("Campo obrigatório"), tr("Insira o nome da vacina.")); return; }
+    if (!petId) { Alert.alert(tr("Selecione um animal"), tr("Escolha a qual animal pertence este registo.")); return; }
+    if (!product.trim()) { Alert.alert(tr("Campo obrigatório"), tr("Insira o nome do produto.")); return; }
     save.mutate();
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFBEB" }} edges={["top", "left", "right"]}>
       {/* Header */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 20, paddingBottom: 16 }}>
         <TouchableOpacity onPress={() => safeBack(router)}
-          style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
+          style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#FDE68A", alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Nova Vacina 💉")}</Text>
-          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{tr("Registe a caderneta de vacinação")}</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Nova Desparasitação 🪱")}</Text>
+          <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12 }}>{tr("Controlo interno e externo")}</Text>
         </View>
-        <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#E8FAF9", alignItems: "center", justifyContent: "center" }}>
-          <Syringe size={22} color="#4ECDC4" />
+        <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "#FEF3C7", alignItems: "center", justifyContent: "center" }}>
+          <Bug size={22} color="#F59E0B" />
         </View>
       </View>
 
@@ -146,9 +142,9 @@ export default function AddVaccineScreen() {
         {/* Pet picker */}
         <View style={{ marginBottom: 20 }}>
           <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>{tr("Animal *")}</Text>
-          {loadPets ? <ActivityIndicator color="#FF6B35" /> : (
+          {loadPets ? <ActivityIndicator color="#F59E0B" /> : (
             <TouchableOpacity onPress={() => setPetPickerOpen(!petPickerOpen)}
-              style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? "#4ECDC4" : "#F0E8E0", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+              style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: petId ? "#F59E0B" : "#FDE68A", borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text suppressHighlighting style={{ fontSize: 14, color: selectedPet ? "#1A1A2E" : "#9CA3AF", fontWeight: selectedPet ? "600" : "400" }}>
                 {selectedPet ? `${selectedPet.species === "cat" ? "🐱" : selectedPet.species === "bird" ? "🦜" : "🐕"} ${selectedPet.name}` : tr("Selecionar animal...")}
               </Text>
@@ -156,14 +152,14 @@ export default function AddVaccineScreen() {
             </TouchableOpacity>
           )}
           {petPickerOpen && (
-            <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
+            <View style={{ backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#FDE68A", borderRadius: 14, marginTop: 4, overflow: "hidden" }}>
               {pets.length === 0 ? (
                 <TouchableOpacity onPress={() => router.replace("/add-pet")} style={{ padding: 14, alignItems: "center" }}>
-                  <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>{tr("+ Adicionar animal primeiro")}</Text>
+                  <Text suppressHighlighting style={{ color: "#F59E0B", fontWeight: "600" }}>{tr("+ Adicionar animal primeiro")}</Text>
                 </TouchableOpacity>
               ) : pets.map((p: any) => (
                 <TouchableOpacity key={p.id} onPress={() => { setPetId(p.id); setPetPickerOpen(false); }}
-                  style={{ padding: 14, flexDirection: "row", alignItems: "center", gap: 10, borderBottomWidth: 1, borderBottomColor: "#F9F5F0" }}>
+                  style={{ padding: 14, flexDirection: "row", alignItems: "center", gap: 10, borderBottomWidth: 1, borderBottomColor: "#FEF3C7" }}>
                   <Text suppressHighlighting style={{ fontSize: 20 }}>{p.species === "cat" ? "🐱" : p.species === "bird" ? "🦜" : "🐕"}</Text>
                   <View>
                     <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E" }}>{p.name}</Text>
@@ -175,25 +171,36 @@ export default function AddVaccineScreen() {
           )}
         </View>
 
+        {/* Tipo */}
+        <View style={{ marginBottom: 14 }}>
+          <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 6 }}>{tr("Tipo")}</Text>
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            {[{ k: "internal", l: tr("Interna") }, { k: "external", l: tr("Externa") }, { k: "both", l: tr("Ambas") }].map((t) => (
+              <TouchableOpacity key={t.k} onPress={() => setDwType(t.k)}
+                style={{ flex: 1, paddingVertical: 10, borderRadius: 14, backgroundColor: dwType === t.k ? "#F59E0B" : "#fff", borderWidth: 1.5, borderColor: dwType === t.k ? "#F59E0B" : "#FDE68A", alignItems: "center" }}>
+                <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "600", color: dwType === t.k ? "#fff" : "#6B7280" }}>{t.l}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
         {/* Form */}
-        <Field label={tr("Nome da vacina *")} value={name} onChange={setName} placeholder={tr("Ex: Raiva, Parvovírus, Esgana, Leucemia...")} />
+        <Field label={tr("Produto *")} value={product} onChange={setProduct} placeholder={tr("Ex: Frontline, Milbemax, Advocate...")} />
 
         <View style={{ flexDirection: "row", gap: 10 }}>
           <View style={{ flex: 1 }}>
-            <DateFieldPT label={tr("Data de administração")} value={date} onChange={setDate} />
+            <DateFieldPT label={tr("Data de aplicação")} value={date} onChange={setDate} />
           </View>
           <View style={{ flex: 1 }}>
-            <DateFieldPT label={tr("Próxima dose")} value={next} onChange={setNext} />
+            <DateFieldPT label={tr("Próxima aplicação")} value={next} onChange={setNext} />
           </View>
         </View>
 
         <Field label={tr("Médico veterinário")} value={vet} onChange={setVet} placeholder={tr("Nome do veterinário")} />
-        <Field label={tr("Clínica / Hospital")} value={clinic} onChange={setClinic} placeholder={tr("Nome da clínica")} />
-        <Field label={tr("Número de lote")} value={batch} onChange={setBatch} placeholder={tr("Ex: AB12345")} />
-        <Field label={tr("Notas")} value={notes} onChange={setNotes} placeholder={tr("Reações, observações...")} multiline />
+        <Field label={tr("Notas")} value={notes} onChange={setNotes} placeholder={tr("Observações...")} multiline />
 
         {/* Upload */}
-        <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("Caderneta / Comprovativo")}</Text>
+        <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: "#1A1A2E", marginBottom: 8 }}>{tr("Comprovativo / Foto")}</Text>
         {docUrl ? (
           <View style={{ marginBottom: 14 }}>
             <Image source={{ uri: docUrl }} style={{ width: "100%", height: 180, borderRadius: 14, resizeMode: "cover" }} />
@@ -203,21 +210,21 @@ export default function AddVaccineScreen() {
           </View>
         ) : uploading ? (
           <View style={{ height: 80, alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-            <ActivityIndicator color="#4ECDC4" />
+            <ActivityIndicator color="#F59E0B" />
             <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12, marginTop: 6 }}>{tr("A fazer upload...")}</Text>
           </View>
         ) : (
           <View style={{ flexDirection: "row", gap: 10, marginBottom: 14 }}>
             <TouchableOpacity onPress={pickFile}
-              style={{ flex: 1, borderWidth: 1.5, borderColor: "#4ECDC4", borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: "#F0FFFE" }}>
-              <Upload size={22} color="#4ECDC4" />
-              <Text suppressHighlighting style={{ fontSize: 12, color: "#4ECDC4", fontWeight: "700" }}>{tr("Escolher ficheiro")}</Text>
+              style={{ flex: 1, borderWidth: 1.5, borderColor: "#F59E0B", borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: "#FFFBEB" }}>
+              <Upload size={22} color="#F59E0B" />
+              <Text suppressHighlighting style={{ fontSize: 12, color: "#F59E0B", fontWeight: "700" }}>{tr("Escolher ficheiro")}</Text>
               <Text suppressHighlighting style={{ fontSize: 10, color: "#9CA3AF" }}>{tr("PDF, imagem...")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={pickCamera}
-              style={{ flex: 1, borderWidth: 1.5, borderColor: "#4ECDC4", borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: "#F0FFFE" }}>
-              <Camera size={22} color="#4ECDC4" />
-              <Text suppressHighlighting style={{ fontSize: 12, color: "#4ECDC4", fontWeight: "700" }}>{tr("Tirar foto")}</Text>
+              style={{ flex: 1, borderWidth: 1.5, borderColor: "#F59E0B", borderRadius: 14, borderStyle: "dashed", padding: 16, alignItems: "center", gap: 6, backgroundColor: "#FFFBEB" }}>
+              <Camera size={22} color="#F59E0B" />
+              <Text suppressHighlighting style={{ fontSize: 12, color: "#F59E0B", fontWeight: "700" }}>{tr("Tirar foto")}</Text>
               <Text suppressHighlighting style={{ fontSize: 10, color: "#9CA3AF" }}>{tr("Câmara direta")}</Text>
             </TouchableOpacity>
           </View>
@@ -225,9 +232,9 @@ export default function AddVaccineScreen() {
 
         {/* Save */}
         <TouchableOpacity onPress={handleSave} disabled={save.isPending}
-          style={{ backgroundColor: "#4ECDC4", borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: "#4ECDC4", shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
+          style={{ backgroundColor: "#F59E0B", borderRadius: 18, padding: 16, alignItems: "center", marginTop: 8, opacity: save.isPending ? 0.7 : 1, shadowColor: "#F59E0B", shadowOpacity: 0.3, shadowRadius: 12, elevation: 0 }}>
           {save.isPending ? <ActivityIndicator color="#fff" /> : (
-            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>{tr("💾 Guardar Vacina")}</Text>
+            <Text suppressHighlighting style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>{tr("💾 Guardar Desparasitação")}</Text>
           )}
         </TouchableOpacity>
       </ScrollView>

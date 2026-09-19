@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react-native";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const BG = "#F8F6FF";
 const PURPLE = "#8B5CF6";
@@ -1294,7 +1295,7 @@ export default function BreedGuideScreen() {
       {/* Header */}
       <View style={{ backgroundColor: PURPLE, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 28, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={18} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>

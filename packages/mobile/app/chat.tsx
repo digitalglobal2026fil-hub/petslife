@@ -10,6 +10,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { authClient } from '../lib/auth';
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -111,7 +112,7 @@ export default function ChatScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => safeBack(router, "/chats")} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color={COLORS.dark} />
         </TouchableOpacity>
         <View style={styles.headerAvatar}>

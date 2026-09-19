@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { Alert, AppState, Linking, Vibration } from "react-native";
+import { Alert, AppState, Linking, Platform, Vibration } from "react-native";
+import { createAudioPlayer, setAudioModeAsync } from "expo-audio";
 import { kvGetIds, kvSetIds, kvHas } from "./kv";
 import Constants from "expo-constants";
 import { authFetch } from "./auth-fetch";
@@ -12,6 +13,31 @@ const API_URL = (
 ).replace(/\/$/, "");
 
 const SEEN_KEY = "dg_seen_scan_ids";
+
+/**
+ * Toca o som de notificação já existente no telemóvel (o mesmo som que
+ * qualquer outra notificação do sistema usa) em vez de um som novo criado
+ * por nós — assim fica igual ao que a pessoa já está habituada a ouvir e
+ * não é preciso gerar/pedir nenhum ficheiro de áudio extra.
+ * Só no Android, que expõe esse som através de um "content://" público.
+ * No iOS não há equivalente sem pedir permissão de notificações (que aqui
+ * evitamos por causa do Firebase), por isso fica só a vibração.
+ */
+async function tocarSomDeAviso() {
+  if (Platform.OS !== "android") return;
+  try {
+    await setAudioModeAsync({ playsInSilentMode: false, shouldPlayInBackground: false });
+    const p = createAudioPlayer("content://settings/system/notification_sound");
+    p.play();
+    setTimeout(() => {
+      try {
+        p.remove();
+      } catch {}
+    }, 3000);
+  } catch {
+    /* alguns aparelhos podem bloquear este content:// — a vibração chega */
+  }
+}
 
 /**
  * Avisa o dono quando o QR code de um animal é digitalizado.
@@ -46,6 +72,7 @@ export function useScanAlerts(enabled: boolean) {
       } catch {
         /* alguns aparelhos não têm vibração */
       }
+      tocarSomDeAviso();
       const nome = scan?.petName ?? "o seu animal";
       const quem = scan?.finderName ? `\n\nEncontrado por: ${scan.finderName}` : "";
       const tel = scan?.finderPhone ? `\nTelefone: ${scan.finderPhone}` : "";

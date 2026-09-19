@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ChevronLeft, AlertTriangle, ChevronRight, Phone } from "lucide-react-native";
 import { Linking } from "react-native";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const BG = "#FFF9F9";
 const DARK = "#1A1A2E";
@@ -220,7 +221,7 @@ export default function FirstAidScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       <View style={{ backgroundColor: RED, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 28, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 8 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={18} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>

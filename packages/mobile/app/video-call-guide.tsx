@@ -10,6 +10,7 @@ import {
 } from "lucide-react-native";
 import Constants from "expo-constants";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "https://petslife.onrender.com").replace(/\/$/, "");
 
@@ -107,7 +108,7 @@ export default function VideoCallGuideScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backBtn}
-          onPress={() => router.back()}
+          onPress={() => safeBack(router, "/(tabs)/health")}
         >
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>

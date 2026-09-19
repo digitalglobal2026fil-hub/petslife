@@ -9,6 +9,7 @@ import { authClient } from "../../lib/auth";
 import { authFetch } from "../../lib/auth-fetch";
 import { DateFieldPT } from "../../components/DateFieldPT";
 import { tr } from "../../lib/i18n";
+import { safeBack } from "../../lib/safe-back";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -118,7 +119,7 @@ export default function AppointmentDetailScreen() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments-upcoming"] });
-      router.back();
+      safeBack(router, "/agenda");
     },
     onError: () => Alert.alert(tr("Erro"), tr("Não foi possível eliminar a consulta.")),
   });
@@ -139,7 +140,7 @@ export default function AppointmentDetailScreen() {
       {/* Header */}
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 12 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <TouchableOpacity onPress={() => router.back()}
+          <TouchableOpacity onPress={() => safeBack(router, "/agenda")}
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#E8D5B7", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={20} color="#6B3A2A" />
           </TouchableOpacity>
@@ -164,7 +165,7 @@ export default function AppointmentDetailScreen() {
       ) : !apt ? (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 20 }}>
           <Text suppressHighlighting style={{ fontSize: 16, color: "#A08060", textAlign: "center" }}>{tr("Consulta não encontrada.")}</Text>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 16, backgroundColor: "#E07A3A", borderRadius: 12, paddingHorizontal: 24, paddingVertical: 12 }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/agenda")} style={{ marginTop: 16, backgroundColor: "#E07A3A", borderRadius: 12, paddingHorizontal: 24, paddingVertical: 12 }}>
             <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700" }}>{tr("Voltar")}</Text>
           </TouchableOpacity>
         </View>

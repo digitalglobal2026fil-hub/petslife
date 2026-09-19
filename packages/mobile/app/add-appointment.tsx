@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronDown, Calendar } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
 import { DateFieldPT } from "../components/DateFieldPT";
+import { safeBack } from "../lib/safe-back";
 import { tr } from "../lib/i18n";
 
 function Field({ label, value, onChange, placeholder, keyboardType, multiline }: any) {
@@ -66,7 +67,7 @@ export default function AddAppointmentScreen() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["appointments"] });
       qc.invalidateQueries({ queryKey: ["appointments-upcoming"] });
-      Alert.alert("✅ Consulta guardada!", tr("Consulta adicionada com sucesso."), [{ text: tr("OK"), onPress: () => router.back() }]);
+      Alert.alert("✅ Consulta guardada!", tr("Consulta adicionada com sucesso."), [{ text: tr("OK"), onPress: () => safeBack(router) }]);
     },
     onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
@@ -82,7 +83,7 @@ export default function AddAppointmentScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 20, paddingBottom: 16 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router)}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>

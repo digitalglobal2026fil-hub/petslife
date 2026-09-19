@@ -9,6 +9,7 @@ import { api } from "../../../lib/api";
 import { PetIllustration } from "../../../components/PetIllustration";
 import { netError } from "../../../lib/net-error";
 import { tr } from "../../../lib/i18n";
+import { safeBack } from "../../../lib/safe-back";
 
 export default function PetDetailScreen() {
   const router = useRouter();
@@ -52,7 +53,7 @@ export default function PetDetailScreen() {
     mutationFn: async () => (await api.pets[":id"].$delete({ param: { id } })).json(),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pets"] });
-      router.back();
+      safeBack(router, "/(tabs)");
     },
     onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível eliminar.")),
   });
@@ -99,7 +100,7 @@ export default function PetDetailScreen() {
           <PawPrint size={36} color="#8B5E3C" />
         </View>
         <Text suppressHighlighting style={{ color: "#6B7280", marginTop: 8 }}>{tr("Animal não encontrado")}</Text>
-        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 16 }}>
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)")} style={{ marginTop: 16 }}>
           <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "600" }}>{tr("Voltar")}</Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -141,7 +142,7 @@ export default function PetDetailScreen() {
         {/* Header */}
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 12 }}>
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={() => safeBack(router, "/(tabs)")}
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={20} color="#1A1A2E" />
           </TouchableOpacity>

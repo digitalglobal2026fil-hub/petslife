@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { CheckCircle, ArrowLeft, Star } from "lucide-react-native";
 import { tr } from "../lib/i18n";
 import { api } from "../lib/api";
+import { safeBack } from "../lib/safe-back";
 import {
   SKU_MONTHLY,
   SKU_ANNUAL,
@@ -73,7 +74,7 @@ export default function SubscriptionScreen() {
           setBusy(false);
           busyRef.current = false;
           Alert.alert(tr("Subscrição activa"), tr("Obrigado! Já tem acesso completo ao PetsLife."), [
-            { text: "OK", onPress: () => router.back() },
+            { text: "OK", onPress: () => safeBack(router, "/(tabs)/profile") },
           ]);
         } catch {
           setBusy(false);
@@ -119,7 +120,7 @@ export default function SubscriptionScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ padding: 20, flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/profile")} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
             <ArrowLeft size={18} color="#1A1A2E" />
           </TouchableOpacity>
           <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>{tr("Planos PetsLife")}</Text>

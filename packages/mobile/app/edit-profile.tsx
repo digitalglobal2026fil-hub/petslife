@@ -9,6 +9,7 @@ import { confirmUsePhoto } from "../lib/pick-image";
 import { uploadImage } from "../lib/upload";
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -168,7 +169,7 @@ export default function EditProfileScreen() {
         }),
       });
       if (!res.ok) throw new Error(tr("Erro ao guardar"));
-      Alert.alert("✅ Guardado", tr("Perfil atualizado com sucesso!"), [{ text: tr("OK"), onPress: () => router.back() }]);
+      Alert.alert("✅ Guardado", tr("Perfil atualizado com sucesso!"), [{ text: tr("OK"), onPress: () => safeBack(router, "/(tabs)/profile") }]);
     } catch {
       Alert.alert(tr("Erro"), tr("Não foi possível guardar o perfil."));
     } finally {
@@ -181,7 +182,7 @@ export default function EditProfileScreen() {
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         {/* Header */}
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 12 }}>
-          <TouchableOpacity onPress={() => router.back()}
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/profile")}
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#E8D5B7", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={20} color="#6B3A2A" />
           </TouchableOpacity>

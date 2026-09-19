@@ -10,6 +10,7 @@ import { AnimatedPet } from "../components/AnimatedPet";
 import { netError } from "../lib/net-error";
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const BENEFIT_INFO: Record<string, { title: string; desc: string; icon: any; color: string }> = {
   lifetime: { title: tr("Acesso vitalício"), desc: tr("Acesso completo para sempre. Nunca pagas nada."), icon: InfinityIcon, color: "#8B5CF6" },
@@ -98,7 +99,7 @@ export default function PromoCodeScreen() {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <TouchableOpacity style={styles.back} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.back} onPress={() => safeBack(router, "/(tabs)/profile")}>
           <ArrowLeft size={22} color="#FF6B35" />
         </TouchableOpacity>
 

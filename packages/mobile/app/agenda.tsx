@@ -21,6 +21,7 @@ import { BASE_URL } from "../lib/api";
 import { authFetch } from "../lib/auth-fetch";
 import { netError } from "../lib/net-error";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const AZUL = "#3B82F6";
 const BG = "#F4F7FF";
@@ -234,7 +235,7 @@ export default function AgendaScreen() {
         borderBottomLeftRadius: 24, borderBottomRightRadius: 24,
       }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ padding: 4 }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")} style={{ padding: 4 }}>
             <ArrowLeft size={24} color="#fff" />
           </TouchableOpacity>
           <CalendarDays size={22} color="#fff" />

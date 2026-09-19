@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { View, Text, Image, Animated, Easing, Dimensions } from "react-native";
 import PawIcon from "./PawIcon";
 import { tocarAberturaUmaVez } from "../lib/opening-sound";
+import { registarAberturaEDecidirLembretePartilha } from "../lib/share-reminder";
 
 const LOADING_ART = require("../assets/petslife-loading.png");
 
@@ -88,6 +89,7 @@ export function AppLoading({ message = "Só um instante..." }: { message?: strin
   // arranque, mesmo que este ecrã apareça várias vezes.
   useEffect(() => {
     tocarAberturaUmaVez();
+    registarAberturaEDecidirLembretePartilha();
   }, []);
 
   const bounce = useRef(new Animated.Value(0)).current;

@@ -16,6 +16,7 @@ import { tr } from "../lib/i18n";
 import { uploadImage } from "../lib/upload";
 import * as Print from "expo-print";
 import { pickImageWithChoice } from "../lib/pick-image";
+import { safeBack } from "../lib/safe-back";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -258,7 +259,7 @@ export default function LostPetsScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color={COLORS.dark} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{tr("🔍 Animais Perdidos")}</Text>
@@ -315,7 +316,7 @@ export default function LostPetsScreen() {
       )}
 
       {/* Modal criar anúncio */}
-      <Modal visible={showModal} animationType="slide" presentationStyle="pageSheet">
+      <Modal onRequestClose={() => setShowModal(false)} visible={showModal} animationType="slide" presentationStyle="pageSheet">
         <SafeAreaView style={[styles.container, { backgroundColor: '#fff' }]}>
           <View style={styles.modalHeader}>
             <TouchableOpacity onPress={() => setShowModal(false)}><Ionicons name="close" size={24} color={COLORS.dark} /></TouchableOpacity>

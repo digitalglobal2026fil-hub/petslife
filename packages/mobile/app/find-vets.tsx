@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { ChevronLeft, MapPin, Navigation, Phone, ExternalLink } from "lucide-react-native";
 import * as Location from "expo-location";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 // We keep it simple: use geolocation to get coords, then open Google Maps with a nearby vets search
 // No paid API needed
@@ -76,7 +77,7 @@ export default function FindVetsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 12 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center", marginRight: 12 }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>

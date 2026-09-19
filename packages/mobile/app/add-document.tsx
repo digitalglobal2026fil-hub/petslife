@@ -12,6 +12,7 @@ import { confirmUsePhoto } from "../lib/pick-image";
 import { api } from "../lib/api";
 import { uploadImage } from "../lib/upload";
 import { netError } from "../lib/net-error";
+import { safeBack } from "../lib/safe-back";
 import { tr } from "../lib/i18n";
 
 async function uploadFile(uri: string, filename: string, mimeType: string): Promise<string> {
@@ -74,7 +75,7 @@ export default function AddDocumentScreen() {
       (await api.documents.$post({ json: { petId, type: docType, title, url: url ?? "", notes: notes || undefined } })).json(),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["documents"] });
-      Alert.alert("✅ Documento guardado!", tr("Documento adicionado com sucesso."), [{ text: tr("OK"), onPress: () => router.back() }]);
+      Alert.alert("✅ Documento guardado!", tr("Documento adicionado com sucesso."), [{ text: tr("OK"), onPress: () => safeBack(router) }]);
     },
     onError: (e: any) => Alert.alert("Ups", netError(e)),
   });
@@ -111,7 +112,7 @@ export default function AddDocumentScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 20, paddingBottom: 16 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router)}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>

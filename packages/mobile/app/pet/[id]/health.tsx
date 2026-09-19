@@ -16,6 +16,7 @@ import { uploadImage } from "../../../lib/upload";
 import { netError } from "../../../lib/net-error";
 import { DateFieldPT } from "../../../components/DateFieldPT";
 import { tr } from "../../../lib/i18n";
+import { safeBack } from "../../../lib/safe-back";
 
 type Tab = "vaccines" | "appointments" | "documents" | "diary" | "deworming" | "weight" | "prescriptions";
 
@@ -306,7 +307,7 @@ export default function PetHealthScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       {/* Header */}
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 12 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, `/pet/${id}`)}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
@@ -525,7 +526,7 @@ export default function PetHealthScreen() {
       {/* ════════════════════════ MODALS ════════════════════════ */}
 
       {/* Add Vaccine */}
-      <Modal visible={modal === "vaccines"} animationType="slide" transparent>
+      <Modal onRequestClose={() => setModal(null)} visible={modal === "vaccines"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -552,7 +553,7 @@ export default function PetHealthScreen() {
       </Modal>
 
       {/* Add Appointment */}
-      <Modal visible={modal === "appointments"} animationType="slide" transparent>
+      <Modal onRequestClose={() => setModal(null)} visible={modal === "appointments"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -587,7 +588,7 @@ export default function PetHealthScreen() {
       </Modal>
 
       {/* Add Prescription */}
-      <Modal visible={modal === "prescriptions"} animationType="slide" transparent>
+      <Modal onRequestClose={() => setModal(null)} visible={modal === "prescriptions"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -609,7 +610,7 @@ export default function PetHealthScreen() {
       </Modal>
 
       {/* Add Document */}
-      <Modal visible={modal === "documents"} animationType="slide" transparent>
+      <Modal onRequestClose={() => setModal(null)} visible={modal === "documents"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -642,7 +643,7 @@ export default function PetHealthScreen() {
       </Modal>
 
       {/* Add Diary Entry */}
-      <Modal visible={modal === "diary"} animationType="slide" transparent>
+      <Modal onRequestClose={() => setModal(null)} visible={modal === "diary"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -678,7 +679,7 @@ export default function PetHealthScreen() {
       </Modal>
 
       {/* Add Deworming */}
-      <Modal visible={modal === "deworming"} animationType="slide" transparent>
+      <Modal onRequestClose={() => setModal(null)} visible={modal === "deworming"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <ScrollView style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28 }} contentContainerStyle={{ padding: 24 , paddingBottom: Math.max(insets.bottom, 24) }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -713,7 +714,7 @@ export default function PetHealthScreen() {
       </Modal>
 
       {/* Add Weight */}
-      <Modal visible={modal === "weight"} animationType="slide" transparent>
+      <Modal onRequestClose={() => setModal(null)} visible={modal === "weight"} animationType="slide" transparent>
         <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
           <View style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 24 }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>

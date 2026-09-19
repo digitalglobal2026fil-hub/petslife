@@ -8,7 +8,9 @@ import { kvGet, kvSet } from "./kv";
  * Regras:
  *  - toca UMA única vez por arranque a frio da app (a flag `jaTocou` vive
  *    no módulo, por isso reinicia só quando o processo morre);
- *  - volume moderado (60%), acompanha o ecrã de abertura até entrar na app;
+ *  - volume baixo e suave (28%), só um fundo — acompanha o ecrã de abertura
+ *    até entrar na app, e desce gradualmente (fade-out) no último segundo
+ *    e meio para não cortar de repente;
  *  - `playsInSilentMode: false` — no iOS, se o telemóvel estiver em
  *    silêncio, não toca nada;
  *  - a pessoa pode desligar no Perfil ("Som de abertura"). A preferência
@@ -19,9 +21,26 @@ import { kvGet, kvSet } from "./kv";
 
 const CHAVE = "som_abertura";
 const SOM = require("../assets/opening.mp3");
+const VOLUME_BASE = 0.28;
 
 let jaTocou = false;
 let player: AudioPlayer | null = null;
+
+/** Desce o volume gradualmente até 0, em passos pequenos, para não cortar
+ * a música de repente (fade-out suave nos últimos ~1.5 s). */
+function iniciarFadeOut(p: AudioPlayer, passos = 12, duracaoMs = 1500) {
+  const intervalo = duracaoMs / passos;
+  let passo = 0;
+  const id = setInterval(() => {
+    passo++;
+    try {
+      p.volume = Math.max(0, VOLUME_BASE * (1 - passo / passos));
+    } catch {
+      clearInterval(id);
+    }
+    if (passo >= passos) clearInterval(id);
+  }, intervalo);
+}
 
 /** Está ligado? (por omissão sim) */
 export async function somAberturaLigado(): Promise<boolean> {
@@ -49,8 +68,12 @@ export async function tocarAberturaUmaVez(): Promise<void> {
       interruptionMode: "mixWithOthers",
     });
     player = createAudioPlayer(SOM);
-    player.volume = 0.6;
+    player.volume = VOLUME_BASE;
     player.play();
+    // Começa a desaparecer suavemente pouco antes do fim (10 s de música).
+    setTimeout(() => {
+      if (player) iniciarFadeOut(player);
+    }, 8500);
     // Liberta o recurso quando a música acaba (10 s + margem).
     setTimeout(() => {
       try {
@@ -68,8 +91,11 @@ export async function experimentarAbertura(): Promise<void> {
   try {
     await setAudioModeAsync({ playsInSilentMode: false, shouldPlayInBackground: false });
     const p = createAudioPlayer(SOM);
-    p.volume = 0.6;
+    p.volume = VOLUME_BASE;
     p.play();
+    setTimeout(() => {
+      iniciarFadeOut(p);
+    }, 8500);
     setTimeout(() => {
       try {
         p.remove();

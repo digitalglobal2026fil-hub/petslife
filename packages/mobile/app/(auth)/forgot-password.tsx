@@ -4,6 +4,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { useRouter } from "expo-router";
 import { baseURL } from "../../lib/auth";
 import { tr } from "../../lib/i18n";
+import { safeBack } from "../../lib/safe-back";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -90,7 +91,7 @@ export default function ForgotPasswordScreen() {
             </View>
           )}
 
-          <TouchableOpacity onPress={() => router.back()} style={{ alignItems: "center", marginTop: 20, paddingVertical: 8 }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(auth)/sign-in")} style={{ alignItems: "center", marginTop: 20, paddingVertical: 8 }}>
             <Text suppressHighlighting style={{ color: GRAY, fontSize: 14, fontWeight: "600" }}>
               ← <Text suppressHighlighting style={{ color: BROWN, fontWeight: "900" }}>{tr("Voltar ao login")}</Text>
             </Text>

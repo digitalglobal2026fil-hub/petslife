@@ -11,6 +11,7 @@ import { netError } from "../../../lib/net-error";
 import { confirmUsePhoto } from "../../../lib/pick-image";
 import { tr } from "../../../lib/i18n";
 import { shareImage, printImage } from "../../../lib/share-image";
+import { safeBack } from "../../../lib/safe-back";
 
 const COLS = 3;
 const SIZE = (Dimensions.get("window").width - 40 - (COLS - 1) * 4) / COLS;
@@ -106,7 +107,7 @@ export default function PetPhotosScreen() {
       {/* Header */}
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, paddingBottom: 12 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <TouchableOpacity onPress={() => router.back()}
+          <TouchableOpacity onPress={() => safeBack(router, `/pet/${id}`)}
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={20} color="#1A1A2E" />
           </TouchableOpacity>

@@ -11,6 +11,7 @@ import { netError } from "../lib/net-error";
 import { DateFieldPT } from "../components/DateFieldPT";
 import { pickImageWithChoice } from "../lib/pick-image";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const SPECIES = [
   { key: "dog", label: tr("Cão"), icon: Dog, emoji: "🐕" },
@@ -90,7 +91,7 @@ export default function AddPetScreen() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pets"] });
-      router.back();
+      safeBack(router, "/(tabs)");
     },
     onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível adicionar o animal."))),
   });
@@ -104,7 +105,7 @@ export default function AddPetScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }} edges={["top", "left", "right"]}>
       {/* Header */}
       <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 12 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)")}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center", marginRight: 12 }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>

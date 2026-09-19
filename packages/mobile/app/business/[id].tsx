@@ -6,6 +6,7 @@ import { ChevronLeft, Phone, Globe, MapPin, Clock, Star, MessageSquare } from "l
 import { useState } from "react";
 import { api } from "../../lib/api";
 import { tr } from "../../lib/i18n";
+import { safeBack } from "../../lib/safe-back";
 
 export default function BusinessDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -45,7 +46,7 @@ export default function BusinessDetailScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }}>
       <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 12 }}>
-        <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/businesses")} style={{ marginRight: 12 }}>
           <ChevronLeft size={24} color="#1A1A2E" />
         </TouchableOpacity>
         <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E", flex: 1 }} numberOfLines={1}>{b.name}</Text>

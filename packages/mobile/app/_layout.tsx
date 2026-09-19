@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { Slot, useRouter, useSegments } from "expo-router";
+import { BackHandler, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { authClient } from "../lib/auth";
@@ -12,6 +13,7 @@ import { ensureToken } from "../lib/auth-fetch";
 import { useScanAlerts } from "../lib/scan-alerts";
 import { ErrorCatcher } from "../components/ErrorCatcher";
 import { LangProvider, useLang, tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,23 @@ function AuthGuard() {
 
   // Avisos com som/vibração quando o QR de um animal é digitalizado
   useScanAlerts(Boolean(session));
+
+  // Botão físico de voltar do Android: a app não usa um Stack navigator
+  // visível na raiz (Slot), por isso fora dos separadores o telemóvel não
+  // tinha nada a apanhar o botão de voltar e ficava "preso" no ecrã. Isto
+  // garante que o botão físico volta sempre atrás em qualquer ecrã. O
+  // ecrã Início regista o seu próprio listener (perguntar se quer sair) só
+  // quando está em foco, e como é registado depois deste, tem sempre
+  // prioridade — este aqui nunca interfere com esse comportamento.
+  useEffect(() => {
+    if (Platform.OS !== "android") return;
+    const onHardwareBack = () => {
+      safeBack(router, "/(tabs)");
+      return true;
+    };
+    const sub = BackHandler.addEventListener("hardwareBackPress", onHardwareBack);
+    return () => sub.remove();
+  }, [router]);
 
   useEffect(() => {
     if (isPending) return;

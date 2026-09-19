@@ -15,6 +15,7 @@ import { pickImageWithChoice } from "../lib/pick-image";
 import { uploadImage } from "../lib/upload";
 import DateFieldPT from "../components/DateFieldPT";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -183,7 +184,7 @@ export default function MemorialScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       {/* Cabeçalho */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20, paddingTop: 8, paddingBottom: 14 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)")}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: ROXO_BORDA, alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={19} color={DARK} />
         </TouchableOpacity>

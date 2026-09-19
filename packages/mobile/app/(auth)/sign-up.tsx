@@ -6,6 +6,7 @@ import { authClient, captureToken } from "../../lib/auth";
 import { Eye, EyeOff, Sparkles, ArrowRight } from "lucide-react-native";
 import { netError } from "../../lib/net-error";
 import { tr } from "../../lib/i18n";
+import { safeBack } from "../../lib/safe-back";
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -175,7 +176,7 @@ export default function SignUpScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => router.back()}
+              onPress={() => safeBack(router, "/(auth)/sign-in")}
               activeOpacity={0.7}
               style={{ alignItems: "center", paddingVertical: 14 }}
             >

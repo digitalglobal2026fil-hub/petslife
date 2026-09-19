@@ -7,6 +7,7 @@ import { ChevronLeft, Tag, Package } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const CATEGORIES = [
   { key: "adoption", label: tr("Adoção"), emoji: "🏠" },
@@ -77,7 +78,7 @@ export default function AddListingScreen() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["marketplace"] });
-      Alert.alert("Sucesso!", tr("O seu anúncio foi publicado."), [{ text: tr("OK"), onPress: () => router.back() }]);
+      Alert.alert("Sucesso!", tr("O seu anúncio foi publicado."), [{ text: tr("OK"), onPress: () => safeBack(router, "/(tabs)/marketplace") }]);
     },
     onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível publicar o anúncio."))),
   });
@@ -96,7 +97,7 @@ export default function AddListingScreen() {
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 12 }}>
-          <TouchableOpacity onPress={() => router.back()}
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/marketplace")}
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center", marginRight: 12 }}>
             <ChevronLeft size={20} color="#1A1A2E" />
           </TouchableOpacity>

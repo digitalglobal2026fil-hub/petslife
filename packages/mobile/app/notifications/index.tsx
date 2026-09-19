@@ -9,6 +9,7 @@ import Constants from "expo-constants";
 import { kvSetIds, kvGetIds } from "../../lib/kv";
 import { useEffect, useState, useCallback } from "react";
 import { tr } from "../../lib/i18n";
+import { safeBack } from "../../lib/safe-back";
 
 const DISMISSED_KEY = "dg_dismissed_notifs";
 
@@ -329,7 +330,7 @@ export default function NotificationsScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       {/* Header */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20, paddingVertical: 16 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)")}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: BORDER, alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color={BROWN} />
         </TouchableOpacity>

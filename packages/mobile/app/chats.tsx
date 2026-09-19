@@ -7,6 +7,7 @@ import { authClient } from "../lib/auth";
 import { netError } from "../lib/net-error";
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -62,7 +63,7 @@ export default function ChatsListScreen() {
         borderBottomLeftRadius: 28, borderBottomRightRadius: 28,
         flexDirection: "row", alignItems: "center", gap: 12,
       }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/social")}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.22)", alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color="#fff" />
         </TouchableOpacity>

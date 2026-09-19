@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { ChevronLeft, Phone, AlertTriangle } from "lucide-react-native";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const BG = "#FFF9F5";
 const CARD = "#FFFFFF";
@@ -113,7 +114,7 @@ export default function ToxicScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 12 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: CARD, borderWidth: 1.5, borderColor: BORDER, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
           <ChevronLeft size={20} color={DARK} />
         </TouchableOpacity>

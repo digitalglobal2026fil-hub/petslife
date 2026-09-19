@@ -1,15 +1,26 @@
 import { Hono } from "hono";
 import { db } from "../database";
 import * as schema from "../database/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, inArray } from "drizzle-orm";
 import { requireAuth, authMiddleware } from "../middleware/auth";
 import { isAdmin } from "../lib/admin";
 
 export const posts = new Hono()
   .use("*", authMiddleware)
   .get("/", async (c) => {
+    const user = c.get("user");
     const result = await db.select().from(schema.posts).orderBy(desc(schema.posts.createdAt)).limit(50);
-    return c.json({ posts: result }, 200);
+    // Marca quais publicações o próprio utilizador já tem "gosto" — sem
+    // isto o botão de coração não sabe se já estava marcado e um segundo
+    // toque acidental retirava o gosto em vez de o repetir.
+    let likedIds = new Set<string>();
+    if (user && result.length > 0) {
+      const likes = await db.select().from(schema.postLikes).where(
+        and(eq(schema.postLikes.userId, user.id), inArray(schema.postLikes.postId, result.map((p) => p.id)))
+      );
+      likedIds = new Set(likes.map((l) => l.postId));
+    }
+    return c.json({ posts: result.map((p) => ({ ...p, likedByMe: likedIds.has(p.id) })) }, 200);
   })
   .post("/", requireAuth, async (c) => {
     const user = c.get("user")!;
@@ -21,13 +32,13 @@ export const posts = new Hono()
     const user = c.get("user")!;
     const { id } = c.req.param();
     const existing = await db.select().from(schema.postLikes).where(and(eq(schema.postLikes.postId, id), eq(schema.postLikes.userId, user.id)));
+    const [post] = await db.select().from(schema.posts).where(eq(schema.posts.id, id));
     if (existing.length > 0) {
       await db.delete(schema.postLikes).where(and(eq(schema.postLikes.postId, id), eq(schema.postLikes.userId, user.id)));
-      await db.update(schema.posts).set({ likesCount: Math.max(0, (existing.length - 1)) }).where(eq(schema.posts.id, id));
+      await db.update(schema.posts).set({ likesCount: Math.max(0, (post?.likesCount ?? 1) - 1) }).where(eq(schema.posts.id, id));
       return c.json({ liked: false }, 200);
     }
     await db.insert(schema.postLikes).values({ postId: id, userId: user.id });
-    const [post] = await db.select().from(schema.posts).where(eq(schema.posts.id, id));
     await db.update(schema.posts).set({ likesCount: (post?.likesCount ?? 0) + 1 }).where(eq(schema.posts.id, id));
     return c.json({ liked: true }, 200);
   })

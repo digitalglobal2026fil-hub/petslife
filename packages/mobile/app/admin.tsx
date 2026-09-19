@@ -28,6 +28,7 @@ function mensagemDoCodigo(code: string) {
 import { netError } from "../lib/net-error";
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const PURPLE = "#8B5CF6";
 const BG = "#F8F6FF";
@@ -180,7 +181,7 @@ export default function AdminScreen() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "#1A1A2E" }}>
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ padding: 18 }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/profile")} style={{ padding: 18 }}>
             <ArrowLeft size={22} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 34, paddingBottom: 60 }}>
@@ -224,7 +225,7 @@ export default function AdminScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top", "left", "right"]}>
       <View style={{ backgroundColor: PURPLE, paddingHorizontal: 18, paddingTop: 12, paddingBottom: 26, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ padding: 4 }}>
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/profile")} style={{ padding: 4 }}>
             <ArrowLeft size={22} color="#fff" />
           </TouchableOpacity>
           <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#fff" }}>{tr("Parceiros")}</Text>

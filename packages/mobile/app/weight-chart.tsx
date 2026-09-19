@@ -11,6 +11,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Platform } from 'react-native';
 import { authFetch } from "../lib/auth-fetch";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 const TOKEN_KEY = "bearer_token";
 function getToken(): string {
@@ -134,7 +135,7 @@ export default function WeightChartScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color={COLORS.dark} />
         </TouchableOpacity>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -272,7 +273,7 @@ export default function WeightChartScreen() {
       )}
 
       {/* Add weight modal */}
-      <Modal visible={showAddModal} animationType="slide" presentationStyle="formSheet" transparent>
+      <Modal onRequestClose={() => setShowAddModal(false)} visible={showAddModal} animationType="slide" presentationStyle="formSheet" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>

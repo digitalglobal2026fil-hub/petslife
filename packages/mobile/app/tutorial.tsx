@@ -46,6 +46,12 @@ const PASSOS: Passo[] = [
     fundo: "#D1FAE5",
   },
   {
+    titulo: "Consulta por vídeo",
+    texto: "Em Saúde > Ferramentas > Consulta Online fala com o veterinário por videochamada, sem instalar nada — basta um link. Tem um guia passo a passo em Saúde, no botão \"Guia\".",
+    cor: "#3B82F6",
+    fundo: "#EAF2FE",
+  },
+  {
     titulo: "A Agenda avisa-a",
     texto: "Em Saúde > Agenda tem um calendário do mês com pontinhos nos dias que têm coisas marcadas: azul consulta, verde vacina, laranja desparasitação, vermelho medicação. Carregue num dia para ver o que há.",
     cor: "#3B82F6",
@@ -53,7 +59,7 @@ const PASSOS: Passo[] = [
   },
   {
     titulo: "QR Code: se ele se perder",
-    texto: "Cada animal tem um QR Code próprio. Imprima-o ou ponha-o na chapa da coleira. Quem o encontrar aponta o telemóvel e vê os seus contactos — e a senhora recebe um aviso por email.",
+    texto: "Cada animal tem um QR Code próprio. Imprima-o ou ponha-o na chapa da coleira. Quem o encontrar aponta o telemóvel e vê os seus contactos — e a senhora recebe um aviso por email, e a app avisa com um som e uma vibração.",
     cor: "#8B5CF6",
     fundo: "#F3EEFF",
   },

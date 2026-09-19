@@ -9,6 +9,7 @@ import { Search, MapPin, Phone, Star, Tag, PawPrint, ChevronLeft } from "lucide-
 import { useState, useCallback } from "react";
 import { api } from "../../lib/api";
 import { tr } from "../../lib/i18n";
+import { safeBack } from "../../lib/safe-back";
 
 const BG = "#F5ECD7";
 const BROWN = "#6B3A2A";
@@ -201,7 +202,7 @@ export default function MarketplaceCategory() {
     <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["left", "right", "bottom"]}>
       {/* Header */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/marketplace")}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: CARD, borderWidth: 1.5, borderColor: BORDER, alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={20} color={BROWN} />
         </TouchableOpacity>

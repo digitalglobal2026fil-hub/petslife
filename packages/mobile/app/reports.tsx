@@ -9,6 +9,7 @@ import { ArrowLeft, ShieldAlert, Trash2, Check, Inbox } from "lucide-react-nativ
 import { authFetch } from "../lib/auth-fetch";
 import { API_URL, useIsAdmin, confirmDelete } from "../lib/moderation";
 import { tr } from "../lib/i18n";
+import { safeBack } from "../lib/safe-back";
 
 /**
  * Painel de denúncias — só visível à administração.
@@ -89,7 +90,7 @@ export default function ReportsScreen() {
           <Text style={{ color: "#6B7280", marginTop: 6, textAlign: "center" }}>
             Este painel é só para a administração da PetsLife.
           </Text>
-          <TouchableOpacity onPress={() => router.back()}
+          <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")}
             style={{ marginTop: 18, backgroundColor: RED, borderRadius: 14, paddingHorizontal: 22, paddingVertical: 12 }}>
             <Text style={{ color: "#fff", fontWeight: "700" }}>{tr("Voltar")}</Text>
           </TouchableOpacity>
@@ -105,7 +106,7 @@ export default function ReportsScreen() {
         borderBottomLeftRadius: 28, borderBottomRightRadius: 28,
         flexDirection: "row", alignItems: "center", gap: 12,
       }}>
-        <TouchableOpacity onPress={() => router.back()} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/health")} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
           <ArrowLeft size={22} color="#fff" />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>

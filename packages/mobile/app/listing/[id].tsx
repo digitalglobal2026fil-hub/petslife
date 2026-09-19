@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, MapPin, Phone, Tag, PawPrint, Trash2 } from "lucide-react-native";
 import { api } from "../../lib/api";
 import { tr } from "../../lib/i18n";
+import { safeBack } from "../../lib/safe-back";
 
 const catEmoji: Record<string, string> = {
   adoption: "🏠", products: "🛍️", services: "✂️", lost: "🔎",
@@ -37,7 +38,7 @@ export default function ListingDetailScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF9F5" }}>
       <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 12 }}>
-        <TouchableOpacity onPress={() => router.back()}
+        <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/marketplace")}
           style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center", marginRight: 12 }}>
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>

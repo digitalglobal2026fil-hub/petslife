@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { db } from "../database";
 import * as schema from "../database/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, gte, ne, asc } from "drizzle-orm";
 import { requireAuth, authMiddleware } from "../middleware/auth";
 
 export const appointments = new Hono()
@@ -14,7 +14,16 @@ export const appointments = new Hono()
   })
   .get("/upcoming", requireAuth, async (c) => {
     const user = c.get("user")!;
-    const result = await db.select().from(schema.appointments).where(eq(schema.appointments.userId, user.id));
+    // Só consultas de hoje em diante e que ainda não foram canceladas —
+    // uma consulta de uma data já passada não é "Em breve".
+    const today = new Date().toISOString().split("T")[0];
+    const result = await db.select().from(schema.appointments)
+      .where(and(
+        eq(schema.appointments.userId, user.id),
+        gte(schema.appointments.date, today),
+        ne(schema.appointments.status, "cancelled"),
+      ))
+      .orderBy(asc(schema.appointments.date));
     return c.json({ appointments: result }, 200);
   })
   .post("/", requireAuth, async (c) => {
