@@ -100,14 +100,23 @@ alteração de build ainda para isto, porque:
   conta própria da Play Store (só ela pode publicar actualizações à ficha atual) e
   denunciar cópias à Google caso apareçam.
 
-### Próximo passo — À ESPERA DE CONFIRMAÇÃO DA UTILIZADORA
-Expliquei tudo o que foi feito e vou pedir confirmação explícita antes de:
-1. Bump `versionCode` 60 / `versionName` 1.9.27 em `app.json` (mobile) e `build.gradle`
-2. Gerar APK + AAB (`/tmp/build59.sh` como modelo, `sed 's/v59/v60/g'`, tmux)
-3. Verificar `BILLING` presente e ausência de "google-services" no manifest final
-4. Publicar via GitHub Releases (`.env.deploy` tem o token)
-5. `git add`/`commit`/tag `v60` em `master`
-6. Avisar a utilizadora: **tem de desinstalar a versão antiga antes de instalar o APK novo**
+### v60 — COMPILADA E PUBLICADA (19 Set 2026)
+Adicionado extra a pedido da utilizadora: som do sistema (notification_sound do
+Android) + vibração quando o QR de um animal é digitalizado (`lib/scan-alerts.ts`,
+função `tocarSomDeAviso`, só Android). Texto do passo do tutorial sobre o QR
+actualizado a mencionar o som, com traduções EN/ES/DE/FR.
+
+- `versionCode` 60 / `versionName` 1.9.27 em `app.json` e `build.gradle` ✅
+- APK + AAB compilados com sucesso (`aapt2 dump badging`: package
+  `com.petislife2.app`, versionCode 60, `BILLING` presente uma vez, sem
+  google-services/firebase messaging) ✅
+- Publicados em GitHub Releases:
+  - APK: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.27/petslife_v60.apk
+  - AAB: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.27/petslife_v60.aab
+- Commit `8e39bbb`, tag `v60`, push feito para `master` ✅
+
+**AVISAR A UTILIZADORA: tem de desinstalar a versão antiga da app antes de instalar
+o APK novo (não se pode instalar por cima).**
 
 ## Regras técnicas absolutas (não violar) — recordar sempre
 - NUNCA `expo prebuild` (apaga a keystore)
