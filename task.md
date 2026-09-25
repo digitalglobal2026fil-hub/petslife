@@ -126,3 +126,35 @@ o APK novo (não se pode instalar por cima).**
 - Depois de `bun add`/`expo install`: confirmar `react-native-svg` continua 15.12.1
 - Compilar sempre APK + AAB; gerar em tmux, nunca polling em ciclo
 - Package Android: `com.petislife2.app` (nunca mudar)
+
+## v61 (1.9.28) — 25 Set 2026: corrige rejeicao da v60 no Google Play
+
+Rejeicao teve 2 causas: (1) "Detalhes de inicio de sessao" desactualizado
+(credenciais de teste antigas sem explicacao de acesso gratuito) - resolvido
+pela utilizadora directamente no Play Console. (2) app declarava servico
+"FOREGROUND_SERVICE_MEDIA_PLAYBACK" (do expo-audio) que a Google exige
+video de demonstracao para justificar - a app nunca usou isto de facto
+(so toca um som pontual do QR code, sem sessao de media em background).
+
+Corrigido removendo AudioControlsService e AudioRecordingService do
+AndroidManifest.xml (packages/mobile/android/app/src/main/AndroidManifest.xml),
+DENTRO da tag <application> (nao na raiz do <manifest> - services so podem
+ser removidos via tools:node="remove" se estiverem no sitio certo da arvore,
+senao o merger nao encontra nada para remover e mantem o servico intacto).
+Confirmado no manifesto final gerado (merged_manifests/release/... e
+bundle_manifest/release/...) que os 2 servicos desaparecem, sem afectar o
+LocationTaskService (usado por expo-location, feature diferente).
+
+versionCode 60->61, versionName 1.9.27->1.9.28.
+AndroidManifest.xml foi forcado no git (git add -f) porque toda a pasta
+android/ esta no .gitignore como "generated native folder" - so build.gradle
+e release.keystore ja estavam com essa excecao antes; agora o AndroidManifest
+tambem, porque a correcao de hoje so existe la.
+
+APK: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.28/petslife_v61.apk
+AAB: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.28/petslife_v61.aab
+Commit: d3d4c3c
+
+Proximo passo: utilizadora faz upload do AAB v61 no Play Console (Testar e
+lancar > Producao > nova versao) depois de confirmar que o passo dos
+"Detalhes de inicio de sessao" ja foi guardado com sucesso.
