@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, ActivityIndicator, Alert, Modal, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Heart, MessageCircle, Plus, Send, PawPrint, X, Trash2 } from "lucide-react-native";
+import { Heart, MessageCircle, Plus, Send, PawPrint, X, Trash2, Camera } from "lucide-react-native";
 import { useState } from "react";
 import { router } from "expo-router";
 import { api } from "../../lib/api";
@@ -12,6 +12,8 @@ import { PaywallScreen } from "../../components/PaywallScreen";
 import { netError } from "../../lib/net-error";
 import { ModerationButton } from "../../components/ModerationButton";
 import { deleteContent } from "../../lib/moderation";
+import { pickImageWithChoice } from "../../lib/pick-image";
+import { uploadImage } from "../../lib/upload";
 import { tr } from "../../lib/i18n";
 
 // ─── Janela de comentários ────────────────────────────────────────────────
@@ -116,15 +118,40 @@ export default function SocialScreen() {
   const [newPost, setNewPost] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [commentsPostId, setCommentsPostId] = useState<string | null>(null);
+  const [postImage, setPostImage] = useState<string | null>(null);
+  const [postImageUrl, setPostImageUrl] = useState<string | null>(null);
+  const [uploadingPostImage, setUploadingPostImage] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["posts"],
     queryFn: async () => (await api.posts.$get()).json(),
   });
 
+  async function pickPostImage() {
+    const picked = await pickImageWithChoice({ title: tr("Foto da publicação") });
+    if (!picked) return;
+    setPostImage(picked.uri);
+    setUploadingPostImage(true);
+    try {
+      const url = await uploadImage(picked.uri, picked.mimeType);
+      setPostImageUrl(url);
+    } catch (e: any) {
+      Alert.alert(tr("Erro ao carregar foto"), e?.message ?? tr("Tente novamente."));
+      setPostImage(null);
+    } finally {
+      setUploadingPostImage(false);
+    }
+  }
+
   const createPost = useMutation({
-    mutationFn: async (content: string) => (await api.posts.$post({ json: { content } })).json(),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["posts"] }); setNewPost(""); setShowForm(false); },
+    mutationFn: async (content: string) => (await api.posts.$post({ json: { content, imageUrl: postImageUrl || undefined } })).json(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      setNewPost("");
+      setShowForm(false);
+      setPostImage(null);
+      setPostImageUrl(null);
+    },
     onError: (e: any) => Alert.alert("Ups", netError(e, "Não foi possível publicar.")),
   });
 
@@ -191,9 +218,33 @@ export default function SocialScreen() {
             multiline
             style={{ fontSize: 14, color: "#1A1A2E", minHeight: 60 }}
           />
-          <TouchableOpacity onPress={() => newPost.trim() && createPost.mutate(newPost)}
-            disabled={createPost.isPending || !newPost.trim()}
-            style={{ backgroundColor: "#FF6B35", borderRadius: 12, padding: 10, alignItems: "center", marginTop: 10, opacity: createPost.isPending ? 0.7 : 1, flexDirection: "row", justifyContent: "center", gap: 8 }}>
+
+          {postImage ? (
+            <View style={{ marginTop: 10, alignSelf: "flex-start" }}>
+              <Image source={{ uri: postImage }} style={{ width: 90, height: 90, borderRadius: 12 }} />
+              {uploadingPostImage ? (
+                <View style={{ position: "absolute", width: 90, height: 90, borderRadius: 12, backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", justifyContent: "center" }}>
+                  <ActivityIndicator color="#fff" size="small" />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => { setPostImage(null); setPostImageUrl(null); }}
+                  style={{ position: "absolute", top: -8, right: -8, width: 24, height: 24, borderRadius: 12, backgroundColor: "#1A1A2E", alignItems: "center", justifyContent: "center" }}>
+                  <X size={14} color="#fff" />
+                </TouchableOpacity>
+              )}
+            </View>
+          ) : (
+            <TouchableOpacity onPress={pickPostImage} activeOpacity={0.8}
+              style={{ marginTop: 10, alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#F8F6FF", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8 }}>
+              <Camera size={16} color="#8B7FD6" />
+              <Text suppressHighlighting style={{ color: "#8B7FD6", fontWeight: "700", fontSize: 12.5 }}>{tr("Adicionar foto")}</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity onPress={() => newPost.trim() && !uploadingPostImage && createPost.mutate(newPost)}
+            disabled={createPost.isPending || !newPost.trim() || uploadingPostImage}
+            style={{ backgroundColor: "#FF6B35", borderRadius: 12, padding: 10, alignItems: "center", marginTop: 10, opacity: (createPost.isPending || uploadingPostImage) ? 0.7 : 1, flexDirection: "row", justifyContent: "center", gap: 8 }}>
             {createPost.isPending ? <ActivityIndicator color="#fff" size="small" /> : <Send size={16} color="#fff" />}
             <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", backgroundColor: "transparent" }}>{tr("Publicar")}</Text>
           </TouchableOpacity>

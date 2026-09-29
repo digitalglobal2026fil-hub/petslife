@@ -158,3 +158,58 @@ Commit: d3d4c3c
 Proximo passo: utilizadora faz upload do AAB v61 no Play Console (Testar e
 lancar > Producao > nova versao) depois de confirmar que o passo dos
 "Detalhes de inicio de sessao" ja foi guardado com sucesso.
+
+=== v62 (29 Set 2026) — botao de voltar + fotos no Mercado/Comunidade + aviso deprecated APIs ===
+
+Pedido da utilizadora (3 partes, resolvidas todas nesta versao):
+
+1) Botao de voltar em falta nas paginas de categoria (Clinicas, Petshops,
+   Hoteis, Tosquiadores, Treino, Adocao, Perdidos, Servicos). Causa real:
+   components/CategoryHeader.tsx usava router.back() puro em vez de
+   safeBack() - se nao houvesse historico de navegacao (ex.: app reaberta,
+   link directo), o botao nao fazia nada. Corrigido para
+   safeBack(router, "/(tabs)").
+
+2) Fotos no Mercado e na Comunidade (as Missoes ja tinham):
+   - app/(tabs)/social.tsx: composer de publicacao ganhou botao "Adicionar
+     foto" (pickImageWithChoice + uploadImage), imageUrl enviado no
+     createPost.mutate.
+   - app/add-listing.tsx: formulario de anuncio (usado tambem por
+     category/adocao.tsx) ganhou o mesmo campo de foto, imageUrl enviado
+     no POST /api/marketplace.
+   - app/listing/[id].tsx: mostra a foto real do anuncio no topo (antes so
+     tinha emoji fixo por categoria).
+   - app/(tabs)/marketplace.tsx: ListingCard mostra a foto do anuncio na
+     grelha (antes so tinha icone PawPrint fixo).
+   Backend (posts.ts, marketplace.ts) ja aceitava qualquer campo extra no
+   body (sem validador zod restritivo) - nao foi preciso tocar no servidor
+   nem no schema. So imagens por agora (video adiado a pedido da
+   utilizadora - mais lento e complexo).
+
+3) Avisos "recomendados" da Google Play (prazo ~2027):
+   - "app usa APIs ou parametros descontinuados": encontrado
+     android:statusBarColor no tema nativo
+     (android/app/src/main/res/values/styles.xml) - esta propriedade e
+     exactamente a que a Google assinala como descontinuada para
+     "edge-to-edge" (o ecra deixou de usar cor fixa na barra de estado,
+     isso e controlado pelo StatusBar do expo-status-bar em _layout.tsx).
+     Removida a linha. Ficheiro forcado no git (git add -f) porque nao
+     tinha essa excecao ainda.
+   - "restricoes de redimensionamento/orientacao para ecras grandes":
+     pesquisado - a partir do Android 16/17 o proprio sistema vai IGNORAR
+     o bloqueio de orientacao/redimensionamento em ecras grandes (tablets)
+     de qualquer forma, quer mudemos o manifesto ou nao. Corrigir isto a
+     serio implica tornar todos os ecras adaptaveis a rotacao/tablet, o
+     que e um trabalho grande e arriscado de fazer as pressas (pode
+     partir layouts). DECISAO: nao tocar agora - o aviso e so
+     "recomendado", nao bloqueia a publicacao, e o comportamento no
+     telemovel (o publico real da app) nao muda nada. Retomar so se a
+     Google tornar isto obrigatorio de facto.
+
+Ficheiros alterados: components/CategoryHeader.tsx, app/(tabs)/social.tsx,
+app/add-listing.tsx, app/listing/[id].tsx, app/(tabs)/marketplace.tsx,
+android/app/src/main/res/values/styles.xml (forcado no git),
+android/app/build.gradle, app.json.
+
+versionCode 61->62, versionName 1.9.28->1.9.29.
+tsc --noEmit limpo em mobile e web antes de compilar.

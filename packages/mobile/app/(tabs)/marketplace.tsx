@@ -1,6 +1,6 @@
 import {
   View, Text, ScrollView, TouchableOpacity, TextInput,
-  ActivityIndicator, RefreshControl,
+  ActivityIndicator, RefreshControl, Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
@@ -130,9 +130,13 @@ function ListingCard({ l, onPress, isOwner, onDelete }: { l: any; onPress: () =>
         overflow: "hidden", borderWidth: 1.5, borderColor: "#F0E8E0",
       }}>
       <View style={{ height: 100, backgroundColor: "#FFF0EB", alignItems: "center", justifyContent: "center" }}>
-        <View style={{ backgroundColor: "#F5EDE4", borderRadius: 20, padding: 10 }}>
-          <PawPrint size={32} color="#8B5E3C" />
-        </View>
+        {l.imageUrl ? (
+          <Image source={{ uri: l.imageUrl }} style={{ width: "100%", height: 100 }} resizeMode="cover" />
+        ) : (
+          <View style={{ backgroundColor: "#F5EDE4", borderRadius: 20, padding: 10 }}>
+            <PawPrint size={32} color="#8B5E3C" />
+          </View>
+        )}
         <View style={{ position: "absolute", top: 2, right: 2, backgroundColor: "rgba(255,255,255,0.9)", borderRadius: 15 }}>
           <ModerationButton
             target="listing"

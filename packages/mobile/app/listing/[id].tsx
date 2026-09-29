@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Linking, ActivityIndicator, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Linking, ActivityIndicator, Alert, Image } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -48,9 +48,13 @@ export default function ListingDetailScreen() {
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
 
         {/* Hero */}
-        <View style={{ height: 180, backgroundColor: "#FFF0EB", borderRadius: 20, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
-          <Text suppressHighlighting style={{ fontSize: 60 }}>{catEmoji[l.category] ?? "🐾"}</Text>
-        </View>
+        {l.imageUrl ? (
+          <Image source={{ uri: l.imageUrl }} style={{ width: "100%", height: 220, borderRadius: 20, marginBottom: 16 }} resizeMode="cover" />
+        ) : (
+          <View style={{ height: 180, backgroundColor: "#FFF0EB", borderRadius: 20, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+            <Text suppressHighlighting style={{ fontSize: 60 }}>{catEmoji[l.category] ?? "🐾"}</Text>
+          </View>
+        )}
 
         {/* Price + category */}
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>

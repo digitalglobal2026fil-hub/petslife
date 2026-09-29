@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Tag, Package } from "lucide-react-native";
+import { ChevronLeft, Tag, Package, Camera, X } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
 import { tr } from "../lib/i18n";
 import { safeBack } from "../lib/safe-back";
+import { pickImageWithChoice } from "../lib/pick-image";
+import { uploadImage } from "../lib/upload";
 
 const CATEGORIES = [
   { key: "adoption", label: tr("Adoção"), emoji: "🏠" },
@@ -56,6 +58,25 @@ export default function AddListingScreen() {
   const [price, setPrice] = useState("");
   const [location, setLocation] = useState("");
   const [contact, setContact] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  async function pickPhoto() {
+    const picked = await pickImageWithChoice({ title: tr("Foto do anúncio") });
+    if (!picked) return;
+    setPhoto(picked.uri);
+    setUploadingPhoto(true);
+    try {
+      const url = await uploadImage(picked.uri, picked.mimeType);
+      setPhotoUrl(url);
+    } catch (e: any) {
+      Alert.alert(tr("Erro ao carregar foto"), e?.message ?? tr("Tente novamente."));
+      setPhoto(null);
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -68,6 +89,7 @@ export default function AddListingScreen() {
           price: price ? parseFloat(price.replace(",", ".")) : 0,
           location: location || undefined,
           contact: contact || undefined,
+          imageUrl: photoUrl || undefined,
         },
       });
       if (!res.ok) {
@@ -86,6 +108,7 @@ export default function AddListingScreen() {
   function handleSubmit() {
     if (!title.trim()) return Alert.alert(tr("Erro"), tr("O título é obrigatório."));
     if (!description.trim()) return Alert.alert(tr("Erro"), tr("A descrição é obrigatória."));
+    if (uploadingPhoto) return Alert.alert(tr("Aguarde"), tr("A foto ainda está a carregar."));
     mutation.mutate();
   }
 
@@ -151,6 +174,32 @@ export default function AddListingScreen() {
           </View>
 
           <Field label={tr("Contacto")} value={contact} onChangeText={setContact} placeholder={tr("Email ou telefone")} />
+
+          <View style={{ marginBottom: 18 }}>
+            <Text suppressHighlighting style={{ fontSize: 13, fontWeight: "600", color: "#1A1A2E", marginBottom: 8 }}>{tr("Foto")}</Text>
+            {photo ? (
+              <View style={{ alignSelf: "flex-start" }}>
+                <Image source={{ uri: photo }} style={{ width: 110, height: 110, borderRadius: 16 }} />
+                {uploadingPhoto ? (
+                  <View style={{ position: "absolute", width: 110, height: 110, borderRadius: 16, backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", justifyContent: "center" }}>
+                    <ActivityIndicator color="#fff" />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => { setPhoto(null); setPhotoUrl(null); }}
+                    style={{ position: "absolute", top: -8, right: -8, width: 26, height: 26, borderRadius: 13, backgroundColor: "#1A1A2E", alignItems: "center", justifyContent: "center" }}>
+                    <X size={15} color="#fff" />
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : (
+              <TouchableOpacity onPress={pickPhoto} activeOpacity={0.8}
+                style={{ width: 110, height: 110, borderRadius: 16, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderStyle: "dashed", alignItems: "center", justifyContent: "center" }}>
+                <Camera size={24} color="#FF6B35" />
+                <Text suppressHighlighting style={{ color: "#FF6B35", fontSize: 11, fontWeight: "600", marginTop: 6 }}>{tr("Adicionar foto")}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
           {/* Info banner */}
           <View style={{ backgroundColor: "#E8FAF9", borderRadius: 16, padding: 14, marginBottom: 20, flexDirection: "row", gap: 10, alignItems: "flex-start" }}>

@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import { useRouter } from "expo-router";
+import { safeBack } from "../lib/safe-back";
 
 interface Props {
   emoji: string;
@@ -30,9 +31,12 @@ export function CategoryHeader({ emoji, title, subtitle, bgColor, accentColor }:
         <Text style={{ fontSize: 28, backgroundColor: "transparent" }}>🐾</Text>
       </View>
 
-      {/* Back button */}
+      {/* Back button — usa safeBack porque, se a página for aberta sem
+          histórico de navegação (ex.: link directo, ou app reaberta),
+          router.back() puro não fazia nada e parecia que o botão estava
+          avariado. */}
       <TouchableOpacity
-        onPress={() => router.back()}
+        onPress={() => safeBack(router, "/(tabs)")}
         style={{
           width: 38, height: 38, borderRadius: 19,
           backgroundColor: "rgba(255,255,255,0.9)",
