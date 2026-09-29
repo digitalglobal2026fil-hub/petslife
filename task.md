@@ -213,3 +213,7 @@ android/app/build.gradle, app.json.
 
 versionCode 61->62, versionName 1.9.28->1.9.29.
 tsc --noEmit limpo em mobile e web antes de compilar.
+
+v62 publicado no GitHub Releases:
+APK: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.29/petslife_v62.apk
+AAB: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.29/petslife_v62.aab
