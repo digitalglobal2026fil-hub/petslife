@@ -1,6 +1,6 @@
 import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
-  Alert, TextInput, Modal
+  Alert, TextInput, Modal, KeyboardAvoidingView, Platform
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -164,7 +164,12 @@ export default function DiarioPage() {
                 <Text suppressHighlighting style={{ color: COLOR, fontWeight: "800", fontSize: 15 }}>{tr("Guardar")}</Text>}
             </TouchableOpacity>
           </View>
-          <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+          >
+          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
             <Text suppressHighlighting style={{ fontSize: 12, fontWeight: "700", color: BROWN, marginBottom: 8 }}>{tr("Tipo")}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 , paddingBottom: Math.max(insets.bottom, 24) }}>
               {TIPOS.map((t) => (
@@ -179,6 +184,7 @@ export default function DiarioPage() {
             <DateFieldPT label={tr("Data")} value={data} onChange={setData} />
             <Campo label={tr("Descrição")} value={descricao} onChange={setDescricao} placeholder={tr("Conta tudo sobre o teu bichinho... 🐾")} multiline />
           </ScrollView>
+          </KeyboardAvoidingView>
         </SafeAreaView>
       </Modal>
     </SafeAreaView>

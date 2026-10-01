@@ -1,6 +1,6 @@
 import {
   View, Text, ScrollView, TouchableOpacity, ActivityIndicator,
-  Alert, TextInput
+  Alert, TextInput, KeyboardAvoidingView, Platform
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -120,7 +120,12 @@ export default function AddDiaryScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 40) }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+      <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 40) }}>
 
         {/* Pet picker */}
         <View style={{ marginBottom: 20 }}>
@@ -210,6 +215,7 @@ export default function AddDiaryScreen() {
           }
         </TouchableOpacity>
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
