@@ -8,14 +8,14 @@
         "backgroundColor": "#5BB8B5"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 63,
+      "versionCode": 64,
       "permissions": [
         "VIBRATE",
         "POST_NOTIFICATIONS"
       ]
     },
     "extra": {
-      "apiUrl": "https://qx7w0z1uul79my5hxm5d2-preview-4200.runable.site/",
+      "apiUrl": "https://petslife.onrender.com",
       "eas": {
         "projectId": "1cf237a5-8621-4e30-80b9-90145a80262c"
       },
