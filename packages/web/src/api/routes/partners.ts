@@ -15,8 +15,12 @@ function periodEndFor(benefit: string): Date | null {
       return new Date("2099-12-31");
     case "year1":
       return new Date(now + 365 * 24 * 60 * 60 * 1000);
+    case "months6":
+      return new Date(now + 180 * 24 * 60 * 60 * 1000);
     case "months3":
       return new Date(now + 90 * 24 * 60 * 60 * 1000);
+    case "month1":
+      return new Date(now + 30 * 24 * 60 * 60 * 1000);
     default:
       return null; // discount / none -> não dá acesso grátis
   }
@@ -25,7 +29,9 @@ function periodEndFor(benefit: string): Date | null {
 function planFor(benefit: string): string {
   if (benefit === "lifetime") return "lifetime";
   if (benefit === "year1") return "annual";
+  if (benefit === "months6") return "monthly";
   if (benefit === "months3") return "monthly";
+  if (benefit === "month1") return "monthly";
   return "trial";
 }
 
@@ -119,7 +125,11 @@ export const partners = new Hono()
           ? "Código aplicado! Tens acesso vitalício, nunca pagas."
           : pc.benefit === "year1"
             ? "Código aplicado! Tens 1 ano de acesso completo grátis."
-            : "Código aplicado! Tens 3 meses de acesso completo grátis.";
+            : pc.benefit === "months6"
+              ? "Código aplicado! Tens 6 meses de acesso completo grátis."
+              : pc.benefit === "month1"
+                ? "Código aplicado! Tens 1 mês de acesso completo grátis."
+                : "Código aplicado! Tens 3 meses de acesso completo grátis.";
     }
 
     return c.json({ success: true, benefit: pc.benefit, message });
@@ -137,13 +147,83 @@ export const partners = new Hono()
     return c.json({ ok: true });
   })
 
-  // Painel: parceiros + contagens + ranking
+  // Painel: parceiros + contagens + ranking + registos de contas + subscrições/receita
   .get("/admin/dashboard", requireAuth, async (c) => {
     if (!isAdmin(c)) return c.json({ error: "Sem permissão" }, 403);
 
     const all = await db.select().from(schema.partners).orderBy(desc(schema.partners.createdAt));
     const codes = await db.select().from(schema.partnerCodes);
     const reds = await db.select().from(schema.codeRedemptions).orderBy(desc(schema.codeRedemptions.createdAt));
+
+    // ---- Contas novas (registos) e subscrições/receita ----
+    // Preço de cada plano, para estimar a receita. Actualizar aqui se os
+    // preços mudarem na Play Console — isto é só uma estimativa interna, não
+    // substitui o relatório financeiro real da Google.
+    const PRECO: Record<string, number> = { monthly: 3.99, annual: 19.99 };
+
+    const allUsers = await db.select({ id: schema.user.id, createdAt: schema.user.createdAt }).from(schema.user);
+    const allSubs = await db.select().from(schema.subscriptions);
+
+    const now = Date.now();
+    const inicioHoje = new Date();
+    inicioHoje.setHours(0, 0, 0, 0);
+    const inicioOntem = new Date(inicioHoje.getTime() - 24 * 60 * 60 * 1000);
+    const inicio7dias = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    const inicio30dias = new Date(now - 30 * 24 * 60 * 60 * 1000);
+
+    const contarDesde = (ts: number) => allUsers.filter((u) => Number(u.createdAt) >= ts).length;
+
+    const signups = {
+      hoje: contarDesde(inicioHoje.getTime()),
+      ontem: allUsers.filter(
+        (u) => Number(u.createdAt) >= inicioOntem.getTime() && Number(u.createdAt) < inicioHoje.getTime(),
+      ).length,
+      ultimos7Dias: contarDesde(inicio7dias.getTime()),
+      ultimos30Dias: contarDesde(inicio30dias.getTime()),
+      total: allUsers.length,
+    };
+
+    // Subscrições activas (não trial) por plano, e receita estimada.
+    const activas = allSubs.filter(
+      (s) => s.status === "active" && (s.plan === "monthly" || s.plan === "annual" || s.plan === "lifetime"),
+    );
+    const porPlano = { monthly: 0, annual: 0, lifetime: 0, trial: 0 };
+    for (const s of allSubs) {
+      if (s.status !== "active") continue;
+      if (s.plan === "monthly") porPlano.monthly++;
+      else if (s.plan === "annual") porPlano.annual++;
+      else if (s.plan === "lifetime") porPlano.lifetime++;
+      else if (s.plan === "trial") porPlano.trial++;
+    }
+    const receitaMensalRecorrente = porPlano.monthly * PRECO.monthly; // € por mês, se todos renovarem
+    const receitaAnualTotal = porPlano.annual * PRECO.annual; // € já cobrados nessas subscrições anuais
+    const receitaEstimadaTotal = receitaMensalRecorrente + receitaAnualTotal;
+
+    // Subscrições pagas feitas nos últimos 30 dias (por updatedAt, aproximado —
+    // não distingue 1ª compra de renovação).
+    const pagasRecentes = allSubs
+      .filter((s) => (s.plan === "monthly" || s.plan === "annual") && s.updatedAt && new Date(s.updatedAt).getTime() >= inicio30dias.getTime())
+      .sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime())
+      .slice(0, 40)
+      .map((s) => ({
+        userId: s.userId,
+        plan: s.plan,
+        preco: PRECO[s.plan] ?? 0,
+        updatedAt: s.updatedAt,
+        currentPeriodEnd: s.currentPeriodEnd,
+      }));
+
+    const stats = {
+      signups,
+      subscricoes: {
+        porPlano,
+        receitaMensalRecorrente: Number(receitaMensalRecorrente.toFixed(2)),
+        receitaAnualTotal: Number(receitaAnualTotal.toFixed(2)),
+        receitaEstimadaTotal: Number(receitaEstimadaTotal.toFixed(2)),
+        totalActivas: activas.length,
+        recentes: pagasRecentes,
+      },
+    };
 
     const list = all.map((p) => {
       const myCodes = codes.filter((x) => x.partnerId === p.id);
@@ -176,6 +256,7 @@ export const partners = new Hono()
         ).length,
       },
       recent: reds.slice(0, 40),
+      stats,
     });
   })
 

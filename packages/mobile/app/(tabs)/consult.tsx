@@ -12,6 +12,7 @@ import { PaywallScreen } from "../../components/PaywallScreen";
 import { authFetch } from "../../lib/auth-fetch";
 import { DateFieldPT } from "../../components/DateFieldPT";
 import { tr } from "../../lib/i18n";
+import { HomeBackButton } from "../../components/HomeBackButton";
 
 const API_URL = ((Constants.expoConfig?.extra?.apiUrl as string) ?? process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4200").replace(/\/$/, "");
 
@@ -181,6 +182,7 @@ export default function ConsultScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
+          <HomeBackButton color="#1A1A2E" />
           <Text suppressHighlighting style={styles.headerTitle}>{tr("Consulta Online")}</Text>
           <Text suppressHighlighting style={styles.headerSub}>{tr("Fale com o seu vet por videochamada")}</Text>
         </View>

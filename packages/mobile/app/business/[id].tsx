@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Linking, TextInput, Alert, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Linking, TextInput, Alert, ActivityIndicator, Image } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -56,6 +56,9 @@ export default function BusinessDetailScreen() {
 
         {/* Header card */}
         <View style={{ backgroundColor: "#8B5E3C", borderRadius: 20, padding: 20, marginBottom: 16 }}>
+          {b.logoUrl && (
+            <Image source={{ uri: b.logoUrl }} style={{ width: 72, height: 72, borderRadius: 16, marginBottom: 12, backgroundColor: "#fff" }} />
+          )}
           <Text suppressHighlighting style={{ color: "#fff", fontSize: 22, fontWeight: "800" }}>{b.name}</Text>
           <Text suppressHighlighting style={{ color: "#F5D5BA", fontSize: 13, marginTop: 4, textTransform: "capitalize" }}>{b.type}</Text>
           {b.averageRating > 0 && (

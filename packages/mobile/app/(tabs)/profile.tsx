@@ -10,6 +10,7 @@ import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { authFetch } from "../../lib/auth-fetch";
 import { LanguageModal } from "../../components/LanguagePicker";
+import { HomeBackButton } from "../../components/HomeBackButton";
 import { useLang, LANGUAGES, tr } from "../../lib/i18n";
 import { somAberturaLigado, definirSomAbertura, experimentarAbertura } from "../../lib/opening-sound";
 
@@ -192,6 +193,9 @@ export default function ProfileScreen() {
           borderBottomRightRadius: 36,
         }}>
           <View style={{ position: "absolute", top: -30, right: -30, width: 150, height: 150, borderRadius: 75, backgroundColor: "rgba(255,255,255,0.08)" }} />
+          <View style={{ position: "absolute", top: 24, left: 20, zIndex: 2 }}>
+            <HomeBackButton />
+          </View>
           <Text suppressHighlighting style={{ fontSize: 24, fontWeight: "800", color: "#fff", textAlign: "center" }}>{tr("Perfil")}</Text>
         </Animated.View>
 

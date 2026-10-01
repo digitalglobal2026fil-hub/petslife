@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, Linking } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, Linking, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -11,6 +11,7 @@ import { authClient } from "../../lib/auth";
 import { ModerationButton } from "../../components/ModerationButton";
 import { deleteContent } from "../../lib/moderation";
 import { tr } from "../../lib/i18n";
+import { HomeBackButton } from "../../components/HomeBackButton";
 
 const categories = ["Todos", tr("Clínica"), "Petshop", "Tosquiador", "Hotel", "Treino", "Outro"];
 
@@ -74,7 +75,10 @@ export default function BusinessesScreen() {
         flexDirection: "row", alignItems: "center", justifyContent: "space-between",
       }}>
         <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.12)" }} />
-        <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Negócios")}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <HomeBackButton color="#fff" />
+          <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Negócios")}</Text>
+        </View>
         <TouchableOpacity onPress={() => router.push("/add-business")}
           style={{ backgroundColor: "rgba(255,255,255,0.25)", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
           <Plus size={20} color="#fff" />
@@ -109,9 +113,13 @@ export default function BusinessesScreen() {
               <TouchableOpacity key={b.id} onPress={() => router.push(`/business/${b.id}`)}
                 style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-                  <View style={{ backgroundColor: "#FFF0EB", borderRadius: 14, padding: 12 }}>
-                    {typeIcon(b.type)}
-                  </View>
+                  {b.logoUrl ? (
+                    <Image source={{ uri: b.logoUrl }} style={{ width: 52, height: 52, borderRadius: 14 }} />
+                  ) : (
+                    <View style={{ backgroundColor: "#FFF0EB", borderRadius: 14, padding: 12 }}>
+                      {typeIcon(b.type)}
+                    </View>
+                  )}
                   <View style={{ flex: 1 }}>
                     <Text suppressHighlighting style={{ fontWeight: "700", fontSize: 15, color: "#1A1A2E" }}>{b.name}</Text>
                     <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 12, marginTop: 2, textTransform: "capitalize" }}>{b.type}</Text>

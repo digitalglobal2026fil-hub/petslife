@@ -14,6 +14,7 @@ import { ModerationButton } from "../../components/ModerationButton";
 import { deleteContent } from "../../lib/moderation";
 import { pickImageWithChoice } from "../../lib/pick-image";
 import { uploadImage } from "../../lib/upload";
+import { HomeBackButton } from "../../components/HomeBackButton";
 import { tr } from "../../lib/i18n";
 
 // ─── Janela de comentários ────────────────────────────────────────────────
@@ -52,8 +53,8 @@ function CommentsModal({ postId, myId, onClose }: { postId: string | null; myId?
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }}>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ maxHeight: "80%" }}>
-          <View style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingTop: 18, height: 480 }}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ maxHeight: "80%" }}>
+          <View style={{ backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingTop: 18, height: 480, maxHeight: "100%" }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 20, marginBottom: 14 }}>
               <Text suppressHighlighting style={{ fontSize: 17, fontWeight: "800", color: "#1A1A2E" }}>{tr("Comentários")}</Text>
               <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
@@ -194,6 +195,7 @@ export default function SocialScreen() {
       }}>
         <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.1)" }} />
         <View>
+          <HomeBackButton />
           <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Comunidade")}</Text>
           <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", marginTop: 2, fontSize: 13 }}>{tr("Partilhe momentos dos seus animais")}</Text>
         </View>

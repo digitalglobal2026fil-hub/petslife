@@ -35,7 +35,9 @@ const BG = "#F8F6FF";
 
 const BENEFITS = [
   { key: "discount", label: tr("Só desconto / contagem"), hint: tr("Não dá acesso grátis. Serve para contar vendas.") },
+  { key: "month1", label: tr("1 mês grátis"), hint: tr("Acesso completo 1 mês.") },
   { key: "months3", label: tr("3 meses grátis"), hint: tr("Acesso completo 3 meses.") },
+  { key: "months6", label: tr("6 meses grátis"), hint: tr("Acesso completo 6 meses.") },
   { key: "year1", label: tr("1 ano grátis"), hint: tr("Acesso completo 12 meses.") },
   { key: "lifetime", label: tr("Vitalício"), hint: tr("Nunca paga.") },
 ];
@@ -256,6 +258,58 @@ export default function AdminScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await load(); setRefreshing(false); }} />}>
 
         {!data && <ActivityIndicator color={PURPLE} style={{ marginTop: 30 }} />}
+
+        {data?.stats && (
+          <View style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, marginBottom: 16 }}>
+            <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "800", color: "#1F2937", marginBottom: 10 }}>
+              {tr("Contas novas (registos)")}
+            </Text>
+            <View style={{ flexDirection: "row", gap: 8, marginBottom: 16 }}>
+              {[
+                { label: tr("Hoje"), value: data.stats.signups.hoje },
+                { label: tr("Ontem"), value: data.stats.signups.ontem },
+                { label: tr("7 dias"), value: data.stats.signups.ultimos7Dias },
+                { label: tr("30 dias"), value: data.stats.signups.ultimos30Dias },
+                { label: tr("Total"), value: data.stats.signups.total },
+              ].map((s) => (
+                <View key={s.label} style={{ flex: 1, backgroundColor: BG, borderRadius: 12, padding: 8, alignItems: "center" }}>
+                  <Text suppressHighlighting style={{ color: PURPLE, fontWeight: "800", fontSize: 15 }}>{s.value}</Text>
+                  <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 9.5, marginTop: 2 }}>{s.label}</Text>
+                </View>
+              ))}
+            </View>
+
+            <Text suppressHighlighting style={{ fontSize: 15, fontWeight: "800", color: "#1F2937", marginBottom: 10 }}>
+              {tr("Subscrições activas")}
+            </Text>
+            <View style={{ flexDirection: "row", gap: 8, marginBottom: 12 }}>
+              {[
+                { label: tr("Mensal (3,99€)"), value: data.stats.subscricoes.porPlano.monthly },
+                { label: tr("Anual (19,99€)"), value: data.stats.subscricoes.porPlano.annual },
+                { label: tr("Vitalício"), value: data.stats.subscricoes.porPlano.lifetime },
+                { label: tr("Trial"), value: data.stats.subscricoes.porPlano.trial },
+              ].map((s) => (
+                <View key={s.label} style={{ flex: 1, backgroundColor: BG, borderRadius: 12, padding: 8, alignItems: "center" }}>
+                  <Text suppressHighlighting style={{ color: PURPLE, fontWeight: "800", fontSize: 15 }}>{s.value}</Text>
+                  <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 9, marginTop: 2, textAlign: "center" }}>{s.label}</Text>
+                </View>
+              ))}
+            </View>
+
+            <View style={{ backgroundColor: "rgba(139,92,246,0.08)", borderRadius: 12, padding: 12 }}>
+              <Text suppressHighlighting style={{ color: "#6B7280", fontSize: 11 }}>
+                {tr("Receita mensal recorrente (estimada)")}
+              </Text>
+              <Text suppressHighlighting style={{ color: PURPLE, fontWeight: "800", fontSize: 20 }}>
+                {data.stats.subscricoes.receitaMensalRecorrente.toFixed(2)} €
+              </Text>
+              <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 10, marginTop: 4 }}>
+                + {data.stats.subscricoes.receitaAnualTotal.toFixed(2)} € já cobrados em planos anuais ativos.
+                {"\n"}Estimativa interna — não substitui o relatório financeiro da Play Console.
+              </Text>
+            </View>
+          </View>
+        )}
 
         {data?.partners?.length === 0 && (
           <View style={{ alignItems: "center", paddingVertical: 50 }}>

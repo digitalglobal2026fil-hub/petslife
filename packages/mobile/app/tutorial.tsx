@@ -18,6 +18,7 @@ type Passo = {
   texto: string;
   cor: string;
   fundo: string;
+  verGuia?: string;
 };
 
 const PASSOS: Passo[] = [
@@ -47,9 +48,10 @@ const PASSOS: Passo[] = [
   },
   {
     titulo: "Consulta por vídeo",
-    texto: "Em Saúde > Ferramentas > Consulta Online fala com o veterinário por videochamada, sem instalar nada — basta um link. Tem um guia passo a passo em Saúde, no botão \"Guia\".",
+    texto: "Em Saúde > Ferramentas > Consulta Online agenda a consulta e recebe um link único. Partilhe-o com o veterinário por WhatsApp, email ou SMS — ele não precisa de instalar nada, basta abrir o link no browser. Na hora marcada, ambos entram na mesma chamada.",
     cor: "#3B82F6",
     fundo: "#EAF2FE",
+    verGuia: "/video-call-guide",
   },
   {
     titulo: "A Agenda avisa-a",
@@ -152,6 +154,28 @@ export default function Tutorial() {
             <Text suppressHighlighting style={{ fontSize: 15.5, lineHeight: 24, color: "#4B5563" }}>
               {tr(passo.texto)}
             </Text>
+            {passo.verGuia ? (
+              <TouchableOpacity
+                onPress={() => router.push(passo.verGuia as any)}
+                activeOpacity={0.8}
+                style={{
+                  marginTop: 14,
+                  alignSelf: "flex-start",
+                  backgroundColor: passo.cor + "1A",
+                  borderRadius: 14,
+                  paddingVertical: 9,
+                  paddingHorizontal: 14,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <Text suppressHighlighting style={{ color: passo.cor, fontWeight: "800", fontSize: 13.5 }}>
+                  {tr("Ver guia completo")}
+                </Text>
+                <ChevronRight size={15} color={passo.cor} />
+              </TouchableOpacity>
+            ) : null}
           </View>
 
           {/* Bico do balão a apontar para o cão */}

@@ -14,6 +14,7 @@ import { deleteContent } from "../../lib/moderation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
+import { HomeBackButton } from "../../components/HomeBackButton";
 import { tr } from "../../lib/i18n";
 
 // ─── Search input isolated so focus is never lost ───────────────────────────
@@ -253,7 +254,10 @@ export default function MarketplaceScreen() {
         flexDirection: "row", alignItems: "center", justifyContent: "space-between",
       }}>
         <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.12)" }} />
-        <Text style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Marketplace")}</Text>
+        <View>
+          <HomeBackButton />
+          <Text style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Marketplace")}</Text>
+        </View>
         <TouchableOpacity
           onPress={() => router.push(tab === "businesses" ? "/add-business" : "/add-listing")}
           style={{

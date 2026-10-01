@@ -1,16 +1,18 @@
 import {
   View, Text, ScrollView, TouchableOpacity, TextInput, Alert,
-  ActivityIndicator, KeyboardAvoidingView, Platform,
+  ActivityIndicator, KeyboardAvoidingView, Platform, Image,
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft } from "lucide-react-native";
+import { ChevronLeft, Camera, X } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
 import { tr } from "../lib/i18n";
 import { safeBack } from "../lib/safe-back";
+import { pickImageWithChoice } from "../lib/pick-image";
+import { uploadImage } from "../lib/upload";
 
 const types = [
   { value: "clinica",     label: tr("🏥 Clínica Veterinária") },
@@ -68,11 +70,30 @@ export default function AddBusinessScreen() {
   const [bookingPhone, setBookingPhone] = useState("");
   const [schedule, setSchedule] = useState("");
   const [services, setServices] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  async function pickPhoto() {
+    const picked = await pickImageWithChoice({ title: tr("Foto do negócio") });
+    if (!picked) return;
+    setPhoto(picked.uri);
+    setUploadingPhoto(true);
+    try {
+      const url = await uploadImage(picked.uri, picked.mimeType);
+      setPhotoUrl(url);
+    } catch (e: any) {
+      Alert.alert(tr("Erro ao carregar foto"), e?.message ?? tr("Tente novamente."));
+      setPhoto(null);
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const res = await (api as any).businesses.$post({
-        json: { name, type, description, phone, website, address, city, bookingUrl, bookingPhone, schedule, services },
+        json: { name, type, description, phone, website, address, city, bookingUrl, bookingPhone, schedule, services, logoUrl: photoUrl || undefined },
       });
       if (!res.ok) {
         const text = await res.text();
@@ -124,6 +145,32 @@ export default function AddBusinessScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+          </View>
+
+          <View style={{ marginBottom: 16 }}>
+            <Text suppressHighlighting style={{ fontWeight: "600", color: "#374151", marginBottom: 8, fontSize: 14 }}>{tr("Foto do negócio")}</Text>
+            {photo ? (
+              <View style={{ alignSelf: "flex-start" }}>
+                <Image source={{ uri: photo }} style={{ width: 110, height: 110, borderRadius: 16 }} />
+                {uploadingPhoto ? (
+                  <View style={{ position: "absolute", width: 110, height: 110, borderRadius: 16, backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", justifyContent: "center" }}>
+                    <ActivityIndicator color="#fff" />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => { setPhoto(null); setPhotoUrl(null); }}
+                    style={{ position: "absolute", top: -8, right: -8, width: 26, height: 26, borderRadius: 13, backgroundColor: "#1A1A2E", alignItems: "center", justifyContent: "center" }}>
+                    <X size={15} color="#fff" />
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : (
+              <TouchableOpacity onPress={pickPhoto} activeOpacity={0.8}
+                style={{ width: 110, height: 110, borderRadius: 16, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", borderStyle: "dashed", alignItems: "center", justifyContent: "center" }}>
+                <Camera size={24} color="#8B5E3C" />
+                <Text suppressHighlighting style={{ color: "#8B5E3C", fontSize: 11, fontWeight: "600", marginTop: 6 }}>{tr("Adicionar foto")}</Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           <Input label={tr("Descrição")} value={description} onChangeText={setDescription} placeholder={tr("Descreve os serviços e especialidades...")} multiline />

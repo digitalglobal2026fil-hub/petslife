@@ -8,7 +8,7 @@ import { kvGet, kvSet } from "./kv";
  * Regras:
  *  - toca UMA única vez por arranque a frio da app (a flag `jaTocou` vive
  *    no módulo, por isso reinicia só quando o processo morre);
- *  - volume baixo e suave (28%), só um fundo — acompanha o ecrã de abertura
+ *  - volume baixo e suave (15%), só um fundo — acompanha o ecrã de abertura
  *    até entrar na app, e desce gradualmente (fade-out) no último segundo
  *    e meio para não cortar de repente;
  *  - `playsInSilentMode: false` — no iOS, se o telemóvel estiver em
@@ -21,7 +21,7 @@ import { kvGet, kvSet } from "./kv";
 
 const CHAVE = "som_abertura";
 const SOM = require("../assets/opening.mp3");
-const VOLUME_BASE = 0.28;
+const VOLUME_BASE = 0.15;
 
 let jaTocou = false;
 let player: AudioPlayer | null = null;

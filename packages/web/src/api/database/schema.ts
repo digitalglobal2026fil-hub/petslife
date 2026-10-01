@@ -289,7 +289,7 @@ export const partners = sqliteTable("partners", {
   notes: text("notes"),
   mainCode: text("main_code").notNull().unique(), // código do próprio parceiro
   // benefício que o PRÓPRIO parceiro recebe ao resgatar o mainCode
-  partnerBenefit: text("partner_benefit").notNull().default("lifetime"), // lifetime | year1 | months3 | none
+  partnerBenefit: text("partner_benefit").notNull().default("lifetime"), // lifetime | year1 | months6 | months3 | month1 | none
   active: integer("active", { mode: "boolean" }).default(true),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
@@ -300,7 +300,7 @@ export const partnerCodes = sqliteTable("partner_codes", {
   partnerId: text("partner_id").notNull(),
   code: text("code").notNull().unique(),
   kind: text("kind").notNull().default("referral"), // main | referral
-  // benefício de quem resgata: lifetime | year1 | months3 | discount | none
+  // benefício de quem resgata: lifetime | year1 | months6 | months3 | month1 | discount | none
   benefit: text("benefit").notNull().default("discount"),
   maxUses: integer("max_uses"),        // null = ilimitado
   uses: integer("uses").notNull().default(0),

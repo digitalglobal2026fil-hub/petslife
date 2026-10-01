@@ -217,3 +217,91 @@ tsc --noEmit limpo em mobile e web antes de compilar.
 v62 publicado no GitHub Releases:
 APK: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.29/petslife_v62.apk
 AAB: https://github.com/digitalglobal2026fil-hub/petslife/releases/download/v1.9.29/petslife_v62.aab
+
+=== PEDIDOS PENDENTES PARA v63 (confirmados pela utilizadora em 01 Out 2026, sem credito ainda — NAO EXECUTAR sem ela pedir "pode avancar com a v63") ===
+
+1) Botao de voltar em falta em quase TODOS os ecras principais (o v62 so
+   corrigiu CategoryHeader das paginas de categoria tipo Clinicas/Petshops,
+   nao foi suficiente). Confirmado pela utilizadora que falta em:
+   - Album (photos.tsx)
+   - Comunidade (social.tsx)
+   - Aba Vacinas (dentro de Saude/health)
+   - Ao clicar numa linha/item de lista (ex: abrir um anuncio, uma
+     publicacao, etc.)
+   - Perfil (profile.tsx)
+   - Ou seja: revisar TODOS os ecras da app (nao so os citados) e aplicar
+     safeBack() em todos os headers/botoes de voltar que ainda usam
+     router.back() puro ou que nao tem botao de voltar nenhum. Fazer
+     varredura completa do packages/mobile/app/, nao so pontual.
+
+2) Foto no Negocio (businesses.tsx / add-business.tsx) — o v62 so pos
+   campo de foto no Mercado (add-listing.tsx) e na Comunidade (social.tsx),
+   faltou fazer o mesmo no fluxo de Negocio.
+
+3) Teclado tapa o texto ao escrever comentarios (e possivelmente outros
+   campos de texto tambem) — nao se ve o que se esta a escrever porque o
+   teclado cobre o input. Precisa de KeyboardAvoidingView / ajuste de
+   scroll nos formularios de comentario e rever outros formularios com o
+   mesmo problema (add-pet, add-vaccine ja tinham sido corrigidos na v37,
+   confirmar se continuam OK; focar em comentarios da Comunidade que ainda
+   nao foi corrigido).
+
+4) NOVO (01 Out 2026): rodape/banner rotativo que apareca de vez em quando
+   (nao fixo, tipo os banners/avisos que ja existem no ecra Inicio) com o
+   aviso:
+   "Lembre-se: parte da sua subscricao sera convertida em ajuda para
+   causa animal. Partilhe, ajude-nos nessa causa!"
+   (texto exacto a confirmar com a utilizadora na altura — ela escreveu em
+   estilo telegrafico, rever a frase final antes de implementar). Ideia:
+   reaproveitar o padrao ja usado na caixa "Parte de sua subscricao
+   reverte para a CAUSA ANIMAL" do folheto promocional, trazer essa
+   mensagem tambem para dentro da app, em rotacao com outros avisos/dicas
+   que ja existem (ex.: AnimalFact/banners do Inicio), nao sobrepor nada
+   fixo.
+
+Proximo passo: aguardar a utilizadora ter credito e pedir explicitamente
+para avancar com a v63. Antes de implementar, CONFIRMAR com ela a lista
+completa (ela pediu expressamente para confirmar tudo antes de fazer).
+
+5) NOVO (01 Out 2026): incluir no TUTORIAL (o tutorial do caozinho Max /
+   ecra "Como funciona", feito na v59-ish) uma explicacao de como funciona
+   a CONSULTA POR VIDEOCHAMADA com o veterinario — passo a passo, dentro
+   do mesmo fluxo de onboarding/tutorial que ja existe. Reaproveitar o
+   conteudo que ja existe no ecra "Guia de Videochamada" (criado na v26,
+   5 passos + FAQ + requisitos + permissoes + botao de teste) e adaptar/
+   resumir para caber no formato de tutorial de boas-vindas.
+
+=== v63 — IMPLEMENTADO (01 Out 2026) ===
+Todos os 6 itens pedidos foram implementados no código e verificados com
+`tsc --noEmit` (sem erros):
+
+1) Botão de voltar: criado components/HomeBackButton.tsx e aplicado nos
+   ecrãs-raiz que não tinham nenhum: health.tsx, photos.tsx, social.tsx,
+   profile.tsx, marketplace.tsx, businesses.tsx, consult.tsx. Varredura
+   completa do app/ confirmou que os restantes ecrãs (category/*, sub-
+   ecrãs com [id], add-*, etc.) já usam safeBack() — só os 7 acima
+   estavam mesmo sem nada.
+2) Foto no Negócio: campo de foto em add-business.tsx (mesmo padrão do
+   add-listing.tsx: pickImageWithChoice + uploadImage), guardado em
+   logoUrl (já existia no schema). Mostrado na lista (businesses.tsx) e
+   no detalhe (business/[id].tsx).
+3) Teclado a tapar comentários: KeyboardAvoidingView do CommentsModal em
+   social.tsx tinha behavior=undefined no Android — mudado para "height".
+4) Banner fofo da causa animal: criado components/CauseBanner.tsx com as
+   patinhas 🐾 a balançar no início/fim do texto exacto pedido. Entra em
+   rotação com o passarinho de partilha (lib/share-reminder.ts, agora com
+   bannerCausaAnimalActivoNestaSessao) — nunca os dois juntos, aparece de
+   vez em quando, não é fixo.
+5) Tutorial: passo "Consulta por vídeo" (tutorial.tsx) reescrito com mais
+   detalhe (link único, partilhar, sem instalar nada) e com botão "Ver
+   guia completo" que abre o ecrã video-call-guide.tsx.
+6) Música de abertura: volume baixado de 0.28 para 0.15 em
+   lib/opening-sound.ts.
+
+versionCode 62→63, version 1.9.29→1.9.30 em app.json.
+
+IMPORTANTE: build de AAB/APK NÃO foi feito na sandbox (regra da
+plataforma). Preview mobile entregue a correr (Metro na porta 4300).
+Para gerar o AAB/APK real e publicar, a utilizadora deve usar a opção
+"Publish" no dashboard do preview mobile (liga a conta Expo dela e
+dispara o build directamente) — depois sobe à Play Console como sempre.

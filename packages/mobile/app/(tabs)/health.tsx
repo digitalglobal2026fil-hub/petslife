@@ -8,6 +8,7 @@ import { api } from "../../lib/api";
 import { AnimalFact } from "../../components/AnimalFact";
 import { useSubscriptionGate } from "../../lib/useSubscriptionGate";
 import { PaywallScreen } from "../../components/PaywallScreen";
+import { HomeBackButton } from "../../components/HomeBackButton";
 import { tr } from "../../lib/i18n";
 
 const sections = [
@@ -99,6 +100,7 @@ export default function HealthScreen() {
           marginBottom: 8,
         }}>
           <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.1)" }} />
+          <HomeBackButton />
           <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>{tr("Saúde 🏥")}</Text>
           <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.8)", marginTop: 4, fontSize: 14 }}>{tr("Gerencie a saúde dos seus animais")}</Text>
         </Animated.View>

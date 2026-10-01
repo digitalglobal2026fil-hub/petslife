@@ -8,6 +8,7 @@ import { api } from "../../lib/api";
 import { useLang, tr } from "../../lib/i18n";
 import { AnimalFact } from "../../components/AnimalFact";
 import { PetIllustration } from "../../components/PetIllustration";
+import { HomeBackButton } from "../../components/HomeBackButton";
 
 // Álbum usa um tom azul médio, diferente das outras páginas
 const BG = "#F0F6FF";
@@ -115,6 +116,7 @@ export default function PhotosTabScreen() {
         borderBottomLeftRadius: 32, borderBottomRightRadius: 32, marginBottom: 8,
       }}>
         <View style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.1)" }} />
+        <HomeBackButton />
         <Text suppressHighlighting style={{ fontSize: 26, fontWeight: "900", color: "#fff" }}>{tr("Álbum")}</Text>
         <Text suppressHighlighting style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 2 }}>{tr("As memórias dos teus animais")}</Text>
       </View>

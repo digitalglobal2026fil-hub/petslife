@@ -13,8 +13,9 @@ import { SubscriptionBanner } from "../../components/SubscriptionBanner";
 import { PetIllustration } from "../../components/PetIllustration";
 import { NotificationBell } from "../../components/NotificationBell";
 import { ShareReminderBird } from "../../components/ShareReminderBird";
+import { CauseBanner } from "../../components/CauseBanner";
 import { ExitShareModal } from "../../components/ExitShareModal";
-import { lembretePartilhaActivoNestaSessao, TEXTO_LEMBRETE_PARTILHA } from "../../lib/share-reminder";
+import { lembretePartilhaActivoNestaSessao, bannerCausaAnimalActivoNestaSessao, TEXTO_LEMBRETE_PARTILHA } from "../../lib/share-reminder";
 import { tr } from "../../lib/i18n";
 
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.petislife2.app";
@@ -240,12 +241,18 @@ export default function HomeScreen() {
           <SubscriptionBanner />
         </View>
 
-        {/* Passarinho: lembrete de partilha/apoio à causa animal */}
+        {/* Passarinho: lembrete de partilha/apoio à causa animal (1 em cada 3 aberturas) */}
         {mostrarBanner && lembretePartilhaActivoNestaSessao() && (
           <ShareReminderBird
             onClose={() => setMostrarBanner(false)}
             onShare={partilharApp}
           />
+        )}
+
+        {/* Banner fofo sobre a causa animal — aparece de vez em quando,
+            em rotação com o passarinho de partilha (nunca os dois juntos) */}
+        {mostrarBanner && bannerCausaAnimalActivoNestaSessao() && (
+          <CauseBanner onPress={partilharApp} />
         )}
 
         {/* Pets list */}
