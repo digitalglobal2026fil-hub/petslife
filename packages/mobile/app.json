@@ -8,7 +8,7 @@
         "backgroundColor": "#5BB8B5"
       },
       "edgeToEdgeEnabled": true,
-      "versionCode": 66,
+      "versionCode": 67,
       "permissions": [
         "VIBRATE",
         "POST_NOTIFICATIONS"
@@ -53,7 +53,16 @@
         }
       ],
       "expo-iap",
-      "expo-audio"
+      "expo-audio",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
+        }
+      ]
     ]
   }
 }
