@@ -5,7 +5,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Search, Plus, Tag, PawPrint, Building2, MapPin, Phone, Star } from "lucide-react-native";
+import { Search, Plus, Tag, PawPrint, Building2, MapPin, Phone, Star, Pencil } from "lucide-react-native";
 import { useState, useCallback } from "react";
 import { api } from "../../lib/api";
 import { authClient } from "../../lib/auth";
@@ -49,7 +49,7 @@ const typeLabel: Record<string, string> = {
   hotel: tr("Hotel Animal"), treino: tr("Treino"), outro: tr("Outro"),
 };
 
-function BusinessCard({ b, onPress, isOwner, onDelete }: { b: any; onPress: () => void; isOwner?: boolean; onDelete: () => void }) {
+function BusinessCard({ b, onPress, onEdit, isOwner, onDelete }: { b: any; onPress: () => void; onEdit: () => void; isOwner?: boolean; onDelete: () => void }) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -77,6 +77,13 @@ function BusinessCard({ b, onPress, isOwner, onDelete }: { b: any; onPress: () =
                 <Star size={13} color="#F59E0B" fill="#F59E0B" />
                 <Text style={{ fontSize: 12, fontWeight: "700", color: "#92400E" }}>{b.averageRating.toFixed(1)}</Text>
               </View>
+            )}
+            {isOwner && (
+              <TouchableOpacity
+                onPress={(e: any) => { e.stopPropagation?.(); onEdit(); }}
+                style={{ marginLeft: 8, backgroundColor: "#FFF0EB", borderRadius: 8, padding: 6 }}>
+                <Pencil size={14} color="#8B5E3C" />
+              </TouchableOpacity>
             )}
             <ModerationButton
               target="business"
@@ -121,7 +128,7 @@ function BusinessCard({ b, onPress, isOwner, onDelete }: { b: any; onPress: () =
 }
 
 // ─── Listing card ────────────────────────────────────────────────────────────
-function ListingCard({ l, onPress, isOwner, onDelete }: { l: any; onPress: () => void; isOwner?: boolean; onDelete: () => void }) {
+function ListingCard({ l, onPress, onEdit, isOwner, onDelete }: { l: any; onPress: () => void; onEdit: () => void; isOwner?: boolean; onDelete: () => void }) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -138,15 +145,24 @@ function ListingCard({ l, onPress, isOwner, onDelete }: { l: any; onPress: () =>
             <PawPrint size={32} color="#8B5E3C" />
           </View>
         )}
-        <View style={{ position: "absolute", top: 2, right: 2, backgroundColor: "rgba(255,255,255,0.9)", borderRadius: 15 }}>
-          <ModerationButton
-            target="listing"
-            targetId={String(l.id)}
-            preview={l.title}
-            isOwner={isOwner}
-            label={`"${l.title}"`}
-            onDelete={onDelete}
-          />
+        <View style={{ position: "absolute", top: 2, right: 2, flexDirection: "row", gap: 4 }}>
+          {isOwner && (
+            <TouchableOpacity
+              onPress={(e: any) => { e.stopPropagation?.(); onEdit(); }}
+              style={{ backgroundColor: "rgba(255,255,255,0.9)", borderRadius: 15, padding: 6 }}>
+              <Pencil size={14} color="#FF6B35" />
+            </TouchableOpacity>
+          )}
+          <View style={{ backgroundColor: "rgba(255,255,255,0.9)", borderRadius: 15 }}>
+            <ModerationButton
+              target="listing"
+              targetId={String(l.id)}
+              preview={l.title}
+              isOwner={isOwner}
+              label={`"${l.title}"`}
+              onDelete={onDelete}
+            />
+          </View>
         </View>
       </View>
       <View style={{ padding: 12 }}>
@@ -284,7 +300,7 @@ export default function MarketplaceScreen() {
             shadowOpacity: 0, shadowRadius: 0, elevation: 0,
           }}>
           <Building2 size={16} color={tab === "businesses" ? "#8B5E3C" : "#9CA3AF"} />
-          <Text style={{ fontWeight: "700", fontSize: 14, color: tab === "businesses" ? "#8B5E3C" : "#9CA3AF" }}>{tr("Negócios")}</Text>
+          <Text allowFontScaling={false} style={{ fontWeight: "700", fontSize: 14, color: tab === "businesses" ? "#8B5E3C" : "#9CA3AF" }}>{tr("Negócios")}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -297,7 +313,7 @@ export default function MarketplaceScreen() {
             shadowOpacity: 0, shadowRadius: 0, elevation: 0,
           }}>
           <Tag size={16} color={tab === "listings" ? "#FF6B35" : "#9CA3AF"} />
-          <Text style={{ fontWeight: "700", fontSize: 14, color: tab === "listings" ? "#FF6B35" : "#9CA3AF" }}>{tr("Anúncios")}</Text>
+          <Text allowFontScaling={false} style={{ fontWeight: "700", fontSize: 14, color: tab === "listings" ? "#FF6B35" : "#9CA3AF" }}>{tr("Anúncios")}</Text>
         </TouchableOpacity>
       </View>
 
@@ -307,11 +323,11 @@ export default function MarketplaceScreen() {
         placeholder={tab === "businesses" ? tr("Pesquisar negócios, cidade...") : tr("Pesquisar anúncios...")}
       />
 
-      {/* Category pills */}
-      <ScrollView
-        horizontal showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20, gap: 8, marginBottom: 14 }}
-      >
+      {/* Category pills — grid que mostra sempre todas as categorias (nunca ficam escondidas a precisar de scroll) */}
+      <View style={{
+        flexDirection: "row", flexWrap: "wrap",
+        paddingHorizontal: 20, gap: 8, marginBottom: 14,
+      }}>
         {(tab === "businesses" ? BIZ_CATS : LIST_CATS).map((c) => {
           const active = tab === "businesses" ? bizCat === c.key : listCat === c.key;
           const activeColor = tab === "businesses" ? "#8B5E3C" : "#FF6B35";
@@ -331,12 +347,17 @@ export default function MarketplaceScreen() {
                 borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8,
                 borderWidth: 1.5, borderColor: active ? activeColor : "#F0E8E0",
               }}>
-              <Text style={{ fontSize: 14, backgroundColor: "transparent" }}>{c.emoji}</Text>
-              <Text suppressHighlighting style={{ color: active ? "#fff" : "#6B7280", fontWeight: "600", fontSize: 13, backgroundColor: "transparent" }}>{c.label}</Text>
+              <Text allowFontScaling={false} style={{ fontSize: 14, backgroundColor: "transparent" }}>{c.emoji}</Text>
+              <Text
+                suppressHighlighting
+                allowFontScaling={false}
+                numberOfLines={1}
+                style={{ color: active ? "#fff" : "#6B7280", fontWeight: "600", fontSize: 13, backgroundColor: "transparent" }}
+              >{c.label}</Text>
             </TouchableOpacity>
           );
         })}
-      </ScrollView>
+      </View>
 
       {/* Content */}
       <ScrollView
@@ -376,6 +397,7 @@ export default function MarketplaceScreen() {
                   if (ok) queryClient.invalidateQueries({ queryKey: ["businesses"] });
                 }}
                 onPress={() => router.push(`/business/${b.id}` as any)}
+                onEdit={() => router.push(`/add-business?id=${b.id}` as any)}
               />
             ))
           )
@@ -410,6 +432,7 @@ export default function MarketplaceScreen() {
                     if (ok) queryClient.invalidateQueries({ queryKey: ["marketplace"] });
                   }}
                   onPress={() => router.push(`/listing/${l.id}` as any)}
+                  onEdit={() => router.push(`/add-listing?id=${l.id}` as any)}
                 />
               ))}
             </View>

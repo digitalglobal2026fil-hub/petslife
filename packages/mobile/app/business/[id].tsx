@@ -2,9 +2,10 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, TextInput, Alert, Ac
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Phone, Globe, MapPin, Clock, Star, MessageSquare } from "lucide-react-native";
+import { ChevronLeft, Phone, Globe, MapPin, Clock, Star, MessageSquare, Pencil } from "lucide-react-native";
 import { useState } from "react";
 import { api } from "../../lib/api";
+import { authClient } from "../../lib/auth";
 import { tr } from "../../lib/i18n";
 import { safeBack } from "../../lib/safe-back";
 
@@ -13,6 +14,8 @@ export default function BusinessDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
+  const { data: session } = authClient.useSession();
+  const myId = (session as any)?.user?.id;
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [showReview, setShowReview] = useState(false);
@@ -50,6 +53,14 @@ export default function BusinessDetailScreen() {
           <ChevronLeft size={24} color="#1A1A2E" />
         </TouchableOpacity>
         <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E", flex: 1 }} numberOfLines={1}>{b.name}</Text>
+        {!!myId && b.userId === myId && (
+          <TouchableOpacity
+            onPress={() => router.push(`/add-business?id=${id}` as any)}
+            style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#FFF0EB", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8 }}>
+            <Pencil size={14} color="#8B5E3C" />
+            <Text suppressHighlighting style={{ color: "#8B5E3C", fontWeight: "700", fontSize: 13 }}>{tr("Editar")}</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: Math.max(insets.bottom, 40) }} showsVerticalScrollIndicator={false}>

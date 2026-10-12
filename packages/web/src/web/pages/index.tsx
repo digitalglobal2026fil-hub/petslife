@@ -1,5 +1,7 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useEffect } from "react";
 import { Heart, Shield, QrCode, Camera, MapPin, ShoppingBag, Users, Bell, Star, CheckCircle, ArrowRight, Stethoscope, Video, PawPrint } from "lucide-react";
+import { authClient } from "../lib/auth";
 
 const MONTHLY_LINK = "https://buy.stripe.com/cNi3cugz46Xs2pQ1Oo4sE02";
 const ANNUAL_LINK = "https://buy.stripe.com/eVq4gyfv081w3tU9gQ4sE03";
@@ -24,6 +26,19 @@ const tips = [
 ];
 
 export default function LandingPage() {
+  const [, setLocation] = useLocation();
+  const { data: session, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    if (!isPending && session?.user) {
+      setLocation("/app");
+    }
+  }, [isPending, session, setLocation]);
+
+  if (isPending || session?.user) {
+    return <div className="min-h-screen bg-[#FFF9F5]" />;
+  }
+
   return (
     <div className="min-h-screen bg-[#FFF9F5]">
       {/* Navbar */}
@@ -41,9 +56,14 @@ export default function LandingPage() {
             <a href="#marketplace" className="hover:text-[#FF6B35] transition-colors">Marketplace</a>
             <a href="#pricing" className="hover:text-[#FF6B35] transition-colors">Preços</a>
           </div>
-          <a href="#pricing" className="bg-[#FF6B35] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#e55a24] transition-colors">
-            Experimente grátis
-          </a>
+          <div className="flex items-center gap-4">
+            <Link href="/sign-in" className="hidden sm:inline text-sm font-semibold text-gray-600 hover:text-[#FF6B35] transition-colors">
+              Entrar
+            </Link>
+            <Link href="/sign-up" className="bg-[#FF6B35] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#e55a24] transition-colors">
+              Experimente grátis
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -66,13 +86,16 @@ export default function LandingPage() {
               Vacinas, saúde, memórias, comunidade e muito mais. Tudo o que precisa para cuidar do seu pet num só lugar.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#pricing" className="inline-flex items-center justify-center gap-2 bg-[#FF6B35] text-white px-8 py-4 rounded-2xl text-lg font-bold hover:bg-[#e55a24] transition-all shadow-lg shadow-[#FF6B35]/30">
+              <Link href="/sign-up" className="inline-flex items-center justify-center gap-2 bg-[#FF6B35] text-white px-8 py-4 rounded-2xl text-lg font-bold hover:bg-[#e55a24] transition-all shadow-lg shadow-[#FF6B35]/30">
                 Experimente a app grátis 3 dias <ArrowRight size={20} />
-              </a>
+              </Link>
               <a href="#features" className="inline-flex items-center justify-center gap-2 border-2 border-[#F0E8E0] text-[#1A1A2E] px-8 py-4 rounded-2xl text-lg font-semibold hover:border-[#FF6B35] transition-colors">
                 Ver funcionalidades
               </a>
             </div>
+            <p className="text-sm text-gray-400 mt-4">
+              Já tem conta? <Link href="/sign-in" className="text-[#FF6B35] font-semibold hover:underline">Entrar</Link>. Funciona no telemóvel, iPhone e computador — sem precisar de instalar nada.
+            </p>
             <div className="flex items-center gap-6 mt-10">
               <div className="flex -space-x-2">
                 {["🐕","🐱","🐰","🦜"].map((e, i) => (

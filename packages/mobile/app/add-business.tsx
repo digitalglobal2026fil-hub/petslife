@@ -3,9 +3,9 @@ import {
   ActivityIndicator, KeyboardAvoidingView, Platform, Image,
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Camera, X } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
@@ -58,6 +58,14 @@ export default function AddBusinessScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const isEdit = !!id;
+
+  const { data: existing } = useQuery({
+    queryKey: ["business", id],
+    enabled: isEdit,
+    queryFn: async () => (await (api as any).businesses[":id"].$get({ param: { id } })).json(),
+  });
 
   const [name, setName] = useState("");
   const [type, setType] = useState("clinica");
@@ -73,6 +81,24 @@ export default function AddBusinessScreen() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  // Pré-preencher o formulário quando estamos a editar um negócio existente
+  useEffect(() => {
+    const b = (existing as any)?.business;
+    if (!b) return;
+    setName(b.name ?? "");
+    setType(b.type ?? "clinica");
+    setDescription(b.description ?? "");
+    setPhone(b.phone ?? "");
+    setWebsite(b.website ?? "");
+    setAddress(b.address ?? "");
+    setCity(b.city ?? "");
+    setBookingUrl(b.bookingUrl ?? "");
+    setBookingPhone(b.bookingPhone ?? "");
+    setSchedule(b.schedule ?? "");
+    setServices(b.services ?? "");
+    if (b.logoUrl) { setPhoto(b.logoUrl); setPhotoUrl(b.logoUrl); }
+  }, [existing]);
 
   async function pickPhoto() {
     const picked = await pickImageWithChoice({ title: tr("Foto do negócio") });
@@ -92,9 +118,10 @@ export default function AddBusinessScreen() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      const res = await (api as any).businesses.$post({
-        json: { name, type, description, phone, website, address, city, bookingUrl, bookingPhone, schedule, services, logoUrl: photoUrl || undefined },
-      });
+      const json = { name, type, description, phone, website, address, city, bookingUrl, bookingPhone, schedule, services, logoUrl: photoUrl || undefined };
+      const res = isEdit
+        ? await (api as any).businesses[":id"].$put({ param: { id }, json })
+        : await (api as any).businesses.$post({ json });
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text.includes("<") ? tr("Erro no servidor. Tente novamente.") : text);
@@ -103,10 +130,14 @@ export default function AddBusinessScreen() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["businesses"] });
-      Alert.alert(tr("✅ Negócio registado!"), tr("O teu negócio já está visível para todos os utilizadores."));
+      if (isEdit) queryClient.invalidateQueries({ queryKey: ["business", id] });
+      Alert.alert(
+        isEdit ? tr("✅ Negócio atualizado!") : tr("✅ Negócio registado!"),
+        isEdit ? tr("As alterações foram guardadas.") : tr("O teu negócio já está visível para todos os utilizadores.")
+      );
       safeBack(router, "/(tabs)/businesses");
     },
-    onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível registar o negócio."))),
+    onError: (e: any) => Alert.alert("Ups", netError(e, isEdit ? tr("Não foi possível guardar as alterações.") : tr("Não foi possível registar o negócio."))),
   });
 
   return (
@@ -120,7 +151,7 @@ export default function AddBusinessScreen() {
           <TouchableOpacity onPress={() => safeBack(router, "/(tabs)/businesses")} style={{ marginRight: 12 }}>
             <ChevronLeft size={24} color="#1A1A2E" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>{tr("Registar Negócio")}</Text>
+          <Text suppressHighlighting style={{ fontSize: 22, fontWeight: "800", color: "#1A1A2E" }}>{isEdit ? tr("Editar Negócio") : tr("Registar Negócio")}</Text>
         </View>
 
         <ScrollView
@@ -193,7 +224,7 @@ export default function AddBusinessScreen() {
             }}>
             {isPending
               ? <ActivityIndicator color="#fff" />
-              : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{tr("Registar Negócio")}</Text>}
+              : <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{isEdit ? tr("Guardar Alterações") : tr("Registar Negócio")}</Text>}
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

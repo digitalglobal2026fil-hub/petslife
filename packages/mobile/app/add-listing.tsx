@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Tag, Package, Camera, X } from "lucide-react-native";
 import { api } from "../lib/api";
 import { netError } from "../lib/net-error";
@@ -51,6 +51,18 @@ export default function AddListingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const qc = useQueryClient();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const isEdit = !!id;
+
+  const { data: existing } = useQuery({
+    queryKey: ["listing", id],
+    enabled: isEdit,
+    queryFn: async () => {
+      const res = await (api as any).marketplace[":id"].$get({ param: { id: id as string } });
+      if (!res.ok) throw new Error("Not found");
+      return res.json();
+    },
+  });
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -61,6 +73,19 @@ export default function AddListingScreen() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  // Pré-preencher o formulário quando estamos a editar um anúncio existente
+  useEffect(() => {
+    const l = (existing as any)?.listing;
+    if (!l) return;
+    setTitle(l.title ?? "");
+    setDescription(l.description ?? "");
+    setCategory(l.category ?? "adoption");
+    setPrice(l.price ? String(l.price) : "");
+    setLocation(l.location ?? "");
+    setContact(l.contact ?? "");
+    if (l.imageUrl) { setPhoto(l.imageUrl); setPhotoUrl(l.imageUrl); }
+  }, [existing]);
 
   async function pickPhoto() {
     const picked = await pickImageWithChoice({ title: tr("Foto do anúncio") });
@@ -80,18 +105,19 @@ export default function AddListingScreen() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await api.marketplace.$post({
-        json: {
-          title,
-          description,
-          category,
-          // price notNull no schema — enviar 0 se vazio
-          price: price ? parseFloat(price.replace(",", ".")) : 0,
-          location: location || undefined,
-          contact: contact || undefined,
-          imageUrl: photoUrl || undefined,
-        },
-      });
+      const json = {
+        title,
+        description,
+        category,
+        // price notNull no schema — enviar 0 se vazio
+        price: price ? parseFloat(price.replace(",", ".")) : 0,
+        location: location || undefined,
+        contact: contact || undefined,
+        imageUrl: photoUrl || undefined,
+      };
+      const res = isEdit
+        ? await (api as any).marketplace[":id"].$put({ param: { id }, json })
+        : await api.marketplace.$post({ json });
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text.includes("<") ? tr("Erro no servidor. Tente novamente.") : text);
@@ -100,9 +126,14 @@ export default function AddListingScreen() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["marketplace"] });
-      Alert.alert("Sucesso!", tr("O seu anúncio foi publicado."), [{ text: tr("OK"), onPress: () => safeBack(router, "/(tabs)/marketplace") }]);
+      if (isEdit) qc.invalidateQueries({ queryKey: ["listing", id] });
+      Alert.alert(
+        "Sucesso!",
+        isEdit ? tr("As alterações foram guardadas.") : tr("O seu anúncio foi publicado."),
+        [{ text: tr("OK"), onPress: () => safeBack(router, "/(tabs)/marketplace") }]
+      );
     },
-    onError: (e: any) => Alert.alert("Ups", netError(e, tr("Não foi possível publicar o anúncio."))),
+    onError: (e: any) => Alert.alert("Ups", netError(e, isEdit ? tr("Não foi possível guardar as alterações.") : tr("Não foi possível publicar o anúncio."))),
   });
 
   function handleSubmit() {
@@ -124,7 +155,7 @@ export default function AddListingScreen() {
             style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#F0E8E0", alignItems: "center", justifyContent: "center", marginRight: 12 }}>
             <ChevronLeft size={20} color="#1A1A2E" />
           </TouchableOpacity>
-          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{tr("Novo Anúncio")}</Text>
+          <Text suppressHighlighting style={{ fontSize: 20, fontWeight: "800", color: "#1A1A2E" }}>{isEdit ? tr("Editar Anúncio") : tr("Novo Anúncio")}</Text>
         </View>
 
         <ScrollView
@@ -216,7 +247,7 @@ export default function AddListingScreen() {
             {mutation.isPending ? <ActivityIndicator color="#fff" /> : (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <Tag size={18} color="#fff" />
-                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{tr("Publicar Anúncio")}</Text>
+                <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>{isEdit ? tr("Guardar Alterações") : tr("Publicar Anúncio")}</Text>
               </View>
             )}
           </TouchableOpacity>

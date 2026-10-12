@@ -18,7 +18,7 @@ export default function SignInPage() {
     try {
       const res = await authClient.signIn.email({ email, password });
       if (res.error) throw new Error(res.error.message ?? "Erro ao entrar");
-      setLocation("/");
+      setLocation("/app");
     } catch (err: any) {
       setError(err.message ?? "Não foi possível entrar.");
     } finally {
@@ -90,7 +90,7 @@ export default function SignInPage() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          A aplicação móvel PetsLife está disponível para iOS e Android.
+          Pode usar o PetsLife aqui no computador ou na app Android. A versão iPhone está disponível também aqui, neste browser.
         </p>
       </div>
     </div>

@@ -22,7 +22,7 @@ export default function SignUpPage() {
     try {
       const res = await authClient.signUp.email({ name, email, password });
       if (res.error) throw new Error(res.error.message ?? "Erro ao criar conta");
-      setLocation("/");
+      setLocation("/app");
     } catch (err: any) {
       setError(err.message ?? "Não foi possível criar a conta.");
     } finally {

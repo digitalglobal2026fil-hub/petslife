@@ -2,8 +2,9 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, ActivityIndicator, A
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, MapPin, Phone, Tag, PawPrint, Trash2 } from "lucide-react-native";
+import { ChevronLeft, MapPin, Phone, Tag, PawPrint, Trash2, Pencil } from "lucide-react-native";
 import { api } from "../../lib/api";
+import { authClient } from "../../lib/auth";
 import { tr } from "../../lib/i18n";
 import { safeBack } from "../../lib/safe-back";
 
@@ -16,6 +17,8 @@ export default function ListingDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const qc = useQueryClient();
+  const { data: session } = authClient.useSession();
+  const myId = (session as any)?.user?.id;
 
   const { data, isLoading } = useQuery({
     queryKey: ["listing", id],
@@ -43,6 +46,14 @@ export default function ListingDetailScreen() {
           <ChevronLeft size={20} color="#1A1A2E" />
         </TouchableOpacity>
         <Text suppressHighlighting style={{ fontSize: 18, fontWeight: "800", color: "#1A1A2E", flex: 1 }} numberOfLines={1}>{l.title}</Text>
+        {!!myId && l.userId === myId && (
+          <TouchableOpacity
+            onPress={() => router.push(`/add-listing?id=${id}` as any)}
+            style={{ flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#FFF0EB", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8 }}>
+            <Pencil size={14} color="#FF6B35" />
+            <Text suppressHighlighting style={{ color: "#FF6B35", fontWeight: "700", fontSize: 13 }}>{tr("Editar")}</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
