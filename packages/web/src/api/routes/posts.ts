@@ -4,6 +4,21 @@ import * as schema from "../database/schema";
 import { eq, and, desc, inArray } from "drizzle-orm";
 import { requireAuth, authMiddleware } from "../middleware/auth";
 import { isAdmin } from "../lib/admin";
+import { BOT_EMAIL } from "../lib/bot";
+
+// Junta nome/avatar do autor a uma lista de publicações ou comentários —
+// antes disto a interface só mostrava a inicial do userId, nunca o nome
+// real nem a foto de ninguém (incluindo a conta oficial "Equipa PetsLife").
+async function withAuthors<T extends { userId: string }>(rows: T[]) {
+  if (rows.length === 0) return [] as (T & { authorName: string | null; authorImage: string | null; authorOfficial: boolean })[];
+  const ids = [...new Set(rows.map((r) => r.userId))];
+  const authors = await db.select().from(schema.user).where(inArray(schema.user.id, ids));
+  const byId = new Map(authors.map((a) => [a.id, a]));
+  return rows.map((r) => {
+    const a = byId.get(r.userId);
+    return { ...r, authorName: a?.name ?? null, authorImage: a?.image ?? null, authorOfficial: a?.email === BOT_EMAIL };
+  });
+}
 
 export const posts = new Hono()
   .use("*", authMiddleware)
@@ -20,7 +35,8 @@ export const posts = new Hono()
       );
       likedIds = new Set(likes.map((l) => l.postId));
     }
-    return c.json({ posts: result.map((p) => ({ ...p, likedByMe: likedIds.has(p.id) })) }, 200);
+    const withAuthorInfo = await withAuthors(result);
+    return c.json({ posts: withAuthorInfo.map((p) => ({ ...p, likedByMe: likedIds.has(p.id) })) }, 200);
   })
   .post("/", requireAuth, async (c) => {
     const user = c.get("user")!;
@@ -45,7 +61,8 @@ export const posts = new Hono()
   .get("/:id/comments", async (c) => {
     const { id } = c.req.param();
     const result = await db.select().from(schema.postComments).where(eq(schema.postComments.postId, id)).orderBy(desc(schema.postComments.createdAt));
-    return c.json({ comments: result }, 200);
+    const withAuthorInfo = await withAuthors(result);
+    return c.json({ comments: withAuthorInfo }, 200);
   })
   .post("/:id/comments", requireAuth, async (c) => {
     const user = c.get("user")!;

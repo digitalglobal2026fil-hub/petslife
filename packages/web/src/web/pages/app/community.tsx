@@ -36,8 +36,13 @@ function CommentsBox({ postId, myId, onClose }: { postId: string; myId?: string;
         <p className="text-xs text-gray-400">Seja o primeiro a comentar!</p>
       ) : comments.map((cm: any) => (
         <div key={cm.id} className="flex gap-2 items-start text-sm">
-          <div className="w-7 h-7 rounded-full bg-[#4ECDC4] text-white font-bold flex items-center justify-center text-xs shrink-0">{(cm.userId ?? "?")[0]?.toUpperCase()}</div>
+          {cm.authorImage ? (
+            <img src={cm.authorImage} className="w-7 h-7 rounded-full object-cover shrink-0" />
+          ) : (
+            <div className="w-7 h-7 rounded-full bg-[#4ECDC4] text-white font-bold flex items-center justify-center text-xs shrink-0">{(cm.authorName ?? cm.userId ?? "?")[0]?.toUpperCase()}</div>
+          )}
           <div className="flex-1 bg-[#F8F6FF] rounded-xl px-3 py-2">
+            <p className="text-xs font-bold text-[#1A1A2E] flex items-center gap-1">{cm.authorName ?? "Utilizador"}{cm.authorOfficial && <span className="text-[#FF6B35] text-[10px]">✓ Oficial</span>}</p>
             <p className="text-[#1A1A2E]">{cm.content}</p>
             <p className="text-[10px] text-gray-400 mt-1">{cm.createdAt ? timeAgo(cm.createdAt) : ""}</p>
           </div>
@@ -108,8 +113,15 @@ function CommunityContent() {
           {posts.map((p: any) => (
             <div key={p.id} className="bg-white rounded-2xl border border-[#F0E8E0] p-4">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-[#FF6B35] text-white font-bold flex items-center justify-center text-xs">{(p.userId ?? "?")[0]?.toUpperCase()}</div>
-                <span className="text-xs text-gray-400">{p.createdAt ? timeAgo(p.createdAt) : ""}</span>
+                {p.authorImage ? (
+                  <img src={p.authorImage} className="w-8 h-8 rounded-full object-cover" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-[#FF6B35] text-white font-bold flex items-center justify-center text-xs">{(p.authorName ?? p.userId ?? "?")[0]?.toUpperCase()}</div>
+                )}
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-[#1A1A2E] flex items-center gap-1">{p.authorName ?? "Utilizador"}{p.authorOfficial && <span className="text-[#FF6B35] text-[10px]">✓ Oficial</span>}</span>
+                  <span className="text-xs text-gray-400">{p.createdAt ? timeAgo(p.createdAt) : ""}</span>
+                </div>
                 {myId === p.userId && <button onClick={() => del.mutate(p.id)} className="ml-auto text-gray-300 hover:text-red-500"><Trash2 size={14} /></button>}
               </div>
               <p className="text-[#1A1A2E] text-sm mb-2 whitespace-pre-wrap">{p.content}</p>

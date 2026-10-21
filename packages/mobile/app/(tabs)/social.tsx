@@ -72,10 +72,18 @@ function CommentsModal({ postId, myId, onClose }: { postId: string | null; myId?
                 </View>
               ) : comments.map((cm: any) => (
                 <View key={cm.id} style={{ flexDirection: "row", gap: 10, alignItems: "flex-start" }}>
-                  <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: "#4ECDC4", alignItems: "center", justifyContent: "center" }}>
-                    <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{(cm.userId ?? "?")[0]?.toUpperCase()}</Text>
-                  </View>
+                  {cm.authorImage ? (
+                    <Image source={{ uri: cm.authorImage }} style={{ width: 30, height: 30, borderRadius: 15 }} />
+                  ) : (
+                    <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: cm.authorOfficial ? "#FF6B35" : "#4ECDC4", alignItems: "center", justifyContent: "center" }}>
+                      <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{(cm.authorName ?? cm.userId ?? "?")[0]?.toUpperCase()}</Text>
+                    </View>
+                  )}
                   <View style={{ flex: 1, backgroundColor: "#F8F6FF", borderRadius: 14, padding: 10 }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 2 }}>
+                      <Text suppressHighlighting style={{ color: "#1A1A2E", fontSize: 12, fontWeight: "700" }}>{cm.authorName ?? tr("Utilizador")}</Text>
+                      {cm.authorOfficial && <Text suppressHighlighting style={{ fontSize: 10, color: "#FF6B35", fontWeight: "700" }}>✓ {tr("Oficial")}</Text>}
+                    </View>
                     <Text suppressHighlighting style={{ color: "#1A1A2E", fontSize: 13, lineHeight: 18 }}>{cm.content}</Text>
                     <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 10, marginTop: 4 }}>{cm.createdAt ? new Date(cm.createdAt).toLocaleDateString("pt-PT") : ""}</Text>
                   </View>
@@ -267,11 +275,18 @@ export default function SocialScreen() {
           ) : posts.map((post: any) => (
             <View key={post.id} style={{ backgroundColor: "#fff", borderRadius: 20, padding: 16, borderWidth: 1.5, borderColor: "#F0E8E0" }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center" }}>
-                  <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14, backgroundColor: "transparent" }}>{(post.userId ?? "?")[0]?.toUpperCase()}</Text>
-                </View>
+                {post.authorImage ? (
+                  <Image source={{ uri: post.authorImage }} style={{ width: 36, height: 36, borderRadius: 18 }} />
+                ) : (
+                  <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "#FF6B35", alignItems: "center", justifyContent: "center" }}>
+                    <Text suppressHighlighting style={{ color: "#fff", fontWeight: "700", fontSize: 14, backgroundColor: "transparent" }}>{(post.authorName ?? post.userId ?? "?")[0]?.toUpperCase()}</Text>
+                  </View>
+                )}
                 <View style={{ flex: 1 }}>
-                  <Text suppressHighlighting style={{ fontWeight: "600", color: "#1A1A2E", fontSize: 13 }}>{tr("Utilizador")}</Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                    <Text suppressHighlighting style={{ fontWeight: "700", color: "#1A1A2E", fontSize: 13 }}>{post.authorName ?? tr("Utilizador")}</Text>
+                    {post.authorOfficial && <Text suppressHighlighting style={{ fontSize: 10, color: "#FF6B35", fontWeight: "700" }}>✓ {tr("Oficial")}</Text>}
+                  </View>
                   <Text suppressHighlighting style={{ color: "#9CA3AF", fontSize: 11 }}>{new Date(post.createdAt).toLocaleDateString("pt-PT")}</Text>
                 </View>
                 <ModerationButton

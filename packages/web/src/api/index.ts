@@ -24,6 +24,7 @@ import { reports } from "./routes/reports";
 import { missions } from "./routes/missions";
 import { memorials } from "./routes/memorials";
 import { agenda } from "./routes/agenda";
+import { autoEngage } from "./routes/auto-engage";
 import { partners } from "./routes/partners";
 import { reminders } from "./routes/reminders";
 import { petScans } from "./routes/pet-scans";
@@ -124,7 +125,8 @@ const app = new Hono()
   .route("/reports", reports)
   .route("/missions", missions)
   .route("/memorials", memorials)
-  .route("/agenda", agenda);
+  .route("/agenda", agenda)
+  .route("/auto-engage", autoEngage);
 
 export type AppType = typeof app;
 export default app;
