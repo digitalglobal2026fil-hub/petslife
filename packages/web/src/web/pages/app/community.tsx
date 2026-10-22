@@ -130,11 +130,11 @@ function CommunityContent() {
                 <button onClick={() => like.mutate(p.id)} className={`flex items-center gap-1 ${p.likedByMe ? "text-[#EF476F]" : ""}`}>
                   <Heart size={16} fill={p.likedByMe ? "#EF476F" : "none"} /> {p.likesCount ?? 0}
                 </button>
-                <button onClick={() => setOpenComments(openComments === p.id ? null : p.id)} className="flex items-center gap-1">
+                <span className="flex items-center gap-1">
                   <MessageCircle size={16} /> {p.commentsCount ?? 0}
-                </button>
+                </span>
               </div>
-              {openComments === p.id && <CommentsBox postId={p.id} myId={myId} onClose={() => setOpenComments(null)} />}
+              <CommentsBox postId={p.id} myId={myId} onClose={() => setOpenComments(null)} />
             </div>
           ))}
         </div>
